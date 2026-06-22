@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+@theme {
+  /* === Colors === */
+  --color-brand-red: #C60C30;
+  --color-brand-red-hover: #A50A28;
+  --color-brand-red-light: #FDECEF;
+
+  --color-cap-blue: #0074B8;
+  --color-cap-blue-light: #E7F1FA;
+  --color-cap-green: #1A7A4A;
+  --color-cap-green-light: #E4F2EA;
+  --color-cap-amber: #B0690A;
+  --color-cap-amber-light: #FBF0DD;
+  --color-cap-purple: #5A45C7;
+  --color-cap-purple-light: #F8F6FE;
+  --color-cap-purple-mid: #ECE9FA;
+  --color-cap-purple-gradient: #8B5CF6;
+  --color-cap-purple-border: #E4DDF7;
+
+  --color-sidebar-bg: #13212C;
+  --color-page-bg: #F5F7FA;
+
+  --color-slate-900: #1B2D3D;
+  --color-slate-800: #253644;
+  --color-slate-700: #3B4A57;
+  --color-slate-600: #5B6770;
+  --color-slate-500: #64707A;
+  --color-slate-400: #98A1A8;
+  --color-slate-300: #C0C8D0;
+  --color-slate-200: #DCE2E8;
+  --color-slate-150: #E4E8ED;
+  --color-slate-100: #EEF1F4;
+  --color-slate-75: #F4F6F8;
+  --color-slate-50: #FAFBFC;
+  --color-slate-25: #FBFCFD;
+
+  /* === Fonts === */
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  /* === Shadows === */
+  --shadow-btn: 0 3px 10px rgba(198,12,48,0.2);
+  --shadow-btn-red: 0 4px 14px rgba(198,12,48,0.28);
+  --shadow-btn-purple: 0 6px 18px rgba(90,69,199,0.3);
+  --shadow-overlay: 0 20px 60px rgba(16,32,45,0.3);
+  --shadow-drawer: -8px 0 30px rgba(16,32,45,0.08);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-soft: 0 2px 8px rgba(0,0,0,0.06);
+
+  /* === Border Radius === */
+  --radius-card: 10px;
+  --radius-input: 7px;
+  --radius-btn: 8px;
+
+  /* === Animations === */
+  --animate-slide-in: slide-in 0.22s cubic-bezier(.4,0,.2,1);
+  --animate-fade-in: fade-in 0.15s ease;
+  --animate-toast-in: toast-in 0.2s ease;
+  --animate-rise: rise 0.2s ease forwards;
+  --animate-spin-slow: spin 0.7s linear infinite;
+
+  @keyframes slide-in {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes toast-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+}
+
+/* === Global resets === */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: #1B2D3D;
+  background: #F5F7FA;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 7px; height: 7px; }
+::-webkit-scrollbar-thumb { background: #C0C8D0; border-radius: 8px; border: 2px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-track { background: transparent; }
+
+input, button, select, textarea { font-family: inherit; }

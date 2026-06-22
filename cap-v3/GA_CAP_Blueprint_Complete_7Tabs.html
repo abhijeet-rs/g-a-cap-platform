@@ -1,0 +1,1844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G&A Partners — CAP Architecture Blueprint</title>
+<style>
+:root{--n:#23394A;--r:#C60C30;--b:#0088CE;--g:#2A8F60;--am:#FF9E1B;--gr:#6B6F70;--lg:#A8ACAE;--fog:#F5F7F9;--rl:#E2E8ED;--w:#fff;--pr:#8b5cf6}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:var(--n);background:var(--fog);font-size:12px;line-height:1.55}
+.hdr{background:var(--n);padding:12px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
+.hdr h1{color:#fff;font-size:14px;font-weight:700}
+.tabs{background:var(--n);display:flex;padding:0 32px;border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:42px;z-index:199}
+.tab{padding:10px 20px;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.35);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:color .15s}
+.tab:hover{color:rgba(255,255,255,.7)}
+.tab.on{color:#fff;border-bottom-color:var(--r)}
+.pnl{display:none;max-width:1060px;margin:0 auto;padding:28px 32px 48px}
+.pnl.on{display:block}
+.eye{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--r);font-weight:700;margin-bottom:4px}
+.h1{font-size:19px;font-weight:700;color:var(--n);margin-bottom:6px;line-height:1.25}
+.sub{font-size:11px;color:var(--gr);margin-bottom:20px;max-width:700px;line-height:1.7}
+.sec{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--r);margin:24px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--rl)}
+.c{background:var(--w);border:1px solid var(--rl);border-radius:8px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 3px rgba(35,57,74,.04)}
+.c h3{font-size:12px;font-weight:700;color:var(--n);margin-bottom:5px}
+.c p,.c li{font-size:11px;color:var(--gr);line-height:1.65}
+.c ul{padding-left:14px;margin-top:3px}
+.c.red{border-left:4px solid var(--r);border-radius:0 8px 8px 0}
+.c.blue{border-left:4px solid var(--b);border-radius:0 8px 8px 0}
+.c.green{border-left:4px solid var(--g);border-radius:0 8px 8px 0}
+.c.amber{border-left:4px solid var(--am);border-radius:0 8px 8px 0}
+.c.purple{border-left:4px solid var(--pr);border-radius:0 8px 8px 0}
+.c.navy{border-left:4px solid var(--n);border-radius:0 8px 8px 0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px}
+.met{background:var(--w);border:1px solid var(--rl);border-radius:6px;padding:10px;border-top:3px solid var(--n);text-align:center}
+.met .v{font-size:18px;font-weight:800;color:var(--n);line-height:1}
+.met .l{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--lg);margin-top:3px}
+.met.c2{border-top-color:var(--b)}.met.cr{border-top-color:var(--r)}.met.cg{border-top-color:var(--g)}
+.step{display:grid;grid-template-columns:42px 1fr 1fr;gap:0;margin-bottom:4px}
+.step .num{background:var(--n);display:flex;align-items:center;justify-content:center;border-radius:6px 0 0 6px}
+.step .num span{width:26px;height:26px;border-radius:50%;background:var(--r);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.step .num.ba{background:var(--b)}
+.step .num.ba span{background:var(--n)}
+.step .main{background:var(--w);border:1px solid var(--rl);padding:10px 14px;border-left:none}
+.step .main h4{font-size:11px;font-weight:700;color:var(--n);margin-bottom:3px}
+.step .main p{font-size:10px;color:var(--gr);line-height:1.55}
+.step .side{padding:10px 14px;border:1px solid transparent;border-left:none;border-radius:0 6px 6px 0}
+.step .side h4{font-size:10px;font-weight:700;margin-bottom:3px}
+.step .side p{font-size:10px;line-height:1.55}
+.side.pain{background:#FEF0EE;border-color:#C60C3033}.side.pain h4{color:var(--r)}.side.pain p{color:#8a000a}
+.side.ok{background:#E9F5EF;border-color:#2A8F6033}.side.ok h4{color:var(--g)}.side.ok p{color:#1a4a2e}
+.side.info{background:#EBF4FB;border-color:#0088CE33}.side.info h4{color:var(--b)}.side.info p{color:#1a4f72}
+.arr{text-align:center;color:var(--lg);font-size:14px;margin:1px 0}
+.handoff{background:var(--n);color:#fff;padding:10px 14px;border-radius:6px;margin:8px 0;text-align:center;font-size:11px;font-weight:700}
+.handoff small{font-weight:400;font-size:9px;opacity:.5;display:block;margin-top:2px}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.cmp-b{background:#FEF0EE;border:1px solid #C60C3033;border-radius:8px;padding:12px 14px}
+.cmp-b h4{font-size:11px;font-weight:700;color:var(--r);margin-bottom:4px}
+.cmp-b p{font-size:10px;color:#8a000a;line-height:1.55}
+.cmp-g{background:#E9F5EF;border:1px solid #2A8F6033;border-radius:8px;padding:12px 14px}
+.cmp-g h4{font-size:11px;font-weight:700;color:var(--g);margin-bottom:4px}
+.cmp-g p{font-size:10px;color:#1a4a2e;line-height:1.55}
+.om-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.om-mp{background:var(--w);border:1px solid var(--b);border-radius:6px;padding:10px 12px}
+.om-mp h4{font-size:10px;font-weight:700;color:var(--b);margin-bottom:3px}
+.om-mp p{font-size:9px;color:var(--gr);line-height:1.5}
+.om-op{background:var(--w);border:1px solid var(--pr);border-radius:6px;padding:10px 12px}
+.om-op h4{font-size:10px;font-weight:700;color:var(--pr);margin-bottom:3px}
+.om-op p{font-size:9px;color:var(--gr);line-height:1.5}
+.tag{display:inline-block;font-size:8px;font-weight:700;padding:2px 6px;border-radius:3px;margin-right:3px;margin-top:3px}
+.t-mp{background:#EBF4FB;color:#0C447C}.t-om{background:#F3EEFF;color:#3C3489}
+.t-f{background:#E9F5EF;color:#1a4a2e}.t-nb{background:#FEF0EE;color:#8a000a}.t-r{background:#FFF7E6;color:#7a5a00}.t-cp{background:#F3EEFF;color:#3C3489}
+.foot{text-align:center;padding:16px;font-size:9px;color:var(--lg)}
+.res{background:#E9F5EF;border:1px solid #2A8F6033;border-radius:6px;padding:8px 12px;margin-top:6px;font-size:10px;color:#1a4a2e}
+.res strong{color:var(--g)}
+.ent-tbl{width:100%;border-collapse:collapse;background:#fff;border:1px solid #E2E8ED;border-radius:8px;overflow:hidden;font-size:10px;margin:10px 0}
+.ent-tbl th{background:#23394A;color:rgba(255,255,255,.9);padding:8px 12px;text-align:left;font-size:9px;letter-spacing:1px;text-transform:uppercase}
+.ent-tbl td{padding:6px 12px;border-bottom:1px solid #E2E8ED;vertical-align:top}
+.ent-tbl tr:nth-child(even){background:#F8FAFB}
+.legend-box{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:middle;margin-right:4px}
+</style>
+</head>
+<body>
+<div class="hdr"><h1>G&A Partners — CAP Process & Automation Architecture Blueprint</h1></div>
+<div class="tabs">
+<button class="tab on" onclick="sw('p1',this)">1 · CAP Anatomy</button>
+<button class="tab" onclick="sw('p2',this)">2 · Process & Bottlenecks</button>
+<button class="tab" onclick="sw('p3',this)">3 · Automation Architecture</button>
+<button class="tab" onclick="sw('p4',this)">4 · AM User Journey</button>
+<button class="tab" onclick="sw('p5',this)">5 · PrismHR APIs & Technical Depth</button>
+<button class="tab" onclick="sw('p6',this)">6 · ERD Data Model</button>
+<button class="tab" onclick="sw('p7',this)">7 · Data Governance & PII</button>
+<button class="tab" onclick="sw('p8',this)">8 · MCP Server Architecture</button>
+</div>
+
+
+<!-- ======================= TAB 1 ======================= -->
+<div id="p1" class="pnl on">
+<div class="eye">Sheet 1 of 8</div>
+<div class="h1">CAP Excel Workbook Anatomy</div>
+<div class="sub">15+ sheet, formula-heavy workbook serving as the single source of truth for every benefit parameter a client employer has agreed to. Simultaneously a data entry form, calculation engine, reference data store, downstream communication document, and change management system.</div>
+
+<div class="sec">Reference / Input Sheets (feed into Company Info via formulas)</div>
+<div class="c navy"><h3>Options (dropdown reference — the business rules engine) <span class="tag t-f">F6</span></h3>
+<p>Master reference sheet populating every dropdown. All valid values by category:</p>
+<ul>
+<li><strong>Status:</strong> New, Renewal, Change, New Class — Sub-status: Generic Draft / Draft with notes / Client Approved / Audited / Auto renewed</li>
+<li><strong>Carriers:</strong> Master Guardian, Master Delta MO/IA, Master EA Reliance, Open Market, Not Offered</li>
+<li><strong>Medical plans:</strong> PPO $500/$1000/$1500/$2500/$3000/$3500/$5000/$6350 at 70-100%, HDHP $3000/$3300/$5000, HMO $2000/$5000/$7500</li>
+<li><strong>Class types:</strong> All eligible, Hourly/Salary, Location, Executives, Management, Union, Benefits Only, Owners, K1 Benefits Only</li>
+<li><strong>Pay periods:</strong> 12, 24, 26, 48, 52 deductions/year</li>
+<li><strong>Waiting periods:</strong> Date of Hire, 1st following DOH, 1st following 30/60 days, Other</li>
+<li><strong>Ownership:</strong> C Corp, S Corp, Partnership, Sole Prop, 501, LLC</li>
+<li><strong>ER Life:</strong> G&amp;A Unum $10K-$150K, 1x/2x Salary options, Open Market, G&amp;A Paid</li>
+<li><strong>STD/LTD:</strong> Unum BASE/PREMIER ER Paid, BASE/ENHANCED Voluntary, Open Market</li>
+<li><strong>FSA:</strong> Voluntary, ER Contributes, ER Paid, Split — Type: Plan Year / Calendar Year / Short Year</li>
+<li><strong>HSA:</strong> Client/Employee/G&amp;A — Deposit freq: Up Front, Per Period, Monthly, Quarterly, Lump Sum</li>
+<li><strong>Enrollment:</strong> HRIS: Prism/iSolved/NextGen — Method: Active/Passive — Format: Electronic/Printed — Meetings: Zoom/F2F/Combo</li>
+<li><strong>Billing:</strong> Monthly 1st-4th PP, Per Pay Period, NA-Client Paying — COBRA: G&amp;A/Client/Broker/Carrier/N/A</li>
+<li><strong>Contributions:</strong> Percentage, Fixed Dollar, Variable — Rounding: Nearest Dollar/Ten/Hundred/Thousand</li>
+</ul>
+<p>All encoded as named ranges + data validation lists. Selection triggers conditional formatting and formula chains across Company Info and rate grids. <strong>Platform equivalent:</strong> F6 Vocabularies centralizes these as managed dropdown lists consumed by every CAP.</p>
+</div>
+
+<div class="c navy"><h3>Data for Lookups (100+ client rows — underwriting reference) <span class="tag t-f">F4</span> <span class="tag t-f">F5</span></h3>
+<p>Each row = one client company. Columns:</p>
+<ul>
+<li><strong>Identity:</strong> Parent ID, Company Name, Type (Parent-No Affiliates / Parent-Affiliates / Child-Different Benefits), Affiliate IDs</li>
+<li><strong>Assignment:</strong> Carrier, Benefits Analyst (BA), Account Manager, Benefits Specialist</li>
+<li><strong>2025 UW:</strong> Bucket (e.g., 0.975), Bucket 2 (dual-carrier), Admin Factor (e.g., 1.013), Commission (e.g., 0.03), Risk Factor (e.g., 1.043)</li>
+<li><strong>2024 prior-year:</strong> Same fields for YoY comparison</li>
+<li><strong>Renewal:</strong> Renewal Increase % (e.g., 0.1989 = 19.89%), Effective Date</li>
+<li><strong>Demographics:</strong> WSE Count (298), Mchild in Prism (371), Extended Rates flag (No / "7% rate cap" / "extension")</li>
+<li><strong>Broker:</strong> Y/N, name (e.g., "Digital Insurance, LLC")</li>
+<li><strong>Config:</strong> Waiting Period, Payroll Frequency, Medical Plans Offered, Deductions count, Classes count</li>
+</ul>
+<p>VLOOKUPs from Company Info read this when AM enters Prism ID. <strong>Platform equivalent:</strong> F4 Pricing Stack (buckets, admin factors, commission schedules) + F5 Parameters &amp; Fees centralize these as versioned, governed configuration.</p>
+</div>
+
+<div class="c blue"><h3>Full BVP (Benefits Value Plan — most formula-dense sheet) <span class="tag t-f">F3</span> <span class="tag t-f">F4</span></h3>
+<ul>
+<li><strong>Carriers:</strong> BCBSTX, Cigna UT/National, UHC (incl SC), Anthem CO/CA/NV, Kaiser CO/CA N/S, BCBSIL, BCBSMN, Wellmark, BCBSOK, Aetna UT</li>
+<li><strong>Per plan:</strong> Name, Prism code (e.g., UHCMP0500-80), deductible, copay, coinsurance, OOP max</li>
+<li><strong>Rate formula:</strong> Base &times; Bucket &times; Admin Factor &times; Risk Factor &rarr; 4 tiers per plan</li>
+<li><strong>Rate bands:</strong> Anthem CA, Kaiser CA use 16+ age-banded factors (0.557 to 2.813)</li>
+<li><strong>INDIRECT() refs:</strong> Dynamic named ranges based on carrier selection — breaks when carriers change</li>
+</ul>
+<p><strong>Applies to Master Plans only.</strong> Open Market rates entered directly. <strong>Platform equivalent:</strong> F3 Master Plan Library (synced from Prism, read-only rate tables) + F4 Pricing Stack (bucket/AF/commission formula engine).</p>
+</div>
+
+<div class="sec">Company Info — Primary Data Entry (2-4 hours per client, 8 sections)</div>
+<div class="c red"><h3>The core of the CAP — everything feeds into or reads from this sheet <span class="tag t-nb">NB4</span> <span class="tag t-r">R2</span></h3></div>
+
+<div class="g2">
+<div class="c"><h3>Section 1: Header <span class="tag t-f">F6</span> <span class="tag t-nb">NB1</span></h3>
+<ul>
+<li>Company name, Booklet name, Plan Year, Prism ID, Affiliate IDs</li>
+<li>Folder Path (full G:\ network path), Status, Type (New/Renewal)</li>
+<li>Medical Carrier, Renewal Month, HRIS, EE Count, Rate Relief flag</li>
+<li>CAP Completed By, Client Contact, AM, BS, Completion/Updated dates</li>
+<li><strong>"To send to analyst"</strong> sidebar — auto-generates summary string (e.g., "ITAFOS CONDA (2908), ED: July, NextGen, OE: [dates]") for copy-paste to ClientSpace handoff</li>
+</ul></div>
+<div class="c"><h3>Section 2: General <span class="tag t-f">F6</span> <span class="tag t-f">F5</span></h3>
+<ul>
+<li>Pay Periods: multiple supported (e.g., "Weekly, Semi-Monthly") with frequency spec</li>
+<li>Multiple classes? (Y/N) with descriptions (e.g., "Primary, Grandfathered, CEO")</li>
+<li>This CAP is for: eligibility scope, Total Pay Periods, Annual Deductions</li>
+<li>Waiting Period rules with calculated eligibility formula ("if hired 5/1, eligible 5/1; if hired 5/2, eligible 6/1")</li>
+<li>Waived for initial enrollment? Benefits terminate end of month?</li>
+</ul></div>
+</div>
+
+<div class="g2">
+<div class="c"><h3>Section 3: Ownership &amp; Broker <span class="tag t-f">F6</span></h3>
+<ul>
+<li>Corp Type: C/S Corp, Partnership, Sole Prop, 501, LLC</li>
+<li>Owners on payroll/plan? S-Corp post-tax rules, FSA/HSA restrictions</li>
+<li>Partnership reminder: "owners that participate should have a benefits only class"</li>
+<li>Outside broker? PEO broker? Commission tracking rules</li>
+<li>"Do NOT Enter PEPM Commission if percentage entered"</li>
+</ul></div>
+<div class="c"><h3>Section 4: Underwriting Parameters <span class="tag t-f">F4</span> <span class="tag t-f">F10</span></h3>
+<ul>
+<li>Carrier Bucket (e.g., 0.975), Commissions % (e.g., 0.03 — 4+ decimal precision)</li>
+<li>Admin Factor (e.g., 1.0031), Extended Rate/Rate Cap, Mchild/TPA Override</li>
+<li>Bucket 2 (dual-carrier, e.g., Anthem/Kaiser CA split)</li>
+<li>Variable Admin Factor (VBP carriers)</li>
+<li>These drive ALL master plan rate calculations on this CAP</li>
+</ul></div>
+</div>
+
+<div class="c"><h3>Section 5: Products Grid (12 benefit lines — core config table) <span class="tag t-f">F3</span> <span class="tag t-nb">NB4</span></h3>
+<p>Each row = one benefit line. Columns per line:</p>
+<ul>
+<li><strong>Benefit Plan:</strong> Medical, Dental, Vision, ER Life, Vol Life, STD, LTD, Accident, CI, Telemedicine, Evolve, Other</li>
+<li><strong>Plan Type:</strong> Master Plan / Master / Open Market / Not Offered — <em>the MP vs OM discriminator</em></li>
+<li><strong>Carrier:</strong> Auto for Master, free-text for OM (e.g., "Northwestern Mutual")</li>
+<li><strong>Volume Funding:</strong> "Texas 1.0" / "Voluntary" / "Open Market - see notes"</li>
+<li><strong>Commissions:</strong> Standard for Master, flat $ for OM ("$2,308/week"), or "Outside Broker paid"</li>
+<li><strong>Changes:</strong> Renewal types (rates only / plans+rates / same / new carrier), New plan added, NA</li>
+<li><strong>Group #:</strong> "Master" for MP vs "Enter when received" for OM (30-45 day AOR pending)</li>
+<li><strong>BOR:</strong> N/A for Master / "GAB" / "N/A - Outside Broker" for OM</li>
+<li><strong>COBRA Admin:</strong> G&amp;A Handles / Client / Broker / Carrier / N/A - Not COBRA Eligible</li>
+<li><strong>Carrier Website, Carrier Admin, Who Pays:</strong> admin assignment fields</li>
+</ul>
+<p>Below grid: <strong>Tax Plans</strong> — FSA (type, funding, plan year, transit/parking) and HSA (ER contribution per tier, frequency, who deposits ER/EE, new hire proration rule, account setup responsibility).</p>
+</div>
+
+<div class="g2">
+<div class="c red"><h3>Section 6: Rate Grids (MOST ERROR-PRONE) <span class="tag t-f">F3</span> <span class="tag t-f">F4</span> <span class="tag t-f">F8</span></h3>
+<ul>
+<li>Medical: up to 10 plans &times; 4 tiers (EO/ES/EC/EF) &times; 3 cols (TOTAL/ER/EE)</li>
+<li>Dental: up to 6 plans. Vision: Base + Buy-up + PPD col</li>
+<li>Worksite, Teladoc, LegalShield, STD/LTD: separate sections</li>
+<li>Master rates from BVP formulas, OM rates direct entry</li>
+<li>If ANY UW parameter wrong, ALL master rates wrong silently</li>
+<li>#REF! errors present in LegalShield section (broken in both template AND filled sample)</li>
+</ul></div>
+<div class="c"><h3>Sections 7-8: Administration <span class="tag t-f">F5</span> <span class="tag t-f">F6</span> <span class="tag t-f">F7</span></h3>
+<ul>
+<li>Enrollment method/dates, Default (Active/Passive), Packets, Languages</li>
+<li><strong>Coordinator Audit Checklist:</strong> CAP filled? Booklet match? ClientSpace updated? OM SBCs complete? (Life: benefit amounts/GIs, age reduction, EOI. Disability: max. CI: GI rules)</li>
+<li>COBRA, Billing methods (Medical/Ancillary/MIA), Affordability (group size, FPL)</li>
+<li>Wrap Documents, Rush/Change fees ($500/$250)</li>
+<li>Additional Notes, Analyst Notes (free-text for special instructions)</li>
+</ul></div>
+</div>
+
+<div class="sec">Three Data Classes (Foundation PRD Principle)</div>
+<div class="c green"><h3>Every field in the platform falls into one of three classes with distinct edit rules <span class="tag t-f">F1</span></h3>
+<div class="g3" style="margin-top:8px">
+<div class="c blue"><h3>Synced (Prism = SoR)</h3>
+<p><strong>Read-only in the platform.</strong> Pulled from Prism; never editable here (editing would fork the SoR).</p>
+<p style="margin-top:4px"><strong>Examples:</strong> Master plans, carrier base rates, plan-code crosswalks, client records (for renewals).</p></div>
+<div class="c amber"><h3>G&amp;A-owned (Platform = SoR)</h3>
+<p><strong>Editable centrally</strong> by admins; versioned with effective dates. Changes propagate to draft CAPs; signed CAPs keep their snapshot.</p>
+<p style="margin-top:4px"><strong>Examples:</strong> Pricing-stack factors, parameters, fees, templates, vocabularies, validation rules, roles.</p></div>
+<div class="c purple"><h3>Connected (External Systems)</h3>
+<p><strong>Configured here</strong> (credentials, mappings); data flows via integration. The platform orchestrates but does not own the data.</p>
+<p style="margin-top:4px"><strong>Examples:</strong> ClientSpace (workflow/cases), DocuSign (e-sign).</p></div>
+</div>
+</div>
+
+<div class="sec">Provenance Model (New Business PRD)</div>
+<div class="c green"><h3>Every field in a new-business CAP carries a provenance tag <span class="tag t-nb">NB3</span></h3>
+<div class="g4" style="margin-top:8px">
+<div class="c"><h3><code>From library</code></h3><p>Came from foundation data (F3-F8). Authoritative; read-only or low-touch.</p></div>
+<div class="c"><h3><code>From upload &middot; confirm</code></h3><p>Extracted from an uploaded document via AI. Pre-filled, <strong>requires human confirmation</strong>.</p></div>
+<div class="c"><h3><code>Underwriting</code></h3><p>Bucket / admin factor / commission from UW output. Confirmed once UW output is attached (F10).</p></div>
+<div class="c"><h3><code>Needs input</code></h3><p>No source yet. Flagged as a gap — must be resolved before handoff.</p></div>
+</div>
+</div>
+
+<div class="sec">Itafos Conda — Filled Example (Prism 2908)</div>
+<div class="g4">
+<div class="met c2"><div class="v">298</div><div class="l">Employees</div></div>
+<div class="met"><div class="v">5</div><div class="l">Medical Plans</div></div>
+<div class="met cr"><div class="v">3</div><div class="l">Classes</div></div>
+<div class="met cg"><div class="v">19.89%</div><div class="l">Renewal Increase</div></div>
+</div>
+
+<div class="c blue"><h3>Itafos — Full Configuration from Actual Spreadsheet</h3>
+<p><strong>Company:</strong> ITAFOS CONDA | Prism 2908, Affiliate 2909 | Plan Year: July 1, 2025-June 30, 2026 | Renewal | Generic Draft<br>
+<strong>Config:</strong> C Corp | Semi-monthly 26 ded (note: "Itafos Services has 24 PP") | Classes: Primary/Grandfathered/CEO | DOH waiting | Terminate end of month<br>
+<strong>UW:</strong> Bucket 0.975 | AF 1.013 | Comm 0.03 | Mchild 371 | Rate Relief Yes | Renewal 19.89%<br>
+<strong>People:</strong> Client: Mark Kirby | AM: Danielle Andre | BS: Nataly Montano | Broker: Digital Insurance LLC<br>
+<strong>Enrollment:</strong> NextGen, Electronic, English, Zoom, Passive (Mapping), OE 6/16-6/30/2025 | Billing: Med Monthly 1st PP, Ancillary Per PP</p>
+</div>
+
+<div class="g2">
+<div class="c blue"><h3>Master Plan Products</h3><ul>
+<li>Medical: Master BCBSTX (plans+rates changed)</li>
+<li>Dental: Master Guardian Texas 1.0 (rates only)</li>
+<li>Vision: Master Guardian (same). ER Life: Master Unum 1xSalary $250K</li>
+<li>Accident/CI: Master Unum Voluntary. Teladoc: Master &rarr; Buy Up (NEW, G&amp;A Paid)</li>
+<li>FSA: Master, Plan Year, Voluntary, Both (Transit+Parking)</li>
+<li>HSA: ER Contributes EO $500/ES $1K/EC $1K/EF $1.3K quarterly, G&amp;A deposits, NH prorated</li></ul></div>
+<div class="c purple"><h3>Open Market Products</h3><ul>
+<li>Vol Life: OM UNUM — Comm: "Action Needed" — BOR: GAB</li>
+<li>STD: OM Northwestern Mutual — $2,308/wk — N/A Outside Broker</li>
+<li>LTD: OM Northwestern Mutual — $10K/mo — N/A Outside Broker</li>
+<li>Group #: "Enter when received" (30-45 day AOR pending)</li>
+<li>Note: "Upgrading Teladoc to Buy Up Plan (G&amp;A Paid) effective 7/1/2025"</li></ul></div>
+</div>
+
+<div class="c"><h3>Itafos — Actual Medical Rates (from spreadsheet)</h3>
+<p><strong>PPO $500 80%:</strong> EO $931.52 (ER $670.69 / EE $260.83) | ES $2,022.31 | EC $1,831.84 | EF $2,933.04<br>
+<strong>PPO $1000 80%:</strong> EO $884.46 (ER $654.50 / EE $229.96) | EF $2,784.93<br>
+<strong>PPO $2500 80%:</strong> EO $809.73 (ER $607.29 / EE $202.43) | EF $2,549.65<br>
+<strong>HDHP $3300 90%:</strong> EO $745.55 (ER $603.90 / EE $141.65) | EF $2,347.50<br>
+<strong>HDHP $5000 80%:</strong> EO $682.41 (ER $580.05 / EE $102.36) | EF $2,148.75</p>
+<p><strong>Dental (Guardian PPO 1500):</strong> EO $29 (ER $23.20 / EE $5.80) | ES $66.15 | EC $84 | EF $115.50. Also PPO 2000, PPO 3000.<br>
+<strong>Vision (Base PPO):</strong> EO $6 (ER $4.80 / EE $1.20). <strong>Accident (Unum):</strong> EO $18.51 all EE-paid. <strong>Teladoc:</strong> $9/mo G&amp;A Paid.</p>
+</div>
+
+<div class="sec">Output Sheets + Change Tracker</div>
+<div class="g4">
+<div class="c green"><h3>ER Confirmation <span class="tag t-f">F7</span></h3><p>Auto-generated sign-off. Plans, rates, ER/EE, premium credit, acknowledgements. DocuSign routing.</p></div>
+<div class="c green"><h3>EE SRA (Eng + Spanish) <span class="tag t-f">F7</span></h3><p>Employee summary: plan options, premiums, FSA/HSA. Two language versions.</p></div>
+<div class="c green"><h3>Mapping <span class="tag t-f">F3</span></h3><p>Code crosswalk: BCBSTXHD3200&rarr;HD3300, UHCMP0500-80&rarr;DNIF, KaiserHD3200&rarr;HD3300, BCBSILL2500&rarr;L1500.</p></div>
+<div class="c red"><h3>Change Tracker</h3><p>80+ fix entries (2023-2026). Maintained by Lynnea, Lisa, Josette, Aliyah, Jaylin.</p></div>
+</div>
+
+<div class="c red"><h3>Change Tracker — Specific entries proving fragility</h3>
+<ul>
+<li>"Formula not working in D23 on Company Info" — reference errors in core sheet</li>
+<li>"Anthem CA PPO bucket not pulling from correct cell" — wrong cell refs in rates</li>
+<li>"Cigna 3500 plan showing wrong coins" — plan design data errors</li>
+<li>"Weird formula appeared in Notes section; removed" — ghost formulas</li>
+<li>"Corrected Aetna UT rate formulas - pulling B6 instead of B5" — off-by-one errors</li>
+<li>"Vision contribution for buy up not working" — broken contribution calc</li>
+<li>"Commission vlookups pulling wrong language after Master Aetna added" — lookup breakage</li>
+<li>"Kaiser CA Risk Factor = Admin Factor so commission NOT built into rates" — commission baked into rates</li>
+<li>"Base plan calculation not correct for EC and EF tiers on Vision tab" — tier-level formula errors</li>
+</ul></div>
+
+<div class="sec">Rate Calculation Formula</div>
+<div class="c"><h3>Master: Rated Premium = Base &times; Bucket &times; AF &times; (1 + Commission) &times; RF <span class="tag t-f">F4</span></h3>
+<p>Split: TOTAL = ER + EE &rarr; PPD = EE &divide; Annual Deductions<br>
+<strong>Itafos PPO $500 EO:</strong> Base &times; 0.975 &times; 1.013 &times; 1.03 &times; 1.043 = $931.52 &rarr; ER $670.69 + EE $260.83 &rarr; PPD $10.03/pay period<br>
+<strong>Open Market:</strong> Rates from carrier quote directly. No BVP formula. Contribution strategy still splits TOTAL into ER/EE.</p>
+</div>
+
+<div class="foot">Sheet 1 of 8</div>
+</div>
+
+<!-- ======================= TAB 2 ======================= -->
+<div id="p2" class="pnl">
+<div class="eye">Sheet 2 of 8</div>
+<div class="h1">Current Process Lifecycle & Bottleneck Map</div>
+<div class="sub">10 steps from client requirements through annual renewal. Each step shows owner, description, measured bottleneck impact, and the PRD module(s) that resolve it.</div>
+
+<div class="g4" style="margin-bottom:14px">
+<div class="met"><div class="v">189</div><div class="l">Total FTEs</div></div>
+<div class="met c2"><div class="v">~130K</div><div class="l">WSEs Supported</div></div>
+<div class="met cr"><div class="v">~$17.6M</div><div class="l">Combined FLC</div></div>
+<div class="met cg"><div class="v">~1,320</div><div class="l">New Setups/Year</div></div>
+</div>
+
+<div class="sec">GAB Phase (72 FTEs)</div>
+
+<div class="step"><div class="num"><span>1</span></div>
+<div class="main"><h4>Client Requirements Gathering</h4><p>AM/AE collects census data, plan history, renewal dates. Submits to underwriting. 10,426 annual quotes.</p></div>
+<div class="side pain"><h4>80-90% submissions incomplete</h4><p>Missing data creates back-and-forth. No completeness gating. Doubles handling time.</p></div>
+</div>
+<div class="res"><strong>Platform Resolution:</strong> <span class="tag t-nb">NB1</span> <span class="tag t-nb">NB2</span> <span class="tag t-f">F10</span> Document upload + AI extraction + completeness gate ensures required data is present before build starts. The NB2 pre-build gate blocks incomplete submissions.</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>2</span></div>
+<div class="main"><h4>Underwriting & Quoting</h4><p>Manual scrub of PDFs, SBCs, invoices. Hero/Gradient risk scoring. Financial comparisons. Output: rated plan options + bucket/AF/commission/RF for CAP.</p></div>
+<div class="side pain"><h4>20-30 min doc scrub per case</h4><p>Manual PDF extraction. 48-hr turnaround &rarr; 3-5+ days with incomplete submissions.</p></div>
+</div>
+<div class="res"><strong>Platform Resolution:</strong> <span class="tag t-f">F10</span> <span class="tag t-nb">NB2</span> Underwriting Intake accepts uploads (SBCs, invoices, UW output PDFs) and AI-extracts plan data / factors. Human confirms; values populate the CAP pricing factors and plan data.</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>3</span></div>
+<div class="main"><h4>CAP Build-out - PRIMARY TARGET</h4><p>AM opens CAP Excel and manually enters ALL plan data: company info, plan selections, contribution strategies, rates, FSA/HSA, broker info, billing, classes. ~1,320 new setups/year. Referenced in 8+ downstream processes.</p></div>
+<div class="side pain"><h4>BOTTLENECK #1: 2-4 hrs per client</h4><p>AM spends 35-45% of time here. Excel freezes. Triple-checking required. ~2,640-5,280 person-hours/year. Silent formula errors propagate downstream.</p></div>
+</div>
+<div class="res"><strong>Platform Resolution:</strong> <span class="tag t-nb">NB1</span><span class="tag t-nb">NB2</span><span class="tag t-nb">NB3</span><span class="tag t-nb">NB4</span> (New Business) and <span class="tag t-r">R1</span><span class="tag t-r">R2</span><span class="tag t-r">R5</span> (Renewal). NB: upload-then-confirm workflow replaces blank-form build. Renewal: Prism pre-fill + diff-and-approve reduces 2-4 hrs to 15-30 min review. Foundation F3/F4/F6 supply validated reference data.</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>4</span></div>
+<div class="main"><h4>Coordinator CAP Batch Review</h4><p>Coordinator reviews CAP for accuracy. Rates match booklet? ClientSpace updated? Open-market SBCs complete? Audit checklist. 5 ICs. Quality gate before Ben Admin.</p></div>
+<div class="side info"><h4>Downstream of CAP accuracy</h4><p>Coordinator reviews Excel visually — no structured validation. Errors that pass cascade to all 8+ downstream processes.</p></div>
+</div>
+<div class="res"><strong>Platform Resolution:</strong> <span class="tag t-f">F8</span> <span class="tag t-nb">NB5</span><span class="tag t-nb">NB6</span> <span class="tag t-r">R6</span> Real-time validation (F8) catches errors before coordinator review. NB6/R6 provide structured approval lifecycle with per-field approve/reject. Audit checklist items become typed, governed readiness gates.</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>5</span></div>
+<div class="main"><h4>Benefits Booklet Preparation</h4><p>Coordinator manually reads CAP to build booklet. If CAP changes post-booklet, rebuild required. No auto-generation.</p></div>
+<div class="side pain"><h4>Manual derivative</h4><p>Booklet is a manual re-read of the CAP Excel file. No structured data flow.</p></div>
+</div>
+<div class="res"><strong>Platform Resolution:</strong> <span class="tag t-f">F7</span> <span class="tag t-nb">NB7</span> <span class="tag t-r">R7</span> Document Template Studio (F7) + auto-generation from structured CAP data. Booklet IS the data — always in sync. Re-versioned automatically on material change.</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>6</span></div>
+<div class="main"><h4>DocuSign / Client Sign-off</h4><p>ER Confirmation page routed via DocuSign. Broker commission verification for open-market plans (no central repo).</p></div>
+<div class="side info"><h4>E-signature workflow</h4><p>Currently manual routing. Target: auto-route approved CAP + booklet to client for sign-off.</p></div>
+</div>
+<div class="res"><strong>Platform Resolution:</strong> <span class="tag t-f">F2</span> <span class="tag t-nb">NB8</span> <span class="tag t-r">R8</span> DocuSign connection (F2) auto-routes issued booklet for e-signature. Status callbacks (sent/viewed/signed) tracked on the CAP. Signature snapshots and locks the artifact (SOX).</div>
+
+<div class="handoff">GAB &rarr; BEN ADMIN HANDOFF — CAP + Benefit Batch via ClientSpace<small>CAP errors cascade directly into setup blocking. "Our setup is blocked quite often because we notice issues on the cap."</small></div>
+
+<div class="sec">Ben Admin Phase (98 FTEs)</div>
+
+<div class="step"><div class="num ba"><span>7</span></div>
+<div class="main"><h4>Prism System Setup (Benefits Analyst)</h4><p>Analyst configures every plan in Prism from CAP: plan codes, rates, contributions, deductibles, FSA/HSA, eligibility. 8 ICs, 48% of time on setup. Directly blocked by CAP inaccuracies.</p></div>
+<div class="side pain"><h4>48% of analyst time &middot; blocked by CAP errors</h4><p>Wrong rates, wrong codes, mismatched contributions &rarr; rework cycles. Seasonal spikes July + Q4.</p></div>
+</div>
+<div class="res"><strong>Platform Resolution:</strong> <span class="tag t-nb">NB9</span> <span class="tag t-r">R9</span> Structured, validated Prism handoff payload replaces manual entry of 50+ fields. Write-back via <code>createBenefitPlanSetup</code> (NB9 = create, R9 = update). Analyst reviews push result instead of re-keying.</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num ba"><span>8</span></div>
+<div class="main"><h4>Carrier Enrollment</h4><p>44 FTEs, 20% of time. <strong>Master Plans:</strong> EDI (automated). <strong>Open Market:</strong> specialist logs into each carrier portal, enters data field-by-field from Prism. No API alternative.</p></div>
+<div class="side pain"><h4>13-17 min per enrollment (Open Market only)</h4><p>Field-by-field Prism&rarr;carrier portal transcription. Transcription errors = coverage gaps — SOX-adjacent risk.</p></div>
+</div>
+<div class="res"><strong>Platform Resolution:</strong> Structured enrollment data available from platform API. Init C (API/RPA automation) is the long-term target. Guardian Policy API (via F2 Prism connection) is the first carrier-direct integration.</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num ba"><span>9</span></div>
+<div class="main"><h4>Ongoing Servicing</h4><p>Payroll deduction audit (23% specialist time, 4+ Prism reports combined in Excel). WSE issue resolution. Reconciliation (97% of recon specialist time, Beacon + Excel fallback).</p></div>
+<div class="side info"><h4>Inits D, E, F (outside scope)</h4><p>D: Ciklum (self-service). E: Sidekick (deduction audit). F: Beacon (recon). All consume CAP data downstream.</p></div>
+</div>
+<div class="res"><strong>Platform Resolution:</strong> Platform stores canonical CAP rates accessible via API. Sidekick (Init E) and Beacon (Init F) read rates from the platform instead of re-reading Excel. <span class="tag t-cp">CP3</span> Copilot retrieve tools can surface rate/deduction data on demand.</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>10</span></div>
+<div class="main"><h4>Annual Renewal &rarr; Returns to Step 3</h4><p>Prior-year CAP manually duplicated. AM updates rates with new UW parameters (Master) or new carrier quotes (Open Market). Template format changes each cycle break formulas.</p></div>
+<div class="side pain"><h4>Full manual rebuild — highest ROI</h4><p>No pre-fill from Prism despite config already existing. Same transcription errors re-introduced.</p></div>
+</div>
+<div class="res"><strong>Platform Resolution:</strong> <span class="tag t-r">R1</span><span class="tag t-r">R2</span><span class="tag t-r">R3</span><span class="tag t-r">R4</span><span class="tag t-r">R5</span> Renewal Radar (R1) surfaces upcoming renewals. Pre-fill from prior-year CAP + Prism record (R2) with plan-code migration. Document updates as deltas (R3). Data-currency/drift detection (R4). Unified diff &amp; review (R5). Result: 15-30 min review replaces full manual rebuild.</div>
+
+<div style="text-align:center;margin:8px 0;font-size:10px;color:var(--r);font-weight:700">↑ Cycle repeats annually ↑</div>
+
+<div class="c red"><h3>No single source of truth</h3><p>Excel file on network share (<code>G:\Benefits\Private\01 - CLIENTS\...</code>). No version control, no concurrent access, no audit trail, no structured data flow — every downstream consumer re-reads the file manually. <strong>Platform resolution:</strong> The CAP platform becomes the system of record for CAP data — write-once, read-everywhere via API. Full audit trail replaces the Change Tracker sheet.</p></div>
+
+<div class="foot">Sheet 2 of 8</div>
+</div>
+
+<!-- ======================= TAB 3 ======================= -->
+<div id="p3" class="pnl">
+<div class="eye">Sheet 3 of 8</div>
+<div class="h1">Target Automation Architecture</div>
+<div class="sub">Net-new cloud application replacing Excel. Four PRD pillars: Foundation (F1-F10), New Business (NB1-NB9), Renewal (R1-R9), and Copilot (CP1-CP7). Integrated with PrismHR (R+W), ClientSpacePRO, DocuSign, and WorkSight/NextGen.</div>
+
+<div class="sec">The Four Pillars</div>
+<div class="g4">
+<div class="c green"><h3>Foundation (F1-F10)</h3>
+<p>Admin Console — centrally managed foundation data that drives every CAP build.</p>
+<ul>
+<li><span class="tag t-f">F1</span> Admin Console shell</li>
+<li><span class="tag t-f">F2</span> Connections Hub</li>
+<li><span class="tag t-f">F3</span> Master Plan Library</li>
+<li><span class="tag t-f">F4</span> Pricing Stack</li>
+<li><span class="tag t-f">F5</span> Parameters &amp; Fees</li>
+<li><span class="tag t-f">F6</span> Vocabularies</li>
+<li><span class="tag t-f">F7</span> Document Templates</li>
+<li><span class="tag t-f">F8</span> Validation Rules</li>
+<li><span class="tag t-f">F9</span> Roles &amp; Access</li>
+<li><span class="tag t-f">F10</span> Underwriting Intake</li>
+</ul></div>
+<div class="c red"><h3>New Business (NB1-NB9)</h3>
+<p>Upload-then-confirm workflow for brand-new clients with no Prism history.</p>
+<ul>
+<li><span class="tag t-nb">NB1</span> Intake &amp; Upload</li>
+<li><span class="tag t-nb">NB2</span> AI Extraction</li>
+<li><span class="tag t-nb">NB3</span> Pre-filled Assembly</li>
+<li><span class="tag t-nb">NB4</span> Section Build</li>
+<li><span class="tag t-nb">NB5</span> Readiness &amp; Flagging</li>
+<li><span class="tag t-nb">NB6</span> Collaboration &amp; Approval</li>
+<li><span class="tag t-nb">NB7</span> Booklet Generation</li>
+<li><span class="tag t-nb">NB8</span> Client Sign-off</li>
+<li><span class="tag t-nb">NB9</span> Prism Write-back (create)</li>
+</ul></div>
+<div class="c amber"><h3>Renewal (R1-R9)</h3>
+<p>Diff-and-approve from prior-year baseline + Prism pre-fill.</p>
+<ul>
+<li><span class="tag t-r">R1</span> Renewal Radar</li>
+<li><span class="tag t-r">R2</span> Start &amp; Pre-fill</li>
+<li><span class="tag t-r">R3</span> Document Deltas</li>
+<li><span class="tag t-r">R4</span> Data-Currency / Drift</li>
+<li><span class="tag t-r">R5</span> Renewal Diff &amp; Review</li>
+<li><span class="tag t-r">R6</span> Readiness &amp; Approval</li>
+<li><span class="tag t-r">R7</span> Booklet &amp; Contract Mgmt</li>
+<li><span class="tag t-r">R8</span> Client Sign-off</li>
+<li><span class="tag t-r">R9</span> Prism Write-back (update)</li>
+</ul></div>
+<div class="c purple"><h3>Copilot (CP1-CP7)</h3>
+<p>Cross-cutting sidebar AI agent: retrieve, explain, act.</p>
+<ul>
+<li><span class="tag t-cp">CP1</span> Sidebar &amp; Interaction</li>
+<li><span class="tag t-cp">CP2</span> Context &amp; Grounding</li>
+<li><span class="tag t-cp">CP3</span> Retrieve &amp; Surface</li>
+<li><span class="tag t-cp">CP4</span> Act &amp; Update (writes)</li>
+<li><span class="tag t-cp">CP5</span> Explain &amp; Reason</li>
+<li><span class="tag t-cp">CP6</span> Suggested Actions</li>
+<li><span class="tag t-cp">CP7</span> Guardrails &amp; Audit</li>
+</ul></div>
+</div>
+
+<div class="sec">Users</div>
+<div class="g4">
+<div class="c red"><h3>AM / AE (45+)</h3><p>Primary data entry. Build/review CAPs. 35-45% of current time on CAP data entry — largest beneficiary. <span class="tag t-nb">NB1-NB6</span> <span class="tag t-r">R1-R6</span></p></div>
+<div class="c red"><h3>Coordinator (5)</h3><p>Review accuracy, booklet prep, portal build coordination. Quality gate before Ben Admin handoff. <span class="tag t-nb">NB6</span> <span class="tag t-nb">NB7</span> <span class="tag t-r">R6</span> <span class="tag t-r">R7</span></p></div>
+<div class="c blue"><h3>Benefits Analyst (8)</h3><p>Configure Prism from CAP. 48% of time on setup, directly blocked by CAP inaccuracies. <span class="tag t-nb">NB9</span> <span class="tag t-r">R9</span></p></div>
+<div class="c blue"><h3>Benefits Specialist (44)</h3><p>Carrier enrollment, payroll audit, WSE issues. Open market enrollment = 13-17 min bottleneck. <span class="tag t-cp">CP3</span></p></div>
+</div>
+
+<div class="sec">Foundation Layer — Modules that Drive Every CAP</div>
+<div class="g3">
+<div class="c navy"><h3><span class="tag t-f">F2</span> Connections Hub</h3><p>Prism (marquee connector), ClientSpace, DocuSign. Two inbound Prism streams: Stream 1 = master data (continuous sync); Stream 2 = client records (mirror + per-client refresh). Event-driven change capture with drift-detection plumbing.</p></div>
+<div class="c navy"><h3><span class="tag t-f">F3</span> Master Plan Library</h3><p>Synced, read-only catalog of master plans + carrier rate tables from Prism system level. Browsable/filterable, versioned by plan year. Rate change review (old-to-new diff) before going live. Plan-code crosswalk view for renewal migration.</p></div>
+<div class="c navy"><h3><span class="tag t-f">F4</span> Pricing Stack</h3><p>G&amp;A's proprietary markup: <code>billed = base &times; risk_factor</code> where <code>risk_factor = admin_factor + commission</code>. Bucket definitions per carrier, admin-factor tables, commission schedules. Central building blocks, per-CAP resolution.</p></div>
+</div>
+<div class="g3">
+<div class="c navy"><h3><span class="tag t-f">F5</span> Parameters &amp; Fees</h3><p>ACA affordability threshold ($129.9/mo), annual-deduction options (12/24/26/52), fee schedule (Rush $500, Change $250, MCHILD $1K+$24 PEPY, WRAP $500). Versioned by effective date.</p></div>
+<div class="c navy"><h3><span class="tag t-f">F6</span> Vocabularies</h3><p>Centralized managed dropdown lists from the Options sheet: class types, waiting periods, entity types, commission handling, HSA/FSA cadence, billing cadence, changes vocabulary, carrier reference data. CRUD + versioning + deactivation.</p></div>
+<div class="c navy"><h3><span class="tag t-f">F7</span> Document Templates</h3><p>Template editor with merge-field mapping: ER Confirmation, EE SRA (Eng+Spanish), EE Rate Sheet, OB Confirmation, CS Benefits Page, Prism handoff payload. Branding, multi-language, live preview, versioning.</p></div>
+</div>
+<div class="g3">
+<div class="c red"><h3><span class="tag t-f">F8</span> Validation Rules</h3><p>Typed, governed rules that gate CAP readiness: completeness rules (sentinels), source-data validation (rate vs. F3 table &times; F4 factor), cross-field consistency, audit-gate rules. Real-time evaluation as CAP is edited. Versioned; admin enable/disable.</p></div>
+<div class="c navy"><h3><span class="tag t-f">F9</span> Roles &amp; Access</h3><p>Field-level permissions from the workbook color legend: Blue (AM-entry), Yellow (conditional), Green (client-shareable), Red (internal-only). Maps roles to edit/share rights. Synced fields read-only for everyone. PHI/PII/SOX controls.</p></div>
+<div class="c navy"><h3><span class="tag t-f">F10</span> Underwriting Intake</h3><p>Document upload + AI extraction for UW results (no Hero/Gradient API integration). Configurable extraction field map. Completeness check. Primarily for new business; renewals get factors via Prism client-master export.</p></div>
+</div>
+
+<div class="sec">Master Plan vs. Open Market — Where it Matters in Architecture</div>
+<div class="c purple">
+<h3>Dual-path handling across the platform</h3>
+<p>A single client carries both types simultaneously. The cloud tool must fork behavior based on plan type selection in the Products Grid. Here's where each architectural component behaves differently:</p>
+<div class="om-grid">
+<div class="om-mp"><h4>Master Plan path</h4>
+<p><strong>Rate source:</strong> F3 carrier base rate &times; F4 risk factor <span class="tag t-f">F3</span><span class="tag t-f">F4</span><br>
+<strong>Plan catalog:</strong> G&A master plan codes with validated rates<br>
+<strong>Validation:</strong> F8 source-data rules check codes against Prism catalog<br>
+<strong>Renewal pre-fill:</strong> R2 full rate recalculation with new UW params<br>
+<strong>Enrollment:</strong> EDI (automated) — no manual portal entry<br>
+<strong>Commission:</strong> Standard G&A structure (F4 commission schedules)<br>
+<strong>Group #:</strong> "Master" — no AOR setup needed</p>
+</div>
+<div class="om-op"><h4>Open Market path</h4>
+<p><strong>Rate source:</strong> Carrier/broker quote — direct AM entry or NB2 extraction<br>
+<strong>Plan catalog:</strong> Free-text carrier name, manual plan details<br>
+<strong>Validation:</strong> F8 completeness rules: rates entered? Carrier provided? SBC attached?<br>
+<strong>Renewal pre-fill:</strong> R2 prior-year rates shown, "verify quote" flag<br>
+<strong>Enrollment:</strong> Manual portal (13-17 min) — Init C target<br>
+<strong>Commission:</strong> Flat $ or "Outside Broker paid"<br>
+<strong>Group #:</strong> "Enter when received" (30-45 day AOR)</p>
+</div>
+</div>
+</div>
+
+<div class="sec">System Integrations (Overview PRD &sect;5)</div>
+<div class="c green"><h3>The governing rule: clean orchestration layer</h3>
+<p>The CAP platform is a <strong>clean orchestration layer on top of Prism — not a rip-and-replace, and not a second system of record</strong>. It reads master/rate/client data from Prism, owns the quoting/modeling/approval layer Prism doesn't model, and writes back the final config. All external system access routes through the F2 Connections Hub.</p></div>
+<div class="g3">
+<div class="c purple"><h3>PrismHR / WorkSight <span class="tag t-f">F2</span> <span class="tag t-f">F3</span></h3><p><strong>System of Record</strong> for plan configs, carrier rates, enrollments, payroll. Two sync streams (master data + client records). Read: plans, rates, census. Write-back: NB9 (create) / R9 (update) via <code>BenefitService</code>. WorkSight = client-facing enrollment portal.</p></div>
+<div class="c purple"><h3>ClientSpacePRO <span class="tag t-f">F2</span></h3><p><strong>Workflow / Case / Audit engine.</strong> CAP drives case state, approval routing, benefits-page export, commissions. Two-way PrismHR sync exists. GAB &rarr; Ben Admin handoff as structured case event. NB6/R6 lifecycle mirrors here.</p></div>
+<div class="c purple"><h3>DocuSign <span class="tag t-f">F2</span></h3><p><strong>E-signature</strong> for booklet/contract sign-off. Envelope/template mapping + signer routing. Status callbacks (sent/viewed/signed). NB8/R8 route the issued booklet. Signed version snapshots for SOX.</p></div>
+</div>
+
+<div class="sec">What Changes vs. What Stays</div>
+<div class="cmp">
+<div class="cmp-g"><h4>Automation eliminates</h4><p>2-4 hr build &rarr; 15-30 min review &middot; Silent errors &rarr; F8 real-time validation &middot; Manual renewal &rarr; R2 Prism pre-fill &middot; File on G:\ &rarr; cloud + audit trail &middot; Manual booklet &rarr; F7/NB7/R7 auto-gen &middot; Manual handoff &rarr; NB6/R6 structured event &middot; Manual Prism config &rarr; NB9/R9 API write-back &middot; No context &rarr; CP1-CP7 Copilot assistance</p></div>
+<div class="cmp-b"><h4>Stays human-owned</h4><p>Client relationship decisions &middot; Contribution strategy &middot; Plan menu approval &middot; Exception review &middot; Concession negotiation &middot; Enrollment education &middot; Strategic outreach &middot; Complex case resolution</p></div>
+</div>
+
+<div class="foot">Sheet 3 of 8</div>
+</div>
+
+<!-- ======================= TAB 4 ======================= -->
+<div id="p4" class="pnl">
+<div class="eye">Sheet 4 of 8</div>
+<div class="h1">AM User Journey — New Business &amp; Renewal Flows</div>
+<div class="sub">Both CAP origination paths shown side by side. New Business (NB1-NB9): upload-then-confirm for clients with no Prism history. Renewal (R1-R9): diff-and-approve from prior-year baseline.</div>
+
+<div class="sec">New Business Flow (NB1 &rarr; NB9)</div>
+
+<div class="step"><div class="num"><span>1</span></div>
+<div class="main"><h4><span class="tag t-nb">NB1</span> Intake &amp; Document Upload</h4><p>AM provides seed fields (company name, plan year, effective month, EE count). Uploads documents: census, carrier invoices, SBCs, prior booklet, UW output, FEIN/WC dec pages. Document checklist shows received vs. outstanding.</p></div>
+<div class="side ok"><h4>Data flow</h4><p>Multi-file upload &rarr; auto-classified by type. Missing documents become flags carried into NB2/NB5.</p></div>
+</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>2</span></div>
+<div class="main"><h4><span class="tag t-nb">NB2</span> AI Extraction &amp; Completeness Gate</h4><p>AI extracts structured fields from uploads with confidence scores. Completeness summary: what was extracted, what's low-confidence, what's missing. Blocks incomplete build before it starts.</p></div>
+<div class="side ok"><h4>Data flow</h4><p>Documents &rarr; extraction engine &rarr; candidate fields with confidence. Missing items recorded as persistent flags. Uses F10 extraction config.</p></div>
+</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>3</span></div>
+<div class="main"><h4><span class="tag t-nb">NB3</span> Pre-filled CAP Assembly</h4><p>Fuses three sources: foundation (<code>From library</code>) + extraction (<code>From upload &middot; confirm</code>) + UW (<code>Underwriting</code>). Every field tagged with provenance. Remaining gaps = <code>Needs input</code>. Initial readiness count shown.</p></div>
+<div class="side ok"><h4>Data flow</h4><p>F3 master plans + F4 pricing stack + F6 vocab + NB2 extractions + F10 UW intake &rarr; provenance-tagged draft CAP.</p></div>
+</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>4</span></div>
+<div class="main"><h4><span class="tag t-nb">NB4</span> Section Build (Foundation-powered)</h4><p>AM completes/confirms section by section. Each section powered by foundation: Overview (F6), Products (F3), Plan Design &amp; Rates (F3 &times; F4), Affordability (F5), Tax Plans (F6), Administration (F5+F6). Contribution modeling: Variable / Base Plan / Flat Dollar / Rolldown.</p></div>
+<div class="side ok"><h4>Data flow</h4><p>Selecting a master plan populates rates from F3 &times; F4. Contribution strategy &rarr; live ER/EE split + PPD. ACA threshold from F5.</p></div>
+</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>5</span></div>
+<div class="main"><h4><span class="tag t-nb">NB5</span> Readiness &amp; Flagging</h4><p>Three surfaces: inline flags per field, persistent readiness rail (N items), handoff gate (error-severity blocks). F8 rules evaluate in real time: completeness, source-data validation (rates vs. F3 table), cross-field consistency.</p></div>
+<div class="side ok"><h4>Example error</h4><p>"Dental EE rate $48.10 does not match Guardian TX 2026 table ($46.90). Confirm the rate or correct the source."</p></div>
+</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>6</span></div>
+<div class="main"><h4><span class="tag t-nb">NB6</span> Collaboration &amp; Approval</h4><p>AM build &rarr; Coordinator QC (audit checklist) &rarr; Client sign-off &rarr; Ben Admin. Per-field comments + @mentions. "Needs you" queue per role. Change-requests re-open specific sections.</p></div>
+<div class="side info"><h4>Status model</h4><p>Draft &rarr; Internal Review &rarr; Client Sign-off &rarr; Approved &rarr; Ben Admin Handoff &rarr; Configured</p></div>
+</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>7</span></div>
+<div class="main"><h4><span class="tag t-nb">NB7</span> Booklet Generation &amp; Versioning</h4><p>Live preview from F7 templates + CAP data. Issued once for sign-off. Re-versioned on material change. Signed version snapshotted and locked (immutable, SOX).</p></div>
+<div class="side info"><h4>Data flow</h4><p>F7 templates + approved CAP data &rarr; rendered booklet. Always in sync — eliminates "booklet/CAP rates must match" gate.</p></div>
+</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>8</span></div>
+<div class="main"><h4><span class="tag t-nb">NB8</span> Client Sign-off (DocuSign)</h4><p>Issued booklet routed to client via DocuSign (F2 config). Status tracked: sent/viewed/signed. Signature advances CAP to Approved, snapshots versions.</p></div>
+<div class="side info"><h4>Data flow</h4><p>Booklet &rarr; DocuSign envelope &rarr; client e-sign &rarr; status callback &rarr; CAP locked.</p></div>
+</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>9</span></div>
+<div class="main"><h4><span class="tag t-nb">NB9</span> Ben Admin Handoff &amp; Prism Write-back</h4><p>Structured, validated Prism handoff payload. Phase 1: simulated <code>createBenefitPlanSetup</code>. Phase 2: real API write-back creating client-level plans. Analyst reviews push result. ClientSpace mirrors case/state.</p></div>
+<div class="side ok"><h4>Core outcome</h4><p>No manual re-entry. Structured data &rarr; Prism client setup. Operation: <strong>create</strong> (new client).</p></div>
+</div>
+
+<div class="handoff" style="margin-top:16px">NEW BUSINESS COMPLETE — Client onboarded in Prism</div>
+
+<div class="sec">Renewal Flow (R1 &rarr; R9)</div>
+
+<div class="step"><div class="num"><span>1</span></div>
+<div class="main"><h4><span class="tag t-r">R1</span> Renewal Radar / Book of Business</h4><p>Synced client records surface upcoming renewals. Queue sorted by effective date (July + Q4 spikes). Per row: client, days-to-renewal, AM owner, status, risk flags. Lead-time triggers at 120/90/60 days.</p></div>
+<div class="side ok"><h4>Data flow</h4><p>F2 Stream 2 (client-record mirror) &rarr; renewal calendar. Batch handling for seasonal volume.</p></div>
+</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>2</span></div>
+<div class="main"><h4><span class="tag t-r">R2</span> Start Renewal &amp; Pre-fill</h4><p>Triggers per-client Prism refresh. Pre-fills from: prior-year CAP (lineup, contrib strategy, admin config) + Prism client-master record (carrier, factors, WSE count, classes). Auto-applies plan-code crosswalk migration (F3). Auto-derives per-line change flags.</p></div>
+<div class="side ok"><h4>Itafos example</h4><p>Prior-year CAP + Prism 2908: BCBSTX carrier, 0.975 bucket, 3 classes, 298 EEs. Plan codes auto-migrated: HD3200 &rarr; HD3300.</p></div>
+</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>3</span></div>
+<div class="main"><h4><span class="tag t-r">R3</span> Document Updates as Deltas</h4><p>Optional document uploads (refreshed census, new SBCs, revised UW, updated invoice) render as proposed deltas against baseline. "Census headcount 298 &rarr; 312 (from uploaded census)" — AM accepts or rejects.</p></div>
+<div class="side ok"><h4>Data flow</h4><p>Upload &rarr; NB2 extraction engine in update mode &rarr; proposed deltas vs. carried-forward baseline.</p></div>
+</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>4</span></div>
+<div class="main"><h4><span class="tag t-r">R4</span> Data-Currency &amp; Version Drift</h4><p>Data-currency banner: "This renewal is based on 2025 master data. Newer versions available: 2026 carrier rates, Pricing Stack v4, ACA threshold 2026. Review 14 changes." Per-field version badges with old &rarr; new. "Bring up to date" produces a reviewable diff.</p></div>
+<div class="side ok"><h4>The differentiator</h4><p>Most renewal tools surface only client-driven changes. Making master-data drift visible and reconcilable is the platform's demo "aha."</p></div>
+</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>5</span></div>
+<div class="main"><h4><span class="tag t-r">R5</span> Renewal Diff &amp; Review</h4><p>Unified diff: every change tagged by type (client-driven vs. master-data-driven). Bulk-approve carried-forward items. Per row: prior value, current value, change type, source chip, accept/adjust. Live recompute on acceptance.</p></div>
+<div class="side ok"><h4>Itafos example</h4><p>5 medical plans &times; 4 tiers recalculated live: 0.975 &times; 1.013 &times; 1.03 &times; 1.043 = rated premiums. Unchanged items bulk-approved.</p></div>
+</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>6</span></div>
+<div class="main"><h4><span class="tag t-r">R6</span> Readiness &amp; Approval</h4><p>Renewal-specific gates: Renewal Increase Confirmed, source-data validation (F8), no unreconciled drift (R4), no unresolved deltas (R3). Same lifecycle as NB6: Draft &rarr; Internal Review &rarr; Client Sign-off &rarr; Approved &rarr; Handoff &rarr; Configured.</p></div>
+<div class="side info"><h4>Renewal gates</h4><p>Carried-forward rate on stale data is flagged with expected value. Cannot advance with unconfirmed renewal increase.</p></div>
+</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>7</span></div>
+<div class="main"><h4><span class="tag t-r">R7</span> Booklet &amp; Annual Contract Management</h4><p>Live preview from F7 templates. Annual sign-off history: 2024 &rarr; 2025 &rarr; 2026, each pinned to its data snapshot. Re-versioned on material change. Signed version locked.</p></div>
+<div class="side info"><h4>Data flow</h4><p>Year-over-year version history of signed booklets, each snapshot-pinned for audit.</p></div>
+</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>8</span></div>
+<div class="main"><h4><span class="tag t-r">R8</span> Client Sign-off (DocuSign)</h4><p>Renewal booklet routed via DocuSign. On signature: advance to Approved, snapshot, append to annual sign-off history (R7), log event.</p></div>
+<div class="side info"><h4>Data flow</h4><p>Booklet &rarr; DocuSign &rarr; signed &rarr; appended to contract history &rarr; CAP locked.</p></div>
+</div>
+<div class="arr">↓</div>
+
+<div class="step"><div class="num"><span>9</span></div>
+<div class="main"><h4><span class="tag t-r">R9</span> Prism Write-back (Update)</h4><p>Structured, validated <strong>update</strong> payload (changed plans/rates/codes/params with migrated codes). Phase 1: simulated write-back updating existing Prism client. Phase 2: real API update via benefit service. Analyst reviews, confirms, triggers.</p></div>
+<div class="side ok"><h4>Core outcome</h4><p>No manual re-entry. Structured data &rarr; Prism client update. Operation: <strong>update</strong> (existing client).</p></div>
+</div>
+
+<div class="handoff" style="margin-top:16px">RENEWAL COMPLETE — Client updated in Prism for new plan year</div>
+
+<div class="sec">Before vs. After</div>
+<div class="cmp">
+<div class="cmp-b"><h4>Current state (Excel)</h4><p>2-4 hrs per CAP &middot; 35-45% of AM time on data entry &middot; Silent formula errors &middot; Manual renewal rebuild &middot; File on G:\ &middot; Manual booklet &middot; Manual handoff &middot; Manual Prism config &middot; 80+ template fix entries</p></div>
+<div class="cmp-g"><h4>Target state (cloud tool)</h4><p>15-30 min review &middot; AM freed for outreach &middot; F8 real-time validation &middot; R2 Prism pre-fill &middot; Cloud + audit trail &middot; F7/NB7/R7 auto booklet &middot; NB6/R6 structured handoff &middot; NB9/R9 Prism API write-back &middot; Config-driven changes</p></div>
+</div>
+
+<div class="sec">Automation Yield</div>
+<div class="g2">
+<div class="c green"><h3>GAB (NB1-NB9 + R1-R9)</h3><p>40-50% of CAP/renewal labor freed. 50+ FTEs affected. AM capacity redirected to client outreach and retention. Copilot (CP1-CP7) accelerates both flows.</p></div>
+<div class="c green"><h3>Ben Admin (NB9 + R9)</h3><p>20-30% of setup labor eliminated. Rework cycles removed. Setup blocking gone. Seasonal spikes smoothed. Structured payload replaces 50+ field manual re-keying.</p></div>
+</div>
+
+<div class="foot">Sheet 4 of 8</div>
+</div>
+
+<!-- ======================= TAB 5: PrismHR APIs & Technical Depth ======================= -->
+<div id="p5" class="pnl">
+<div class="eye">Sheet 5 of 8</div>
+<div class="h1">PrismHR APIs &amp; Technical Depth</div>
+<div class="sub">PrismHR API methods mapped to specific PRD modules. Foundation module &rarr; API mapping. Copilot &rarr; API mapping. Integration architecture from the systems landscape (Overview PRD &sect;5).</div>
+
+<div class="sec">Systems Landscape (Overview PRD &sect;5)</div>
+<div class="c green"><h3>The governing architectural rule</h3>
+<p>The CAP platform is a <strong>clean orchestration layer on top of Prism</strong> — not a rip-and-replace, not a second system of record. It reads master/rate/client data from Prism, owns the quoting/modeling/approval layer Prism doesn't model, and writes back the final config. Carrier rates and master plans are never re-mastered in the platform; they are synced.</p>
+<div class="g3" style="margin-top:8px">
+<div class="c navy"><h3>PrismHR / WorkSight</h3><p><strong>System of Record</strong> for plan configs, carrier rates, enrollments, payroll execution. WorkSight = client-facing enrollment portal wrapper.</p></div>
+<div class="c navy"><h3>ClientSpacePRO</h3><p><strong>Workflow / Case / Audit</strong> engine. CAP drives case state, approval routing, benefits-page export, commissions. Two-way Prism sync exists.</p></div>
+<div class="c navy"><h3>DocuSign</h3><p><strong>E-signature</strong> for booklet/contract sign-off. Envelope/template mapping + signer routing. Status callbacks.</p></div>
+</div>
+</div>
+
+<div class="sec">PrismHR API Surface</div>
+<div class="c"><h3>API surface overview</h3><p>PrismHR exposes REST + JSON endpoints (also supports SOAP/XML) across several service domains. Authentication via API service account with method-level permissions (e.g., <code>BenefitService.*</code> grants all benefit operations). The API provides real-time two-way data exchange between PrismHR and external applications. Guardian Life recently became the first carrier to offer a direct API integration through PrismHR (Nov 2025) — the Policy API automates plan details/rates, and the Worksite Employee Benefit API handles enrollment data transfer.</p></div>
+
+<div class="c purple"><h3>BenefitService — primary service for CAP tool (40+ methods)</h3>
+<p>Key methods mapped to PRD modules:</p>
+<div class="g2" style="margin-top:8px">
+<div class="c"><h3>PULL (Read from Prism)</h3>
+<ul>
+<li><code>getClientBenefitPlans</code> — retrieve all plans available to a client <span class="tag t-r">R2</span> Pre-fill</li>
+<li><code>getClientBenefitPlanSetupDetails</code> — plan config: rates, tiers, classifications <span class="tag t-r">R2</span> Pre-fill <span class="tag t-r">R4</span> Data Currency</li>
+<li><code>getBenefitPlanList</code> — plan IDs, descriptions, insurance class values <span class="tag t-f">F3</span> Master Plan Library</li>
+<li><code>getActiveBenefitPlans</code> — current active enrollments per employee <span class="tag t-r">R1</span> Renewal Radar</li>
+<li><code>getEmployeePremium</code> — employee billing rates <span class="tag t-f">F8</span> Validation (rate audit reference)</li>
+<li><code>getFlexPlans / getEligibleFlexSpendingPlans</code> — FSA/HSA plan config <span class="tag t-r">R2</span> <span class="tag t-nb">NB4</span> Tax plan pre-fill</li>
+<li><code>getDependents</code> — dependent data for enrollment context</li>
+<li><code>getEnrollmentPlanDetails</code> — deductible, copay, visit type from carrier <span class="tag t-f">F3</span> Plan detail validation</li>
+<li><code>getBenefitRule</code> — eligibility and enrollment rules per client <span class="tag t-r">R2</span> Pre-fill</li>
+<li><code>getDisabilityPlanEnrollmentDetails</code> — STD/LTD coverage amounts</li>
+<li><code>benefitEnrollmentStatus</code> — web enrollment config for a client</li>
+</ul></div>
+<div class="c"><h3>PUSH (Write to Prism)</h3>
+<ul>
+<li><code>createBenefitPlanSetup</code> — create/update client's benefit plan config <span class="tag t-nb">NB9</span> Write-back (create) <span class="tag t-r">R9</span> Write-back (update)</li>
+<li><code>enrollBenefit</code> — enroll an employee in a plan (downstream enrollment)</li>
+<li><code>addFSAReimbursement</code> — FSA reimbursement creation</li>
+<li><code>adjustBenefitAdjustmentCycles</code> — benefit plan adjustment calculations</li>
+<li><code>getEnrollInputList</code> — retrieve required elements to enroll (pre-validation for enrollment push) <span class="tag t-nb">NB9</span> <span class="tag t-r">R9</span> Pre-write validation</li>
+</ul>
+<p style="margin-top:6px"><strong>Note:</strong> <code>createBenefitPlanSetup</code> supports group benefit plans AND retirement, flex, employer match, and HSA plans (as of API v1.20). This single method covers the bulk of what the analyst manually enters today.</p></div>
+</div>
+</div>
+
+<div class="c purple"><h3>Other PrismHR services relevant to CAP tool</h3>
+<div class="g2" style="margin-top:8px">
+<div class="c"><h3>ClientMasterService <span class="tag t-f">F2</span></h3>
+<ul>
+<li>Client-level operations: company info, locations, contacts <span class="tag t-r">R2</span> Pre-fill client identity</li>
+<li><code>addBillPending</code> — billing operations</li>
+<li>Client configuration and status management</li>
+<li>Used for: client lookup by Prism ID, affiliate relationship resolution, billing method config</li>
+</ul></div>
+<div class="c"><h3>EmployeeService <span class="tag t-f">F2</span></h3>
+<ul>
+<li>Employee census data: demographics, employment status, pay rates <span class="tag t-r">R1</span> WSE counts for Renewal Radar</li>
+<li><code>addEmployeeEvents</code> — life events, status changes</li>
+<li>Used for: enrollment census counts, class assignments, eligibility verification, new hire detection for waiting period calculation</li>
+</ul></div>
+</div>
+<div class="g2" style="margin-top:4px">
+<div class="c"><h3>PayrollService</h3>
+<ul>
+<li>Payroll and deduction data</li>
+<li><code>calculateManualCheck</code> — payroll calculations</li>
+<li>Used for: deduction register read (monthly payroll audit comparison vs. CAP rates), pay period verification, deduction amount validation</li>
+</ul></div>
+<div class="c"><h3>DeductionService</h3>
+<ul>
+<li>Deduction schema and configuration <span class="tag t-nb">NB9</span> <span class="tag t-r">R9</span> PPD mapping</li>
+<li>Used for: mapping CAP contribution amounts to Prism deduction codes, setting up pre-tax Section 125 deductions for medical premiums, FSA contributions, HSA employer matches</li>
+</ul></div>
+</div>
+</div>
+
+<div class="sec">Foundation Module &rarr; API Mapping</div>
+<div class="c"><h3>How each Foundation module consumes or drives PrismHR APIs</h3></div>
+<table class="ent-tbl">
+<thead><tr><th>Foundation Module</th><th>PrismHR API Methods</th><th>Direction</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td style="font-weight:700"><span class="tag t-f">F2</span> Connections Hub</td><td><code>ClientMasterService.*</code>, <code>EmployeeService.*</code></td><td>Inbound (sync)</td><td>Stream 1: master data (plans, rates, crosswalks). Stream 2: client records (factors, WSE counts, classes, effective dates)</td></tr>
+<tr><td style="font-weight:700"><span class="tag t-f">F3</span> Master Plan Library</td><td><code>getBenefitPlanList</code>, <code>getEnrollmentPlanDetails</code></td><td>Inbound (sync)</td><td>System-level plan catalog: plan names, Prism codes, deductibles, copays. Versioned rate tables by plan year</td></tr>
+<tr><td style="font-weight:700"><span class="tag t-f">F4</span> Pricing Stack</td><td>N/A (G&amp;A-owned, not in Prism)</td><td>Platform-only</td><td>Buckets, admin factors, commission schedules. Per-CAP resolution reads from F3 carrier base rates</td></tr>
+<tr><td style="font-weight:700"><span class="tag t-f">F8</span> Validation Rules</td><td><code>getClientBenefitPlanSetupDetails</code>, <code>getEmployeePremium</code></td><td>Inbound (validation)</td><td>Source-data validation: CAP rates vs. Prism plan configs. Rate discrepancy detection at the field</td></tr>
+<tr><td style="font-weight:700"><span class="tag t-f">F10</span> UW Intake</td><td>N/A (document upload, no API)</td><td>N/A</td><td>No outbound connection to UW platforms. Factors enter via upload + extraction</td></tr>
+</tbody>
+</table>
+
+<div class="sec">Copilot &rarr; API Mapping</div>
+<div class="c"><h3>Copilot read/write tools and their data sources <span class="tag t-cp">CP3</span> <span class="tag t-cp">CP4</span></h3></div>
+<table class="ent-tbl">
+<thead><tr><th>Copilot Tool</th><th>Data Source / API</th><th>PRD Module</th><th>Example Query</th></tr></thead>
+<tbody>
+<tr><td style="font-weight:700">CAP model read</td><td>Platform database</td><td><span class="tag t-cp">CP3</span></td><td>"What's the current contribution strategy?"</td></tr>
+<tr><td style="font-weight:700">Master plan lookup</td><td>F3 &rarr; <code>getBenefitPlanList</code></td><td><span class="tag t-cp">CP3</span></td><td>"What's the BCBSTX PPO $500 family rate?"</td></tr>
+<tr><td style="font-weight:700">Prism client read</td><td>F2 Stream 2 &rarr; <code>getClientBenefitPlans</code></td><td><span class="tag t-cp">CP3</span></td><td>"Pull the latest headcount from Prism"</td></tr>
+<tr><td style="font-weight:700">ClientSpace status</td><td>F2 &rarr; ClientSpace API</td><td><span class="tag t-cp">CP3</span></td><td>"What's the case status for this client?"</td></tr>
+<tr><td style="font-weight:700">DocuSign status</td><td>F2 &rarr; DocuSign API</td><td><span class="tag t-cp">CP3</span></td><td>"Has the client signed the booklet?"</td></tr>
+<tr><td style="font-weight:700">Field edit (write)</td><td>Platform database</td><td><span class="tag t-cp">CP4</span></td><td>"Set medical strategy to Flat Dollar $500"</td></tr>
+<tr><td style="font-weight:700">Generate booklet</td><td>F7 templates + CAP data</td><td><span class="tag t-cp">CP4</span></td><td>"Generate the booklet and route for signature"</td></tr>
+<tr><td style="font-weight:700">Prism handoff</td><td><code>createBenefitPlanSetup</code></td><td><span class="tag t-cp">CP4</span></td><td>"Generate the Prism payload"</td></tr>
+</tbody>
+</table>
+
+<div class="sec">Other Integrations Beyond PrismHR</div>
+<div class="g3" style="margin-top:8px">
+<div class="c"><h3>ClientSpacePRO <span class="tag t-f">F2</span> <span class="tag t-nb">NB6</span> <span class="tag t-r">R6</span></h3><p>REST API + webhooks for case management. Two-way PrismHR sync exists for client/employee data. CAP platform adds: case creation on CAP submit (NB6/R6), approval workflow tracking, audit trail storage, handoff event trigger (NB9/R9). ClientSpace stores benefits page data per client — the CAP tool writes structured data to this. Commissions tracking mirrors from platform.</p></div>
+<div class="c"><h3>DocuSign eSignature API <span class="tag t-f">F2</span> <span class="tag t-nb">NB8</span> <span class="tag t-r">R8</span></h3><p>REST API for envelope creation, recipient routing, status tracking. Create envelope from structured CAP data &rarr; render ER Confirmation/booklet as PDF &rarr; route to client contact &rarr; webhook callback on sign &rarr; update CAP status to "Signed" &rarr; snapshot versions (SOX) &rarr; trigger downstream Prism push. Annual contract sign-off history tracked per R7.</p></div>
+<div class="c"><h3>WorkSight / NextGen <span class="tag t-f">F2</span></h3><p>Enrollment portal data import. Plan names, rates per tier, contribution amounts, eligibility rules, enrollment dates flow from approved CAP. Coordinator currently builds this manually from CAP Excel — structured data eliminates this step. Open-market plans flagged for manual enrollment path.</p></div>
+</div>
+
+<div class="c green"><h3>Integration architecture recommendation <span class="tag t-f">F2</span></h3><p>Build an abstraction layer (Connections Hub, F2) that normalizes all external system interactions. Each integration is a module with its own auth, retry, and error handling. The CAP tool's core never calls PrismHR directly — it calls the Connections Hub, which translates structured CAP data into the appropriate API calls. This allows swapping or adding integrations (e.g., Guardian's carrier-direct API) without modifying core business logic. Event-driven architecture: CAP status changes emit events, and integration modules subscribe to relevant events (e.g., "CAP signed" &rarr; triggers Prism push + WorkSight push + ClientSpace update in parallel).</p></div>
+
+<div class="foot">Sheet 5 of 8</div>
+</div>
+
+
+<!-- ======================= TAB 6: ERD ======================= -->
+<div id="p6" class="pnl">
+<div class="eye">Sheet 6 of 8</div>
+<div class="h1">CAP System of Record — Entity Relationship Diagram</div>
+<div class="sub">Core entities from the CAP Excel structure (13 entities in SVG), plus PRD-introduced entities from the Foundation, New Business, Renewal, and Copilot PRDs.</div>
+
+<div style="background:#fff;border-radius:8px;border:1px solid #ccc;box-shadow:0 1px 3px rgba(35,57,74,.04);overflow:auto;padding:16px;margin-bottom:12px">
+<svg viewBox="0 0 1160 920" width="1160" xmlns="http://www.w3.org/2000/svg" style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="#A8ACAE" stroke-width="1.5" stroke-linecap="round"/></marker>
+<marker id="ar-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="#0088CE" stroke-width="1.5" stroke-linecap="round"/></marker>
+<marker id="ar-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="#C60C30" stroke-width="1.5" stroke-linecap="round"/></marker>
+<marker id="dia" viewBox="0 0 12 12" refX="6" refY="6" markerWidth="8" markerHeight="8" orient="auto"><path d="M6 1L11 6L6 11L1 6Z" fill="#A8ACAE"/></marker>
+</defs>
+
+<!-- ============ CLIENT (top center) ============ -->
+<rect x="380" y="10" width="240" height="130" rx="6" fill="#fff" stroke="#23394A" stroke-width="2"/>
+<rect x="380" y="10" width="240" height="24" rx="6" fill="#23394A"/>
+<rect x="380" y="28" width="240" height="6" fill="#23394A"/>
+<text x="500" y="27" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">Client</text>
+<text x="390" y="50" font-size="9" fill="#C60C30" font-weight="700">PK client_id (= Prism ID)</text>
+<text x="390" y="64" font-size="9" fill="#6B6F70">name, booklet_name, corp_type</text>
+<text x="390" y="78" font-size="9" fill="#6B6F70">affiliate_ids[], pay_periods</text>
+<text x="390" y="92" font-size="9" fill="#6B6F70">waiting_period, termination_rules</text>
+<text x="390" y="106" font-size="9" fill="#6B6F70">folder_path, hris_system</text>
+<text x="390" y="120" font-size="8" fill="#A8ACAE">Maps to: Co. Info header + General + Lookups</text>
+<text x="390" y="132" font-size="8" fill="#A8ACAE">Itafos: 2908, C Corp, 26 ded, DOH waiting</text>
+
+<!-- ============ BROKER INFO (right of client) ============ -->
+<rect x="680" y="20" width="200" height="100" rx="6" fill="#fff" stroke="#2A8F60" stroke-width="1.5"/>
+<rect x="680" y="20" width="200" height="22" rx="6" fill="#2A8F60"/>
+<rect x="680" y="36" width="200" height="6" fill="#2A8F60"/>
+<text x="780" y="36" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">BrokerInfo</text>
+<text x="690" y="56" font-size="9" fill="#0088CE" font-weight="700">FK client_id</text>
+<text x="690" y="70" font-size="9" fill="#6B6F70">has_outside_broker, broker_company</text>
+<text x="690" y="84" font-size="9" fill="#6B6F70">broker_contact, has_peo_broker</text>
+<text x="690" y="98" font-size="9" fill="#6B6F70">peo_brokerage, peo_broker_contact</text>
+<text x="690" y="112" font-size="8" fill="#A8ACAE">Itafos: Digital Insurance LLC</text>
+
+<!-- Client → BrokerInfo line (1:1) -->
+<line x1="620" y1="65" x2="678" y2="65" stroke="#A8ACAE" stroke-width="1.5"/>
+<text x="640" y="58" font-size="8" font-weight="700" fill="#23394A">1:1</text>
+
+<!-- ============ CLASS (left of client) ============ -->
+<rect x="80" y="20" width="230" height="110" rx="6" fill="#fff" stroke="#FF9E1B" stroke-width="1.5"/>
+<rect x="80" y="20" width="230" height="22" rx="6" fill="#FF9E1B"/>
+<rect x="80" y="36" width="230" height="6" fill="#FF9E1B"/>
+<text x="195" y="36" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">Class</text>
+<text x="90" y="56" font-size="9" fill="#C60C30" font-weight="700">PK class_id</text>
+<text x="90" y="70" font-size="9" fill="#0088CE" font-weight="700">FK client_id</text>
+<text x="90" y="84" font-size="9" fill="#6B6F70">name (Primary/Grandfathered/CEO)</text>
+<text x="90" y="98" font-size="9" fill="#6B6F70">eligibility_rule, pay_frequency</text>
+<text x="90" y="112" font-size="9" fill="#6B6F70">deductions_per_year, contrib_strategy</text>
+<text x="90" y="122" font-size="8" fill="#A8ACAE">Itafos: 3 classes (Primary/GF/CEO)</text>
+
+<!-- Client → Class line (1:N) -->
+<line x1="380" y1="55" x2="312" y2="55" stroke="#A8ACAE" stroke-width="1.5" marker-end="url(#ar)"/>
+<text x="338" y="48" font-size="8" font-weight="700" fill="#23394A">1:N</text>
+
+<!-- ============ CAP (below client, center) ============ -->
+<rect x="340" y="185" width="280" height="150" rx="6" fill="#fff" stroke="#C60C30" stroke-width="2"/>
+<rect x="340" y="185" width="280" height="24" rx="6" fill="#C60C30"/>
+<rect x="340" y="203" width="280" height="6" fill="#C60C30"/>
+<text x="480" y="202" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">CAP</text>
+<text x="350" y="226" font-size="9" fill="#C60C30" font-weight="700">PK cap_id</text>
+<text x="350" y="240" font-size="9" fill="#0088CE" font-weight="700">FK client_id</text>
+<text x="350" y="254" font-size="9" fill="#6B6F70">plan_year, type (new/renewal)</text>
+<text x="350" y="268" font-size="9" fill="#6B6F70">status (draft/review/approved/signed)</text>
+<text x="350" y="282" font-size="9" fill="#6B6F70">version, created_by, approved_by</text>
+<text x="350" y="296" font-size="9" fill="#6B6F70">signed_at, medical_carrier</text>
+<text x="350" y="310" font-size="8" fill="#A8ACAE">Maps to: Co. Info header (Status, Type, Plan Year)</text>
+<text x="350" y="322" font-size="8" fill="#A8ACAE">Itafos: July 2025, Renewal, Generic Draft, BCBSTX</text>
+
+<!-- Client → CAP line (1:N) -->
+<line x1="500" y1="140" x2="500" y2="183" stroke="#C60C30" stroke-width="1.5" marker-end="url(#ar-r)"/>
+<text x="508" y="164" font-size="8" font-weight="700" fill="#C60C30">1:N</text>
+
+<!-- ============ UNDERWRITING PARAMS (left of CAP) ============ -->
+<rect x="40" y="200" width="240" height="110" rx="6" fill="#fff" stroke="#8b5cf6" stroke-width="1.5"/>
+<rect x="40" y="200" width="240" height="22" rx="6" fill="#8b5cf6"/>
+<rect x="40" y="216" width="240" height="6" fill="#8b5cf6"/>
+<text x="160" y="216" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">UnderwritingParams</text>
+<text x="50" y="236" font-size="9" fill="#0088CE" font-weight="700">FK cap_id</text>
+<text x="50" y="250" font-size="9" fill="#6B6F70">bucket, admin_factor, commission_pct</text>
+<text x="50" y="264" font-size="9" fill="#6B6F70">risk_factor, extended_rate_flag</text>
+<text x="50" y="278" font-size="9" fill="#6B6F70">rate_cap_amount, mchild_override</text>
+<text x="50" y="292" font-size="9" fill="#6B6F70">renewal_increase_pct</text>
+<text x="50" y="304" font-size="8" fill="#A8ACAE">Itafos: 0.975 x 1.013 x 0.03 x 1.043, 19.89%</text>
+
+<!-- CAP → UW Params line (1:1) -->
+<line x1="340" y1="260" x2="282" y2="260" stroke="#A8ACAE" stroke-width="1.5"/>
+<text x="300" y="253" font-size="8" font-weight="700" fill="#23394A">1:1</text>
+
+<!-- ============ ADMIN CONFIG (right of CAP) ============ -->
+<rect x="680" y="185" width="220" height="120" rx="6" fill="#fff" stroke="#2A8F60" stroke-width="1.5"/>
+<rect x="680" y="185" width="220" height="22" rx="6" fill="#2A8F60"/>
+<rect x="680" y="201" width="220" height="6" fill="#2A8F60"/>
+<text x="790" y="201" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">AdminConfig</text>
+<text x="690" y="222" font-size="9" fill="#0088CE" font-weight="700">FK cap_id</text>
+<text x="690" y="236" font-size="9" fill="#6B6F70">meeting_type, enrollment_method</text>
+<text x="690" y="250" font-size="9" fill="#6B6F70">enrollment_start/close, default_enroll</text>
+<text x="690" y="264" font-size="9" fill="#6B6F70">packet_type, language</text>
+<text x="690" y="278" font-size="9" fill="#6B6F70">med_billing, anc_billing, affordability</text>
+<text x="690" y="292" font-size="8" fill="#A8ACAE">Itafos: NextGen, Electronic, Zoom, Passive</text>
+
+<!-- CAP → AdminConfig line (1:1) -->
+<line x1="620" y1="250" x2="678" y2="250" stroke="#A8ACAE" stroke-width="1.5"/>
+<text x="640" y="243" font-size="8" font-weight="700" fill="#23394A">1:1</text>
+
+<!-- ============ PRODUCT (below CAP, center-left) ============ -->
+<rect x="240" y="395" width="280" height="150" rx="6" fill="#fff" stroke="#0088CE" stroke-width="2"/>
+<rect x="240" y="395" width="280" height="24" rx="6" fill="#0088CE"/>
+<rect x="240" y="413" width="280" height="6" fill="#0088CE"/>
+<text x="380" y="412" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Product</text>
+<text x="250" y="436" font-size="9" fill="#C60C30" font-weight="700">PK product_id</text>
+<text x="250" y="450" font-size="9" fill="#0088CE" font-weight="700">FK cap_id</text>
+<text x="250" y="464" font-size="9" fill="#6B6F70">benefit_type (Medical/Dental/Vision/</text>
+<text x="258" y="476" font-size="9" fill="#6B6F70">ER Life/Vol Life/STD/LTD/Acc/CI/Teladoc)</text>
+<text x="250" y="490" font-size="9" fill="#8b5cf6" font-weight="700">plan_type_enum (master/open_market/not_offered)</text>
+<text x="250" y="504" font-size="9" fill="#6B6F70">carrier_name, change_type, group_number</text>
+<text x="250" y="518" font-size="9" fill="#6B6F70">bor_status, cobra_admin, who_pays</text>
+<text x="250" y="532" font-size="8" fill="#A8ACAE">Maps to: Products Grid - one row per benefit line</text>
+
+<!-- CAP → Product line (1:N) -->
+<line x1="460" y1="335" x2="400" y2="393" stroke="#0088CE" stroke-width="1.5" marker-end="url(#ar-b)"/>
+<text x="440" y="368" font-size="8" font-weight="700" fill="#0088CE">1:N</text>
+
+<!-- ============ COMMISSION INFO (left of Product) ============ -->
+<rect x="20" y="420" width="180" height="100" rx="6" fill="#fff" stroke="#8b5cf6" stroke-width="1.5"/>
+<rect x="20" y="420" width="180" height="22" rx="6" fill="#8b5cf6"/>
+<rect x="20" y="436" width="180" height="6" fill="#8b5cf6"/>
+<text x="110" y="436" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">CommissionInfo</text>
+<text x="30" y="456" font-size="9" fill="#0088CE" font-weight="700">FK product_id</text>
+<text x="30" y="470" font-size="9" fill="#6B6F70">commission_type (%/flat$/broker)</text>
+<text x="30" y="484" font-size="9" fill="#6B6F70">commission_value</text>
+<text x="30" y="498" font-size="9" fill="#6B6F70">guardian_bucket, vol_funding_type</text>
+<text x="30" y="512" font-size="8" fill="#A8ACAE">Itafos STD: flat $2,308/wk</text>
+
+<!-- Product → CommissionInfo line (1:1) -->
+<line x1="240" y1="470" x2="202" y2="470" stroke="#A8ACAE" stroke-width="1.5"/>
+<text x="212" y="463" font-size="8" font-weight="700" fill="#23394A">1:1</text>
+
+<!-- ============ PLAN (below Product) ============ -->
+<rect x="280" y="600" width="260" height="120" rx="6" fill="#fff" stroke="#0088CE" stroke-width="2"/>
+<rect x="280" y="600" width="260" height="24" rx="6" fill="#0088CE"/>
+<rect x="280" y="618" width="260" height="6" fill="#0088CE"/>
+<text x="410" y="617" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Plan</text>
+<text x="290" y="640" font-size="9" fill="#C60C30" font-weight="700">PK plan_id</text>
+<text x="290" y="654" font-size="9" fill="#0088CE" font-weight="700">FK product_id</text>
+<text x="290" y="668" font-size="9" fill="#6B6F70">plan_name ("BCBSTX PPO $500 80%")</text>
+<text x="290" y="682" font-size="9" fill="#6B6F70">prism_plan_code, old_prism_code</text>
+<text x="290" y="696" font-size="9" fill="#6B6F70">deductible, copay, coinsurance, oop_max</text>
+<text x="290" y="710" font-size="8" fill="#A8ACAE">Maps to: Rate Grids + Full BVP + Mapping</text>
+
+<!-- Product → Plan line (1:N) -->
+<line x1="380" y1="545" x2="400" y2="598" stroke="#0088CE" stroke-width="1.5" marker-end="url(#ar-b)"/>
+<text x="398" y="574" font-size="8" font-weight="700" fill="#0088CE">1:N</text>
+
+<!-- ============ PLAN TIER (below Plan — the most populated entity) ============ -->
+<rect x="280" y="775" width="260" height="130" rx="6" fill="#fff" stroke="#C60C30" stroke-width="2"/>
+<rect x="280" y="775" width="260" height="24" rx="6" fill="#C60C30"/>
+<rect x="280" y="793" width="260" height="6" fill="#C60C30"/>
+<text x="410" y="792" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">PlanTier - most populated</text>
+<text x="290" y="816" font-size="9" fill="#C60C30" font-weight="700">PK tier_id</text>
+<text x="290" y="830" font-size="9" fill="#0088CE" font-weight="700">FK plan_id, FK class_id</text>
+<text x="290" y="844" font-size="9" fill="#6B6F70">tier_type (EO/ES/EC/EF/ED)</text>
+<text x="290" y="858" font-size="9" fill="#6B6F70">total_premium, er_contribution</text>
+<text x="290" y="872" font-size="9" fill="#6B6F70">ee_deduction, ppd_amount</text>
+<text x="290" y="886" font-size="8" fill="#A8ACAE">Maps to: Rate Grid TOTAL/ER/EE columns</text>
+<text x="290" y="898" font-size="8" fill="#C60C30">Itafos medical: 5x4x3 = 60 rows</text>
+
+<!-- Plan → PlanTier line (1:N) -->
+<line x1="410" y1="720" x2="410" y2="773" stroke="#C60C30" stroke-width="1.5" marker-end="url(#ar-r)"/>
+<text x="418" y="750" font-size="8" font-weight="700" fill="#C60C30">1:N</text>
+
+<!-- Class → PlanTier line (N:1) — diagonal from top-left -->
+<path d="M195 130 L195 155 L8 155 L8 850 L278 850" fill="none" stroke="#FF9E1B" stroke-width="1.5" stroke-dasharray="4" marker-end="url(#ar)"/>
+<text x="18" y="600" font-size="8" font-weight="700" fill="#FF9E1B" transform="rotate(-90,18,600)">Class -> PlanTier (N:1)</text>
+
+<!-- ============ TAX PLAN (right side, below AdminConfig) ============ -->
+<rect x="680" y="340" width="220" height="140" rx="6" fill="#fff" stroke="#2A8F60" stroke-width="1.5"/>
+<rect x="680" y="340" width="220" height="22" rx="6" fill="#2A8F60"/>
+<rect x="680" y="356" width="220" height="6" fill="#2A8F60"/>
+<text x="790" y="356" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">TaxPlan</text>
+<text x="690" y="376" font-size="9" fill="#C60C30" font-weight="700">PK tax_plan_id</text>
+<text x="690" y="390" font-size="9" fill="#0088CE" font-weight="700">FK cap_id</text>
+<text x="690" y="404" font-size="9" fill="#6B6F70">type (FSA/FSA_Commuter/HSA)</text>
+<text x="690" y="418" font-size="9" fill="#6B6F70">plan_year_start/end, funding_type</text>
+<text x="690" y="432" font-size="9" fill="#6B6F70">er_contribution_eo/es/ec/ef</text>
+<text x="690" y="446" font-size="9" fill="#6B6F70">er_freq, ee_freq, who_deposits</text>
+<text x="690" y="460" font-size="9" fill="#6B6F70">nh_proration, acct_setup_resp</text>
+<text x="690" y="472" font-size="8" fill="#A8ACAE">Itafos HSA: $500/$1K/$1K/$1.3K quarterly</text>
+
+<!-- CAP → TaxPlan line (1:N) -->
+<line x1="560" y1="320" x2="678" y2="380" stroke="#A8ACAE" stroke-width="1.5" marker-end="url(#ar)"/>
+<text x="610" y="342" font-size="8" font-weight="700" fill="#23394A">1:N</text>
+
+<!-- ============ DOCUMENT (far right, below TaxPlan) ============ -->
+<rect x="680" y="520" width="220" height="110" rx="6" fill="#fff" stroke="#2A8F60" stroke-width="1.5"/>
+<rect x="680" y="520" width="220" height="22" rx="6" fill="#2A8F60"/>
+<rect x="680" y="536" width="220" height="6" fill="#2A8F60"/>
+<text x="790" y="536" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">Document</text>
+<text x="690" y="556" font-size="9" fill="#C60C30" font-weight="700">PK doc_id</text>
+<text x="690" y="570" font-size="9" fill="#0088CE" font-weight="700">FK cap_id</text>
+<text x="690" y="584" font-size="9" fill="#6B6F70">doc_type (booklet/sbc/er_confirm/</text>
+<text x="698" y="596" font-size="9" fill="#6B6F70">signed_cap/ee_sra)</text>
+<text x="690" y="610" font-size="9" fill="#6B6F70">file_path, generated_at, status</text>
+<text x="690" y="622" font-size="8" fill="#A8ACAE">Maps to: ER Confirm + EE SRA + SBC tabs</text>
+
+<!-- CAP → Document line (1:N) -->
+<line x1="600" y1="330" x2="678" y2="540" stroke="#A8ACAE" stroke-width="1" stroke-dasharray="4" marker-end="url(#ar)"/>
+<text x="650" y="445" font-size="8" font-weight="700" fill="#23394A">1:N</text>
+
+<!-- ============ AUDIT LOG (far right, below Document) ============ -->
+<rect x="680" y="670" width="220" height="110" rx="6" fill="#fff" stroke="#6B6F70" stroke-width="1.5"/>
+<rect x="680" y="670" width="220" height="22" rx="6" fill="#6B6F70"/>
+<rect x="680" y="686" width="220" height="6" fill="#6B6F70"/>
+<text x="790" y="686" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">AuditLog</text>
+<text x="690" y="706" font-size="9" fill="#C60C30" font-weight="700">PK log_id</text>
+<text x="690" y="720" font-size="9" fill="#0088CE" font-weight="700">FK cap_id, user_id</text>
+<text x="690" y="734" font-size="9" fill="#6B6F70">timestamp, entity_changed</text>
+<text x="690" y="748" font-size="9" fill="#6B6F70">field_changed, old_value, new_value</text>
+<text x="690" y="762" font-size="9" fill="#6B6F70">action_type (create/update/approve/sign)</text>
+<text x="690" y="774" font-size="8" fill="#A8ACAE">Replaces manual Change Tracker sheet</text>
+
+<!-- CAP → AuditLog line (1:N) -->
+<line x1="610" y1="335" x2="678" y2="700" stroke="#A8ACAE" stroke-width="1" stroke-dasharray="4" marker-end="url(#ar)"/>
+<text x="660" y="600" font-size="8" font-weight="700" fill="#23394A">1:N</text>
+
+<!-- ============ LEGEND ============ -->
+<rect x="930" y="30" width="210" height="100" rx="6" fill="#F5F7F9" stroke="#E2E8ED" stroke-width="1"/>
+<text x="945" y="50" font-size="10" font-weight="700" fill="#23394A">Key</text>
+<text x="945" y="66" font-size="9" fill="#C60C30" font-weight="700">PK = Primary Key</text>
+<text x="945" y="80" font-size="9" fill="#0088CE" font-weight="700">FK = Foreign Key</text>
+<text x="945" y="94" font-size="9" fill="#8b5cf6" font-weight="700">MP/OM discriminator</text>
+<text x="945" y="108" font-size="9" fill="#6B6F70">-- Solid = strong ref</text>
+<text x="945" y="122" font-size="9" fill="#6B6F70">--- Dashed = side entity</text>
+
+<!-- Cardinality legend -->
+<rect x="930" y="145" width="210" height="78" rx="6" fill="#F5F7F9" stroke="#E2E8ED" stroke-width="1"/>
+<text x="945" y="165" font-size="10" font-weight="700" fill="#23394A">Cardinality</text>
+<text x="945" y="181" font-size="9" fill="#6B6F70">1:N = One to Many</text>
+<text x="945" y="195" font-size="9" fill="#6B6F70">1:1 = One to One</text>
+<text x="945" y="209" font-size="9" fill="#6B6F70">N:1 = Many to One</text>
+
+<!-- Core chain callout -->
+<rect x="930" y="240" width="210" height="120" rx="6" fill="#FEF0EE" stroke="#C60C30" stroke-width="1"/>
+<text x="945" y="260" font-size="10" font-weight="700" fill="#C60C30">Core data chain</text>
+<text x="945" y="278" font-size="9" fill="#8a000a">Client (1)</text>
+<text x="945" y="292" font-size="9" fill="#8a000a">  -> CAP (N per year)</text>
+<text x="945" y="306" font-size="9" fill="#8a000a">    -> Product (12 lines)</text>
+<text x="945" y="320" font-size="9" fill="#8a000a">      -> Plan (up to 10 per product)</text>
+<text x="945" y="334" font-size="9" fill="#8a000a">        -> PlanTier (4-5 x class)</text>
+<text x="945" y="348" font-size="8" fill="#C60C30" font-weight="700">Deepest: 60 tier rows for Itafos med</text>
+
+</svg>
+</div>
+
+<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;font-size:10px;color:#6B6F70">
+<span><span style="color:#23394A;font-weight:700">Navy</span> = Client (root)</span>
+<span><span style="color:#C60C30;font-weight:700">Red</span> = CAP + PlanTier (core endpoints)</span>
+<span><span style="color:#0088CE;font-weight:700">Blue</span> = Product + Plan (hierarchy)</span>
+<span><span style="color:#8b5cf6;font-weight:700">Purple</span> = UW + Commission (rates)</span>
+<span><span style="color:#FF9E1B;font-weight:700">Amber</span> = Class (cross-cuts to PlanTier)</span>
+<span><span style="color:#2A8F60;font-weight:700">Green</span> = Config + Docs</span>
+<span><span style="color:#6B6F70;font-weight:700">Grey</span> = AuditLog</span>
+</div>
+
+<div class="c"><h3>Core data chain</h3>
+<p><strong>Client</strong> 1:N &rarr; <strong>CAP</strong> (one per plan year, versioned) &rarr; CAP 1:1 &rarr; <strong>UnderwritingParams</strong> &rarr; CAP 1:N &rarr; <strong>Product</strong> (12 benefit lines) &rarr; Product 1:N &rarr; <strong>Plan</strong> (e.g., 5 medical plans) &rarr; Plan 1:N &rarr; <strong>PlanTier</strong> (EO/ES/EC/EF x class).</p></div>
+
+<div class="c red"><h3>PlanTier — the most populated entity</h3>
+<p>Has two foreign keys: <strong>plan_id</strong> (which plan) and <strong>class_id</strong> (which employee class). Stores: total_premium, er_contribution, ee_deduction, ppd_amount. For Itafos medical alone: 5 plans x 4 tiers x 3 classes = <strong>60 PlanTier rows</strong>. Add dental (3x4x3=36), vision (1x4x3=12), accident (1x4x3=12), and the total for one client approaches 150+ rows.</p></div>
+
+<div class="g2">
+<div class="c purple"><h3>Product.plan_type_enum — the MP/OM discriminator</h3>
+<p>The Product entity carries the <strong>plan_type_enum</strong> field (master / open_market / not_offered). This single field drives the behavioral fork throughout the entire system: when "master", the rate engine calculates from BVP formula; when "open_market", rates are entered directly and different validation rules apply.</p></div>
+<div class="c navy"><h3>Side entities</h3>
+<p><strong>TaxPlan</strong> (FSA/HSA — N per CAP), <strong>BrokerInfo</strong> (1:1 per Client), <strong>AdminConfig</strong> (1:1 per CAP — enrollment/billing), <strong>Document</strong> (booklets, SBCs, ER confirmations — N per CAP), <strong>AuditLog</strong> (every field change — N per CAP, replaces the manual Change Tracker with 80+ entries).</p></div>
+</div>
+
+<div class="sec">PRD-Introduced Entities (Foundation PRD &sect;14)</div>
+<div class="c green"><h3>Foundation layer entities <span class="tag t-f">F1-F10</span></h3>
+<p>Centrally managed configuration consumed by every CAP. All G&amp;A-owned entities carry <code>{ version, effectiveDate, status(active/superseded), createdBy, approvedBy }</code>.</p></div>
+<table class="ent-tbl">
+<thead><tr><th>Entity</th><th>Key Fields</th><th>PRD Module</th><th>Data Class</th></tr></thead>
+<tbody>
+<tr><td style="font-weight:700">Connection</td><td>system (Prism|ClientSpace|DocuSign), status, lastSync, config, mappings, logs[]</td><td><span class="tag t-f">F2</span></td><td>Connected</td></tr>
+<tr><td style="font-weight:700">MasterPlan</td><td>name, carrier, state, planType, prismPrefix, prismCodes, bucketLabel, masterOrOpenMarket, rateFlags</td><td><span class="tag t-f">F3</span></td><td>Synced (read-only)</td></tr>
+<tr><td style="font-weight:700">CarrierRateTable</td><td>masterPlanId, planYear, ratesByTier{}, effectiveDate, syncedAt</td><td><span class="tag t-f">F3</span></td><td>Synced (versioned)</td></tr>
+<tr><td style="font-weight:700">PlanCodeCrosswalk</td><td>carrier, oldCode, newCode</td><td><span class="tag t-f">F3</span></td><td>Synced</td></tr>
+<tr><td style="font-weight:700">Bucket</td><td>carrier, bucketId, baseRateColumnRef</td><td><span class="tag t-f">F4</span></td><td>G&amp;A-owned (versioned)</td></tr>
+<tr><td style="font-weight:700">AdminFactorTable</td><td>carrier, factors[], effectiveDate</td><td><span class="tag t-f">F4</span></td><td>G&amp;A-owned (versioned)</td></tr>
+<tr><td style="font-weight:700">CommissionSchedule</td><td>defaults, handlingOptions (GAB/OB-Friendly/OB/Deduct&amp;Credit)</td><td><span class="tag t-f">F4</span></td><td>G&amp;A-owned (versioned)</td></tr>
+<tr><td style="font-weight:700">RiskFactorFormula</td><td>definition (admin_factor + commission), supportsSecondBucket</td><td><span class="tag t-f">F4</span></td><td>G&amp;A-owned (versioned)</td></tr>
+<tr><td style="font-weight:700">GlobalParameter</td><td>key, value, effectiveDate (ACA threshold, deduction options)</td><td><span class="tag t-f">F5</span></td><td>G&amp;A-owned (versioned)</td></tr>
+<tr><td style="font-weight:700">Fee</td><td>type (Rush/Change/MCHILD/WRAP), amount, effectiveDate</td><td><span class="tag t-f">F5</span></td><td>G&amp;A-owned (versioned)</td></tr>
+<tr><td style="font-weight:700">Vocabulary / VocabularyItem</td><td>listKey, items[], status (active/retired)</td><td><span class="tag t-f">F6</span></td><td>G&amp;A-owned (versioned)</td></tr>
+<tr><td style="font-weight:700">DocumentTemplate</td><td>type, language, body, mergeFieldMap</td><td><span class="tag t-f">F7</span></td><td>G&amp;A-owned (versioned)</td></tr>
+<tr><td style="font-weight:700">ValidationRule</td><td>section, fields, severity (error/warning/info), message, fix, isAuditGate</td><td><span class="tag t-f">F8</span></td><td>G&amp;A-owned (versioned)</td></tr>
+<tr><td style="font-weight:700">RoleAccessMatrix</td><td>roleId, fieldClass (blue/yellow/green/red), canEdit, canShare</td><td><span class="tag t-f">F9</span></td><td>G&amp;A-owned</td></tr>
+<tr><td style="font-weight:700">UnderwritingIntake</td><td>uploads[], extractedFields, confirmedFields, completeness</td><td><span class="tag t-f">F10</span></td><td>G&amp;A-owned</td></tr>
+</tbody>
+</table>
+
+<div class="sec">PRD-Introduced Entities (New Business PRD &sect;14)</div>
+<div class="c red"><h3>New-business flow entities <span class="tag t-nb">NB1-NB9</span></h3>
+<p>Extend the existing CAP entity with intake, extraction, provenance, and handoff state.</p></div>
+<table class="ent-tbl">
+<thead><tr><th>Entity</th><th>Key Fields</th><th>PRD Module</th></tr></thead>
+<tbody>
+<tr><td style="font-weight:700">NewBusinessIntake</td><td>capId, seedFields, documents[]: { file, type, status }, checklistState</td><td><span class="tag t-nb">NB1</span></td></tr>
+<tr><td style="font-weight:700">ExtractionResult</td><td>documentId, fields[]: { capField, value, confidence }, unresolved[]</td><td><span class="tag t-nb">NB2</span></td></tr>
+<tr><td style="font-weight:700">ProvenanceField</td><td>capField, value, source (library|upload|underwriting|input), sourceRef, confirmed, flag?</td><td><span class="tag t-nb">NB3</span></td></tr>
+<tr><td style="font-weight:700">FoundationLink</td><td>capField, module (F3|F4|F5|F6|F7|F8), recordId, version, label</td><td><span class="tag t-nb">NB4</span></td></tr>
+<tr><td style="font-weight:700">ReadinessItem</td><td>capId, section, field, severity, message, fix, origin (rule|provenance), resolved</td><td><span class="tag t-nb">NB5</span></td></tr>
+<tr><td style="font-weight:700">BookletVersion</td><td>capId, version, templateVersions, issuedAt, status (preview|issued|signed), snapshot</td><td><span class="tag t-nb">NB7</span></td></tr>
+<tr><td style="font-weight:700">SignatureEnvelope</td><td>bookletVersionId, provider (DocuSign), status, signerRouting, events[]</td><td><span class="tag t-nb">NB8</span></td></tr>
+<tr><td style="font-weight:700">PrismHandoff</td><td>capId, payload, validationState, mode (simulated|live), status, clientSpaceCaseId</td><td><span class="tag t-nb">NB9</span></td></tr>
+</tbody>
+</table>
+
+<div class="sec">PRD-Introduced Entities (Renewal PRD &sect;14)</div>
+<div class="c amber"><h3>Renewal flow entities <span class="tag t-r">R1-R9</span></h3>
+<p>Renewal-specific state: baseline, diff, drift, deltas, plan-code migration, annual contract history.</p></div>
+<table class="ent-tbl">
+<thead><tr><th>Entity</th><th>Key Fields</th><th>PRD Module</th></tr></thead>
+<tbody>
+<tr><td style="font-weight:700">RenewalBaseline</td><td>capId, priorCapId, prismRecordSnapshot, refreshedAt</td><td><span class="tag t-r">R2</span></td></tr>
+<tr><td style="font-weight:700">DiffRow</td><td>changeType (client|master), source, priorValue, currentValue, linkageRef, status (carried|changed|accepted|rejected)</td><td><span class="tag t-r">R5</span></td></tr>
+<tr><td style="font-weight:700">DriftReport</td><td>capId, pinnedVersions[], currentVersions[], staleItems[]: { module, recordId, from, to }, reconciledAt?</td><td><span class="tag t-r">R4</span></td></tr>
+<tr><td style="font-weight:700">ProposedDelta</td><td>capId, field, baselineValue, proposedValue, sourceDocId, decision (accept|reject)</td><td><span class="tag t-r">R3</span></td></tr>
+<tr><td style="font-weight:700">PlanCodeMigration</td><td>capId, line, oldCode, newCode, carrier</td><td><span class="tag t-r">R2</span></td></tr>
+<tr><td style="font-weight:700">ContractSignoff</td><td>clientId, planYear, bookletVersionId, dataSnapshotRef, signedAt, status</td><td><span class="tag t-r">R7</span> <span class="tag t-r">R8</span></td></tr>
+</tbody>
+</table>
+
+<div class="sec">PRD-Introduced Entities (Copilot PRD &sect;14)</div>
+<div class="c purple"><h3>Copilot entities <span class="tag t-cp">CP1-CP7</span></h3>
+<p>Session, message, tool-call, and proposed-change tracking. Reuses existing entities via tools rather than duplicating them.</p></div>
+<table class="ent-tbl">
+<thead><tr><th>Entity</th><th>Key Fields</th><th>PRD Module</th></tr></thead>
+<tbody>
+<tr><td style="font-weight:700">CopilotSession</td><td>id, userId, role, capId, flowType (newBusiness|renewal), messages[]</td><td><span class="tag t-cp">CP1</span> <span class="tag t-cp">CP2</span></td></tr>
+<tr><td style="font-weight:700">CopilotMessage</td><td>role (user|agent), content, toolCalls[], citations[], proposedChanges[]</td><td><span class="tag t-cp">CP1</span></td></tr>
+<tr><td style="font-weight:700">ToolCall</td><td>tool, inputs, result|previewDiff, status, ts</td><td><span class="tag t-cp">CP3</span> <span class="tag t-cp">CP4</span></td></tr>
+<tr><td style="font-weight:700">ProposedChange</td><td>capId, field(s), before, after, status (pending|applied|discarded), confirmedBy</td><td><span class="tag t-cp">CP4</span></td></tr>
+</tbody>
+</table>
+
+<div class="foot">Sheet 6 of 8</div>
+</div>
+
+<!-- ======================= TAB 7: DATA GOVERNANCE ======================= -->
+<div id="p7" class="pnl">
+<div class="eye">Sheet 7 of 7</div>
+<div class="h1">Data Governance, Compliance & PII Handling</div>
+<div class="sub">Benefits data includes PHI (health coverage records), PII (SSNs, dependent information), and wage records. This section covers data classification, access controls, the F9 field-level permission model, Copilot PII/PHI minimization, SOX snapshot-on-finalize, and the three data classes with their edit rules.</div>
+
+<div class="sec">Three Data Classes &amp; Edit Rules (Overview PRD &sect;6.1)</div>
+<div class="c green"><h3>Every field in the platform falls into one of three classes with distinct edit rules <span class="tag t-f">F1</span></h3></div>
+<table class="ent-tbl">
+<thead><tr><th>Class</th><th>Source of Truth</th><th>Edit Rule in Platform</th><th>Examples</th></tr></thead>
+<tbody>
+<tr><td style="font-weight:700;color:var(--b)">Synced</td><td>Prism (system of record)</td><td><strong>Read-only.</strong> Pulled from Prism; never editable here (editing would fork the SoR). Synced fields are visually distinct and non-editable for all roles.</td><td>Master plans, carrier base rates, plan-code crosswalks, client records (for renewals)</td></tr>
+<tr><td style="font-weight:700;color:var(--am)">G&amp;A-owned</td><td>This platform</td><td><strong>Editable centrally</strong> by admins; versioned with effective dates. Draft CAPs read live version; signed CAPs snapshot their version (immutable for audit/SOX).</td><td>Pricing-stack factors, parameters, fees, templates, vocabularies, validation rules, roles</td></tr>
+<tr><td style="font-weight:700;color:var(--pr)">Connected</td><td>External systems</td><td><strong>Configured here</strong> (credentials, mappings); data flows via integration. Platform orchestrates but does not own the data.</td><td>ClientSpace (workflow/cases), DocuSign (e-sign)</td></tr>
+</tbody>
+</table>
+
+<div class="sec">Field-Level Permission Model (F9 — Color Legend) <span class="tag t-f">F9</span></div>
+<div class="c"><h3>The workbook's blue/yellow/green/red legend becomes a field-level permission + sharing model</h3>
+<p>From the Foundation PRD F9: the existing Excel workbook uses color-coding to indicate field behavior. The platform formalizes this into a governed access model.</p>
+</div>
+<div class="g4">
+<div class="c blue"><h3><span class="legend-box" style="background:#0088CE"></span> Blue — AM-entry</h3>
+<p>Primary input fields. AM/AE can edit; Coordinator can review/approve/reject; Analyst is read-only. These are the core data entry fields that drive the CAP.</p>
+<p style="margin-top:4px"><strong>Examples:</strong> Company name, plan selections, contribution strategy, enrollment dates, broker info.</p></div>
+<div class="c amber"><h3><span class="legend-box" style="background:#FF9E1B"></span> Yellow — Conditional</h3>
+<p>Conditional input fields that appear based on other selections. Same edit rules as Blue but visibility is conditional.</p>
+<p style="margin-top:4px"><strong>Examples:</strong> Bucket 2 (appears for dual-carrier), S-Corp post-tax rules (appears when S Corp selected).</p></div>
+<div class="c green"><h3><span class="legend-box" style="background:#2A8F60"></span> Green — Client-shareable</h3>
+<p>Fields and outputs approved for sharing with the client. Included in booklets, ER Confirmation, EE SRA documents sent via DocuSign.</p>
+<p style="margin-top:4px"><strong>Examples:</strong> Plan names, EE deduction amounts, benefit summaries, enrollment dates.</p></div>
+<div class="c red"><h3><span class="legend-box" style="background:#C60C30"></span> Red — Internal only</h3>
+<p>Internal-only fields that must <strong>never</strong> be included in client-shared outputs. Protected by both RBAC and document template controls.</p>
+<p style="margin-top:4px"><strong>Examples:</strong> Underwriting factors (bucket, AF, commission, RF), margin calculations, analyst notes, pricing intelligence.</p></div>
+</div>
+
+<div class="sec">SOX Snapshot-on-Finalize (Overview PRD &sect;6.4)</div>
+<div class="c red"><h3>Versioning + snapshot-on-finalize — immutability for audit/SOX</h3>
+<p>All G&amp;A-owned data is effective-dated and versioned. The critical rule:</p>
+<ul>
+<li>A <strong>draft</strong> CAP reads the <strong>current live</strong> version of foundation data (so central edits propagate forward to in-progress CAPs).</li>
+<li>A <strong>finalized/signed</strong> CAP <strong>snapshots</strong> the exact versions it used and <strong>locks them</strong> (immutability for audit/SOX). The signed booklet is an immutable artifact pinned to its data snapshot.</li>
+<li>This is what makes "edit once, flows to all future CAPs" safe — signed CAPs are never retroactively affected by central changes.</li>
+<li>The prior signed booklet stays immutable on its snapshot; the renewal becomes a new versioned artifact on current data, yielding a clean year-over-year trail of which data each approval used.</li>
+</ul>
+<p style="margin-top:6px"><strong>Applies to:</strong> <span class="tag t-nb">NB7</span><span class="tag t-nb">NB8</span> booklet sign-off, <span class="tag t-r">R7</span><span class="tag t-r">R8</span> annual contract management, <span class="tag t-f">F3</span><span class="tag t-f">F4</span><span class="tag t-f">F5</span> foundation versioning.</p>
+</div>
+
+<div class="sec">Copilot PII/PHI Minimization <span class="tag t-cp">CP7</span></div>
+<div class="c purple"><h3>Guardrails for the Copilot agent in a PHI/PII/SOX context</h3>
+<ul>
+<li><strong>PII/PHI minimization:</strong> Send structured references and the minimum necessary fields to the LLM, not raw census/SSN dumps. Redact/limit sensitive payloads per data-governance rules. Document what is and isn't sent to the model.</li>
+<li><strong>Confirmation on all writes (CP4):</strong> No silent mutation. Every change shown as before-after preview, user confirms before apply. Explicit refusal + reason when an action isn't permitted.</li>
+<li><strong>RBAC parity (F9):</strong> Agent action set = platform capabilities intersected with current user's role permissions. Cannot exceed the user's own rights. Cannot edit synced/read-only fields. Cannot modify signed/locked artifacts.</li>
+<li><strong>Grounding / anti-hallucination:</strong> Factual claims must be backed by a retrieval result. If unavailable, the agent states it can't find the data rather than inventing a rate, factor, or field value.</li>
+<li><strong>Full audit:</strong> Every read (optional for sensitive data) and every write logged with actor, timestamp, tool, inputs, before-after, and confirmation event. Logged as <code>kind: "ai"</code> in the AuditLog.</li>
+<li><strong>Source transparency:</strong> Every surfaced fact and proposed change shows where it came from and (for rates/factors) which version.</li>
+</ul>
+</div>
+
+<div class="sec">What Data the CAP Platform Handles</div>
+<div class="c red"><h3>Data scope expands beyond the Excel file</h3>
+<p>The CAP Excel itself is primarily <strong>plan-level financial data</strong> — rates, contribution strategies, underwriting parameters, broker info. It does NOT contain individual SSNs, health claims, or dependent birthdates. But the moment we integrate with PrismHR via API, the scope expands: <code>getActiveBenefitPlans</code>, <code>getDependents</code>, <code>getEmployeePremium</code>, and <code>enrollBenefit</code> all touch employee-level data that IS PHI and PII. The platform must be architected for the full scope, not just the CAP document.</p>
+</div>
+
+<div class="g2">
+<div class="c navy"><h3>What's IN the CAP data</h3>
+<ul>
+<li><strong>Company identity:</strong> Client name, Prism ID, corp type, affiliate IDs</li>
+<li><strong>Underwriting financials:</strong> Bucket, admin factor, commission %, risk factor, renewal increase</li>
+<li><strong>Plan rates:</strong> Total/ER/EE per plan per tier per class (dollar amounts)</li>
+<li><strong>Contribution strategies:</strong> %, fixed $, variable — how employer vs. employee costs are split</li>
+<li><strong>Broker compensation:</strong> Commission values, flat $ amounts, "Outside Broker paid" flags</li>
+<li><strong>Personnel names:</strong> Client contact (Mark Kirby), AM (Danielle Andre), BS (Nataly Montano), Broker company (Digital Insurance LLC)</li>
+<li><strong>FSA/HSA parameters:</strong> ER contribution amounts per tier, deposit frequency, proration rules</li>
+<li><strong>Admin config:</strong> Enrollment dates, billing methods, COBRA status</li>
+</ul></div>
+<div class="c navy"><h3>What's accessed via Prism integration</h3>
+<ul>
+<li><strong>Employee demographics:</strong> Names, SSNs, DOB, addresses, pay rates (via EmployeeService)</li>
+<li><strong>Dependent information:</strong> Names, DOB, relationship, SSNs (via BenefitService.getDependents)</li>
+<li><strong>Enrollment selections:</strong> Which plan each employee chose, coverage tier, effective dates (via getActiveBenefitPlans)</li>
+<li><strong>Premium billing:</strong> Employee-level billing rates tied to specific individuals (via getEmployeePremium)</li>
+<li><strong>Deduction data:</strong> Payroll deduction amounts per employee (via PayrollService/DeductionService)</li>
+<li><strong>Life events:</strong> Status changes, qualifying events, COBRA eligibility (via EmployeeService.addEmployeeEvents)</li>
+</ul>
+<p style="margin-top:6px;font-weight:700;color:var(--r)">This data is PHI + PII. The platform is subject to HIPAA, even though the CAP document itself is mostly plan-level.</p></div>
+</div>
+
+<div class="sec">Data Classification Scheme</div>
+<div class="c"><h3>Field-level classification — not all CAP data is equally sensitive</h3>
+<p>Every field in the data model must be tagged with a sensitivity level that drives access control, encryption, logging, and retention behavior:</p>
+</div>
+<div class="g4">
+<div class="c green"><h3>Public / Internal</h3>
+<p>Plan names, carrier names, plan design parameters (deductible, copay, coinsurance, OOP max), enrollment method, packet type, language. No access restriction beyond authenticated user.</p>
+<p style="margin-top:4px"><strong>Example:</strong> "BCBSTX PPO $500 80%" is a plan name — not sensitive.</p></div>
+<div class="c amber"><h3>Confidential</h3>
+<p>Employer contribution strategies, commission percentages, broker compensation, underwriting factors (bucket, AF, RF), renewal increase %, rate relief flags. Business-sensitive and competitive.</p>
+<p style="margin-top:4px"><strong>Example:</strong> Itafos bucket 0.975 — competitors or other clients must never see this.</p></div>
+<div class="c red"><h3>PHI / Restricted</h3>
+<p>Any data that, combined with employee identity, constitutes protected health information: enrollment selections, coverage tier, plan effective dates, premium amounts tied to individuals, dependent enrollment.</p>
+<p style="margin-top:4px"><strong>Example:</strong> "Employee #4521 enrolled in HDHP $3300 with spouse" — this is PHI under HIPAA.</p></div>
+<div class="c red"><h3>PII</h3>
+<p>SSNs, employee names + DOB, dependent names + DOB, addresses, wage data, client contact personal info, broker contact info. Subject to state privacy laws (CCPA/CPRA, TDPSA).</p>
+<p style="margin-top:4px"><strong>Example:</strong> SSN from Prism EmployeeService — must never be stored in the CAP tool.</p></div>
+</div>
+
+<div class="sec">Compliance Framework</div>
+<div class="g2">
+<div class="c red"><h3>HIPAA Security Rule</h3>
+<p>G&A Partners is a covered entity (administers health benefits for ~130K WSEs). Any system that stores, processes, or transmits PHI must comply:</p>
+<ul>
+<li><strong>Administrative safeguards:</strong> Security officer designation, workforce training, access authorization procedures, incident response plan</li>
+<li><strong>Physical safeguards:</strong> Cloud provider must have SOC 2 Type II and HIPAA BAA (AWS, Azure, GCP all offer this)</li>
+<li><strong>Technical safeguards:</strong> Encryption at rest (AES-256) and in transit (TLS 1.2+), unique user IDs, automatic session timeout, audit logging of all PHI access, emergency access procedures</li>
+<li><strong>BAA required:</strong> Business Associate Agreement between G&A and the cloud provider, and between G&A and R Systems as the platform developer</li>
+</ul></div>
+<div class="c red"><h3>SOX-Adjacent Controls</h3>
+<p>The PRD explicitly flags "SOX-adjacent risk" for carrier enrollment transcription errors. The CAP tool handles financial data that flows into payroll deductions:</p>
+<ul>
+<li><strong>Audit trail:</strong> Every change to rates, contributions, and plan configurations logged with who, when, what, old value, new value — not optional, it's a control requirement</li>
+<li><strong>Segregation of duties:</strong> AM creates &rarr; Coordinator reviews &rarr; Client signs &rarr; Analyst configures. No single person can create AND approve a CAP <span class="tag t-nb">NB6</span> <span class="tag t-r">R6</span></li>
+<li><strong>Reconciliation support:</strong> Platform must provide canonical rate data that reconciliation processes (Init F / Beacon) can verify against — the CAP rates ARE the control point for payroll-vs-carrier invoice matching</li>
+<li><strong>Change control:</strong> Plan configuration changes (new carriers, new plan codes, rate table updates) must go through an approval workflow, not ad-hoc edits <span class="tag t-f">F3</span> <span class="tag t-f">F4</span></li>
+<li><strong>Snapshot-on-finalize:</strong> Signed CAPs lock their data versions. Immutable signed booklets pinned to their data snapshots. Year-over-year audit trail via <span class="tag t-r">R7</span> annual contract management.</li>
+</ul></div>
+</div>
+<div class="g2">
+<div class="c blue"><h3>State Privacy Laws</h3>
+<p>G&A operates across multiple states. Client employees may be in jurisdictions with specific privacy requirements:</p>
+<ul>
+<li><strong>CCPA/CPRA (California):</strong> Right to know, right to delete, right to opt-out. Applies to employee PII if G&A has California-based client employees. The CAP tool must support data subject requests.</li>
+<li><strong>TDPSA (Texas):</strong> G&A is headquartered in Texas. Texas Data Privacy and Security Act requirements apply.</li>
+<li><strong>Other states:</strong> Colorado, Virginia, Connecticut, Utah, and others have enacted privacy laws. The platform should support configurable privacy controls per jurisdiction.</li>
+</ul>
+<p style="margin-top:4px">Note: Most state privacy laws exempt data already covered by HIPAA. But employee data beyond health coverage (contact info, wage data) may still be subject.</p></div>
+<div class="c blue"><h3>ERISA Record Retention</h3>
+<p>Employee Retirement Income Security Act requires retention of employee benefit plan records:</p>
+<ul>
+<li><strong>Plan documents:</strong> Must be retained for duration of the plan + 6 years after termination</li>
+<li><strong>Enrollment records:</strong> 6 years minimum after the plan year ends</li>
+<li><strong>Financial records:</strong> 6 years for contribution and premium records</li>
+<li><strong>CAP implication:</strong> Historical CAPs must be retained for at least 7 years (plan year + 6) to satisfy ERISA</li>
+</ul></div>
+</div>
+
+<div class="sec">Access Control Model (RBAC + Row-Level Security)</div>
+<div class="c"><h3>Who sees what — role-based AND client-scoped <span class="tag t-f">F9</span></h3>
+<p>RBAC alone is not enough. An AM managing 30 clients must never see CAP data for clients assigned to other AMs. This requires row-level security on top of role-based permissions.</p>
+</div>
+
+<div style="overflow-x:auto;margin:10px 0">
+<table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #E2E8ED;border-radius:8px;overflow:hidden;font-size:10px">
+<thead><tr style="background:#23394A;color:rgba(255,255,255,.9)">
+<th style="padding:8px 10px;text-align:left">Role</th>
+<th style="padding:8px 10px;text-align:left">Client Scope</th>
+<th style="padding:8px 10px;text-align:left">CAP Data Access</th>
+<th style="padding:8px 10px;text-align:left">UW Params</th>
+<th style="padding:8px 10px;text-align:left">Rates</th>
+<th style="padding:8px 10px;text-align:left">Prism Employee Data</th>
+<th style="padding:8px 10px;text-align:left">Permissions</th>
+</tr></thead>
+<tbody>
+<tr><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED;font-weight:700">AM / AE</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Own assigned clients only</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Full read/write</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Read/write</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Read/write</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Census counts only (no SSN)</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Create, edit, submit</td></tr>
+<tr style="background:#F8FAFB"><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED;font-weight:700">Coordinator</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">GAB team's clients</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Full read</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Read only</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Read only</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Census counts only</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Review, approve, reject, comment</td></tr>
+<tr><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED;font-weight:700">Benefits Analyst</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Ben Admin queue</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Read only (approved CAPs)</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED;color:#C60C30;font-weight:700">NO ACCESS</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Read only (output rates)</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Full (for Prism config)</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Read CAP, confirm Prism push</td></tr>
+<tr style="background:#F8FAFB"><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED;font-weight:700">Benefits Specialist</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Ben Admin queue</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Read only (approved)</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED;color:#C60C30;font-weight:700">NO ACCESS</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Read only</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Enrollment data only</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Read CAP for enrollment</td></tr>
+<tr><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED;font-weight:700">QC / Compliance</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">All clients</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Read only</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Read only</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Read only</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">EDI config data</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Read, export for audit</td></tr>
+<tr style="background:#F8FAFB"><td style="padding:6px 10px;font-weight:700">Admin / Manager</td><td style="padding:6px 10px">All clients</td><td style="padding:6px 10px">Full read</td><td style="padding:6px 10px">Read only</td><td style="padding:6px 10px">Full read</td><td style="padding:6px 10px">Full (with audit log)</td><td style="padding:6px 10px">All + user management</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="c amber"><h3>Critical access control: UW Params are GAB-internal</h3>
+<p>The underwriting parameters (bucket, admin factor, commission %, risk factor) are pricing-sensitive data. The Benefits Analyst needs the <strong>output</strong> (calculated rates per tier) but must NOT see the <strong>input</strong> (how those rates were derived). If an analyst sees "bucket = 0.975" they know the client is getting a 2.5% discount — that's internal pricing intelligence. The RBAC model (F9) must enforce this: analyst role sees rate grids but the UW section is hidden. The Copilot (CP7) respects this: agent actions are limited to the current user's role permissions.</p>
+</div>
+
+<div class="sec">Secure Data Flow Between Systems</div>
+
+<div class="g2">
+<div class="c purple"><h3>CAP Tool &harr; PrismHR <span class="tag t-f">F2</span></h3>
+<p><strong>Protocol:</strong> REST/JSON over TLS 1.2+ (mutual TLS preferred)<br>
+<strong>Auth:</strong> API service account with method-level permissions — grant only the specific BenefitService/ClientMasterService/EmployeeService methods needed, not wildcard <code>*</code><br>
+<strong>Data minimization:</strong> Read only the fields needed for CAP pre-fill. Employee SSNs, addresses, and wage data are NOT needed for CAP operations — do not request them even if the API would return them<br>
+<strong>Caching:</strong> Prism data should not be persisted in the CAP tool database. Use session-scoped caching for pre-fill, then discard. The CAP stores plan-level data (rates, codes, tiers), not employee-level data<br>
+<strong>Write-back:</strong> <code>createBenefitPlanSetup</code> pushes plan config only — no employee PII in the write payload <span class="tag t-nb">NB9</span> <span class="tag t-r">R9</span></p></div>
+<div class="c purple"><h3>CAP Tool &rarr; ClientSpace <span class="tag t-f">F2</span> <span class="tag t-nb">NB6</span> <span class="tag t-r">R6</span></h3>
+<p><strong>Protocol:</strong> Webhooks over HTTPS / REST API<br>
+<strong>Data scope:</strong> Case metadata only — client ID, CAP status, approval chain, timestamps. Do NOT push rate grids or underwriting parameters to ClientSpace. ClientSpace needs "CAP approved for Itafos on 6/15" not "Itafos bucket = 0.975"<br>
+<strong>Audit trail:</strong> Case events logged in both systems. ClientSpace receives the handoff event; the CAP tool retains the full audit log<br>
+<strong>Auth:</strong> Service account with scoped permissions for case creation and status updates only</p></div>
+</div>
+<div class="g2">
+<div class="c purple"><h3>CAP Tool &rarr; WorkSight / NextGen <span class="tag t-f">F2</span></h3>
+<p><strong>Protocol:</strong> API or structured data export (confirm format in SME call)<br>
+<strong>Data scope:</strong> Plan-level only — plan names, rates per tier, contribution amounts, eligibility rules, enrollment dates. No employee-level data, no underwriting parameters, no commission data<br>
+<strong>Sensitivity:</strong> Rates per tier are needed for the enrollment portal — employees need to see their cost. But the ER contribution strategy and UW inputs should not flow to the portal<br>
+<strong>Auth:</strong> Service account or secure file transfer with encryption</p></div>
+<div class="c purple"><h3>CAP Tool &rarr; DocuSign <span class="tag t-f">F2</span> <span class="tag t-nb">NB8</span> <span class="tag t-r">R8</span></h3>
+<p><strong>Protocol:</strong> DocuSign eSignature REST API over TLS<br>
+<strong>Data scope:</strong> ER Confirmation document (rendered PDF) containing plan names, rates, contribution amounts — business-confidential but not PHI. Client contact name and email for routing<br>
+<strong>Storage:</strong> Signed document stored as a versioned artifact in the CAP tool's Document entity. DocuSign retains a copy per their retention policy. Snapshot locked for SOX.<br>
+<strong>Auth:</strong> OAuth 2.0 with scoped permissions for envelope creation and status tracking</p></div>
+</div>
+
+<div class="c"><h3>Data flow principle: minimum necessary</h3>
+<p>Each integration sends only the data the receiving system needs to perform its function. No "dump everything and let the receiver filter." The Connections Hub (<span class="tag t-f">F2</span>) enforces this by translating structured CAP data into system-specific payloads with field-level filtering per destination. The Copilot (<span class="tag t-cp">CP7</span>) applies the same principle: minimum necessary fields sent to the LLM.</p>
+</div>
+
+<div class="sec">Encryption Requirements</div>
+<div class="g2">
+<div class="c navy"><h3>At Rest</h3>
+<ul>
+<li><strong>Database:</strong> AES-256 encryption for all stored CAP data. Use database-level transparent data encryption (TDE) at minimum; field-level encryption for PHI/PII fields if Prism employee data is ever cached</li>
+<li><strong>File storage:</strong> S3 server-side encryption (SSE-S3 or SSE-KMS) for all document artifacts (booklets, signed CAPs, SBC attachments)</li>
+<li><strong>Backups:</strong> Encrypted with separate key from production data. Cross-region replication encrypted in transit</li>
+<li><strong>Key management:</strong> AWS KMS or equivalent. Key rotation policy (annual minimum). Separate keys for different data classifications</li>
+</ul></div>
+<div class="c navy"><h3>In Transit</h3>
+<ul>
+<li><strong>Browser &rarr; CAP tool:</strong> TLS 1.2+ mandatory. HSTS headers. Certificate pinning for mobile clients if applicable</li>
+<li><strong>CAP tool &rarr; Prism API:</strong> TLS 1.2+ (mutual TLS preferred). API credentials never in URL parameters</li>
+<li><strong>CAP tool &rarr; ClientSpace/WorkSight:</strong> HTTPS webhooks. Payload signing (HMAC) to verify webhook authenticity</li>
+<li><strong>Internal services:</strong> Service mesh with mTLS between microservices if the platform uses a distributed architecture</li>
+<li><strong>No sensitive data in URLs:</strong> All PII/PHI/confidential data in request bodies, never in query strings (which get logged in web server access logs)</li>
+</ul></div>
+</div>
+
+<div class="sec">Data Retention & Deletion Policies</div>
+
+<div style="overflow-x:auto;margin:10px 0">
+<table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #E2E8ED;border-radius:8px;overflow:hidden;font-size:10px">
+<thead><tr style="background:#23394A;color:rgba(255,255,255,.9)">
+<th style="padding:8px 10px;text-align:left">Data Category</th>
+<th style="padding:8px 10px;text-align:left">Retention Period</th>
+<th style="padding:8px 10px;text-align:left">Rationale</th>
+<th style="padding:8px 10px;text-align:left">Deletion Method</th>
+</tr></thead>
+<tbody>
+<tr><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED;font-weight:700">Active CAP (current plan year)</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Duration of plan year + renewal period (~14 months)</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Operational — needed for servicing, audit, reconciliation</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">N/A (active data)</td></tr>
+<tr style="background:#F8FAFB"><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED;font-weight:700">Historical CAPs (prior years)</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">7 years from plan year end</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">ERISA record retention (plan documents + 6 years after termination)</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Automated purge with 90-day warning notification</td></tr>
+<tr><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED;font-weight:700">Audit logs</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">10 years</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">SOX-adjacent compliance evidence, litigation hold support</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Immutable storage (write-once, no delete)</td></tr>
+<tr style="background:#F8FAFB"><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED;font-weight:700">Signed documents (ER Confirmation, booklets)</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">7 years from signature date</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Contract evidence, ERISA compliance</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Automated purge, archived copy retained if litigation hold active</td></tr>
+<tr><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED;font-weight:700">Prism session data (pre-fill cache)</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Session duration only (discard on close)</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Data minimization — employee data lives in Prism, not our platform</td><td style="padding:6px 10px;border-bottom:1px solid #E2E8ED">Automatic session cleanup</td></tr>
+<tr style="background:#F8FAFB"><td style="padding:6px 10px;font-weight:700">Terminated client data</td><td style="padding:6px 10px">Configurable per client (default: 7 years from termination)</td><td style="padding:6px 10px">ERISA + contractual obligations</td><td style="padding:6px 10px">Complete purge (hard delete, not soft) with deletion logged in audit trail</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="c green"><h3>Right to deletion / data subject requests</h3>
+<p>For state privacy law compliance (CCPA/CPRA, TDPSA), the platform must support a <strong>"data subject request" workflow</strong>:</p>
+<ul>
+<li>Identify all data associated with a specific individual across CAP records (primarily broker contacts and client contacts — employee data lives in Prism)</li>
+<li>Execute deletion or anonymization with audit trail of the request and completion</li>
+<li>Respond within statutory timeframes (45 days for CCPA, 45 days for TDPSA)</li>
+<li>Exception: data required for ERISA/HIPAA compliance is exempt from deletion requests during the retention period</li>
+</ul>
+</div>
+
+<div class="sec">Infrastructure Security</div>
+<div class="g3">
+<div class="c navy"><h3>Cloud Provider Requirements</h3>
+<ul>
+<li>SOC 2 Type II certification</li>
+<li>HIPAA BAA available and executed</li>
+<li>FedRAMP authorization (preferred, not required)</li>
+<li>Data residency: US-only (G&A operates domestically)</li>
+<li>Multi-AZ deployment for availability</li>
+</ul></div>
+<div class="c navy"><h3>Application Security</h3>
+<ul>
+<li>OWASP Top 10 compliance</li>
+<li>Regular penetration testing (annual minimum)</li>
+<li>Dependency vulnerability scanning (CI/CD pipeline)</li>
+<li>Session management: timeout after 15 min inactivity</li>
+<li>MFA for all admin and manager roles</li>
+<li>SSO integration with G&A's identity provider</li>
+</ul></div>
+<div class="c navy"><h3>Incident Response</h3>
+<ul>
+<li>HIPAA breach notification: 60 days to affected individuals, HHS, and media (if 500+ affected)</li>
+<li>Security incident logging and escalation procedures</li>
+<li>Forensic audit capability on all data access</li>
+<li>Data breach insurance recommendation</li>
+<li>Annual security review and risk assessment</li>
+</ul></div>
+</div>
+
+<div class="sec">Implementation Checklist</div>
+<div class="g2">
+<div class="c green"><h3>Pre-launch requirements</h3>
+<ul>
+<li>BAA executed between G&A and cloud provider</li>
+<li>BAA executed between G&A and R Systems (platform developer)</li>
+<li>RBAC matrix (F9) reviewed and approved by G&A compliance team</li>
+<li>Encryption keys provisioned and rotation schedule set</li>
+<li>Penetration test completed with findings remediated</li>
+<li>Data retention policies configured per client segment</li>
+<li>Incident response plan documented and tested</li>
+<li>SSO integration with G&A identity provider</li>
+<li>Copilot PII/PHI minimization controls (CP7) validated</li>
+</ul></div>
+<div class="c green"><h3>Ongoing requirements</h3>
+<ul>
+<li>Quarterly access review: verify AM-to-client assignments match RBAC (F9)</li>
+<li>Annual penetration test and SOC 2 audit evidence collection</li>
+<li>Annual HIPAA risk assessment</li>
+<li>Audit log review: anomalous access patterns flagged (including Copilot agent-assisted actions)</li>
+<li>Retention policy execution: automated purge with notification</li>
+<li>State privacy law updates monitored and controls adjusted</li>
+<li>Security training for all platform users (HIPAA awareness)</li>
+<li>SOX snapshot integrity verification: signed CAP versions immutable</li>
+</ul></div>
+</div>
+
+<div class="foot">Sheet 7 of 8</div>
+</div>
+
+<!-- ======================= TAB 8: MCP SERVER ARCHITECTURE ======================= -->
+<div id="p8" class="pnl">
+<div class="eye">Sheet 8 of 8</div>
+<div class="h1">MCP Server Architecture — AI-Native Integration Layer</div>
+<div class="sub">How to wrap PrismHR, ClientSpace, DocuSign, and WorkSight APIs as Model Context Protocol (MCP) servers — enabling any AI agent (Claude, Copilot, custom) to securely read and write across G&A's system landscape through a standardized tool-calling interface.</div>
+
+<div class="sec">What is MCP and Why It Matters Here</div>
+
+<div class="c purple"><h3>Model Context Protocol (MCP) in 30 seconds</h3>
+<p>MCP is an open standard (by Anthropic) that lets AI models <strong>call external tools</strong> through a simple, typed interface. Think of it as a USB-C port for AI — any AI agent that speaks MCP can plug into any MCP server, without custom integration code per model.</p>
+<ul>
+<li><strong>MCP Server</strong> = a thin wrapper around an API/database/service that exposes typed <strong>tools</strong> (functions the AI can call) and <strong>resources</strong> (data the AI can read)</li>
+<li><strong>MCP Client</strong> = the AI agent (e.g., CAP Copilot, Claude, a custom agent) that discovers and calls those tools</li>
+<li><strong>Transport</strong> = stdio (local) or SSE/HTTP (remote) — the server can run anywhere</li>
+</ul>
+<p style="margin-top:8px"><strong>For G&A:</strong> instead of hard-coding PrismHR API calls into the Copilot (CP3/CP4), we wrap each external system as an MCP server. The Copilot then discovers available tools at runtime, calls them with typed parameters, and gets structured results — all with built-in permission checking, rate limiting, and audit logging.</p>
+</div>
+
+<div class="cmp">
+<div class="cmp-b"><h4>Without MCP (Current approach)</h4>
+<p>Every integration is hand-wired into the app. Adding a new data source means modifying Copilot code. Each AI feature needs custom fetch/parse/validate logic. No standardization across integrations.</p></div>
+<div class="cmp-g"><h4>With MCP Servers</h4>
+<p>Each system is a standalone MCP server. Any AI agent can discover and call tools. Adding a new data source = deploying a new MCP server. Copilot, Claude, or future agents all use the same tools. Audit logging at the MCP layer, not per-feature.</p></div>
+</div>
+
+<div class="sec">Architecture Overview</div>
+
+<div class="c"><h3>MCP Server Topology for G&A CAP Platform</h3>
+<p>Each external system becomes one MCP server. The CAP Copilot (or any AI agent) connects to all of them simultaneously.</p>
+</div>
+
+<div style="background:#fff;border:1px solid var(--rl);border-radius:8px;padding:20px;margin:12px 0;font-family:'Courier New',monospace;font-size:11px;line-height:1.8;white-space:pre;overflow-x:auto">
+┌─────────────────────────────────────────────────────────────────────┐
+│                        AI AGENTS (MCP Clients)                       │
+│                                                                       │
+│   ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐      │
+│   │ CAP Copilot   │  │ Claude Code  │  │ Custom Automation    │      │
+│   │ (CP1-CP7)     │  │ Agent        │  │ Agents (future)      │      │
+│   └──────┬───────┘  └──────┬───────┘  └──────────┬───────────┘      │
+│          │                  │                      │                   │
+│          └──────────────────┼──────────────────────┘                   │
+│                             │  MCP Protocol (tools + resources)        │
+│                             ▼                                          │
+├─────────────────────────────────────────────────────────────────────┤
+│                     MCP SERVER LAYER (G&A-hosted)                     │
+│                                                                       │
+│  ┌────────────────┐ ┌────────────────┐ ┌────────────────┐           │
+│  │ prismhr-mcp    │ │ clientspace-mcp│ │ docusign-mcp   │           │
+│  │                │ │                │ │                │           │
+│  │ 12 tools       │ │ 6 tools        │ │ 5 tools        │           │
+│  │ 4 resources    │ │ 2 resources    │ │ 2 resources    │           │
+│  └───────┬────────┘ └───────┬────────┘ └───────┬────────┘           │
+│          │                  │                   │                     │
+│  ┌────────────────┐ ┌────────────────┐ ┌────────────────┐           │
+│  │ worksight-mcp  │ │ cap-data-mcp   │ │ carrier-uw-mcp │           │
+│  │                │ │                │ │                │           │
+│  │ 4 tools        │ │ 8 tools        │ │ 3 tools        │           │
+│  │ 1 resource     │ │ 6 resources    │ │ 1 resource     │           │
+│  └───────┬────────┘ └───────┬────────┘ └───────┬────────┘           │
+│          │                  │                   │                     │
+├──────────┼──────────────────┼───────────────────┼────────────────────┤
+│          ▼                  ▼                   ▼                     │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐           │
+│  │  PrismHR     │  │ ClientSpace  │  │  DocuSign /       │           │
+│  │  REST API    │  │ PRO API      │  │  WorkSight /      │           │
+│  │              │  │              │  │  Carrier Systems   │           │
+│  └──────────────┘  └──────────────┘  └──────────────────┘           │
+└─────────────────────────────────────────────────────────────────────┘
+</div>
+
+<div class="sec">MCP Server #1: prismhr-mcp — The Core Integration</div>
+
+<div class="c red"><h3>PrismHR MCP Server — 12 tools, 4 resources</h3>
+<p>Wraps the PrismHR BenefitService, ClientMasterService, EmployeeService, and PayrollService REST APIs as MCP tools. This is the highest-value MCP server because it's the system of record for plans, rates, and enrollments.</p>
+</div>
+
+<div class="g2">
+<div class="c blue"><h3>READ Tools (safe, no confirmation needed)</h3>
+<ul>
+<li><code>get_client_benefit_plans</code> — Pull all plans for a client by Prism ID<br><span style="color:var(--gr);font-size:10px">Wraps: <code>BenefitService.getClientBenefitPlans</code> | Used by: R2 Pre-fill, CP3</span></li>
+<li><code>get_plan_setup_details</code> — Get plan config: rates, tiers, classifications<br><span style="color:var(--gr);font-size:10px">Wraps: <code>BenefitService.getClientBenefitPlanSetupDetails</code> | Used by: R2, R4, NB5</span></li>
+<li><code>get_plan_catalog</code> — List all system-level master plans<br><span style="color:var(--gr);font-size:10px">Wraps: <code>BenefitService.getBenefitPlanList</code> | Used by: F3, NB4</span></li>
+<li><code>get_employee_census</code> — Get employee demographics and counts<br><span style="color:var(--gr);font-size:10px">Wraps: <code>EmployeeService.*</code> | Used by: NB1, R2</span></li>
+<li><code>get_employee_premium</code> — Get billing rates per employee<br><span style="color:var(--gr);font-size:10px">Wraps: <code>BenefitService.getEmployeePremium</code> | Used by: deduction audit</span></li>
+<li><code>get_flex_plans</code> — Get FSA/HSA plan configuration<br><span style="color:var(--gr);font-size:10px">Wraps: <code>BenefitService.getFlexPlans</code> | Used by: NB4 Tax Plans</span></li>
+<li><code>get_benefit_rules</code> — Get eligibility and enrollment rules<br><span style="color:var(--gr);font-size:10px">Wraps: <code>BenefitService.getBenefitRule</code> | Used by: F8 validation</span></li>
+<li><code>get_deduction_config</code> — Get payroll deduction mapping<br><span style="color:var(--gr);font-size:10px">Wraps: <code>DeductionService.*</code> | Used by: NB9/R9 write-back</span></li>
+</ul></div>
+<div class="c red"><h3>WRITE Tools (require confirmation via CP4 diff-preview)</h3>
+<ul>
+<li><code>create_benefit_plan_setup</code> — Create/update client's plan config in Prism<br><span style="color:var(--gr);font-size:10px">Wraps: <code>BenefitService.createBenefitPlanSetup</code> | Used by: NB9, R9<br><strong>This is THE critical write operation</strong> — replaces manual analyst entry of plan codes, rates, tiers, classifications. The MCP tool requires a structured payload and returns a diff preview before executing.</span></li>
+<li><code>enroll_employee_benefit</code> — Enroll an employee in a plan<br><span style="color:var(--gr);font-size:10px">Wraps: <code>BenefitService.enrollBenefit</code> | Used by: downstream enrollment</span></li>
+<li><code>add_fsa_reimbursement</code> — Create FSA reimbursement<br><span style="color:var(--gr);font-size:10px">Wraps: <code>BenefitService.addFSAReimbursement</code></span></li>
+<li><code>update_client_billing</code> — Update billing configuration<br><span style="color:var(--gr);font-size:10px">Wraps: <code>ClientMasterService.addBillPending</code></span></li>
+</ul>
+<p style="margin-top:8px;font-size:10px;color:var(--r);font-weight:600">All WRITE tools enforce CP7 guardrails: confirmation required, RBAC checked, before→after logged.</p>
+</div>
+</div>
+
+<div class="c"><h3>Resources (read-only data the agent can browse)</h3>
+<ul>
+<li><code>prism://plans/{client_id}</code> — All plans for a client (structured JSON)</li>
+<li><code>prism://rates/{plan_code}/{year}</code> — Rate table for a specific plan + year</li>
+<li><code>prism://client/{client_id}</code> — Client master record</li>
+<li><code>prism://census/{client_id}</code> — Employee census summary (count by class, no PII)</li>
+</ul>
+</div>
+
+<div class="sec">MCP Server #2: clientspace-mcp — Workflow & Case Management</div>
+<div class="c blue"><h3>ClientSpace MCP Server — 6 tools, 2 resources</h3>
+<div class="g2" style="margin-top:8px">
+<div class="c"><h3>Tools</h3>
+<ul>
+<li><code>create_case</code> — Create a new workflow case on CAP submit (NB6)</li>
+<li><code>update_case_status</code> — Advance case through approval stages (NB6, R6)</li>
+<li><code>get_case_details</code> — Retrieve case status and history (CP3)</li>
+<li><code>add_case_note</code> — Attach a note or audit entry to a case</li>
+<li><code>update_benefits_page</code> — Write structured CAP data to client's benefits page</li>
+<li><code>get_commission_tracking</code> — Retrieve commission schedule for a client</li>
+</ul></div>
+<div class="c"><h3>Resources</h3>
+<ul>
+<li><code>clientspace://cases/{cap_id}</code> — Case data for a specific CAP</li>
+<li><code>clientspace://benefits/{client_id}</code> — Benefits page data for a client</li>
+</ul>
+<p style="margin-top:8px;font-size:10px;color:var(--gr)">ClientSpace already has two-way PrismHR integration. The MCP server adds the AI-accessible layer on top — the Copilot can check case status, add notes, and advance workflows via natural language.</p>
+</div>
+</div></div>
+
+<div class="sec">MCP Server #3: docusign-mcp — E-Signature Automation</div>
+<div class="c amber"><h3>DocuSign MCP Server — 5 tools, 2 resources</h3>
+<div class="g2" style="margin-top:8px">
+<div class="c"><h3>Tools</h3>
+<ul>
+<li><code>create_envelope</code> — Create a DocuSign envelope with CAP documents (NB8/R8)</li>
+<li><code>send_envelope</code> — Route envelope to signers with configured routing</li>
+<li><code>get_envelope_status</code> — Check sent/viewed/signed status (CP3)</li>
+<li><code>void_envelope</code> — Cancel an in-flight envelope if CAP changes materially</li>
+<li><code>download_signed_document</code> — Retrieve the signed PDF for archival</li>
+</ul></div>
+<div class="c"><h3>Resources</h3>
+<ul>
+<li><code>docusign://envelopes/{cap_id}</code> — All envelopes for a CAP</li>
+<li><code>docusign://templates</code> — Available DocuSign templates</li>
+</ul>
+<p style="margin-top:8px;font-size:10px;color:var(--gr)">Example Copilot interaction: "Route the booklet for signature" → Copilot calls <code>create_envelope</code> with the booklet PDF + signer list → shows preview → user confirms → calls <code>send_envelope</code>.</p>
+</div>
+</div></div>
+
+<div class="sec">MCP Server #4: worksight-mcp & carrier-uw-mcp</div>
+<div class="g2">
+<div class="c green"><h3>WorkSight MCP Server — 4 tools, 1 resource</h3>
+<ul>
+<li><code>push_enrollment_config</code> — Push plan/rate/eligibility data to the enrollment portal</li>
+<li><code>get_portal_status</code> — Check if the portal is configured for a client</li>
+<li><code>update_enrollment_dates</code> — Set open enrollment start/close dates</li>
+<li><code>get_enrollment_summary</code> — Retrieve enrollment selection counts</li>
+</ul>
+<p style="margin-top:6px"><strong>Resource:</strong> <code>worksight://portal/{client_id}</code></p>
+</div>
+<div class="c purple"><h3>Carrier UW MCP Server — 3 tools, 1 resource</h3>
+<ul>
+<li><code>extract_document</code> — AI extraction from uploaded SBCs/invoices (F10, NB2)</li>
+<li><code>get_extraction_results</code> — Retrieve extracted fields with confidence scores</li>
+<li><code>validate_rates</code> — Cross-check extracted rates against carrier tables</li>
+</ul>
+<p style="margin-top:6px"><strong>Resource:</strong> <code>carrier://extractions/{document_id}</code></p>
+</div>
+</div>
+
+<div class="sec">MCP Server #5: cap-data-mcp — The Platform's Own Data</div>
+<div class="c navy"><h3>CAP Platform Data MCP Server — 8 tools, 6 resources</h3>
+<p>Exposes the CAP platform's own data (Foundation F1-F10 + CAP records) as MCP tools. This is how the Copilot reads and writes CAP data without direct database access.</p>
+<div class="g2" style="margin-top:8px">
+<div class="c"><h3>READ Tools</h3>
+<ul>
+<li><code>get_cap_details</code> — Read any field from the active CAP (CP3)</li>
+<li><code>get_master_plan_rates</code> — Look up F3 rate table by carrier/plan/year</li>
+<li><code>get_pricing_stack</code> — Read F4 bucket/AF/commission/RF values</li>
+<li><code>get_validation_status</code> — Run F8 validation and return results (NB5, R6)</li>
+<li><code>get_readiness_score</code> — Calculate readiness percentage for handoff</li>
+</ul></div>
+<div class="c"><h3>WRITE Tools</h3>
+<ul>
+<li><code>update_cap_field</code> — Set a field value on the active CAP (CP4, with diff-preview)</li>
+<li><code>set_contribution_strategy</code> — Change contribution strategy + recompute rates (CP4)</li>
+<li><code>advance_cap_status</code> — Move CAP through lifecycle states (NB6, R6)</li>
+</ul>
+<p style="margin-top:8px;font-size:10px;color:var(--r);font-weight:600">All writes go through the CP7 guardrail layer: role check → diff preview → user confirmation → audit log.</p>
+</div>
+</div>
+<p style="margin-top:8px"><strong>Resources:</strong> <code>cap://active</code>, <code>cap://client/{id}</code>, <code>cap://plans/{id}</code>, <code>cap://rates/{plan}</code>, <code>cap://validation/{id}</code>, <code>cap://audit/{id}</code></p>
+</div>
+
+<div class="sec">How MCP Tools Map to the Copilot PRD (CP1-CP7)</div>
+<div class="c"><h3>The Copilot's tool catalog IS the MCP tool catalog</h3>
+<p>The Copilot PRD defines CP3 (read tools) and CP4 (write tools). In an MCP-based architecture, these are not custom-coded functions — they are MCP tool calls that the LLM discovers at runtime.</p>
+</div>
+
+<table class="ent-tbl" style="width:100%;margin:12px 0">
+<tr><th>Copilot Action</th><th>PRD Ref</th><th>MCP Server</th><th>MCP Tool</th><th>Example Prompt</th></tr>
+<tr><td>Look up a carrier rate</td><td>CP3</td><td>cap-data-mcp</td><td><code>get_master_plan_rates</code></td><td>"What's the BCBSTX PPO $500 family rate?"</td></tr>
+<tr><td>Pull client headcount from Prism</td><td>CP3</td><td>prismhr-mcp</td><td><code>get_employee_census</code></td><td>"Pull the latest headcount from Prism"</td></tr>
+<tr><td>Check what blocks handoff</td><td>CP5</td><td>cap-data-mcp</td><td><code>get_validation_status</code></td><td>"What's blocking handoff?"</td></tr>
+<tr><td>Change contribution strategy</td><td>CP4</td><td>cap-data-mcp</td><td><code>set_contribution_strategy</code></td><td>"Set strategy to Flat Dollar $500"</td></tr>
+<tr><td>Write approved CAP to Prism</td><td>CP4</td><td>prismhr-mcp</td><td><code>create_benefit_plan_setup</code></td><td>"Push this CAP to Prism"</td></tr>
+<tr><td>Generate booklet</td><td>CP4</td><td>cap-data-mcp</td><td><code>advance_cap_status</code></td><td>"Generate the booklet and route for signature"</td></tr>
+<tr><td>Check DocuSign status</td><td>CP3</td><td>docusign-mcp</td><td><code>get_envelope_status</code></td><td>"Has the client signed?"</td></tr>
+<tr><td>Check ClientSpace case</td><td>CP3</td><td>clientspace-mcp</td><td><code>get_case_details</code></td><td>"What's the case status?"</td></tr>
+</table>
+
+<div class="sec">Building an MCP Server — It's Simpler Than You Think</div>
+
+<div class="c green"><h3>Example: prismhr-mcp server in TypeScript (simplified)</h3>
+<p>An MCP server is a small Node.js process that registers tools and handles calls. Here's the skeleton:</p>
+<div style="background:#1B2D3D;color:#E8ECF0;padding:14px;border-radius:6px;font-family:'Courier New',monospace;font-size:10px;line-height:1.7;margin-top:8px;overflow-x:auto;white-space:pre">import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { z } from "zod";
+
+const server = new McpServer({
+  name: "prismhr-mcp",
+  version: "1.0.0",
+});
+
+// READ tool — safe, no confirmation needed
+server.tool(
+  "get_client_benefit_plans",
+  "Retrieve all benefit plans for a client from PrismHR",
+  { client_id: z.string().describe("Prism client ID, e.g. '2908'") },
+  async ({ client_id }) => {
+    const response = await prismAPI.get(
+      `/BenefitService/getClientBenefitPlans?clientId=${client_id}`
+    );
+    return {
+      content: [{
+        type: "text",
+        text: JSON.stringify(response.data, null, 2)
+      }]
+    };
+  }
+);
+
+// WRITE tool — returns diff preview, agent must confirm
+server.tool(
+  "create_benefit_plan_setup",
+  "Create or update a client's benefit plan config in PrismHR. " +
+  "Returns a diff preview. Call confirm_write to execute.",
+  {
+    client_id: z.string(),
+    plan_code: z.string(),
+    rates: z.object({
+      eo: z.number(), es: z.number(),
+      ec: z.number(), ef: z.number(),
+    }),
+  },
+  async ({ client_id, plan_code, rates }) => {
+    // Fetch current state for diff
+    const current = await prismAPI.get(
+      `/BenefitService/getClientBenefitPlanSetupDetails?clientId=${client_id}`
+    );
+    const diff = computeDiff(current.data, { plan_code, rates });
+
+    // Store pending write for confirmation
+    pendingWrites.set(client_id, { plan_code, rates });
+
+    return {
+      content: [{
+        type: "text",
+        text: `PREVIEW (not yet applied):\n${JSON.stringify(diff, null, 2)}\n` +
+              `Call confirm_write with client_id="${client_id}" to execute.`
+      }]
+    };
+  }
+);
+
+// Resource — browseable data
+server.resource(
+  "prism://rates/{plan_code}/{year}",
+  "Rate table for a specific plan and year",
+  async (uri) => { /* fetch and return */ }
+);
+
+// Start server
+server.connect(new StdioServerTransport());</div>
+</div>
+
+<div class="c"><h3>Each MCP server is a separate deployable unit</h3>
+<p>Deploy as Docker containers, Lambda functions, or simple Node.js processes. Each server manages its own:</p>
+<ul>
+<li><strong>Authentication</strong> — API keys, OAuth tokens, service accounts per external system</li>
+<li><strong>Rate limiting</strong> — prevent runaway AI agents from hammering PrismHR</li>
+<li><strong>Caching</strong> — rate tables don't change hourly; cache with TTL</li>
+<li><strong>Error handling</strong> — structured error responses the AI can reason about</li>
+<li><strong>Audit logging</strong> — every tool call logged with caller, params, result, timestamp</li>
+</ul>
+</div>
+
+<div class="sec">What Else Can Be MCP-ified? (Future Integrations)</div>
+<div class="g3">
+<div class="c navy"><h3>Guardian Carrier API</h3>
+<p>Guardian Life launched a direct PrismHR API integration (Nov 2025). Wrap it as <code>guardian-mcp</code> to let AI agents pull real-time dental/vision rates and push enrollment data directly. Tools: <code>get_rates</code>, <code>submit_enrollment</code>, <code>check_eligibility</code>.</p></div>
+<div class="c navy"><h3>WEX (FSA/HSA/COBRA)</h3>
+<p>WEX handles FSA reimbursements, HSA contributions, and COBRA administration. An <code>wex-mcp</code> server enables: <code>create_fsa_account</code>, <code>process_cobra_event</code>, <code>check_hsa_balance</code>. Eliminates manual COBRA event entry (currently 100% manual).</p></div>
+<div class="c navy"><h3>ACA Compliance Engine</h3>
+<p>ACA affordability calculations, 1095-C filing, and FPL tracking. An <code>aca-mcp</code> server: <code>check_affordability</code>, <code>generate_1095c</code>, <code>get_safe_harbor_threshold</code>. Links directly to F5 parameters.</p></div>
+</div>
+<div class="g3">
+<div class="c navy"><h3>Email / Notifications</h3>
+<p>An <code>notifications-mcp</code> server: <code>send_renewal_reminder</code>, <code>notify_coordinator</code>, <code>send_enrollment_confirmation</code>. The Copilot could say "Remind Dana about the Sterling renewal" and it just works.</p></div>
+<div class="c navy"><h3>Reporting / Analytics</h3>
+<p>A <code>reporting-mcp</code> server wrapping a BI layer: <code>get_cap_metrics</code>, <code>get_renewal_pipeline</code>, <code>get_error_rate_trends</code>, <code>compare_contribution_strategies</code>. AI-powered reporting without building dashboards.</p></div>
+<div class="c navy"><h3>Slack / Teams Integration</h3>
+<p>A <code>slack-mcp</code> server: <code>post_channel_message</code>, <code>create_thread</code>. The Copilot posts handoff notifications, approval requests, or blocker alerts directly to the Benefits team channel.</p></div>
+</div>
+
+<div class="sec">Security & Guardrails for MCP Servers</div>
+<div class="g2">
+<div class="c red"><h3>Authentication & Authorization</h3>
+<ul>
+<li>Each MCP server authenticates to its backend with <strong>service accounts</strong> — not user credentials</li>
+<li>The MCP layer passes the <strong>user context</strong> (role, permissions from F9) with every call</li>
+<li>WRITE tools check <code>user.permissions.includes('edit')</code> before executing</li>
+<li>Synced/read-only fields (Prism data) refuse writes at the MCP level — the AI never even gets a write tool for those</li>
+<li>PII/PHI fields are <strong>redacted or summarized</strong> in MCP responses — e.g., census returns counts, not SSNs</li>
+</ul></div>
+<div class="c green"><h3>Audit & Compliance</h3>
+<ul>
+<li>Every MCP tool call is logged: <code>{ timestamp, user, tool, params, result_summary, duration_ms }</code></li>
+<li>Write tool calls additionally log: <code>{ before, after, confirmed_by, confirmation_method }</code></li>
+<li>Logs feed into the platform's AuditLog entity (Tab 6) and the ClientSpace audit trail</li>
+<li>SOX compliance: signed/finalized CAPs reject ALL write tool calls at the MCP layer</li>
+<li>Rate limiting: max 100 calls/minute per agent session, with backoff</li>
+</ul></div>
+</div>
+
+<div class="sec">Implementation Roadmap</div>
+<div class="g2">
+<div class="c"><h3>Phase 1: cap-data-mcp (Week 1-2)</h3>
+<p>Start with the platform's own data — no external API dependency. 8 tools wrapping CAP model + Foundation data. The Copilot switches from hardcoded responses to live MCP tool calls. Immediate value: Copilot answers are always current, not static.</p></div>
+<div class="c"><h3>Phase 2: prismhr-mcp (Week 3-5)</h3>
+<p>The big one — wrapping PrismHR's BenefitService + ClientMasterService. Start with READ tools (safe). Add WRITE tools with diff-preview guardrails. Requires Prism API service account provisioning.</p></div>
+</div>
+<div class="g2">
+<div class="c"><h3>Phase 3: clientspace-mcp + docusign-mcp (Week 6-7)</h3>
+<p>Workflow automation: case creation on CAP submit, status tracking, DocuSign envelope routing. Enables end-to-end voice commands: "Submit this CAP and route for signature."</p></div>
+<div class="c"><h3>Phase 4: carrier-uw-mcp + worksight-mcp (Week 8-10)</h3>
+<p>Document extraction as MCP tools, enrollment portal push. Plus future servers: Guardian, WEX, ACA, notifications.</p></div>
+</div>
+
+<div class="c green"><h3>The end state: every G&A system is an MCP server</h3>
+<p>Any AI agent — the CAP Copilot today, Claude tomorrow, a custom renewal-automation agent next quarter — can discover and use the same set of tools. No custom integration per agent. One MCP layer, infinite AI applications. The platform becomes <strong>AI-native by default</strong>, not as an afterthought.</p></div>
+
+<div class="foot">Sheet 8 of 8</div>
+</div>
+
+<script>
+function sw(id,btn){
+document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+document.getElementById(id).classList.add('on');
+btn.classList.add('on');
+window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>

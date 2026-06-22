@@ -1,0 +1,8 @@
+.mcp.json
+.mcp/
+.playwright-mcp/
+node_modules/
+.next/
+*.log
+.DS_Store
+qa-*.png

@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:'IBM Plex Sans',system-ui,-apple-system,sans-serif;color:#1B2D3D;background:#EEF1F4;-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:10px;height:10px;}
+::-webkit-scrollbar-thumb{background:#C9D2DA;border-radius:8px;border:2px solid transparent;background-clip:content-box;}
+::-webkit-scrollbar-track{background:transparent;}
+input,button,select{font-family:inherit;}
+@keyframes capSpin{to{transform:rotate(360deg);}}
+@keyframes capRise{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes capToast{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+@keyframes capPulse{0%,100%{opacity:1;}50%{opacity:.45;}}
+@keyframes capShimmer{0%{background-position:-420px 0;}100%{background-position:420px 0;}}
+@keyframes capSlide{from{transform:translateX(100%);}to{transform:translateX(0);}}
+@keyframes capFade{from{opacity:0;}to{opacity:1;}}
+</style>
+</helmet>
+<template id="__bundler_thumbnail">
+<svg viewBox="0 0 120 84" xmlns="http://www.w3.org/2000/svg">
+  <rect width="120" height="84" fill="#EEF1F4"/>
+  <rect x="0" y="0" width="26" height="84" fill="#13212C"/>
+  <rect x="6" y="10" width="14" height="14" rx="3" fill="#C60C30"/>
+  <rect x="30" y="8" width="84" height="18" rx="4" fill="#fff"/>
+  <rect x="30" y="30" width="19" height="14" rx="3" fill="#fff"/>
+  <rect x="51" y="30" width="19" height="14" rx="3" fill="#fff"/>
+  <rect x="72" y="30" width="19" height="14" rx="3" fill="#fff"/>
+  <rect x="93" y="30" width="21" height="14" rx="3" fill="#fff"/>
+  <rect x="30" y="48" width="84" height="8" rx="2" fill="#fff"/>
+  <rect x="30" y="58" width="84" height="8" rx="2" fill="#fff"/>
+  <rect x="30" y="68" width="84" height="8" rx="2" fill="#fff"/>
+</svg>
+</template>
+
+<div style="height:100vh;width:100%;font-family:'IBM Plex Sans',system-ui,sans-serif;color:#1B2D3D;">
+
+<!-- ===================== LOGIN ===================== -->
+<sc-if value="{{ showLogin }}" hint-placeholder-val="{{ true }}">
+<div style="height:100vh;display:grid;grid-template-columns:1.05fr 1fr;background:#0F1B24;">
+  <!-- Brand panel -->
+  <div style="position:relative;background:linear-gradient(160deg,#16242F 0%,#0E1A23 60%,#0B141B 100%);padding:56px 60px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;">
+    <div style="position:absolute;top:-120px;right:-120px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(198,12,48,.22),transparent 70%);"></div>
+    <div style="position:absolute;bottom:-80px;left:-60px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(0,116,184,.14),transparent 70%);"></div>
+    <div style="position:relative;display:flex;align-items:center;gap:13px;">
+      <div style="width:40px;height:40px;border-radius:10px;background:#C60C30;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:#fff;letter-spacing:-1px;box-shadow:0 6px 18px rgba(198,12,48,.4);">CT</div>
+      <div>
+        <div style="color:#fff;font-size:16px;font-weight:600;letter-spacing:-.2px;">CAP Cloud Tool</div>
+        <div style="color:rgba(255,255,255,.45);font-size:11px;font-weight:500;letter-spacing:.3px;">G&amp;A Partners · Benefits Platform</div>
+      </div>
+    </div>
+    <div style="position:relative;max-width:440px;">
+      <div style="font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#E8546E;margin-bottom:18px;">System of Record</div>
+      <div style="font-size:38px;line-height:1.15;font-weight:600;color:#fff;letter-spacing:-1px;margin-bottom:20px;">The Client Approved Plan, finally structured.</div>
+      <div style="font-size:15px;line-height:1.7;color:rgba(255,255,255,.62);font-weight:400;">Replace the Excel-based CAP workflow with a validated, version-controlled platform — integrated bi-directionally with PrismHR, WorkSight, and ClientSpace.</div>
+      <div style="display:flex;gap:28px;margin-top:36px;">
+        <div><div style="font-size:28px;font-weight:600;color:#fff;letter-spacing:-.5px;">21.3</div><div style="font-size:11px;color:rgba(255,255,255,.45);font-weight:500;margin-top:2px;">FTE equiv. addressable</div></div>
+        <div style="width:1px;background:rgba(255,255,255,.12);"></div>
+        <div><div style="font-size:28px;font-weight:600;color:#fff;letter-spacing:-.5px;">8+</div><div style="font-size:11px;color:rgba(255,255,255,.45);font-weight:500;margin-top:2px;">downstream processes</div></div>
+        <div style="width:1px;background:rgba(255,255,255,.12);"></div>
+        <div><div style="font-size:28px;font-weight:600;color:#fff;letter-spacing:-.5px;">0</div><div style="font-size:11px;color:rgba(255,255,255,.45);font-weight:500;margin-top:2px;">re-entry, post-approval</div></div>
+      </div>
+    </div>
+    <div style="position:relative;font-size:11px;color:rgba(255,255,255,.32);letter-spacing:.3px;">R Systems · Confidential · Enterprise Preview</div>
+  </div>
+  <!-- Sign-in panel -->
+  <div style="background:#fff;display:flex;align-items:center;justify-content:center;padding:48px;">
+    <div style="width:100%;max-width:420px;">
+      <div style="font-size:24px;font-weight:600;letter-spacing:-.4px;margin-bottom:6px;">Sign in</div>
+      <div style="font-size:13.5px;color:#64707A;margin-bottom:26px;">Use your G&amp;A enterprise credentials, or explore the platform as any role.</div>
+      <div style="font-size:11px;font-weight:600;color:#64707A;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;">Work email</div>
+      <input value="d.whitfield@gapartners.com" style="width:100%;height:44px;border:1px solid #DCE2E8;border-radius:9px;padding:0 14px;font-size:14px;color:#1B2D3D;margin-bottom:18px;outline:none;background:#FBFCFD;" />
+      <button onClick="{{ ssoLogin }}" disabled="{{ authLoading }}" style="width:100%;height:46px;border:none;border-radius:9px;background:#C60C30;color:#fff;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.2px;box-shadow:0 4px 14px rgba(198,12,48,.28);display:flex;align-items:center;justify-content:center;gap:10px;" style-hover="background:#A50A28;">
+        <sc-if value="{{ authLoading }}"><span style="width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:capSpin .7s linear infinite;"></span>Authenticating…</sc-if>
+        <sc-if value="{{ authReady }}">Sign in with SAML SSO →</sc-if>
+      </button>
+      <div style="display:flex;align-items:center;gap:12px;margin:24px 0 18px;"><div style="flex:1;height:1px;background:#E4E8EC;"></div><div style="font-size:11px;color:#98A1A8;font-weight:600;letter-spacing:1px;text-transform:uppercase;">Or explore a role</div><div style="flex:1;height:1px;background:#E4E8EC;"></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
+        <sc-for list="{{ roleCards }}" as="r" hint-placeholder-count="6">
+          <button onClick="{{ r.pick }}" style="text-align:left;border:1px solid #E4E8EC;border-radius:10px;padding:11px 13px;background:#fff;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .12s;" style-hover="border-color:#C60C30;background:#FEF6F7;">
+            <div style="width:30px;height:30px;border-radius:8px;background:#F0F3F6;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#1B2D3D;flex-shrink:0;">{{ r.short }}</div>
+            <div style="min-width:0;"><div style="font-size:12.5px;font-weight:600;color:#1B2D3D;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.name }}</div><div style="font-size:10.5px;color:#98A1A8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.person }}</div></div>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ===================== APP SHELL ===================== -->
+<sc-if value="{{ showApp }}">
+<div style="height:100vh;display:flex;background:#EEF1F4;">
+  <!-- SIDEBAR -->
+  <div style="width:248px;flex-shrink:0;background:#13212C;display:flex;flex-direction:column;">
+    <div style="padding:18px 20px;display:flex;align-items:center;gap:11px;border-bottom:1px solid rgba(255,255,255,.07);">
+      <div style="width:34px;height:34px;border-radius:9px;background:#C60C30;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;letter-spacing:-1px;">CT</div>
+      <div><div style="color:#fff;font-size:14px;font-weight:600;letter-spacing:-.2px;">CAP Cloud Tool</div><div style="color:rgba(255,255,255,.4);font-size:10px;font-weight:500;">G&amp;A Partners</div></div>
+    </div>
+    <div style="padding:16px 12px;flex:1;overflow-y:auto;">
+      <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;color:rgba(255,255,255,.32);text-transform:uppercase;padding:6px 12px 8px;">Workspace</div>
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
+        <button onClick="{{ n.go }}" disabled="{{ n.disabled }}" style="width:100%;display:flex;align-items:center;gap:11px;padding:10px 12px;border:none;border-radius:9px;background:{{ n.bg }};color:{{ n.color }};font-size:13px;font-weight:{{ n.weight }};cursor:{{ n.cursor }};margin-bottom:2px;text-align:left;opacity:{{ n.opacity }};transition:background .12s;">
+          <span style="width:18px;height:18px;flex-shrink:0;display:inline-flex;">{{ n.icon }}</span>
+          <span style="flex:1;">{{ n.label }}</span>
+          <sc-if value="{{ n.lock }}"><span style="font-size:9px;color:rgba(255,255,255,.3);">🔒</span></sc-if>
+        </button>
+      </sc-for>
+      <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;color:rgba(255,255,255,.32);text-transform:uppercase;padding:18px 12px 8px;">Reference</div>
+      <a href="Architecture Diagram.dc.html" onClick="{{ openArch }}" style="width:100%;display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:rgba(255,255,255,.62);font-size:13px;font-weight:500;text-decoration:none;text-align:left;cursor:pointer;" style-hover="background:rgba(255,255,255,.06);color:#fff;">
+        <span style="width:18px;height:18px;flex-shrink:0;display:inline-flex;align-items:center;">{{ iconArch }}</span>
+        <span style="flex:1;">Architecture</span>
+        <span style="font-size:11px;color:rgba(255,255,255,.3);">↗</span>
+      </a>
+    </div>
+    <!-- user card -->
+    <div style="padding:12px;border-top:1px solid rgba(255,255,255,.07);">
+      <div style="display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:10px;background:rgba(255,255,255,.05);">
+        <div style="width:34px;height:34px;border-radius:9px;background:{{ roleAvatarBg }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">{{ roleShort }}</div>
+        <div style="min-width:0;flex:1;"><div style="color:#fff;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ rolePerson }}</div><div style="color:rgba(255,255,255,.42);font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ roleName }}</div></div>
+        <button onClick="{{ logout }}" title="Sign out" style="border:none;background:none;color:rgba(255,255,255,.45);cursor:pointer;font-size:15px;padding:4px;" style-hover="color:#fff;">⏻</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div style="flex:1;display:flex;flex-direction:column;min-width:0;">
+    <!-- TOPBAR -->
+    <div style="height:62px;flex-shrink:0;background:#fff;border-bottom:1px solid #E4E8EC;display:flex;align-items:center;padding:0 28px;gap:18px;">
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:11px;color:#98A1A8;font-weight:500;">{{ crumb }}</div>
+        <div style="font-size:16px;font-weight:600;letter-spacing:-.3px;color:#1B2D3D;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ pageTitle }}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="position:relative;">
+          <button onClick="{{ toggleRoleMenu }}" style="display:flex;align-items:center;gap:9px;height:38px;padding:0 12px;border:1px solid #E4E8EC;border-radius:9px;background:#fff;cursor:pointer;" style-hover="border-color:#C9D2DA;">
+            <span style="font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.6px;">Viewing as</span>
+            <span style="font-size:13px;font-weight:600;color:#1B2D3D;">{{ roleName }}</span>
+            <span style="color:#98A1A8;font-size:10px;">▾</span>
+          </button>
+          <sc-if value="{{ roleMenuOpen }}">
+            <div style="position:absolute;top:46px;right:0;width:248px;background:#fff;border:1px solid #E4E8EC;border-radius:12px;box-shadow:0 12px 36px rgba(16,32,45,.16);padding:6px;z-index:60;animation:capRise .14s ease;">
+              <div style="font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.8px;padding:9px 10px 6px;">Switch role</div>
+              <sc-for list="{{ roleSwitchList }}" as="r" hint-placeholder-count="6">
+                <button onClick="{{ r.pick }}" style="width:100%;display:flex;align-items:center;gap:10px;padding:9px 10px;border:none;border-radius:8px;background:{{ r.bg }};cursor:pointer;text-align:left;" style-hover="background:#F4F6F8;">
+                  <div style="width:28px;height:28px;border-radius:7px;background:#F0F3F6;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#1B2D3D;flex-shrink:0;">{{ r.short }}</div>
+                  <div style="flex:1;min-width:0;"><div style="font-size:12.5px;font-weight:600;color:#1B2D3D;">{{ r.name }}</div><div style="font-size:10.5px;color:#98A1A8;">{{ r.person }}</div></div>
+                  <sc-if value="{{ r.active }}"><span style="color:#1A7A4A;font-size:13px;">●</span></sc-if>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+        <sc-if value="{{ canCreate }}">
+          <button onClick="{{ startWizard }}" style="height:38px;padding:0 16px;border:none;border-radius:9px;background:#C60C30;color:#fff;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;box-shadow:0 3px 10px rgba(198,12,48,.24);" style-hover="background:#A50A28;"><span style="font-size:15px;line-height:1;">+</span> New CAP</button>
+        </sc-if>
+      </div>
+    </div>
+
+    <!-- SCROLL AREA -->
+    <div style="flex:1;overflow-y:auto;" onClick="{{ closeMenus }}">
+
+      <!-- ============ SKELETON (API loading) ============ -->
+      <sc-if value="{{ showSkeleton }}">
+      <div style="padding:28px 32px 48px;max-width:1280px;">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:20px;">
+          <span style="width:14px;height:14px;border:2px solid #D4DBE2;border-top-color:#C60C30;border-radius:50%;animation:capSpin .7s linear infinite;"></span>
+          <span style="font-size:12px;font-weight:600;color:#98A1A8;letter-spacing:.3px;">Loading from CAP API…</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;">
+          <div style="background:#fff;border:1px solid #E4E8EC;border-radius:14px;padding:18px 20px;"><div style="height:11px;width:64%;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;margin-bottom:16px;"></div><div style="height:26px;width:46%;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;margin-bottom:10px;"></div><div style="height:9px;width:80%;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;"></div></div>
+          <div style="background:#fff;border:1px solid #E4E8EC;border-radius:14px;padding:18px 20px;"><div style="height:11px;width:64%;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;margin-bottom:16px;"></div><div style="height:26px;width:46%;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;margin-bottom:10px;"></div><div style="height:9px;width:80%;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;"></div></div>
+          <div style="background:#fff;border:1px solid #E4E8EC;border-radius:14px;padding:18px 20px;"><div style="height:11px;width:64%;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;margin-bottom:16px;"></div><div style="height:26px;width:46%;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;margin-bottom:10px;"></div><div style="height:9px;width:80%;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;"></div></div>
+          <div style="background:#fff;border:1px solid #E4E8EC;border-radius:14px;padding:18px 20px;"><div style="height:11px;width:64%;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;margin-bottom:16px;"></div><div style="height:26px;width:46%;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;margin-bottom:10px;"></div><div style="height:9px;width:80%;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;"></div></div>
+        </div>
+        <div style="background:#fff;border:1px solid #E4E8EC;border-radius:14px;padding:20px 22px;">
+          <div style="height:14px;width:200px;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;margin-bottom:20px;"></div>
+          <div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-top:1px solid #F4F6F8;"><div style="height:12px;width:26%;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;"></div><div style="height:12px;flex:1;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;"></div><div style="height:24px;width:90px;border-radius:7px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;"></div></div>
+          <div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-top:1px solid #F4F6F8;"><div style="height:12px;width:26%;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;"></div><div style="height:12px;flex:1;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;"></div><div style="height:24px;width:90px;border-radius:7px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;"></div></div>
+          <div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-top:1px solid #F4F6F8;"><div style="height:12px;width:26%;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;"></div><div style="height:12px;flex:1;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;"></div><div style="height:24px;width:90px;border-radius:7px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;"></div></div>
+          <div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-top:1px solid #F4F6F8;"><div style="height:12px;width:26%;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;"></div><div style="height:12px;flex:1;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;"></div><div style="height:24px;width:90px;border-radius:7px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;"></div></div>
+          <div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-top:1px solid #F4F6F8;"><div style="height:12px;width:26%;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;"></div><div style="height:12px;flex:1;border-radius:6px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;"></div><div style="height:24px;width:90px;border-radius:7px;background:linear-gradient(90deg,#EDF0F3 25%,#E0E6EC 50%,#EDF0F3 75%);background-size:420px 100%;animation:capShimmer 1.3s infinite linear;"></div></div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ DASHBOARD ============ -->
+      <sc-if value="{{ showDashboard }}">
+      <div style="padding:28px 32px 48px;max-width:1280px;">
+        <!-- metric tiles -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;">
+          <sc-for list="{{ metrics }}" as="m" hint-placeholder-count="4">
+            <div style="background:#fff;border:1px solid #E4E8EC;border-radius:14px;padding:18px 20px;box-shadow:0 1px 2px rgba(16,32,45,.04);">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><div style="font-size:11px;font-weight:600;color:#64707A;text-transform:uppercase;letter-spacing:.6px;">{{ m.label }}</div><div style="width:30px;height:30px;border-radius:8px;background:{{ m.iconBg }};display:flex;align-items:center;justify-content:center;color:{{ m.iconFg }};">{{ m.icon }}</div></div>
+              <div style="font-size:30px;font-weight:600;letter-spacing:-1px;color:#1B2D3D;line-height:1;">{{ m.value }}</div>
+              <div style="font-size:11.5px;color:#98A1A8;margin-top:7px;">{{ m.sub }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start;">
+          <!-- client table -->
+          <div style="background:#fff;border:1px solid #E4E8EC;border-radius:14px;box-shadow:0 1px 2px rgba(16,32,45,.04);overflow:hidden;">
+            <div style="padding:16px 20px 14px;border-bottom:1px solid #EEF1F4;">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:13px;">
+                <div style="font-size:14px;font-weight:600;">Client Approved Plans</div>
+                <span style="font-size:11.5px;color:#98A1A8;font-weight:500;">{{ resultCount }} of {{ totalCount }}</span>
+                <div style="flex:1;"></div>
+                <div style="display:flex;align-items:center;gap:8px;height:34px;width:260px;border:1px solid #E4E8EC;border-radius:9px;padding:0 12px;background:#FBFCFD;">
+                  <span style="color:#98A1A8;font-size:14px;">⌕</span>
+                  <input value="{{ searchValue }}" onChange="{{ setSearch }}" placeholder="Search client, ID, owner…" style="flex:1;border:none;background:none;outline:none;font-size:12.5px;color:#1B2D3D;" />
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <!-- Status dropdown -->
+                <div style="position:relative;">
+                  <button onClick="{{ toggleStatusMenu }}" style="height:32px;padding:0 12px;border:1px solid #E4E8EC;border-radius:8px;background:#fff;color:#1B2D3D;font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;min-width:148px;" style-hover="border-color:#C9D2DA;">
+                    <span style="font-size:10px;font-weight:700;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;">Status</span>
+                    <span style="flex:1;text-align:left;color:#1B2D3D;">{{ statusBtnLabel }}</span>
+                    <span style="color:#98A1A8;font-size:10px;">▾</span>
+                  </button>
+                  <sc-if value="{{ statusMenuOpen }}">
+                    <div style="position:absolute;top:38px;left:0;z-index:80;width:190px;background:#fff;border:1px solid #E4E8EC;border-radius:11px;box-shadow:0 10px 30px rgba(16,32,45,.13);padding:5px;animation:capRise .13s ease;">
+                      <sc-for list="{{ statusFilters }}" as="f" hint-placeholder-count="6">
+                        <button onClick="{{ f.pick }}" style="width:100%;display:flex;align-items:center;gap:9px;padding:8px 10px;border:none;border-radius:7px;background:{{ f.bg }};color:{{ f.fg }};font-size:12.5px;font-weight:500;cursor:pointer;text-align:left;" style-hover="background:#F4F6F8;">
+                          <sc-if value="{{ f.hasDot }}"><span style="width:8px;height:8px;border-radius:50%;background:{{ f.dotBg }};flex-shrink:0;"></span></sc-if>
+                          <sc-if value="{{ f.noDot }}"><span style="width:8px;height:8px;flex-shrink:0;"></span></sc-if>
+                          {{ f.label }}
+                          <sc-if value="{{ f.active }}"><span style="margin-left:auto;color:#1A7A4A;font-size:12px;">✓</span></sc-if>
+                        </button>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                </div>
+                <!-- Tier dropdown -->
+                <div style="position:relative;">
+                  <button onClick="{{ toggleTierMenu }}" style="height:32px;padding:0 12px;border:1px solid #E4E8EC;border-radius:8px;background:#fff;color:#1B2D3D;font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;min-width:140px;" style-hover="border-color:#C9D2DA;">
+                    <span style="font-size:10px;font-weight:700;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;">Tier</span>
+                    <span style="flex:1;text-align:left;color:#1B2D3D;">{{ tierBtnLabel }}</span>
+                    <span style="color:#98A1A8;font-size:10px;">▾</span>
+                  </button>
+                  <sc-if value="{{ tierMenuOpen }}">
+                    <div style="position:absolute;top:38px;left:0;z-index:80;width:170px;background:#fff;border:1px solid #E4E8EC;border-radius:11px;box-shadow:0 10px 30px rgba(16,32,45,.13);padding:5px;animation:capRise .13s ease;">
+                      <sc-for list="{{ tierFilters }}" as="f" hint-placeholder-count="5">
+                        <button onClick="{{ f.pick }}" style="width:100%;display:flex;align-items:center;gap:9px;padding:8px 10px;border:none;border-radius:7px;background:{{ f.bg }};color:{{ f.fg }};font-size:12.5px;font-weight:500;cursor:pointer;text-align:left;" style-hover="background:#F4F6F8;">
+                          <sc-if value="{{ f.tierFg }}"><span style="width:8px;height:8px;border-radius:50%;background:{{ f.tierFg }};flex-shrink:0;"></span></sc-if>
+                          <sc-if value="{{ f.noTierFg }}"><span style="width:8px;height:8px;flex-shrink:0;"></span></sc-if>
+                          {{ f.label }}
+                          <sc-if value="{{ f.active }}"><span style="margin-left:auto;color:#1A7A4A;font-size:12px;">✓</span></sc-if>
+                        </button>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+            </div>
+            <div style="overflow-x:auto;">
+              <div style="min-width:820px;">
+              <!-- header row -->
+              <div style="display:grid;grid-template-columns:minmax(180px,2fr) 68px 60px 118px 128px 100px 128px;background:#FAFBFC;border-bottom:1px solid #EEF1F4;">
+                <button onClick="{{ sortMeta.name.on }}" style="text-align:left;padding:10px 20px;border:none;background:none;cursor:pointer;font-size:10.5px;font-weight:600;color:{{ sortMeta.name.col }};text-transform:uppercase;letter-spacing:.6px;">Client{{ sortMeta.name.arrow }}</button>
+                <button onClick="{{ sortMeta.tier.on }}" style="text-align:left;padding:10px 10px;border:none;background:none;cursor:pointer;font-size:10.5px;font-weight:600;color:{{ sortMeta.tier.col }};text-transform:uppercase;letter-spacing:.6px;">Tier{{ sortMeta.tier.arrow }}</button>
+                <button onClick="{{ sortMeta.wse.on }}" style="text-align:right;padding:10px 10px;border:none;background:none;cursor:pointer;font-size:10.5px;font-weight:600;color:{{ sortMeta.wse.col }};text-transform:uppercase;letter-spacing:.6px;">WSE{{ sortMeta.wse.arrow }}</button>
+                <button onClick="{{ sortMeta.owner.on }}" style="text-align:left;padding:10px 10px;border:none;background:none;cursor:pointer;font-size:10.5px;font-weight:600;color:{{ sortMeta.owner.col }};text-transform:uppercase;letter-spacing:.6px;">Owner{{ sortMeta.owner.arrow }}</button>
+                <button onClick="{{ sortMeta.status.on }}" style="text-align:left;padding:10px 10px;border:none;background:none;cursor:pointer;font-size:10.5px;font-weight:600;color:{{ sortMeta.status.col }};text-transform:uppercase;letter-spacing:.6px;">CAP Status{{ sortMeta.status.arrow }}</button>
+                <button onClick="{{ sortMeta.eff.on }}" style="text-align:left;padding:10px 10px;border:none;background:none;cursor:pointer;font-size:10.5px;font-weight:600;color:{{ sortMeta.eff.col }};text-transform:uppercase;letter-spacing:.6px;">Effective{{ sortMeta.eff.arrow }}</button>
+                <div style="padding:10px 16px;"></div>
+              </div>
+              <!-- data rows -->
+              <div>
+                <sc-for list="{{ clientRows }}" as="c" hint-placeholder-count="8">
+                  <div style="display:grid;grid-template-columns:minmax(180px,2fr) 68px 60px 118px 128px 100px 128px;border-top:1px solid #EEF1F4;align-items:center;" style-hover="background:#FBFCFD;">
+                    <div style="padding:13px 20px;min-width:0;"><div style="font-size:13.5px;font-weight:600;color:#1B2D3D;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ c.name }}</div><div style="font-size:11px;color:#98A1A8;font-family:'IBM Plex Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ c.prismId }}</div></div>
+                    <div style="padding:13px 10px;"><span style="font-size:11.5px;font-weight:600;color:{{ c.tierFg }};">{{ c.tier }}</span></div>
+                    <div style="padding:13px 10px;text-align:right;font-size:13px;font-weight:500;font-family:'IBM Plex Mono',monospace;color:#3B4A57;">{{ c.wse }}</div>
+                    <div style="padding:13px 10px;font-size:12.5px;color:#3B4A57;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ c.owner }}</div>
+                    <div style="padding:13px 10px;"><span style="display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:7px;background:{{ c.stBg }};color:{{ c.stFg }};font-size:11px;font-weight:600;white-space:nowrap;"><span style="width:6px;height:6px;border-radius:50%;background:{{ c.stFg }};flex-shrink:0;"></span>{{ c.stLabel }}</span></div>
+                    <div style="padding:13px 10px;font-size:12px;color:#3B4A57;font-family:'IBM Plex Mono',monospace;">{{ c.eff }}</div>
+                    <div style="padding:13px 16px;text-align:right;"><button onClick="{{ c.primary }}" style="height:30px;padding:0 11px;border:1px solid #E4E8EC;border-radius:8px;background:#fff;color:#1B2D3D;font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap;" style-hover="border-color:#C60C30;color:#C60C30;">{{ c.primaryLabel }}</button></div>
+                  </div>
+                </sc-for>
+              </div>
+              </div>
+            </div>
+            <sc-if value="{{ noResults }}">
+              <div style="padding:48px 20px;text-align:center;">
+                <div style="font-size:13.5px;font-weight:600;color:#64707A;margin-bottom:3px;">No matching CAPs</div>
+                <div style="font-size:12px;color:#98A1A8;">Adjust your search or filters to see results.</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ showPagination }}">
+              <div style="display:flex;align-items:center;gap:10px;padding:12px 20px;border-top:1px solid #EEF1F4;background:#FAFBFC;">
+                <div style="font-size:12px;color:#98A1A8;flex:1;">{{ pageRangeLabel }}</div>
+                <div style="display:flex;align-items:center;gap:5px;">
+                  <button onClick="{{ prevPage }}" disabled="{{ canPrev }}" style="width:32px;height:32px;border:1px solid #E4E8EC;border-radius:8px;background:#fff;color:#3B4A57;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:{{ prevOpacity }};" style-hover="border-color:#C9D2DA;">‹</button>
+                  <sc-for list="{{ pageNums }}" as="p" hint-placeholder-count="3">
+                    <button onClick="{{ p.pick }}" style="min-width:32px;height:32px;padding:0 6px;border:1px solid {{ p.border }};border-radius:8px;background:{{ p.bg }};color:{{ p.fg }};font-size:12.5px;font-weight:{{ p.weight }};cursor:{{ p.cursor }};">{{ p.label }}</button>
+                  </sc-for>
+                  <button onClick="{{ nextPage }}" disabled="{{ canNext }}" style="width:32px;height:32px;border:1px solid #E4E8EC;border-radius:8px;background:#fff;color:#3B4A57;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:{{ nextOpacity }};" style-hover="border-color:#C9D2DA;">›</button>
+                </div>
+                <div style="display:flex;align-items:center;gap:7px;">
+                  <span style="font-size:12px;color:#98A1A8;">Rows</span>
+                  <select onChange="{{ setPageSize }}" value="{{ pageSizeStr }}" style="height:32px;border:1px solid #E4E8EC;border-radius:8px;padding:0 9px;font-size:12.5px;color:#1B2D3D;background:#fff;outline:none;cursor:pointer;">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                  </select>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+
+          <!-- renewal calendar -->
+          <div style="background:#fff;border:1px solid #E4E8EC;border-radius:14px;box-shadow:0 1px 2px rgba(16,32,45,.04);overflow:hidden;">
+            <div style="padding:16px 18px;border-bottom:1px solid #EEF1F4;display:flex;align-items:center;justify-content:space-between;"><div style="font-size:14px;font-weight:600;">Upcoming Renewals</div><div style="font-size:11px;color:#98A1A8;">Next 90 days</div></div>
+            <div style="padding:8px;">
+              <sc-for list="{{ renewals }}" as="r" hint-placeholder-count="5">
+                <button onClick="{{ r.open }}" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 12px;border:none;border-radius:10px;background:none;cursor:pointer;text-align:left;" style-hover="background:#F4F6F8;">
+                  <div style="width:46px;flex-shrink:0;text-align:center;border-right:1px solid #EEF1F4;padding-right:8px;"><div style="font-size:18px;font-weight:600;color:{{ r.dateFg }};line-height:1;">{{ r.day }}</div><div style="font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;">{{ r.mon }}</div></div>
+                  <div style="flex:1;min-width:0;"><div style="font-size:12.5px;font-weight:600;color:#1B2D3D;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.name }}</div><div style="font-size:11px;color:{{ r.urgFg }};font-weight:500;">{{ r.urg }}</div></div>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ CAP BUILDER WIZARD ============ -->
+      <sc-if value="{{ showWizard }}">
+      <div style="display:flex;flex-direction:column;min-height:100%;">
+        <div style="padding:26px 32px 20px;max-width:1080px;width:100%;margin:0 auto;flex:1;">
+          <!-- step rail -->
+          <div style="display:flex;align-items:center;margin-bottom:26px;">
+            <sc-for list="{{ wizardSteps }}" as="s" hint-placeholder-count="6">
+              <div style="display:flex;align-items:center;flex:1;">
+                <button onClick="{{ s.go }}" style="display:flex;align-items:center;gap:9px;border:none;background:none;cursor:pointer;white-space:nowrap;">
+                  <span style="width:28px;height:28px;border-radius:50%;background:{{ s.circleBg }};color:{{ s.circleFg }};font-size:12.5px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;">{{ s.mark }}</span>
+                  <span style="font-size:12.5px;font-weight:600;color:{{ s.labelFg }};">{{ s.label }}</span>
+                </button>
+                <div style="flex:1;height:2px;background:{{ s.barBg }};margin:0 12px;border-radius:2px;min-width:14px;"></div>
+              </div>
+            </sc-for>
+          </div>
+
+          <sc-if value="{{ readOnly }}">
+            <div style="display:flex;align-items:center;gap:10px;background:#FBF0DD;border:1px solid #F0D9A8;border-radius:11px;padding:12px 16px;margin-bottom:18px;">
+              <span style="width:22px;height:22px;border-radius:50%;background:#B0690A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">i</span>
+              <div style="font-size:12.5px;color:#7A4800;"><strong>Read-only.</strong> Your role can view this CAP but cannot edit fields, rates, or submit. Switch to an Account Manager or higher to make changes.</div>
+            </div>
+          </sc-if>
+
+          <!-- STEP 1 -->
+          <sc-if value="{{ wStep1 }}">
+          <div style="background:#fff;border:1px solid #E4E8EC;border-radius:14px;padding:24px;box-shadow:0 1px 2px rgba(16,32,45,.04);animation:capRise .2s ease;">
+            <div style="font-size:17px;font-weight:600;letter-spacing:-.3px;margin-bottom:4px;">Select a client</div>
+            <div style="font-size:13px;color:#64707A;margin-bottom:18px;">Company information will pre-populate from ClientSpace. Pick the client this CAP is for.</div>
+            <div style="display:flex;align-items:center;gap:9px;height:42px;border:1px solid #E4E8EC;border-radius:10px;padding:0 14px;margin-bottom:16px;background:#FBFCFD;">
+              <span style="color:#98A1A8;">⌕</span><input placeholder="Search clients by name or Prism ID…" style="flex:1;border:none;background:none;outline:none;font-size:13.5px;color:#1B2D3D;" />
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;max-height:380px;overflow-y:auto;">
+              <sc-for list="{{ clientPickList }}" as="c" hint-placeholder-count="6">
+                <button onClick="{{ c.pick }}" style="display:flex;align-items:center;gap:13px;border:1px solid {{ c.border }};background:{{ c.bg }};border-radius:11px;padding:13px 15px;cursor:pointer;text-align:left;" style-hover="border-color:#C60C30;">
+                  <div style="width:38px;height:38px;border-radius:9px;background:#F0F3F6;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#3B4A57;flex-shrink:0;">{{ c.tier }}</div>
+                  <div style="flex:1;min-width:0;"><div style="font-size:13.5px;font-weight:600;color:#1B2D3D;">{{ c.name }}</div><div style="font-size:11.5px;color:#98A1A8;font-family:'IBM Plex Mono',monospace;">{{ c.prism }} · {{ c.wse }} WSE · {{ c.ind }}</div></div>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+          </sc-if>
+
+          <!-- STEP 2 -->
+          <sc-if value="{{ wStep2 }}">
+          <div style="background:#fff;border:1px solid #E4E8EC;border-radius:14px;padding:24px;box-shadow:0 1px 2px rgba(16,32,45,.04);animation:capRise .2s ease;">
+            <div style="font-size:17px;font-weight:600;letter-spacing:-.3px;margin-bottom:4px;">Choose a template</div>
+            <div style="font-size:13px;color:#64707A;margin-bottom:20px;">Templates pre-populate the wizard with client-appropriate plan types and default contribution structures.</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <sc-for list="{{ wizTemplates }}" as="t" hint-placeholder-count="3">
+                <button onClick="{{ t.pick }}" style="display:flex;align-items:center;gap:16px;border:1px solid {{ t.border }};background:{{ t.bg }};border-radius:12px;padding:18px 20px;cursor:pointer;text-align:left;" style-hover="border-color:#C60C30;">
+                  <div style="width:20px;height:20px;border-radius:50%;border:2px solid {{ t.border }};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><sc-if value="{{ t.active }}"><span style="width:10px;height:10px;border-radius:50%;background:#C60C30;"></span></sc-if></div>
+                  <div style="flex:1;min-width:0;"><div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap;"><span style="font-size:14.5px;font-weight:600;color:#1B2D3D;white-space:nowrap;">{{ t.name }}</span><sc-if value="{{ t.tag }}"><span style="font-size:10.5px;font-weight:600;color:#0074B8;background:#E7F1FA;padding:2px 9px;border-radius:6px;white-space:nowrap;">{{ t.tag }}</span></sc-if></div><div style="font-size:12.5px;color:#64707A;margin-top:5px;line-height:1.55;">{{ t.desc }}</div></div>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+          </sc-if>
+
+          <!-- STEP 3 -->
+          <sc-if value="{{ wStep3 }}">
+          <div style="animation:capRise .2s ease;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+              <div><div style="font-size:17px;font-weight:600;letter-spacing:-.3px;">Plans in this CAP</div><div style="font-size:13px;color:#64707A;margin-top:2px;">Add the benefit plans this client offers. Each is a structured record — not a spreadsheet cell.</div></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:11px;margin-bottom:16px;">
+              <sc-for list="{{ planCards }}" as="p" hint-placeholder-count="3">
+                <div style="display:flex;align-items:center;gap:15px;background:#fff;border:1px solid #E4E8EC;border-radius:12px;padding:16px 18px;box-shadow:0 1px 2px rgba(16,32,45,.04);">
+                  <div style="width:52px;height:52px;border-radius:11px;background:{{ p.typeBg }};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:11px;font-weight:700;color:{{ p.typeColor }};text-transform:uppercase;letter-spacing:.4px;">{{ p.type }}</span></div>
+                  <div style="flex:1;min-width:0;"><div style="font-size:14.5px;font-weight:600;color:#1B2D3D;">{{ p.carrier }} — {{ p.plan }}</div><div style="font-size:12px;color:#98A1A8;margin-top:2px;">{{ p.network }} network · 4 tiers · {{ p.erPctVal }}% employer-funded</div></div>
+                  <button onClick="{{ p.remove }}" disabled="{{ readOnly }}" style="width:32px;height:32px;border:1px solid #E4E8EC;border-radius:8px;background:#fff;color:#98A1A8;cursor:pointer;font-size:15px;flex-shrink:0;" style-hover="border-color:#C60C30;color:#C60C30;">✕</button>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap;">
+              <span style="font-size:12.5px;font-weight:600;color:#64707A;">Add plan:</span>
+              <sc-for list="{{ addTypes }}" as="a" hint-placeholder-count="4">
+                <button onClick="{{ a.add }}" disabled="{{ readOnly }}" style="height:34px;padding:0 14px;border:1px dashed #C9D2DA;border-radius:9px;background:#fff;color:#3B4A57;font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;" style-hover="border-color:#C60C30;color:#C60C30;background:#FEF6F7;"><span style="font-size:14px;">+</span>{{ a.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          </sc-if>
+
+          <!-- STEP 4 -->
+          <sc-if value="{{ wStep4 }}">
+          <div style="animation:capRise .2s ease;">
+            <div style="font-size:17px;font-weight:600;letter-spacing:-.3px;margin-bottom:4px;">Configure rates &amp; contributions</div>
+            <div style="font-size:13px;color:#64707A;margin-bottom:18px;">Set the total premium per tier and the employer contribution %. Employee deductions per pay period (semi-monthly) calculate automatically.</div>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <sc-for list="{{ planCards }}" as="p" hint-placeholder-count="3">
+                <div style="background:#fff;border:1px solid #E4E8EC;border-radius:13px;box-shadow:0 1px 2px rgba(16,32,45,.04);overflow:hidden;">
+                  <div style="display:flex;align-items:center;gap:13px;padding:14px 18px;border-bottom:1px solid #EEF1F4;background:#FAFBFC;">
+                    <span style="font-size:10.5px;font-weight:700;color:{{ p.typeColor }};text-transform:uppercase;letter-spacing:.5px;background:{{ p.typeBg }};padding:4px 9px;border-radius:6px;">{{ p.type }}</span>
+                    <div style="font-size:13.5px;font-weight:600;flex:1;">{{ p.carrier }} — {{ p.plan }}</div>
+                    <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:12px;color:#64707A;font-weight:600;">Employer %</span><input value="{{ p.erPctVal }}" onChange="{{ p.onErPct }}" disabled="{{ readOnly }}" type="number" style="width:62px;height:32px;border:1px solid #DCE2E8;border-radius:8px;padding:0 10px;font-size:13px;font-weight:600;text-align:center;outline:none;font-family:'IBM Plex Mono',monospace;" /></div>
+                  </div>
+                  <div style="width:100%;">
+                    <div style="display:grid;grid-template-columns:80px 1fr 110px 110px 130px;background:#fff;border-top:1px solid #EEF1F4;">
+                      <div style="padding:9px 18px;font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;">Tier</div>
+                      <div style="padding:9px 12px;font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;text-align:right;">Total Premium</div>
+                      <div style="padding:9px 12px;font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;text-align:right;">Employer</div>
+                      <div style="padding:9px 12px;font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;text-align:right;">Employee</div>
+                      <div style="padding:9px 18px;font-size:10px;font-weight:600;color:#0074B8;text-transform:uppercase;letter-spacing:.5px;text-align:right;">Per Pay Period</div>
+                    </div>
+                    <div>
+                      <sc-for list="{{ p.tiers }}" as="t" hint-placeholder-count="4">
+                        <div style="display:grid;grid-template-columns:80px 1fr 110px 110px 130px;border-top:1px solid #EEF1F4;align-items:center;">
+                          <div style="padding:10px 18px;font-size:13px;font-weight:600;color:#1B2D3D;">{{ t.tier }}</div>
+                          <div style="padding:10px 12px;text-align:right;"><div style="display:inline-flex;align-items:center;gap:3px;border:1px solid #DCE2E8;border-radius:7px;padding:0 8px;height:30px;background:#FBFCFD;"><span style="color:#98A1A8;font-size:12px;">$</span><input value="{{ t.totalRaw }}" onChange="{{ t.onTotal }}" disabled="{{ readOnly }}" type="number" style="width:74px;border:none;background:none;outline:none;font-size:13px;text-align:right;font-family:'IBM Plex Mono',monospace;color:#1B2D3D;" /></div></div>
+                          <div style="padding:10px 12px;text-align:right;font-size:13px;font-family:'IBM Plex Mono',monospace;color:#1A7A4A;">{{ t.erFmt }}</div>
+                          <div style="padding:10px 12px;text-align:right;font-size:13px;font-family:'IBM Plex Mono',monospace;color:#3B4A57;">{{ t.eeFmt }}</div>
+                          <div style="padding:10px 18px;text-align:right;font-size:13px;font-weight:600;font-family:'IBM Plex Mono',monospace;color:#0074B8;">{{ t.ppFmt }}</div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          </sc-if>
+
+          <!-- STEP 5 — VALIDATION -->
+          <sc-if value="{{ wStep5 }}">
+          <div style="animation:capRise .2s ease;">
+            <div style="display:flex;align-items:center;gap:16px;background:{{ vStatusBg }};border-radius:13px;padding:18px 22px;margin-bottom:18px;">
+              <div style="width:44px;height:44px;border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:{{ vStatusFg }};flex-shrink:0;">{{ vStatusIcon }}</div>
+              <div style="flex:1;"><div style="font-size:17px;font-weight:600;color:{{ vStatusFg }};letter-spacing:-.3px;">{{ vStatusLabel }}</div><div style="font-size:13px;color:#5B6770;margin-top:2px;">{{ vStatusSub }}</div></div>
+              <div style="text-align:right;"><div style="font-size:24px;font-weight:600;color:{{ vStatusFg }};font-family:'IBM Plex Mono',monospace;">{{ vPass }}/{{ vTotal }}</div><div style="font-size:11px;color:#98A1A8;">checks passed</div></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:13px;">
+              <sc-for list="{{ validationGroups }}" as="g" hint-placeholder-count="3">
+                <div style="background:#fff;border:1px solid #E4E8EC;border-radius:13px;box-shadow:0 1px 2px rgba(16,32,45,.04);overflow:hidden;">
+                  <div style="padding:12px 18px;border-bottom:1px solid #EEF1F4;font-size:11px;font-weight:700;color:#64707A;text-transform:uppercase;letter-spacing:.8px;background:#FAFBFC;">{{ g.title }}</div>
+                  <div>
+                    <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
+                      <div style="display:flex;align-items:center;gap:13px;padding:13px 18px;border-top:1px solid #F4F6F8;">
+                        <span style="width:24px;height:24px;border-radius:7px;background:{{ it.iconBg }};color:{{ it.iconFg }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">{{ it.mark }}</span>
+                        <div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:500;color:#1B2D3D;">{{ it.label }}</div><sc-if value="{{ it.msg }}"><div style="font-size:11.5px;color:{{ it.iconFg }};margin-top:2px;font-family:'IBM Plex Mono',monospace;">{{ it.msg }}</div></sc-if></div>
+                        <sc-if value="{{ it.note }}"><span style="font-size:11.5px;color:#98A1A8;font-family:'IBM Plex Mono',monospace;">{{ it.note }}</span></sc-if>
+                        <sc-if value="{{ it.canJump }}"><button onClick="{{ it.jump }}" style="height:30px;padding:0 12px;border:1px solid #E4E8EC;border-radius:8px;background:#fff;color:#0074B8;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;" style-hover="border-color:#0074B8;background:#E7F1FA;">Jump to field →</button></sc-if>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          </sc-if>
+
+          <!-- STEP 6 — PREVIEW -->
+          <sc-if value="{{ wStep6 }}">
+          <div style="animation:capRise .2s ease;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+              <div><div style="font-size:17px;font-weight:600;letter-spacing:-.3px;">CAP preview</div><div style="font-size:13px;color:#64707A;margin-top:2px;">Review the full plan before submitting. Generate the benefits booklet or route for approval.</div></div>
+              <button onClick="{{ doGenBooklet }}" style="height:36px;padding:0 15px;border:1px solid #E4E8EC;border-radius:9px;background:#fff;color:#1B2D3D;font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;" style-hover="border-color:#0074B8;color:#0074B8;">Generate booklet</button>
+            </div>
+            <div style="background:#fff;border:1px solid #E4E8EC;border-radius:14px;box-shadow:0 1px 2px rgba(16,32,45,.04);overflow:hidden;">
+              <div style="padding:20px 24px;border-bottom:1px solid #EEF1F4;display:flex;align-items:center;gap:16px;">
+                <div style="flex:1;"><div style="font-size:18px;font-weight:600;letter-spacing:-.3px;">{{ wizClientName }}</div><div style="font-size:12.5px;color:#98A1A8;font-family:'IBM Plex Mono',monospace;margin-top:2px;">{{ wizClientPrism }} · {{ wizClientMeta }}</div></div>
+                <div style="text-align:right;border-left:1px solid #EEF1F4;padding-left:18px;"><div style="font-size:11px;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;font-weight:600;">Est. annual employer cost</div><div style="font-size:22px;font-weight:600;color:#1B2D3D;font-family:'IBM Plex Mono',monospace;letter-spacing:-.5px;">{{ annualERFmt }}</div></div>
+              </div>
+              <div style="width:100%;">
+                <div style="display:grid;grid-template-columns:minmax(0,1.5fr) 100px 90px 150px 140px;background:#FAFBFC;border-top:1px solid #EEF1F4;">
+                  <div style="padding:10px 24px;font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;">Plan</div>
+                  <div style="padding:10px 12px;font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;">Network</div>
+                  <div style="padding:10px 12px;font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;text-align:right;">Employer</div>
+                  <div style="padding:10px 12px;font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;text-align:right;">EE-only deduction</div>
+                  <div style="padding:10px 24px;font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;text-align:right;">Family premium</div>
+                </div>
+                <div>
+                  <sc-for list="{{ previewRows }}" as="r" hint-placeholder-count="3">
+                    <div style="display:grid;grid-template-columns:minmax(0,1.5fr) 100px 90px 150px 140px;border-top:1px solid #EEF1F4;align-items:center;">
+                      <div style="padding:13px 24px;"><div style="font-size:13.5px;font-weight:600;color:#1B2D3D;">{{ r.carrier }}</div><div style="font-size:11.5px;color:#98A1A8;">{{ r.type }} · {{ r.plan }}</div></div>
+                      <div style="padding:13px 12px;font-size:12.5px;color:#3B4A57;">{{ r.network }}</div>
+                      <div style="padding:13px 12px;text-align:right;font-size:13px;font-weight:600;color:#1A7A4A;font-family:'IBM Plex Mono',monospace;">{{ r.erPct }}</div>
+                      <div style="padding:13px 12px;text-align:right;font-size:13px;font-family:'IBM Plex Mono',monospace;color:#3B4A57;">{{ r.eeFmt }}</div>
+                      <div style="padding:13px 24px;text-align:right;font-size:13px;font-family:'IBM Plex Mono',monospace;color:#3B4A57;">{{ r.famFmt }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </div>
+          </sc-if>
+        </div>
+
+        <!-- wizard footer -->
+        <div style="position:sticky;bottom:0;background:#fff;border-top:1px solid #E4E8EC;padding:14px 32px;box-shadow:0 -2px 12px rgba(16,32,45,.05);">
+          <sc-if value="{{ wizHasError }}">
+            <div style="max-width:1080px;margin:0 auto 10px;display:flex;align-items:center;gap:10px;background:#FDECEF;border:1px solid #F4C2CB;border-radius:9px;padding:10px 14px;">
+              <span style="width:20px;height:20px;border-radius:50%;background:#C60C30;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">!</span>
+              <span style="font-size:13px;font-weight:500;color:#8A1C2C;">{{ wizError }}</span>
+            </div>
+          </sc-if>
+          <div style="max-width:1080px;width:100%;margin:0 auto;display:flex;align-items:center;gap:12px;">
+            <button onClick="{{ wizDoPrev }}" style="height:42px;padding:0 18px;border:1px solid #E4E8EC;border-radius:10px;background:#fff;color:#64707A;font-size:13.5px;font-weight:600;cursor:pointer;" style-hover="border-color:#C9D2DA;color:#1B2D3D;">← Back</button>
+            <div style="flex:1;"></div>
+            <sc-if value="{{ wStep6 }}">
+              <sc-if value="{{ wizCanApprove }}"><button onClick="{{ doApprove }}" style="height:42px;padding:0 18px;border:1px solid #1A7A4A;border-radius:10px;background:#fff;color:#1A7A4A;font-size:13.5px;font-weight:600;cursor:pointer;" style-hover="background:#E4F2EA;">Approve CAP</button></sc-if>
+              <sc-if value="{{ wizCanPublish }}"><button onClick="{{ doPublish }}" style="height:42px;padding:0 18px;border:1px solid #5A45C7;border-radius:10px;background:#fff;color:#5A45C7;font-size:13.5px;font-weight:600;cursor:pointer;" style-hover="background:#ECE9FA;">Publish</button></sc-if>
+            </sc-if>
+            <button onClick="{{ wizDoNext }}" disabled="{{ wizNextDisabled }}" style="height:42px;padding:0 22px;border:none;border-radius:10px;background:#C60C30;color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;box-shadow:0 3px 10px rgba(198,12,48,.24);opacity:{{ wizNextOpacity }};" style-hover="background:#A50A28;">{{ wizNextLabel }}</button>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ RENEWAL DIFF ============ -->
+      <sc-if value="{{ showRenewalDiff }}">
+      <div style="padding:28px 32px 48px;max-width:1080px;margin:0 auto;animation:capRise .2s ease;">
+        <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;">
+          <div style="flex:1;">
+            <div style="font-size:11px;font-weight:600;color:#B0690A;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Year-over-Year Renewal · Plan Year {{ bkEffYear }}</div>
+            <div style="font-size:21px;font-weight:600;letter-spacing:-.4px;">{{ diffClientName }}</div>
+            <div style="font-size:12.5px;color:#98A1A8;font-family:'IBM Plex Mono',monospace;margin-top:2px;">{{ diffClientMeta }}</div>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <div style="text-align:center;background:#fff;border:1px solid #E4E8EC;border-radius:11px;padding:12px 18px;"><div style="font-size:22px;font-weight:600;color:#C60C30;font-family:'IBM Plex Mono',monospace;letter-spacing:-.5px;">{{ diffYoY }}</div><div style="font-size:10.5px;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;font-weight:600;">Blended rate change</div></div>
+            <div style="text-align:center;background:#fff;border:1px solid #E4E8EC;border-radius:11px;padding:12px 18px;"><div style="font-size:22px;font-weight:600;color:#1B2D3D;font-family:'IBM Plex Mono',monospace;letter-spacing:-.5px;">{{ diffDecided }}/{{ diffChanged }}</div><div style="font-size:10.5px;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;font-weight:600;">Changes resolved</div></div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;background:#EBF4FB;border:1px solid #CFE3F2;border-radius:11px;padding:12px 16px;margin-bottom:16px;">
+          <span style="width:22px;height:22px;border-radius:50%;background:#0074B8;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">i</span>
+          <div style="flex:1;font-size:12.5px;color:#1a4f72;">Prior-year CAP loaded from the database and compared against new carrier rates pulled via the PrismHR connector. Review each change below.</div>
+          <button onClick="{{ acceptAllRates }}" style="height:34px;padding:0 14px;border:1px solid #0074B8;border-radius:9px;background:#fff;color:#0074B8;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;" style-hover="background:#0074B8;color:#fff;">Accept all rate increases</button>
+        </div>
+
+        <div style="background:#fff;border:1px solid #E4E8EC;border-radius:14px;box-shadow:0 1px 2px rgba(16,32,45,.04);overflow:hidden;">
+          <div style="width:100%;">
+            <div style="display:grid;grid-template-columns:minmax(0,1.5fr) 110px 110px 100px 180px;background:#FAFBFC;border-bottom:1px solid #EEF1F4;">
+              <div style="padding:11px 22px;font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;">Field</div>
+              <div style="padding:11px 12px;font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;text-align:right;">Prior Year</div>
+              <div style="padding:11px 12px;font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;text-align:right;">New Year</div>
+              <div style="padding:11px 12px;font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;text-align:right;">Δ</div>
+              <div style="padding:11px 22px;font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;text-align:center;">Decision</div>
+            </div>
+            <div>
+              <sc-for list="{{ diffRows }}" as="r" hint-placeholder-count="5">
+                <div style="display:grid;grid-template-columns:minmax(0,1.5fr) 110px 110px 100px 180px;border-top:1px solid #EEF1F4;background:{{ r.rowBg }};align-items:center;">
+                  <div style="padding:13px 22px;"><div style="font-size:13px;font-weight:600;color:#1B2D3D;">{{ r.field }}</div><div style="font-size:11px;color:#98A1A8;">{{ r.plan }}</div></div>
+                  <div style="padding:13px 12px;text-align:right;font-size:13px;font-family:'IBM Plex Mono',monospace;color:#98A1A8;">{{ r.priorFmt }}</div>
+                  <div style="padding:13px 12px;text-align:right;font-size:13px;font-weight:600;font-family:'IBM Plex Mono',monospace;color:#1B2D3D;">{{ r.newFmt }}</div>
+                  <div style="padding:13px 12px;text-align:right;font-size:12.5px;font-weight:600;font-family:'IBM Plex Mono',monospace;color:{{ r.deltaFg }};">{{ r.deltaLabel }}</div>
+                  <div style="padding:13px 22px;text-align:center;">
+                    <sc-if value="{{ r.changed }}">
+                      <div style="display:inline-flex;gap:6px;">
+                        <button onClick="{{ r.accept }}" style="height:30px;padding:0 12px;border:1px solid {{ r.acceptBorder }};border-radius:8px;background:{{ r.acceptBg }};color:{{ r.acceptFg }};font-size:12px;font-weight:600;cursor:pointer;" style-hover="border-color:#1A7A4A;">Accept</button>
+                        <button onClick="{{ r.reject }}" style="height:30px;padding:0 12px;border:1px solid {{ r.rejectBorder }};border-radius:8px;background:{{ r.rejectBg }};color:{{ r.rejectFg }};font-size:12px;font-weight:600;cursor:pointer;" style-hover="border-color:#C60C30;">Flag</button>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{ r.unchangedTag }}"><span style="font-size:12px;color:#98A1A8;">Carried forward</span></sc-if>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:18px;">
+          <button onClick="{{ diffApprove }}" style="height:42px;padding:0 22px;border:none;border-radius:10px;background:#C60C30;color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;box-shadow:0 3px 10px rgba(198,12,48,.24);" style-hover="background:#A50A28;">Approve renewal CAP →</button>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ RENEWALS LIST ============ -->
+      <sc-if value="{{ showRenewalList }}">
+      <div style="padding:28px 32px 48px;max-width:1080px;margin:0 auto;animation:capRise .2s ease;">
+        <div style="font-size:13px;color:#64707A;margin-bottom:18px;">Clients with renewals in the next 95 days. Start a renewal to auto-populate the CAP from the prior year and current PrismHR configs.</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <sc-for list="{{ renewals }}" as="r" hint-placeholder-count="5">
+            <div style="display:flex;align-items:center;gap:16px;background:#fff;border:1px solid #E4E8EC;border-radius:13px;padding:15px 20px;box-shadow:0 1px 2px rgba(16,32,45,.04);">
+              <div style="width:54px;text-align:center;border-right:1px solid #EEF1F4;padding-right:14px;"><div style="font-size:22px;font-weight:600;color:{{ r.dateFg }};line-height:1;">{{ r.day }}</div><div style="font-size:10.5px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;margin-top:3px;">{{ r.mon }}</div></div>
+              <div style="flex:1;min-width:0;"><div style="font-size:14.5px;font-weight:600;color:#1B2D3D;">{{ r.name }}</div><div style="font-size:12px;color:{{ r.urgFg }};font-weight:500;margin-top:2px;">{{ r.urg }}</div></div>
+              <button onClick="{{ r.open }}" style="height:36px;padding:0 16px;border:1px solid #E4E8EC;border-radius:9px;background:#fff;color:#1B2D3D;font-size:12.5px;font-weight:600;cursor:pointer;" style-hover="border-color:#C60C30;color:#C60C30;">Review changes →</button>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ E-SIGNATURE ============ -->
+      <sc-if value="{{ showEsign }}">
+      <div style="padding:28px 32px 48px;max-width:920px;margin:0 auto;animation:capRise .2s ease;">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:22px;">
+          <div style="width:46px;height:46px;border-radius:11px;background:#FBF0DD;display:flex;align-items:center;justify-content:center;color:#B0690A;font-size:18px;">✎</div>
+          <div style="flex:1;"><div style="font-size:20px;font-weight:600;letter-spacing:-.3px;">Signature Routing</div><div style="font-size:12.5px;color:#98A1A8;font-family:'IBM Plex Mono',monospace;margin-top:1px;">{{ esignClientName }} · {{ esignClientMeta }}</div></div>
+          <div style="font-size:11px;font-weight:600;color:#B0690A;background:#FBF0DD;padding:5px 12px;border-radius:7px;">DocuSign envelope</div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:18px;align-items:start;">
+          <!-- signing chain -->
+          <div style="background:#fff;border:1px solid #E4E8EC;border-radius:14px;padding:8px 22px 16px;box-shadow:0 1px 2px rgba(16,32,45,.04);">
+            <div style="font-size:11px;font-weight:700;color:#64707A;text-transform:uppercase;letter-spacing:.8px;padding:14px 0 4px;">Signing order</div>
+            <sc-for list="{{ esignSigners }}" as="s" hint-placeholder-count="3">
+              <div style="display:flex;gap:14px;padding:14px 0;border-bottom:1px solid #F4F6F8;">
+                <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+                  <div style="width:30px;height:30px;border-radius:50%;background:{{ s.stBg }};color:{{ s.stFg }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">{{ s.stIcon }}</div>
+                </div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:11px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;">{{ s.role }}</div>
+                  <div style="font-size:14px;font-weight:600;color:#1B2D3D;margin-top:1px;">{{ s.name }}</div>
+                  <div style="font-size:11.5px;color:#98A1A8;">{{ s.org }}</div>
+                </div>
+                <div style="text-align:right;flex-shrink:0;">
+                  <div style="font-size:11.5px;font-weight:600;color:{{ s.stFg }};">{{ s.stLabel }}</div>
+                  <sc-if value="{{ s.when }}"><div style="font-size:11px;color:#98A1A8;font-family:'IBM Plex Mono',monospace;margin-top:2px;">{{ s.when }}</div></sc-if>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- envelope panel -->
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div style="background:#fff;border:1px solid #E4E8EC;border-radius:14px;padding:20px;box-shadow:0 1px 2px rgba(16,32,45,.04);">
+              <div style="font-size:13px;font-weight:600;margin-bottom:12px;">Envelope contents</div>
+              <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #F4F6F8;"><span style="width:26px;height:32px;border-radius:4px;background:#FDECEF;display:flex;align-items:center;justify-content:center;color:#C60C30;font-size:12px;">▤</span><div style="font-size:12.5px;color:#1B2D3D;">CAP Summary.pdf</div></div>
+              <div style="display:flex;align-items:center;gap:10px;padding:9px 0;"><span style="width:26px;height:32px;border-radius:4px;background:#E7F1FA;display:flex;align-items:center;justify-content:center;color:#0074B8;font-size:12px;">▤</span><div style="font-size:12.5px;color:#1B2D3D;">Benefits Booklet.pdf</div></div>
+            </div>
+            <sc-if value="{{ esignSent }}"></sc-if>
+            <div style="background:#fff;border:1px solid #E4E8EC;border-radius:14px;padding:20px;box-shadow:0 1px 2px rgba(16,32,45,.04);">
+              <sc-if value="{{ esignNotSent }}">
+                <div style="font-size:12.5px;color:#64707A;line-height:1.6;margin-bottom:14px;">The CAP is approved and ready. Send the DocuSign envelope to route signatures in order.</div>
+                <button onClick="{{ esignSend }}" style="width:100%;height:44px;border:none;border-radius:10px;background:#C60C30;color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;box-shadow:0 3px 10px rgba(198,12,48,.24);" style-hover="background:#A50A28;">Send envelope →</button>
+              </sc-if>
+              <sc-if value="{{ esignPendingClient }}">
+                <div style="font-size:12.5px;color:#64707A;line-height:1.6;margin-bottom:14px;">Envelope sent. Waiting on the client signer. <span style="color:#98A1A8;">(Demo: simulate the client signing.)</span></div>
+                <button onClick="{{ esignSimSign }}" style="width:100%;height:44px;border:1px solid #B0690A;border-radius:10px;background:#FBF0DD;color:#B0690A;font-size:13.5px;font-weight:600;cursor:pointer;" style-hover="background:#F6E6C8;">Simulate client signature</button>
+              </sc-if>
+              <sc-if value="{{ esignAllSigned }}">
+                <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px;"><span style="width:26px;height:26px;border-radius:50%;background:#E4F2EA;color:#1A7A4A;display:flex;align-items:center;justify-content:center;font-weight:700;">✓</span><div style="font-size:13.5px;font-weight:600;color:#1A7A4A;">All parties signed</div></div>
+                <button onClick="{{ esignPublish }}" disabled="{{ esignPublishDisabled }}" style="width:100%;height:44px;border:none;border-radius:10px;background:#5A45C7;color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;opacity:{{ esignPublishOpacity }};" style-hover="background:#4A38A8;">Publish to downstream →</button>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ BOOKLET / DOCUMENTS ============ -->
+      <sc-if value="{{ showBooklet }}">
+      <div style="padding:28px 32px 48px;max-width:1080px;margin:0 auto;animation:capRise .2s ease;">
+        <sc-if value="{{ bkShowDoc }}">
+          <button onClick="{{ bkBackToLib }}" style="border:none;background:none;color:#0074B8;font-size:12.5px;font-weight:600;cursor:pointer;margin-bottom:14px;padding:0;">← All documents</button>
+          <!-- booklet document -->
+          <div style="background:#fff;border:1px solid #E4E8EC;border-radius:14px;box-shadow:0 4px 18px rgba(16,32,45,.07);overflow:hidden;">
+            <div style="background:linear-gradient(135deg,#16242F,#0E1A23);padding:34px 40px;color:#fff;">
+              <div style="font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:10px;">{{ bkEffYear }} Employee Benefits Guide</div>
+              <div style="font-size:28px;font-weight:600;letter-spacing:-.5px;">{{ bkClientName }}</div>
+              <div style="font-size:12.5px;color:rgba(255,255,255,.55);font-family:'IBM Plex Mono',monospace;margin-top:6px;">{{ bkClientMeta }}</div>
+            </div>
+            <div style="padding:28px 40px;">
+              <div style="font-size:11px;font-weight:700;color:#C60C30;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px;">Your Plan Options</div>
+              <div style="display:flex;flex-direction:column;gap:14px;">
+                <sc-for list="{{ bkPlans }}" as="p" hint-placeholder-count="3">
+                  <div style="border:1px solid #EEF1F4;border-radius:12px;overflow:hidden;">
+                    <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid #F4F6F8;border-left:4px solid {{ p.typeColor }};">
+                      <div style="flex:1;"><div style="font-size:11px;font-weight:700;color:{{ p.typeColor }};text-transform:uppercase;letter-spacing:.6px;">{{ p.type }}</div><div style="font-size:15px;font-weight:600;color:#1B2D3D;margin-top:2px;">{{ p.carrier }} — {{ p.plan }}</div></div>
+                      <div style="font-size:12px;color:#98A1A8;">{{ p.network }} network</div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(4,1fr);">
+                      <div style="padding:14px 18px;border-right:1px solid #F4F6F8;"><div style="font-size:10px;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;font-weight:600;">Employer pays</div><div style="font-size:17px;font-weight:600;color:#1A7A4A;font-family:'IBM Plex Mono',monospace;margin-top:4px;">{{ p.erPct }}</div></div>
+                      <div style="padding:14px 18px;border-right:1px solid #F4F6F8;"><div style="font-size:10px;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;font-weight:600;">EE-only / mo</div><div style="font-size:17px;font-weight:600;color:#1B2D3D;font-family:'IBM Plex Mono',monospace;margin-top:4px;">{{ p.eeFmt }}</div></div>
+                      <div style="padding:14px 18px;border-right:1px solid #F4F6F8;"><div style="font-size:10px;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;font-weight:600;">Per paycheck</div><div style="font-size:17px;font-weight:600;color:#0074B8;font-family:'IBM Plex Mono',monospace;margin-top:4px;">{{ p.ppFmt }}</div></div>
+                      <div style="padding:14px 18px;"><div style="font-size:10px;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;font-weight:600;">Family / mo</div><div style="font-size:17px;font-weight:600;color:#1B2D3D;font-family:'IBM Plex Mono',monospace;margin-top:4px;">{{ p.famFmt }}</div></div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="padding:16px 40px;border-top:1px solid #EEF1F4;display:flex;align-items:center;gap:12px;background:#FAFBFC;">
+              <div style="flex:1;font-size:11.5px;color:#98A1A8;">Generated by CAP Cloud Tool · WeasyPrint template engine · {{ bkClientName }}</div>
+              <button onClick="{{ bkDownload }}" style="height:38px;padding:0 18px;border:none;border-radius:9px;background:#13212C;color:#fff;font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;" style-hover="background:#1F3343;">↓ Download PDF</button>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ bkShowLib }}">
+          <div style="font-size:13px;color:#64707A;margin-bottom:14px;">Generated benefits booklets, CAP summaries and signed contracts. Stored encrypted in S3 with full version history.</div>
+          <div style="display:flex;align-items:center;gap:8px;height:36px;width:300px;border:1px solid #E4E8EC;border-radius:9px;padding:0 12px;background:#fff;margin-bottom:16px;">
+            <span style="color:#98A1A8;font-size:14px;">⌕</span>
+            <input value="{{ docSearchValue }}" onChange="{{ setDocSearch }}" placeholder="Search documents…" style="flex:1;border:none;background:none;outline:none;font-size:12.5px;color:#1B2D3D;" />
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <sc-for list="{{ bkLibrary }}" as="d" hint-placeholder-count="6">
+              <button onClick="{{ d.open }}" style="display:flex;align-items:center;gap:14px;background:#fff;border:1px solid #E4E8EC;border-radius:12px;padding:16px 18px;cursor:pointer;text-align:left;box-shadow:0 1px 2px rgba(16,32,45,.04);" style-hover="border-color:#C60C30;">
+                <div style="width:40px;height:50px;border-radius:6px;background:linear-gradient(135deg,#16242F,#0E1A23);display:flex;align-items:flex-end;justify-content:center;padding-bottom:5px;flex-shrink:0;"><span style="font-size:8px;font-weight:700;color:#fff;">PDF</span></div>
+                <div style="flex:1;min-width:0;"><div style="font-size:13.5px;font-weight:600;color:#1B2D3D;">{{ d.name }}</div><div style="font-size:11px;color:#98A1A8;font-family:'IBM Plex Mono',monospace;margin-top:2px;">{{ d.meta }}</div></div>
+                <span style="display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:6px;background:{{ d.stBg }};color:{{ d.stFg }};font-size:10.5px;font-weight:600;flex-shrink:0;">{{ d.status }}</span>
+              </button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ bkNoDocs }}">
+            <div style="padding:48px 20px;text-align:center;"><div style="font-size:13.5px;font-weight:600;color:#64707A;margin-bottom:3px;">No documents found</div><div style="font-size:12px;color:#98A1A8;">Try a different search term.</div></div>
+          </sc-if>
+        </sc-if>
+      </div>
+      </sc-if>
+
+      <!-- ============ INTEGRATIONS ============ -->
+      <sc-if value="{{ showIntegrations }}">
+      <div style="padding:28px 32px 48px;max-width:1180px;margin:0 auto;animation:capRise .2s ease;">
+        <div style="font-size:13px;color:#64707A;margin-bottom:20px;">Configure connections to external systems. All credentials are encrypted at rest via AWS KMS. Changes take effect on next sync.</div>
+
+        <!-- connector grid -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
+          <sc-for list="{{ connCards }}" as="c" hint-placeholder-count="5">
+            <div style="background:{{ c.cardBg }};border:1.5px solid {{ c.cardBorder }};border-radius:13px;padding:16px 18px;cursor:pointer;transition:border-color .12s;" onClick="{{ c.expand }}" style-hover="border-color:#C60C30;">
+              <div style="display:flex;align-items:center;gap:11px;margin-bottom:10px;">
+                <div style="width:38px;height:38px;border-radius:10px;background:{{ c.tagBg }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:{{ c.tagFg }};flex-shrink:0;">{{ c.tag }}</div>
+                <div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:600;color:#1B2D3D;">{{ c.name }}</div><div style="font-size:11px;color:#98A1A8;">{{ c.cat }}</div></div>
+                <span style="font-size:10.5px;font-weight:600;color:{{ c.stFg }};background:{{ c.stBg }};padding:3px 9px;border-radius:6px;flex-shrink:0;">{{ c.stLabel }}</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid #F4F6F8;">
+                <div style="font-size:11px;color:#98A1A8;">Last sync: <strong style="color:#3B4A57;">{{ c.lastSync }}</strong></div>
+                <div style="font-size:11px;color:#64707A;font-family:'IBM Plex Mono',monospace;font-weight:600;">{{ c.syncCount }} syncs</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <!-- expanded config panel -->
+        <sc-if value="{{ connHasSel }}">
+        <div style="background:#fff;border:1px solid #E4E8EC;border-radius:16px;box-shadow:0 4px 18px rgba(16,32,45,.08);overflow:hidden;">
+          <!-- panel header -->
+          <div style="display:flex;align-items:center;gap:13px;padding:18px 24px;border-bottom:1px solid #EEF1F4;background:#FAFBFC;">
+            <div style="width:42px;height:42px;border-radius:11px;background:{{ connSelTagBg }};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:{{ connSelTagFg }};flex-shrink:0;">{{ connSelTag }}</div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap;">
+                <span style="font-size:17px;font-weight:600;letter-spacing:-.3px;color:#1B2D3D;">{{ connSelName }}</span>
+                <span style="font-size:11px;font-weight:600;color:{{ connSelStFg }};background:{{ connSelTagBg }};padding:2px 9px;border-radius:6px;">{{ connSelStatus }}</span>
+              </div>
+              <div style="font-size:12px;color:#64707A;margin-top:2px;">{{ connSelProto }} · {{ connSelDir }}</div>
+            </div>
+            <button onClick="{{ connSave }}" style="height:36px;padding:0 16px;border:none;border-radius:9px;background:#C60C30;color:#fff;font-size:12.5px;font-weight:600;cursor:pointer;" style-hover="background:#A50A28;">Save settings</button>
+          </div>
+          <!-- tabs -->
+          <div style="display:flex;gap:6px;padding:14px 24px 0;border-bottom:1px solid #EEF1F4;">
+            <sc-for list="{{ connTabBtns }}" as="t" hint-placeholder-count="4">
+              <button onClick="{{ t.pick }}" style="height:36px;padding:0 16px;border:1px solid {{ t.border }};border-radius:9px 9px 0 0;background:{{ t.bg }};color:{{ t.fg }};font-size:12.5px;font-weight:600;cursor:pointer;position:relative;bottom:-1px;">{{ t.label }}</button>
+            </sc-for>
+          </div>
+          <div style="padding:22px 24px;">
+            <!-- CONNECTION TAB -->
+            <sc-if value="{{ connTabConn }}">
+            <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:start;">
+              <div>
+                <div style="font-size:11px;font-weight:700;color:#98A1A8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;">Connection Details</div>
+                <div style="display:flex;flex-direction:column;gap:12px;">
+                  <sc-for list="{{ connConfigFields }}" as="f" hint-placeholder-count="4">
+                    <div><div style="font-size:11px;font-weight:600;color:#64707A;margin-bottom:5px;">{{ f.l }}</div>
+                    <input type="{{ f.type }}" value="{{ f.disp }}" placeholder="{{ f.placeholder }}" style="width:100%;height:40px;border:1px solid #DCE2E8;border-radius:9px;padding:0 13px;font-size:13px;color:#1B2D3D;outline:none;background:#FBFCFD;font-family:'IBM Plex Mono',monospace;" /></div>
+                  </sc-for>
+                </div>
+                <div style="margin-top:18px;display:flex;align-items:center;gap:10px;">
+                  <button onClick="{{ connTestConn }}" style="height:38px;padding:0 18px;border:1px solid #E4E8EC;border-radius:9px;background:#fff;color:#1B2D3D;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;" style-hover="border-color:#0074B8;color:#0074B8;">
+                    <sc-if value="{{ connTesting }}"><span style="width:14px;height:14px;border:2px solid #C9D2DA;border-top-color:#0074B8;border-radius:50%;animation:capSpin .7s linear infinite;"></span></sc-if>
+                    Test connection
+                  </button>
+                  <sc-if value="{{ connTestResult }}">
+                    <span style="font-size:12.5px;font-weight:600;color:{{ connTestResult.ok ? '#1A7A4A' : '#C60C30' }};">{{ connTestResult.msg }}</span>
+                  </sc-if>
+                </div>
+              </div>
+              <div style="background:#F7F9FB;border:1px solid #EEF1F4;border-radius:12px;padding:18px;">
+                <div style="font-size:11px;font-weight:700;color:#98A1A8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;">About this connector</div>
+                <div style="font-size:12.5px;color:#3B4A57;line-height:1.65;margin-bottom:14px;">{{ connSelDesc }}</div>
+                <div style="font-size:10px;font-weight:700;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Direction</div>
+                <div style="font-size:12.5px;font-weight:600;color:#1B2D3D;margin-bottom:12px;">{{ connSelDir }}</div>
+                <div style="font-size:10px;font-weight:700;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Protocol</div>
+                <div style="font-size:12px;font-family:'IBM Plex Mono',monospace;color:#3B4A57;">{{ connSelProto }}</div>
+              </div>
+            </div>
+            </sc-if>
+            <!-- SYNC TAB -->
+            <sc-if value="{{ connTabSync }}">
+            <div style="max-width:640px;">
+              <div style="font-size:11px;font-weight:700;color:#98A1A8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;">Sync Settings &amp; Triggers</div>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <sc-for list="{{ connSyncFields }}" as="f" hint-placeholder-count="4">
+                  <div style="display:flex;align-items:center;gap:14px;padding:13px 16px;background:#F7F9FB;border:1px solid #EEF1F4;border-radius:11px;">
+                    <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:#1B2D3D;">{{ f.l }}</div></div>
+                    <sc-if value="{{ f.toggle }}">
+                      <div style="width:44px;height:24px;border-radius:12px;background:{{ f.v ? '#1A7A4A' : '#D4DBE2' }};position:relative;cursor:pointer;flex-shrink:0;transition:background .15s;">
+                        <div style="position:absolute;top:3px;left:{{ f.v ? '23px' : '3px' }};width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s;"></div>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{ f.cron }}">
+                      <input value="{{ f.v }}" style="width:160px;height:34px;border:1px solid #DCE2E8;border-radius:8px;padding:0 11px;font-size:13px;font-family:'IBM Plex Mono',monospace;color:#1B2D3D;outline:none;background:#fff;" />
+                    </sc-if>
+                    <sc-if value="{{ f.text }}">
+                      <input value="{{ f.v }}" style="width:120px;height:34px;border:1px solid #DCE2E8;border-radius:8px;padding:0 11px;font-size:13px;font-family:'IBM Plex Mono',monospace;color:#1B2D3D;outline:none;background:#fff;" />
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            </sc-if>
+            <!-- FIELD MAPPING TAB -->
+            <sc-if value="{{ connTabMap }}">
+            <div>
+              <div style="font-size:11px;font-weight:700;color:#98A1A8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;">Field Mapping — CAP Cloud Tool ↔ {{ connSelName }}</div>
+              <div style="background:#fff;border:1px solid #E4E8EC;border-radius:12px;overflow:hidden;">
+                <div style="width:100%;">
+                  <div style="display:grid;grid-template-columns:1fr 70px 1fr;background:#F7F9FB;border-bottom:1px solid #EEF1F4;">
+                    <div style="padding:10px 18px;font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;">CAP Cloud Tool field</div>
+                    <div style="padding:10px 12px;font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;text-align:center;">Direction</div>
+                    <div style="padding:10px 18px;font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;">{{ connSelName }} field</div>
+                  </div>
+                  <div>
+                    <sc-for list="{{ connFmapRows }}" as="r" hint-placeholder-count="5">
+                      <div style="display:grid;grid-template-columns:1fr 70px 1fr;border-top:1px solid #EEF1F4;align-items:center;">
+                        <div style="padding:11px 18px;font-size:12.5px;font-family:'IBM Plex Mono',monospace;color:#1B2D3D;">{{ r.cap }}</div>
+                        <div style="padding:11px 12px;text-align:center;"><span style="font-size:14px;font-weight:700;color:{{ r.dirFg }};">{{ r.dir }}</span></div>
+                        <div style="padding:11px 18px;font-size:12.5px;font-family:'IBM Plex Mono',monospace;color:#5B6770;">{{ r.conn }}</div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </sc-if>
+            <!-- ACTIVITY LOG TAB -->
+            <sc-if value="{{ connTabLog }}">
+            <div style="max-width:720px;">
+              <div style="font-size:11px;font-weight:700;color:#98A1A8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;">Recent Activity</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <sc-for list="{{ connLogRows }}" as="l" hint-placeholder-count="4">
+                  <div style="display:flex;align-items:center;gap:13px;padding:12px 16px;background:#F7F9FB;border:1px solid #EEF1F4;border-radius:11px;">
+                    <span style="width:26px;height:26px;border-radius:8px;background:{{ l.iconBg }};color:{{ l.iconFg }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">{{ l.icon }}</span>
+                    <div style="flex:1;font-size:13px;color:#3B4A57;">{{ l.msg }}</div>
+                    <div style="font-size:11.5px;color:#98A1A8;font-family:'IBM Plex Mono',monospace;white-space:nowrap;">{{ l.ts }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            </sc-if>
+          </div>
+        </div>
+        </sc-if>
+      </div>
+      </sc-if>
+
+      <!-- ============ ADMIN CONSOLE ============ -->
+      <sc-if value="{{ showAdmin }}">
+      <div style="padding:28px 32px 48px;max-width:1080px;margin:0 auto;animation:capRise .2s ease;">
+        <div style="display:flex;gap:8px;margin-bottom:20px;">
+          <sc-for list="{{ adminTabs }}" as="t" hint-placeholder-count="3">
+            <button onClick="{{ t.pick }}" style="height:36px;padding:0 16px;border:1px solid {{ t.border }};border-radius:9px;background:{{ t.bg }};color:{{ t.fg }};font-size:12.5px;font-weight:600;cursor:pointer;">{{ t.label }}</button>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ adminShowUsers }}">
+          <div style="display:flex;align-items:center;gap:8px;height:36px;width:300px;border:1px solid #E4E8EC;border-radius:9px;padding:0 12px;background:#fff;margin-bottom:14px;">
+            <span style="color:#98A1A8;font-size:14px;">⌕</span>
+            <input value="{{ adminSearchValue }}" onChange="{{ setAdminSearch }}" placeholder="Search users by name, email, role…" style="flex:1;border:none;background:none;outline:none;font-size:12.5px;color:#1B2D3D;" />
+          </div>
+          <div style="background:#fff;border:1px solid #E4E8EC;border-radius:14px;box-shadow:0 1px 2px rgba(16,32,45,.04);overflow:hidden;">
+            <div style="width:100%;">
+              <div style="display:grid;grid-template-columns:minmax(0,1.5fr) 180px 120px 110px;background:#FAFBFC;border-bottom:1px solid #EEF1F4;">
+                <div style="padding:11px 22px;font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;">User</div>
+                <div style="padding:11px 12px;font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;">Role</div>
+                <div style="padding:11px 12px;font-size:10px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.5px;">Last active</div>
+                <div style="padding:11px 22px;"></div>
+              </div>
+              <div>
+                <sc-for list="{{ adminUsers }}" as="u" hint-placeholder-count="6">
+                  <div style="display:grid;grid-template-columns:minmax(0,1.5fr) 180px 120px 110px;border-top:1px solid #EEF1F4;align-items:center;">
+                    <div style="padding:13px 22px;"><div style="font-size:13.5px;font-weight:600;color:#1B2D3D;">{{ u.name }}</div><div style="font-size:11.5px;color:#98A1A8;font-family:'IBM Plex Mono',monospace;">{{ u.email }}</div></div>
+                    <div style="padding:13px 12px;"><span style="display:inline-flex;height:24px;align-items:center;padding:0 10px;border-radius:7px;background:{{ u.rbg }};color:{{ u.rfg }};font-size:11.5px;font-weight:600;">{{ u.role }}</span></div>
+                    <div style="padding:13px 12px;font-size:12.5px;color:#64707A;">{{ u.last }}</div>
+                    <div style="padding:13px 22px 13px 12px;text-align:right;"><button onClick="{{ u.manage }}" style="height:30px;padding:0 14px;border:1px solid #E4E8EC;border-radius:8px;background:#fff;color:#3B4A57;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;" style-hover="border-color:#C60C30;color:#C60C30;">Manage</button></div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <sc-if value="{{ adminNoUsers }}">
+              <div style="padding:40px 20px;text-align:center;"><div style="font-size:13px;font-weight:600;color:#64707A;">No users match your search</div></div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ adminShowTemplates }}">
+          <div style="display:flex;flex-direction:column;gap:11px;">
+            <sc-for list="{{ adminTemplates }}" as="t" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;gap:16px;background:#fff;border:1px solid #E4E8EC;border-radius:13px;padding:16px 20px;box-shadow:0 1px 2px rgba(16,32,45,.04);">
+                <div style="width:42px;height:42px;border-radius:10px;background:#F0F3F6;display:flex;align-items:center;justify-content:center;color:#3B4A57;flex-shrink:0;">▦</div>
+                <div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:600;color:#1B2D3D;">{{ t.name }}</div><div style="font-size:11.5px;color:#98A1A8;margin-top:2px;">{{ t.plans }} · Default split {{ t.contrib }}</div></div>
+                <div style="text-align:right;"><div style="font-size:13px;font-weight:600;color:#1B2D3D;font-family:'IBM Plex Mono',monospace;">{{ t.used }}</div><div style="font-size:11px;color:#98A1A8;">Updated {{ t.updated }}</div></div>
+                <button onClick="{{ t.edit }}" style="height:32px;padding:0 14px;border:1px solid #E4E8EC;border-radius:8px;background:#fff;color:#3B4A57;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;" style-hover="border-color:#C60C30;color:#C60C30;">Edit</button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ adminShowRoles }}">
+          <div style="background:#fff;border:1px solid #E4E8EC;border-radius:14px;box-shadow:0 1px 2px rgba(16,32,45,.04);overflow:hidden;">
+            <div style="width:100%;">
+              <div style="display:grid;grid-template-columns:minmax(0,1.5fr) repeat(6,80px);background:#13212C;">
+                <div style="padding:12px 22px;font-size:10px;font-weight:600;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;">Role</div>
+                <div style="padding:12px 8px;font-size:10px;font-weight:600;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;text-align:center;">Create</div>
+                <div style="padding:12px 8px;font-size:10px;font-weight:600;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;text-align:center;">Edit</div>
+                <div style="padding:12px 8px;font-size:10px;font-weight:600;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;text-align:center;">View Rates</div>
+                <div style="padding:12px 8px;font-size:10px;font-weight:600;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;text-align:center;">Approve</div>
+                <div style="padding:12px 8px;font-size:10px;font-weight:600;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;text-align:center;">Publish</div>
+                <div style="padding:12px 22px;font-size:10px;font-weight:600;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;text-align:center;">Admin</div>
+              </div>
+              <div>
+                <sc-for list="{{ rbacMatrix }}" as="m" hint-placeholder-count="6">
+                  <div style="display:grid;grid-template-columns:minmax(0,1.5fr) repeat(6,80px);border-top:1px solid #EEF1F4;background:{{ m.rowBg }};align-items:center;">
+                    <div style="padding:12px 22px;font-size:13px;font-weight:600;color:#1B2D3D;">{{ m.role }}<sc-if value="{{ m.self }}"><span style="font-size:10px;font-weight:600;color:#C60C30;margin-left:7px;">YOU</span></sc-if></div>
+                    <div style="padding:12px 8px;text-align:center;"><span style="display:inline-flex;width:30px;height:24px;align-items:center;justify-content:center;border-radius:6px;background:{{ m.c0.bg }};color:{{ m.c0.fg }};font-size:12px;font-weight:700;">{{ m.c0.t }}</span></div>
+                    <div style="padding:12px 8px;text-align:center;"><span style="display:inline-flex;width:30px;height:24px;align-items:center;justify-content:center;border-radius:6px;background:{{ m.c1.bg }};color:{{ m.c1.fg }};font-size:12px;font-weight:700;">{{ m.c1.t }}</span></div>
+                    <div style="padding:12px 8px;text-align:center;"><span style="display:inline-flex;min-width:30px;height:24px;align-items:center;justify-content:center;padding:0 7px;border-radius:6px;background:{{ m.c2.bg }};color:{{ m.c2.fg }};font-size:11.5px;font-weight:700;">{{ m.c2.t }}</span></div>
+                    <div style="padding:12px 8px;text-align:center;"><span style="display:inline-flex;width:30px;height:24px;align-items:center;justify-content:center;border-radius:6px;background:{{ m.c3.bg }};color:{{ m.c3.fg }};font-size:12px;font-weight:700;">{{ m.c3.t }}</span></div>
+                    <div style="padding:12px 8px;text-align:center;"><span style="display:inline-flex;width:30px;height:24px;align-items:center;justify-content:center;border-radius:6px;background:{{ m.c4.bg }};color:{{ m.c4.fg }};font-size:12px;font-weight:700;">{{ m.c4.t }}</span></div>
+                    <div style="padding:12px 22px;text-align:center;"><span style="display:inline-flex;width:30px;height:24px;align-items:center;justify-content:center;border-radius:6px;background:{{ m.c5.bg }};color:{{ m.c5.fg }};font-size:12px;font-weight:700;">{{ m.c5.t }}</span></div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- DRAWER (Manage User / Edit Template) -->
+<sc-if value="{{ drawerOpen }}">
+  <div onClick="{{ closeDrawer }}" style="position:fixed;inset:0;z-index:150;background:rgba(16,32,45,.42);backdrop-filter:blur(2px);animation:capFade .18s ease;"></div>
+  <div style="position:fixed;top:0;right:0;bottom:0;width:480px;max-width:92vw;z-index:160;background:#fff;box-shadow:-12px 0 40px rgba(16,32,45,.22);display:flex;flex-direction:column;animation:capSlide .26s cubic-bezier(.4,0,.2,1);">
+
+    <!-- ===== USER DRAWER ===== -->
+    <sc-if value="{{ drawerIsUser }}">
+      <div style="padding:22px 26px;border-bottom:1px solid #EEF1F4;display:flex;align-items:center;gap:14px;">
+        <div style="width:46px;height:46px;border-radius:12px;background:#13212C;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;flex-shrink:0;">{{ duShort }}</div>
+        <div style="flex:1;min-width:0;"><div style="font-size:11px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.6px;">Manage User</div><div style="font-size:18px;font-weight:600;letter-spacing:-.3px;color:#1B2D3D;">{{ duName }}</div><div style="font-size:12px;color:#98A1A8;font-family:'IBM Plex Mono',monospace;">{{ duEmail }}</div></div>
+        <button onClick="{{ closeDrawer }}" style="width:34px;height:34px;border:1px solid #E4E8EC;border-radius:9px;background:#fff;color:#64707A;cursor:pointer;font-size:16px;flex-shrink:0;" style-hover="border-color:#C9D2DA;color:#1B2D3D;">✕</button>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:22px 26px;">
+        <div style="font-size:11px;font-weight:700;color:#98A1A8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;">Assigned Role</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">
+          <sc-for list="{{ duRoleOpts }}" as="r" hint-placeholder-count="6">
+            <button onClick="{{ r.pick }}" style="display:flex;align-items:center;gap:12px;border:1.5px solid {{ r.border }};background:{{ r.bg }};border-radius:11px;padding:11px 13px;cursor:pointer;text-align:left;" style-hover="border-color:#C60C30;">
+              <div style="width:32px;height:32px;border-radius:8px;background:{{ r.avBg }};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">{{ r.short }}</div>
+              <div style="flex:1;min-width:0;"><div style="font-size:13.5px;font-weight:600;color:#1B2D3D;">{{ r.name }}</div><div style="font-size:11.5px;color:#98A1A8;">{{ r.desc }}</div></div>
+              <sc-if value="{{ r.active }}"><span style="color:#C60C30;font-size:15px;">●</span></sc-if>
+            </button>
+          </sc-for>
+        </div>
+
+        <div style="font-size:11px;font-weight:700;color:#98A1A8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;">Effective Permissions</div>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:24px;">
+          <sc-for list="{{ duPermPills }}" as="p" hint-placeholder-count="6">
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:{{ p.fg }};background:{{ p.bg }};padding:5px 11px;border-radius:7px;"><span style="font-size:11px;">{{ p.mark }}</span>{{ p.label }}</span>
+          </sc-for>
+        </div>
+
+        <div style="font-size:11px;font-weight:700;color:#98A1A8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;">Account Status</div>
+        <div style="display:flex;gap:8px;margin-bottom:24px;">
+          <sc-for list="{{ duStatusOpts }}" as="s" hint-placeholder-count="3">
+            <button onClick="{{ s.pick }}" style="flex:1;height:38px;border:1.5px solid {{ s.border }};border-radius:9px;background:{{ s.bg }};color:{{ s.fg }};font-size:12.5px;font-weight:600;cursor:pointer;">{{ s.label }}</button>
+          </sc-for>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:#F7F9FB;border:1px solid #EEF1F4;border-radius:11px;margin-bottom:14px;">
+          <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:#1B2D3D;">Multi-factor authentication</div><div style="font-size:11.5px;color:#98A1A8;margin-top:1px;">Enforced via enterprise IdP</div></div>
+          <button onClick="{{ duToggleMfa }}" style="width:44px;height:24px;border:none;border-radius:12px;background:{{ duMfaBg }};position:relative;cursor:pointer;flex-shrink:0;padding:0;transition:background .15s;">
+            <div style="position:absolute;top:3px;left:{{ duMfaLeft }};width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s;"></div>
+          </button>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:#F7F9FB;border:1px solid #EEF1F4;border-radius:11px;">
+          <span style="font-size:11.5px;color:#98A1A8;">Last active</span><span style="font-size:12.5px;font-weight:600;color:#3B4A57;margin-left:auto;">{{ duLast }}</span>
+        </div>
+      </div>
+      <div style="padding:16px 26px;border-top:1px solid #EEF1F4;display:flex;gap:10px;">
+        <button onClick="{{ closeDrawer }}" style="flex:1;height:44px;border:1px solid #E4E8EC;border-radius:10px;background:#fff;color:#64707A;font-size:13.5px;font-weight:600;cursor:pointer;" style-hover="border-color:#C9D2DA;color:#1B2D3D;">Cancel</button>
+        <button onClick="{{ duSave }}" style="flex:1.4;height:44px;border:none;border-radius:10px;background:#C60C30;color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;box-shadow:0 3px 10px rgba(198,12,48,.24);" style-hover="background:#A50A28;">Save changes</button>
+      </div>
+    </sc-if>
+
+    <!-- ===== TEMPLATE DRAWER ===== -->
+    <sc-if value="{{ drawerIsTemplate }}">
+      <div style="padding:22px 26px;border-bottom:1px solid #EEF1F4;display:flex;align-items:center;gap:14px;">
+        <div style="width:46px;height:46px;border-radius:12px;background:#F0F3F6;display:flex;align-items:center;justify-content:center;font-size:18px;color:#3B4A57;flex-shrink:0;">▦</div>
+        <div style="flex:1;min-width:0;"><div style="font-size:11px;font-weight:600;color:#98A1A8;text-transform:uppercase;letter-spacing:.6px;">Edit Template</div><div style="font-size:18px;font-weight:600;letter-spacing:-.3px;color:#1B2D3D;">{{ dtName }}</div><div style="font-size:12px;color:#98A1A8;">In use by {{ dtUsed }} · Updated {{ dtUpdated }}</div></div>
+        <button onClick="{{ closeDrawer }}" style="width:34px;height:34px;border:1px solid #E4E8EC;border-radius:9px;background:#fff;color:#64707A;cursor:pointer;font-size:16px;flex-shrink:0;" style-hover="border-color:#C9D2DA;color:#1B2D3D;">✕</button>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:22px 26px;">
+        <div style="font-size:11px;font-weight:700;color:#98A1A8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;">Template Name</div>
+        <input value="{{ dtName }}" style="width:100%;height:42px;border:1px solid #DCE2E8;border-radius:10px;padding:0 14px;font-size:14px;color:#1B2D3D;outline:none;background:#FBFCFD;margin-bottom:22px;" />
+
+        <div style="font-size:11px;font-weight:700;color:#98A1A8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;">Included Plan Types</div>
+        <input value="{{ dtPlans }}" style="width:100%;height:42px;border:1px solid #DCE2E8;border-radius:10px;padding:0 14px;font-size:13.5px;color:#1B2D3D;outline:none;background:#FBFCFD;margin-bottom:22px;" />
+
+        <div style="font-size:11px;font-weight:700;color:#98A1A8;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;">Default Employer Contribution Split</div>
+        <input value="{{ dtContrib }}" style="width:100%;height:42px;border:1px solid #DCE2E8;border-radius:10px;padding:0 14px;font-size:13.5px;font-family:'IBM Plex Mono',monospace;color:#1B2D3D;outline:none;background:#FBFCFD;margin-bottom:22px;" />
+
+        <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:#FBF4E6;border:1px solid #F0D9A8;border-radius:11px;">
+          <span style="width:22px;height:22px;border-radius:50%;background:#B0690A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">!</span>
+          <div style="font-size:12px;color:#7A4800;line-height:1.5;">Editing this template affects new CAPs only. The {{ dtUsed }} already using it are not retroactively changed.</div>
+        </div>
+      </div>
+      <div style="padding:16px 26px;border-top:1px solid #EEF1F4;display:flex;gap:10px;">
+        <button onClick="{{ closeDrawer }}" style="flex:1;height:44px;border:1px solid #E4E8EC;border-radius:10px;background:#fff;color:#64707A;font-size:13.5px;font-weight:600;cursor:pointer;" style-hover="border-color:#C9D2DA;color:#1B2D3D;">Cancel</button>
+        <button onClick="{{ dtSave }}" style="flex:1.4;height:44px;border:none;border-radius:10px;background:#C60C30;color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;box-shadow:0 3px 10px rgba(198,12,48,.24);" style-hover="background:#A50A28;">Save template</button>
+      </div>
+    </sc-if>
+
+  </div>
+</sc-if>
+
+<!-- TOAST -->
+<sc-if value="{{ toast }}">
+  <div style="position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:200;display:flex;align-items:center;gap:11px;background:#13212C;color:#fff;padding:13px 20px;border-radius:11px;box-shadow:0 12px 40px rgba(16,32,45,.32);font-size:13.5px;font-weight:500;animation:capToast .22s ease;">
+    <span style="width:20px;height:20px;border-radius:50%;background:{{ toastBg }};display:flex;align-items:center;justify-content:center;font-size:12px;">{{ toastIcon }}</span>
+    {{ toast }}
+  </div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;},&quot;defaultRole&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;am&quot;,&quot;ae&quot;,&quot;coord&quot;,&quot;analyst&quot;,&quot;gab&quot;,&quot;admin&quot;],&quot;default&quot;:&quot;am&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;defaultPageSize&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:10,&quot;min&quot;:5,&quot;max&quot;:50,&quot;step&quot;:5,&quot;tsType&quot;:&quot;number&quot;},&quot;renewalWindowDays&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:95,&quot;min&quot;:30,&quot;max&quot;:365,&quot;step&quot;:5,&quot;tsType&quot;:&quot;number&quot;},&quot;showSkeletons&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = {
+    screen: 'login', role: 'am', roleMenuOpen: false,
+    selectedClientId: null, wizardStep: 1, wizardClientId: null, plans: [],
+    connExpanded: null, connTab: 'connection', testingConn: null, testResult: null,
+    statusFilter: 'all', adminTab: 'users', search: '', tierFilter: 'all', sortKey: 'name', sortDir: 'asc', adminSearch: '', docSearch: '',
+    statusMenuOpen: false, tierMenuOpen: false, page: 1, pageSize: null,
+    drawer: null, drawerUser: null, drawerTemplate: null,
+    bookletGenerated: false, envelopeSent: false, signers: null,
+    diffDecisions: {}, toast: null, toastKind: 'ok', validationRun: false,
+    wizardTemplate: null, wizardError: null,
+    authLoading: false, loading: false,
+  };
+
+  transition(patch){ if(this.props.showSkeletons===false){ this.setState({...patch, loading:false}); return; } this.setState({...patch, loading:true}); clearTimeout(this._ld); this._ld=setTimeout(()=>this.setState({loading:false}), 130+Math.random()*170); }
+
+  roles = [
+    {id:'am', name:'Account Manager', short:'AM', person:'Dana Whitfield', desc:'Creates & renews CAPs'},
+    {id:'ae', name:'Account Executive', short:'AE', person:'Marcus Reyes', desc:'Approves CAPs'},
+    {id:'coord', name:'Benefits Coordinator', short:'BC', person:'Lena Ortiz', desc:'Read-only review'},
+    {id:'analyst', name:'Benefits Analyst', short:'BA', person:'Sam Cho', desc:'Consumes for setup'},
+    {id:'gab', name:'GAB Manager', short:'GM', person:'Priya Nair', desc:'Approve & publish'},
+    {id:'admin', name:'System Admin', short:'SA', person:'Root Admin', desc:'Full access'},
+  ];
+  perms = {
+    am:   {create:1, edit:1, viewRates:'full', approve:0, publish:0, admin:0},
+    ae:   {create:1, edit:1, viewRates:'full', approve:1, publish:0, admin:0},
+    coord:{create:0, edit:0, viewRates:'ro',   approve:0, publish:0, admin:0},
+    analyst:{create:0, edit:0, viewRates:'ro', approve:0, publish:0, admin:0},
+    gab:  {create:1, edit:1, viewRates:'full', approve:1, publish:1, admin:0},
+    admin:{create:1, edit:1, viewRates:'full', approve:1, publish:1, admin:1},
+  };
+
+  clients = [
+    {id:'meridian', name:'Meridian Logistics Group', prism:'GA-10428', tier:'Gold', wse:142, owner:'Dana Whitfield', status:'in_review', type:'renewal', eff:'2026-01-01', renew:'Jul 15', renewDay:'15', renewMon:'Jul', urgDays:28, ind:'Transportation'},
+    {id:'cascade', name:'Cascade Health Partners', prism:'GA-10193', tier:'Platinum', wse:318, owner:'Marcus Reyes', status:'published', type:'renewal', eff:'2026-01-01', renew:'Dec 01', renewDay:'01', renewMon:'Dec', urgDays:167, ind:'Healthcare'},
+    {id:'ironwood', name:'Ironwood Construction', prism:'GA-10551', tier:'Silver', wse:67, owner:'Dana Whitfield', status:'draft', type:'new', eff:'2026-09-01', renew:'Sep 01', renewDay:'01', renewMon:'Sep', urgDays:76, ind:'Construction'},
+    {id:'brightline', name:'Brightline Staffing', prism:'GA-10337', tier:'Gold', wse:205, owner:'Priya Nair', status:'approved', type:'renewal', eff:'2026-08-01', renew:'Aug 01', renewDay:'01', renewMon:'Aug', urgDays:45, ind:'Staffing'},
+    {id:'sterling', name:'Sterling Hospitality', prism:'GA-10612', tier:'Bronze', wse:38, owner:'Marcus Reyes', status:'signed', type:'renewal', eff:'2026-07-01', renew:'Jul 01', renewDay:'01', renewMon:'Jul', urgDays:14, ind:'Hospitality'},
+    {id:'northgate', name:'Northgate Manufacturing', prism:'GA-10074', tier:'Platinum', wse:412, owner:'Priya Nair', status:'in_review', type:'renewal', eff:'2026-08-01', renew:'Aug 15', renewDay:'15', renewMon:'Aug', urgDays:59, ind:'Manufacturing'},
+    {id:'coastal', name:'Coastal Dental Associates', prism:'GA-10489', tier:'Silver', wse:54, owner:'Dana Whitfield', status:'published', type:'renewal', eff:'2026-04-01', renew:'Apr 01', renewDay:'01', renewMon:'Apr', urgDays:288, ind:'Dental'},
+    {id:'vanguard', name:'Vanguard Tech Solutions', prism:'GA-10726', tier:'Gold', wse:178, owner:'Marcus Reyes', status:'draft', type:'renewal', eff:'2026-10-01', renew:'Oct 01', renewDay:'01', renewMon:'Oct', urgDays:106, ind:'Technology'},
+    {id:'harbor', name:'Harbor Point Senior Living', prism:'GA-10298', tier:'Bronze', wse:89, owner:'Priya Nair', status:'approved', type:'new', eff:'2026-07-01', renew:'Jul 20', renewDay:'20', renewMon:'Jul', urgDays:33, ind:'Senior Care'},
+    {id:'summit', name:'Summit Financial Advisors', prism:'GA-10405', tier:'Silver', wse:46, owner:'Dana Whitfield', status:'published', type:'renewal', eff:'2026-03-01', renew:'Mar 01', renewDay:'01', renewMon:'Mar', urgDays:257, ind:'Finance'},
+    {id:'evergreen', name:'Evergreen Property Mgmt', prism:'GA-10638', tier:'Gold', wse:156, owner:'Marcus Reyes', status:'signed', type:'renewal', eff:'2026-07-01', renew:'Jul 10', renewDay:'10', renewMon:'Jul', urgDays:23, ind:'Real Estate'},
+    {id:'apex', name:'Apex Auto Group', prism:'GA-10157', tier:'Platinum', wse:267, owner:'Priya Nair', status:'in_review', type:'renewal', eff:'2026-09-01', renew:'Sep 15', renewDay:'15', renewMon:'Sep', urgDays:90, ind:'Automotive'},
+  ];
+
+  statusMeta = {
+    draft:{label:'Draft', bg:'#EDF0F3', fg:'#5B6770'},
+    in_review:{label:'In Review', bg:'#E7F1FA', fg:'#0074B8'},
+    approved:{label:'Approved', bg:'#FBF0DD', fg:'#B0690A'},
+    signed:{label:'Signed', bg:'#ECE9FA', fg:'#5A45C7'},
+    published:{label:'Published', bg:'#E4F2EA', fg:'#1A7A4A'},
+  };
+  tierFg = {Platinum:'#3B4A57', Gold:'#B0690A', Silver:'#6B7680', Bronze:'#8A6240'};
+
+  // ---- icons (simple line primitives) ----
+  ic(paths){ return React.createElement('svg',{viewBox:'0 0 24 24',width:'100%',height:'100%',fill:'none',stroke:'currentColor','strokeWidth':1.8,'strokeLinecap':'round','strokeLinejoin':'round'}, paths.map((d,i)=>React.createElement('path',{key:i,d}))); }
+  icC(){ return React.createElement('svg',{viewBox:'0 0 24 24',width:'100%',height:'100%',fill:'none',stroke:'currentColor','strokeWidth':1.8,'strokeLinecap':'round','strokeLinejoin':'round'},[React.createElement('rect',{key:0,x:3,y:3,width:7,height:7,rx:1.5}),React.createElement('rect',{key:1,x:14,y:3,width:7,height:7,rx:1.5}),React.createElement('rect',{key:2,x:3,y:14,width:7,height:7,rx:1.5}),React.createElement('rect',{key:3,x:14,y:14,width:7,height:7,rx:1.5})]); }
+
+  fmt(v){ return '$'+Number(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  fmt0(v){ return '$'+Number(v).toLocaleString('en-US',{maximumFractionDigits:0}); }
+
+  can(a){ const p=this.perms[this.state.role]||{}; return a==='viewRates'? p.viewRates : !!p[a]; }
+  client(id){ return this.clients.find(c=>c.id===id); }
+
+  toast(msg, kind='ok'){ this.setState({toast:msg, toastKind:kind}); clearTimeout(this._t); this._t=setTimeout(()=>this.setState({toast:null}), 2600); }
+
+  ssoLogin = ()=>{ if(this.state.authLoading) return; const r=this.props.defaultRole ?? 'am'; this.setState({authLoading:true}); clearTimeout(this._auth); this._auth=setTimeout(()=>{ this.setState({authLoading:false}); this.transition({screen:'dashboard', role:r}); }, 800); };
+  pickRole(id){ this.transition({role:id, roleMenuOpen:false, screen: this.state.screen==='login'?'dashboard':this.state.screen}); }
+  logout = ()=> this.setState({screen:'login', roleMenuOpen:false, loading:false, authLoading:false});
+  go(s){ if(s==='admin' && !this.can('admin')) return; this.transition({screen:s, roleMenuOpen:false}); }
+  closeMenus = ()=>{ if(this.state.roleMenuOpen||this.state.statusMenuOpen||this.state.tierMenuOpen) this.setState({roleMenuOpen:false, statusMenuOpen:false, tierMenuOpen:false}); };
+  toggleRoleMenu = (e)=>{ e.stopPropagation(); this.setState({roleMenuOpen:!this.state.roleMenuOpen}); };
+
+  // ---- plan seed for wizard ----
+  seedPlans(){
+    const mk=(type,carrier,plan,network,erPct,base,mults)=>({
+      id:type.toLowerCase()+'_'+Math.random().toString(36).slice(2,6), type, carrier, plan, network, erPct,
+      tiers:[['EE',mults[0]],['EE+SP',mults[1]],['EE+CH',mults[2]],['FAM',mults[3]]].map(([t,m])=>({tier:t, total:+(base*m).toFixed(2)}))
+    });
+    return [
+      mk('Medical','Blue Cross Blue Shield','Blue PPO 1500','PPO',0.70,612.40,[1,2.05,1.85,2.95]),
+      mk('Dental','Delta Dental','Premier PPO','PPO',0.55,48.20,[1,1.95,1.80,2.85]),
+      mk('Vision','VSP','Choice Plan','PPO',0.60,9.80,[1,1.9,1.75,2.7]),
+    ];
+  }
+  startWizard = ()=>{ if(!this.can('create')){this.toast('Your role cannot create CAPs','warn');return;} this.transition({screen:'wizard', wizardStep:1, wizardClientId:null, wizardTemplate:null, wizardError:null, plans:this.seedPlans(), validationRun:false, roleMenuOpen:false}); };
+  openClient(c){ if(['draft','in_review'].includes(c.status)){ this.transition({screen:'wizard', wizardStep: c.status==='in_review'?5:3, wizardClientId:c.id, wizardTemplate:'standard', wizardError:null, plans:this.seedPlans(), validationRun:false}); } else { this.transition({screen:'booklet', selectedClientId:c.id, bookletGenerated:true}); } }
+  openRenewal(c){ this.transition({screen:'renewal', selectedClientId:c.id, diffDecisions:{}}); }
+  routeSignature(c){ this.transition({screen:'esign', selectedClientId:c.id, envelopeSent:false, signers:this.freshSigners()}); }
+
+  freshSigners(){ return [
+    {role:'Account Manager', name:'Dana Whitfield', org:'G&A Partners', status:'signed', when:'Jun 14, 9:02 AM'},
+    {role:'Client Signer', name:'Robert Hale, CFO', org:'Meridian Logistics', status:'pending', when:''},
+    {role:'Account Executive', name:'Marcus Reyes', org:'G&A Partners', status:'waiting', when:''},
+  ]; }
+
+  // wizard nav
+  wizGo(n){ this.setState({wizardStep:n, wizardError:null}); }
+  wizNext(){
+    const s=this.state.wizardStep;
+    let err=null;
+    if(s===1 && !this.state.wizardClientId)           err='Select a client before continuing.';
+    else if(s===2 && !this.state.wizardTemplate)       err='Choose a template before continuing.';
+    else if(s===3 && this.state.plans.length===0)      err='Add at least one plan before continuing.';
+    else if(s===4){ const hasZero=this.state.plans.some(p=>p.tiers.some(t=>t.total<=0)); if(hasZero) err='All tier premiums must be greater than $0 before proceeding.'; }
+    if(err){ this.setState({wizardError:err}); return; }
+    this.setState({wizardError:null});
+    if(s===5) this.setState({validationRun:true});
+    this.setState({wizardStep:Math.min(6,s+1)});
+  }
+  wizPrev(){ this.setState({wizardStep:Math.max(1,this.state.wizardStep-1), wizardError:null}); }
+  jumpToField(step){ this.setState({wizardStep:step}); this.toast('Jumped to the flagged field','ok'); }
+
+  pickWizClient(id){ this.setState({wizardClientId:id, wizardStep:2, wizardError:null}); }
+  addPlan(type){ const map={Medical:['Aetna','Open Access PPO','PPO',0.70,640],Dental:['Guardian','DentalGuard','PPO',0.55,46],Vision:['EyeMed','Insight Plan','PPO',0.60,9.2],FSA:['WEX','Healthcare FSA','—',0,0],HSA:['HealthEquity','HSA Plus','—',0,0],Life:['MetLife','Group Term Life','—',1,12]};
+    const [carrier,plan,network,erPct,base]=map[type]; const mults=[1,2.05,1.85,2.95];
+    const np={id:type.toLowerCase()+'_'+Math.random().toString(36).slice(2,6),type,carrier,plan,network,erPct,tiers:[['EE',mults[0]],['EE+SP',mults[1]],['EE+CH',mults[2]],['FAM',mults[3]]].map(([t,m])=>({tier:t,total:+(base*m).toFixed(2)}))};
+    this.setState({plans:[...this.state.plans, np]}); this.toast(type+' plan added','ok'); }
+  removePlan(id){ this.setState({plans:this.state.plans.filter(p=>p.id!==id)}); }
+  updateTotal(id,idx,val){ const v=parseFloat(val)||0; this.setState({plans:this.state.plans.map(p=> p.id!==id?p:{...p,tiers:p.tiers.map((t,i)=>i!==idx?t:{...t,total:v})})}); }
+  updateErPct(id,val){ let v=parseFloat(val); if(isNaN(v))v=0; v=Math.max(0,Math.min(100,v))/100; this.setState({plans:this.state.plans.map(p=> p.id!==id?p:{...p,erPct:v})}); }
+
+  submitForReview(){ this.toast('CAP submitted for review','ok'); this.setState({screen:'dashboard'}); }
+  approveCap(){ if(!this.can('approve')){this.toast('Your role cannot approve','warn');return;} this.toast('CAP approved — ready for signature','ok'); this.setState({screen:'dashboard'}); }
+  publishCap(){ if(!this.can('publish')){this.toast('Your role cannot publish','warn');return;} this.toast('CAP published — syncing downstream','ok'); this.setState({screen:'dashboard'}); }
+  generateBooklet(){ this.setState({bookletGenerated:true}); this.toast('Benefits booklet generated','ok'); }
+  sendEnvelope(){ this.setState({envelopeSent:true}); this.toast('DocuSign envelope sent to client','ok'); }
+  clientSign(){ const s=this.state.signers.map((x,i)=> i===1?{...x,status:'signed',when:'Jun 17, 2:41 PM'}: i===2?{...x,status:'pending'}:x); this.setState({signers:s}); this.toast('Client signature captured','ok'); }
+  setDiff(key,val){ this.setState({diffDecisions:{...this.state.diffDecisions, [key]:val}}); }
+  acceptAllRates(){ const d={...this.state.diffDecisions}; this.diffRateKeys().forEach(k=>d[k]='accept'); this.setState({diffDecisions:d}); this.toast('Accepted all carrier rate increases','ok'); }
+  diffRateKeys(){ return ['med_ee','med_fam','den_ee','vis_ee']; }
+  setAdminTab(t){ this.transition({adminTab:t}); }
+  drawerVals(){
+    const d=this.state.drawer; const u=this.state.drawerUser; const t=this.state.drawerTemplate;
+    const roleOpts=this.roles.map(r=>{ const a=u&&u.roleId===r.id; const av=r.id==='admin'?'#5A45C7':r.id==='gab'?'#1A7A4A':r.id==='ae'?'#0074B8':r.id==='coord'||r.id==='analyst'?'#5B6770':'#C60C30';
+      return {name:r.name, desc:r.desc, short:r.short, active:a, pick:()=>this.drawerSetRole(r.id), border:a?'#C60C30':'#E4E8EC', bg:a?'#FEF6F7':'#fff', avBg:av}; });
+    const statusOpts=[['active','Active','#1A7A4A'],['suspended','Suspended','#B0690A'],['deactivated','Deactivated','#C60C30']].map(([k,label,c])=>({label, active:u&&u.status===k, pick:()=>this.drawerSetStatus(k), fg:u&&u.status===k?'#fff':c, bg:u&&u.status===k?c:'#fff', border:u&&u.status===k?c:'#E4E8EC'}));
+    // permissions preview for selected role
+    const p=u?this.perms[u.roleId]:null;
+    const permPills=p?[['Create',p.create],['Edit',p.edit],['View Rates',p.viewRates==='full'?1:p.viewRates==='ro'?0.5:0],['Approve',p.approve],['Publish',p.publish],['Admin',p.admin]].map(([l,v])=>({label:l, on:v===1, partial:v===0.5, fg:v===1?'#1A7A4A':v===0.5?'#0074B8':'#C9CFD5', bg:v===1?'#E4F2EA':v===0.5?'#E7F1FA':'#F6F8FA', mark:v===1?'✓':v===0.5?'RO':'✕'})):[];
+    return {
+      drawerOpen: !!d, drawerIsUser: d==='user', drawerIsTemplate: d==='template', closeDrawer:this.closeDrawer,
+      // user drawer
+      duName:u?u.name:'', duEmail:u?u.email:'', duShort:u?(u.name.split(' ').map(x=>x[0]).slice(0,2).join('')):'', duLast:u?u.last:'',
+      duRoleOpts:roleOpts, duStatusOpts:statusOpts, duMfa:u?u.mfa:true, duToggleMfa:()=>this.drawerToggleMfa(),
+      duPermPills:permPills, duSave:()=>this.saveUserDrawer(),
+      duMfaBg:u&&u.mfa?'#1A7A4A':'#D4DBE2', duMfaLeft:u&&u.mfa?'23px':'3px',
+      // template drawer
+      dtName:t?t.name:'', dtPlans:t?t.plans:'', dtContrib:t?t.contrib:'', dtUsed:t?t.used:'', dtUpdated:t?t.updated:'',
+      dtSave:()=>this.saveTemplateDrawer(),
+    };
+  }
+  openUserDrawer(u){ this.setState({drawer:'user', drawerUser:{...u, roleId:this.roleIdFromName(u.role), status:'active', mfa:true}}); }
+  openTemplateDrawer(t){ this.setState({drawer:'template', drawerTemplate:{...t}}); }
+  closeDrawer=()=>this.setState({drawer:null});
+  roleIdFromName(name){ const r=this.roles.find(r=>r.name===name); return r?r.id:'am'; }
+  drawerSetRole(id){ this.setState({drawerUser:{...this.state.drawerUser, roleId:id}}); }
+  drawerSetStatus(s){ this.setState({drawerUser:{...this.state.drawerUser, status:s}}); }
+  drawerToggleMfa(){ this.setState({drawerUser:{...this.state.drawerUser, mfa:!this.state.drawerUser.mfa}}); }
+  saveUserDrawer(){ const u=this.state.drawerUser; this.toast('Saved changes to '+u.name,'ok'); this.setState({drawer:null}); }
+  saveTemplateDrawer(){ const t=this.state.drawerTemplate; this.toast('Saved template: '+t.name,'ok'); this.setState({drawer:null}); }
+  connectors = [
+    {id:'prism', name:'PrismHR', tag:'PR', tagBg:'#E7F1FA', tagFg:'#0074B8', cat:'HRIS', direction:'Bi-directional', status:'connected', lastSync:'2 min ago', syncCount:847,
+     desc:'Reads existing plan configs for validation cross-checks; writes approved benefit group codes, rate tables and deduction amounts on CAP publish.',
+     proto:'REST / OAuth 2.0 Client Credentials',
+     connFields:[{l:'API Base URL',v:'https://api.prismhr.com/v2',k:'baseUrl'},{l:'Company ID',v:'GA-001',k:'companyId'},{l:'Client ID',v:'cap-cloud-tool-prod',k:'clientId'},{l:'Client Secret',v:'',k:'clientSecret',mask:true}],
+     syncFields:[{l:'Sync Schedule (cron)',v:'0 */6 * * *',k:'cron',cron:true},{l:'Trigger on CAP publish',v:true,k:'t1',toggle:true},{l:'Read configs on validation',v:true,k:'t2',toggle:true},{l:'Auto-retry on failure',v:true,k:'t3',toggle:true}],
+     fieldMap:[{cap:'plan.carrier',conn:'benefit_group.carrier_name',dir:'→'},{cap:'tier.total_premium',conn:'benefit_rate.total_rate',dir:'→'},{cap:'tier.er_contribution',conn:'deduction.employer_amount',dir:'→'},{cap:'tier.ee_deduction',conn:'deduction.employee_amount',dir:'→'},{cap:'plan.effective_date',conn:'benefit_group.effective_date',dir:'↔'},{cap:'client.prism_id',conn:'company.id',dir:'←'}],
+     logs:[{ts:'Jun 17, 2:14 PM',ok:true,msg:'12 plan configs synced · 3 deduction codes updated'},{ts:'Jun 17, 8:14 AM',ok:true,msg:'Renewal CAP published · rates pushed to PrismHR'},{ts:'Jun 16, 2:14 PM',ok:false,warn:true,msg:'Rate delta detected · Dental $4.20 variance flagged'},{ts:'Jun 16, 8:14 AM',ok:true,msg:'Scheduled sync complete · no changes'}]},
+    {id:'worksight', name:'WorkSight', tag:'WS', tagBg:'#E4F2EA', tagFg:'#1A7A4A', cat:'Enrollment Portal', direction:'Push only', status:'connected', lastSync:'15 min ago', syncCount:312,
+     desc:'Pushes approved plan options, employer contribution splits and effective dates to the employee self-service enrollment portal.',
+     proto:'REST / API Key',
+     connFields:[{l:'Tenant URL',v:'https://gapartners.worksight.net/api/v3',k:'url'},{l:'Tenant ID',v:'g-and-a-partners',k:'tenantId'},{l:'API Key',v:'',k:'apiKey',mask:true}],
+     syncFields:[{l:'Sync on CAP publish',v:true,k:'t1',toggle:true},{l:'Include dependents',v:true,k:'t2',toggle:true},{l:'Auto-activate plans in portal',v:false,k:'t3',toggle:true},{l:'Push schedule (cron)',v:'0 8 * * 1',k:'cron',cron:true}],
+     fieldMap:[{cap:'plan.name',conn:'plan.display_name',dir:'→'},{cap:'tier.ee_deduction',conn:'contribution.employee_cost',dir:'→'},{cap:'plan.effective_date',conn:'plan.start_date',dir:'→'},{cap:'plan.carrier',conn:'plan.carrier_label',dir:'→'},{cap:'client.wse_count',conn:'eligibility.headcount',dir:'→'}],
+     logs:[{ts:'Jun 17, 2:01 PM',ok:true,msg:'5 plans pushed · 142 eligible employees updated'},{ts:'Jun 15, 11:34 AM',ok:true,msg:'Brightline Staffing renewal synced to portal'},{ts:'Jun 14, 9:00 AM',ok:false,warn:false,msg:'API timeout · retry succeeded after 2 attempts'}]},
+    {id:'clientspace', name:'ClientSpace', tag:'CS', tagBg:'#FBF0DD', tagFg:'#B0690A', cat:'CRM · Case Management', direction:'Bi-directional', status:'connected', lastSync:'5 min ago', syncCount:1204,
+     desc:'Creates and updates case records, writes plan details and renewal history, and reads client profile data for CAP pre-population.',
+     proto:'REST / Bearer token',
+     connFields:[{l:'Instance URL',v:'https://gapartners.clientspace.net/api',k:'url'},{l:'Integration User',v:'cap_integration@gapartners.com',k:'user'},{l:'API Token',v:'',k:'token',mask:true},{l:'Case Prefix',v:'CAP-',k:'prefix'}],
+     syncFields:[{l:'Auto-create case on submit',v:true,k:'t1',toggle:true},{l:'Write audit trail to case',v:true,k:'t2',toggle:true},{l:'Sync client profile on open',v:true,k:'t3',toggle:true},{l:'Sync schedule (cron)',v:'*/30 * * * *',k:'cron',cron:true}],
+     fieldMap:[{cap:'cap.id',conn:'case.cap_reference',dir:'→'},{cap:'cap.status',conn:'case.status',dir:'→'},{cap:'client.name',conn:'account.name',dir:'←'},{cap:'client.contact',conn:'account.primary_contact',dir:'←'},{cap:'cap.effective_date',conn:'case.benefit_effective_date',dir:'↔'}],
+     logs:[{ts:'Jun 17, 2:12 PM',ok:true,msg:'Case CAP-2847 updated · status → Published'},{ts:'Jun 17, 9:45 AM',ok:true,msg:'Client profile synced for Northgate Manufacturing'},{ts:'Jun 16, 4:20 PM',ok:true,msg:'Renewal diff written to case audit notes'}]},
+    {id:'docusign', name:'DocuSign', tag:'DS', tagBg:'#ECE9FA', tagFg:'#5A45C7', cat:'E-Signature', direction:'Push + webhook', status:'connected', lastSync:'Webhook active', syncCount:89,
+     desc:'Builds and routes ordered signature envelopes, captures completion webhooks, and archives fully-signed contracts to encrypted S3.',
+     proto:'HTTPS / JWT Grant (RS256)',
+     connFields:[{l:'Integration Key',v:'d4f2e8a1-3c9b-4d7e-a820-...',k:'integKey'},{l:'Account ID',v:'8c3f9b72-e441-...',k:'accountId'},{l:'Base URL',v:'https://na4.docusign.net/restapi',k:'baseUrl'},{l:'Webhook URL',v:'https://cap.gapartners.com/webhooks/docusign',k:'webhookUrl'}],
+     syncFields:[{l:'Signing order: AM → Client → AE',v:true,k:'t1',toggle:true},{l:'Auto-archive on completion',v:true,k:'t2',toggle:true},{l:'Send reminder after (days)',v:'2',k:'reminder',text:true},{l:'Void envelope on rejection',v:true,k:'t4',toggle:true}],
+     fieldMap:[{cap:'client.name',conn:'envelope.recipient[1].name',dir:'→'},{cap:'client.email',conn:'envelope.recipient[1].email',dir:'→'},{cap:'cap.summary_pdf',conn:'envelope.document[0]',dir:'→'},{cap:'docusign.envelope_id',conn:'cap.envelope_id',dir:'←'},{cap:'docusign.signed_at',conn:'cap.signed_date',dir:'←'}],
+     logs:[{ts:'Jun 17, 11:22 AM',ok:true,msg:'Envelope for Sterling Hospitality sent · 3 signers'},{ts:'Jun 17, 2:41 PM',ok:true,msg:'All parties signed · PDF archived to S3'},{ts:'Jun 14, 3:15 PM',ok:false,warn:true,msg:'Client signer reminder sent · 48h no action'}]},
+    {id:'underwrite', name:'Carrier Underwriting', tag:'UW', tagBg:'#EDF0F3', tagFg:'#5B6770', cat:'Rate Feed', direction:'Pull (inbound)', status:'not_configured', lastSync:'Never', syncCount:0,
+     desc:'Pulls carrier renewal rates and underwriting quotes into the Plan Config Service for pre-population during renewal CAP creation.',
+     proto:'SFTP / REST (TBD)',
+     connFields:[{l:'Feed URL',v:'',k:'url',placeholder:'https://carrier-api.example.com/rates'},{l:'Auth Method',v:'API Key',k:'authMethod'},{l:'API Key / SFTP Key',v:'',k:'key',mask:true},{l:'Carrier Filter',v:'BCBS, Delta Dental, VSP',k:'filter'}],
+     syncFields:[{l:'Auto-import on schedule',v:false,k:'t1',toggle:true},{l:'Poll interval (cron)',v:'0 8 * * 1',k:'cron',cron:true},{l:'Rate effective date offset (days)',v:'90',k:'offset',text:true},{l:'Notify on new rates',v:true,k:'t4',toggle:true}],
+     fieldMap:[{cap:'plan.carrier',conn:'quote.carrier_code',dir:'←'},{cap:'tier.total_premium',conn:'quote.monthly_rate',dir:'←'},{cap:'plan.effective_date',conn:'quote.rate_effective_date',dir:'←'}],
+     logs:[{ts:'—',ok:false,warn:true,msg:'Not configured. Set connection details and click Test Connection.'}]},
+  ];
+
+  runTest(id){ this.setState({testingConn:id, testResult:null}); setTimeout(()=>{ const ok=id!=='underwrite'; this.setState({testingConn:null, testResult:{id, ok, msg: ok?'Connection successful · API responded in 142ms':'Connection failed · no endpoint configured'}}); this.toast(ok?'Connection test passed':'Connection test failed', ok?'ok':'warn'); }, 1200); }
+  setSearch=(e)=>this.setState({search:e.target.value, page:1});
+  setTierFilter(t){ this.setState({tierFilter:t, tierMenuOpen:false, page:1}); }
+  setStatusFilter(s){ this.setState({statusFilter:s, statusMenuOpen:false, page:1}); }
+  toggleStatusMenu=(e)=>{ e.stopPropagation(); this.setState({statusMenuOpen:!this.state.statusMenuOpen, tierMenuOpen:false}); };
+  toggleTierMenu=(e)=>{ e.stopPropagation(); this.setState({tierMenuOpen:!this.state.tierMenuOpen, statusMenuOpen:false}); };
+  setSort(k){ const same=this.state.sortKey===k; this.setState({sortKey:k, sortDir: same&&this.state.sortDir==='asc'?'desc':'asc', page:1}); }
+  setPage(p){ this.setState({page:p}); }
+  setPageSize=(e)=>this.setState({pageSize:parseInt(e.target.value)||10, page:1});
+  setAdminSearch=(e)=>this.setState({adminSearch:e.target.value});
+  setDocSearch=(e)=>this.setState({docSearch:e.target.value});
+
+  // ---------- view data ----------
+  navMeta(){
+    const sc=this.state.screen; const active=(k)=> (k==='dashboard'&&sc==='dashboard')||(k==='wizard'&&sc==='wizard')||(k==='renewals'&&sc==='renewal')||(k==='booklet'&&sc==='booklet')||(k==='admin'&&sc==='admin');
+    const item=(label,key,icon,opts={})=>{ const a=active(key); const dis=opts.disabled; return {label, icon, active:a, disabled:dis, lock:opts.lock,
+      bg: a?'rgba(198,12,48,.16)':'transparent', color: dis?'rgba(255,255,255,.28)': a?'#fff':'rgba(255,255,255,.62)', weight:a?600:500, cursor:dis?'not-allowed':'pointer', opacity:dis?0.6:1,
+      go: dis? (()=>this.toast('Admin Console requires System Admin role','warn')) : (()=>this.go(opts.target||key)) }; };
+    return [
+      item('Dashboard','dashboard', this.icC()),
+      item('CAP Builder','wizard', this.ic(['M12 3v18','M3 8h6a3 3 0 0 1 3 3','M21 8h-6a3 3 0 0 0-3 3']), {target: this.can('create')?'wizard':'dashboard'}),
+      item('Renewals','renewals', this.ic(['M21 12a9 9 0 1 1-3-6.7','M21 4v5h-5']), {target:'renewals'}),
+      {...item('Documents','booklet', this.ic(['M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z','M14 3v5h5','M9 13h6','M9 17h4'])), go:()=>this.transition({screen:'booklet',selectedClientId:null,roleMenuOpen:false})},
+      item('Admin Console','admin', this.ic(['M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z']), {disabled:!this.can('admin'), lock:!this.can('admin')}),
+      {...item('Integrations','integrations', this.ic(['M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z','M4 22v-7'])), go:()=>this.transition({screen:'integrations',roleMenuOpen:false})},
+    ];
+  }
+
+  titles(){ const sc=this.state.screen; const c=this.client(this.state.selectedClientId);
+    const m={dashboard:['Workspace','Dashboard'],wizard:['CAP Builder','New Client Approved Plan'],renewal:['Renewals', c? c.name+' · Renewal':'Renewal'],renewals:['Workspace','Renewals'],esign:['Approvals', c? c.name+' · Signature Routing':'Signature Routing'],booklet:['Documents', c? c.name+' · Benefits Booklet':'Benefits Documents'],admin:['Administration','Admin Console'],integrations:['Administration','Integrations & Connectors']};
+    return m[sc]||['Workspace','Dashboard'];
+  }
+
+  wizardVals(){
+    const step=this.state.wizardStep;
+    const labels=['Select Client','Choose Template','Add Plans','Configure Rates','Validate','Preview & Submit'];
+    const wizardSteps=labels.map((label,i)=>{ const n=i+1; return {n:String(n), label, active:n===step, done:n<step, go:()=>this.wizGo(n),
+      circleBg: n<step?'#1A7A4A': n===step?'#C60C30':'#EDF0F3', circleFg:(n<=step)?'#fff':'#98A1A8', mark: n<step?'✓':String(n),
+      labelFg: n===step?'#1B2D3D':'#98A1A8', barBg: n<=step?'#1A7A4A':'#E4E8EC'}; });
+    const wc=this.client(this.state.wizardClientId);
+    const clientPickList=this.clients.map(c=>({name:c.name, prism:c.prism, tier:c.tier, tierFg:this.tierFg[c.tier], wse:c.wse, ind:c.ind, active:c.id===this.state.wizardClientId, border:c.id===this.state.wizardClientId?'#C60C30':'#E4E8EC', bg:c.id===this.state.wizardClientId?'#FEF6F7':'#fff', pick:()=>this.pickWizClient(c.id)}));
+    const templates=[
+      {id:'standard', name:'Standard PEO Template', desc:'Medical, dental & vision pre-loaded with default 70 / 55 / 60% employer contribution splits.', tag:'Most used'},
+      {id:'custom', name:'Custom Build', desc:'Start from a blank CAP and configure every plan, tier and contribution from scratch.', tag:''},
+      {id:'clone', name:'Clone — Brightline Staffing', desc:'Copy the plan structure and contributions from a similar Gold-tier client.', tag:'Gold tier'},
+    ].map(t=>({...t, active:this.state.wizardTemplate===t.id, border:this.state.wizardTemplate===t.id?'#C60C30':'#E4E8EC', bg:this.state.wizardTemplate===t.id?'#FEF6F7':'#fff', pick:()=>this.setState({wizardTemplate:t.id, wizardError:null})}));
+    const readOnly=!this.can('edit');
+    const planCards=this.state.plans.map(p=>{ const er=p.erPct;
+      const tiers=p.tiers.map((t,idx)=>{ const erA=+(t.total*er).toFixed(2); const ee=+(t.total-erA).toFixed(2); const pp=+(ee/2).toFixed(2);
+        return {tier:t.tier, totalRaw:String(t.total), erFmt:this.fmt(erA), eeFmt:this.fmt(ee), ppFmt:this.fmt(pp), onTotal:(e)=>this.updateTotal(p.id,idx,e.target.value)}; });
+      const typeColor={Medical:'#C60C30',Dental:'#0074B8',Vision:'#1A7A4A',Life:'#5A45C7'}[p.type]||'#64707A';
+      return {id:p.id, type:p.type, carrier:p.carrier, plan:p.plan, network:p.network, typeColor, typeBg:typeColor+'18', erPctVal:Math.round(er*100), tiers, onErPct:(e)=>this.updateErPct(p.id,e.target.value), remove:()=>this.removePlan(p.id)}; });
+    const addTypes=['Medical','Dental','Vision','Life'].map(t=>({label:t, add:()=>this.addPlan(t)}));
+    // validation
+    const vGroups=[
+      {title:'Completeness', items:[
+        {label:'All required client fields populated', ok:true},
+        {label:'At least one plan configured', ok:true, note:this.state.plans.length+' plans'},
+        {label:'All plans have complete tier rates', ok:true}]},
+      {title:'Business Rules', items:[
+        {label:'No $0 premiums across any tier', ok:true},
+        {label:'Employer + employee contribution = total premium', ok:true},
+        {label:'Medical employer contribution vs 50% benchmark', ok:false, sev:'warn', msg:'Currently 70% — above benchmark, within policy', step:4},
+        {label:'All four tiers present for each plan', ok:true}]},
+      {title:'Cross-System · PrismHR', items:[
+        {label:'Deduction codes mapped to Prism', ok:true},
+        {label:'Dental rate matches PrismHR config', ok:false, sev:'error', msg:'CAP $48.20 vs Prism $44.00 — Δ $4.20 / mo', step:4}]},
+    ];
+    let pass=0, total=0, errors=0, warns=0;
+    const validationGroups=vGroups.map(g=>({title:g.title, items:g.items.map(it=>{ total++; if(it.ok)pass++; else if(it.sev==='error')errors++; else warns++;
+      return {...it, iconBg: it.ok?'#E4F2EA': it.sev==='error'?'#FDECEF':'#FBF0DD', iconFg: it.ok?'#1A7A4A': it.sev==='error'?'#C60C30':'#B0690A', mark: it.ok?'✓': it.sev==='error'?'✕':'!', canJump:!it.ok&&!!it.step, jump: it.step?(()=>this.jumpToField(it.step)):null};
+    })}));
+    const vStatus= errors>0?{label:'Validation failed', bg:'#FDECEF', fg:'#C60C30', sub:errors+' error'+(errors>1?'s':'')+(warns?' · '+warns+' warning'+(warns>1?'s':''):'')+' must be resolved before approval'}
+      :{label:'Validation passed', bg:'#E4F2EA', fg:'#1A7A4A', sub:'All checks clear'+(warns?' · '+warns+' advisory warning'+(warns>1?'s':''):'')};
+    // preview
+    const previewRows=this.state.plans.map(p=>{ const ee=p.tiers[0]?+(p.tiers[0].total*(1-p.erPct)).toFixed(2):0; const fam=p.tiers[3]?p.tiers[3].total:0;
+      return {type:p.type, carrier:p.carrier, plan:p.plan, network:p.network||'—', erPct:Math.round(p.erPct*100)+'%', eeFmt:this.fmt(ee), famFmt:this.fmt(fam)}; });
+    const monthlyER=this.state.plans.reduce((s,p)=> s + p.tiers.reduce((a,t)=>a + t.total*p.erPct,0),0);
+    const estAnnual=monthlyER*(wc?wc.wse:80)/4*12/12; // rough blended estimate
+    const nextLabel= step===5?'Continue to Preview →': step===6?'Submit for Review →':'Continue →';
+    const next= step===6? (()=>this.submitForReview()) : (()=>this.wizNext());
+    return {
+      wizardSteps, wStep1:step===1, wStep2:step===2, wStep3:step===3, wStep4:step===4, wStep5:step===5, wStep6:step===6,
+      wizClientName: wc?wc.name:'—', wizClientPrism: wc?wc.prism:'', wizClientMeta: wc?(wc.tier+' tier · '+wc.wse+' WSE · '+wc.ind):'', wizHasClient:!!wc,
+      clientPickList, wizTemplates:templates, planCards, addTypes, readOnly,
+      validationGroups, vStatusLabel:vStatus.label, vStatusBg:vStatus.bg, vStatusFg:vStatus.fg, vStatusSub:vStatus.sub, vStatusIcon: errors>0?'✕':'✓', vPass:pass, vTotal:total, vRun:this.state.validationRun,
+      previewRows, monthlyERFmt:this.fmt0(monthlyER), annualERFmt:this.fmt0(monthlyER*12),
+      wizNextLabel:nextLabel, wizDoNext:next, wizDoPrev:()=>this.wizPrev(), wizStepNum:step,
+      wizCanApprove:this.can('approve'), wizCanPublish:this.can('publish'),
+      doApprove:()=>this.approveCap(), doPublish:()=>this.publishCap(), doGenBooklet:()=>this.generateBooklet(),
+      wizNextDisabled: step===1 && !wc, wizNextOpacity: (step===1 && !wc)?0.5:1,
+      wizError: this.state.wizardError, wizHasError: !!this.state.wizardError,
+    };
+  }
+
+  renewalVals(){
+    const c=this.client(this.state.selectedClientId)||this.client('meridian');
+    const D=this.state.diffDecisions;
+    const mk=(key,plan,field,prior,neu,changed)=>{ const delta=prior? ((neu-prior)/prior*100):0; const dec=D[key];
+      return {key, plan, field, priorFmt:this.fmt(prior), newFmt:this.fmt(neu), changed, unchangedTag:!changed,
+        deltaLabel: !changed?'No change': (delta>0?'+':'')+delta.toFixed(1)+'%', deltaFg: !changed?'#98A1A8': delta>0?'#C60C30':'#1A7A4A',
+        decided:!!dec, accepted:dec==='accept', rejected:dec==='reject',
+        rowBg: dec==='accept'?'#F3FAF6': dec==='reject'?'#FBF3F4': changed?'#FFFDF7':'#fff',
+        acceptBg:dec==='accept'?'#1A7A4A':'#fff', acceptFg:dec==='accept'?'#fff':'#64707A', acceptBorder:dec==='accept'?'#1A7A4A':'#E4E8EC',
+        rejectBg:dec==='reject'?'#C60C30':'#fff', rejectFg:dec==='reject'?'#fff':'#64707A', rejectBorder:dec==='reject'?'#C60C30':'#E4E8EC',
+        accept:()=>this.setDiff(key,'accept'), reject:()=>this.setDiff(key,'reject')}; };
+    const diffRows=[
+      mk('med_ee','Medical · Blue PPO 1500','Employee-only premium',583.20,612.40,true),
+      mk('med_fam','Medical · Blue PPO 1500','Family premium',1720.40,1806.58,true),
+      mk('med_er','Medical · Blue PPO 1500','Employer contribution %',null,null,false),
+      mk('den_ee','Dental · Delta Premier','Employee-only premium',46.00,48.20,true),
+      mk('vis_ee','Vision · VSP Choice','Employee-only premium',9.80,9.80,false),
+    ];
+    diffRows[2]={...diffRows[2], priorFmt:'70%', newFmt:'70%'};
+    diffRows[4]={...diffRows[4], deltaLabel:'No change'};
+    const changedCount=diffRows.filter(r=>r.changed).length;
+    const decidedCount=diffRows.filter(r=>r.changed&&(D[r.key])).length;
+    return { diffClientName:c.name, diffClientMeta:c.prism+' · '+c.tier+' tier · '+c.wse+' WSE', diffRows,
+      diffChanged:changedCount, diffDecided:decidedCount, diffAllDone:decidedCount===changedCount,
+      diffYoY:'+4.9%', acceptAllRates:()=>this.acceptAllRates(),
+      diffApprove:()=>{ this.toast('Renewal CAP approved','ok'); this.setState({screen:'dashboard'}); } };
+  }
+  esignVals(){
+    const c=this.client(this.state.selectedClientId)||this.client('brightline');
+    const sg=(this.state.signers||this.freshSigners()).map((s,i)=>{ const stm={signed:{bg:'#E4F2EA',fg:'#1A7A4A',label:'Signed',icon:'✓'},pending:{bg:'#FBF0DD',fg:'#B0690A',label:'Awaiting signature',icon:'…'},waiting:{bg:'#EDF0F3',fg:'#98A1A8',label:'Not yet routed',icon:'·'}}[s.status];
+      return {role:s.role, name:s.name, org:s.org, when:s.when, stBg:stm.bg, stFg:stm.fg, stLabel:stm.label, stIcon:stm.icon, num:String(i+1), isLast:i===2}; });
+    const allSigned=(this.state.signers||[]).every(s=>s.status==='signed');
+    const pendingClient=(this.state.signers||this.freshSigners())[1].status==='pending';
+    return { esignClientName:c.name, esignClientMeta:c.prism+' · '+c.tier+' tier', esignSigners:sg, esignSent:this.state.envelopeSent, esignNotSent:!this.state.envelopeSent,
+      esignSend:()=>this.sendEnvelope(), esignSimSign:()=>this.clientSign(), esignPendingClient:pendingClient && this.state.envelopeSent, esignAllSigned:allSigned,
+      esignPublish:()=>this.publishCap(), esignPublishDisabled:!this.can('publish'), esignPublishOpacity:this.can('publish')?1:0.55 };
+  }
+  bookletVals(){
+    const dq=this.state.docSearch.trim().toLowerCase();
+    const lib=this.clients.filter(c=>['signed','published'].includes(c.status))
+      .filter(c=> !dq || c.name.toLowerCase().includes(dq)||c.prism.toLowerCase().includes(dq)||c.tier.toLowerCase().includes(dq))
+      .map(c=>({name:c.name, meta:c.prism+' · '+c.tier, status:this.statusMeta[c.status].label, stFg:this.statusMeta[c.status].fg, stBg:this.statusMeta[c.status].bg, open:()=>this.transition({screen:'booklet',selectedClientId:c.id,bookletGenerated:true})}));
+    const c=this.client(this.state.selectedClientId);
+    const showDoc=!!c;
+    const plans = showDoc ? this.seedPlans().map(p=>{ const ee=+(p.tiers[0].total*(1-p.erPct)).toFixed(2); const fam=p.tiers[3].total;
+      const typeColor={Medical:'#C60C30',Dental:'#0074B8',Vision:'#1A7A4A',Life:'#5A45C7'}[p.type]||'#64707A';
+      return {type:p.type, typeColor, carrier:p.carrier, plan:p.plan, network:p.network, erPct:Math.round(p.erPct*100)+'%', eeFmt:this.fmt(ee), famFmt:this.fmt(fam),
+        ppFmt:this.fmt(+(ee/2).toFixed(2)) }; }) : [];
+    return { bkShowDoc:showDoc, bkShowLib:!showDoc, bkLibrary:lib, bkClientName:c?c.name:'', bkClientMeta:c?(c.prism+' · '+c.tier+' tier · '+c.wse+' eligible employees · Effective '+c.eff):'', bkPlans:plans,
+      bkBackToLib:()=>this.setState({selectedClientId:null}), bkDownload:()=>this.toast('Booklet PDF downloaded','ok'),
+      bkEffYear:'2026', docSearchValue:this.state.docSearch, setDocSearch:this.setDocSearch, bkNoDocs:lib.length===0 };
+  }
+  adminVals(){
+    const tab=this.state.adminTab;
+    const aq=this.state.adminSearch.trim().toLowerCase();
+    const usersAll=[
+      {name:'Dana Whitfield', email:'d.whitfield@gapartners.com', role:'Account Manager', rbg:'#FDECEF', rfg:'#C60C30', last:'Active now'},
+      {name:'Marcus Reyes', email:'m.reyes@gapartners.com', role:'Account Executive', rbg:'#E7F1FA', rfg:'#0074B8', last:'2h ago'},
+      {name:'Priya Nair', email:'p.nair@gapartners.com', role:'GAB Manager', rbg:'#E4F2EA', rfg:'#1A7A4A', last:'Yesterday'},
+      {name:'Lena Ortiz', email:'l.ortiz@gapartners.com', role:'Benefits Coordinator', rbg:'#EDF0F3', rfg:'#5B6770', last:'3d ago'},
+      {name:'Sam Cho', email:'s.cho@gapartners.com', role:'Benefits Analyst', rbg:'#EDF0F3', rfg:'#5B6770', last:'1w ago'},
+      {name:'Root Admin', email:'admin@gapartners.com', role:'System Admin', rbg:'#ECE9FA', rfg:'#5A45C7', last:'Active now'},
+    ];
+    const users=usersAll.filter(u=> !aq || u.name.toLowerCase().includes(aq)||u.email.toLowerCase().includes(aq)||u.role.toLowerCase().includes(aq)).map(u=>({...u, manage:()=>this.openUserDrawer(u)}));
+    const templatesRaw=[
+      {name:'Standard PEO Template', plans:'Medical · Dental · Vision', contrib:'70 / 55 / 60%', used:'48 clients', updated:'Apr 2026'},
+      {name:'Executive Plus', plans:'Medical · Dental · Vision · Life · FSA', contrib:'85 / 80 / 80%', used:'12 clients', updated:'Mar 2026'},
+      {name:'Hourly / Variable Hour', plans:'Medical (MEC) · Dental', contrib:'50 / 50%', used:'27 clients', updated:'Feb 2026'},
+      {name:'Construction / Trades', plans:'Medical · Dental · Vision · WC', contrib:'60 / 50 / 50%', used:'9 clients', updated:'Jan 2026'},
+    ];
+    const templates=templatesRaw.map(t=>({...t, edit:()=>this.openTemplateDrawer(t)}));
+    const cols=['Create','Edit','View Rates','Approve','Publish','Admin'];
+    const keyMap=['create','edit','viewRates','approve','publish','admin'];
+    const cell=(k,v)=> k==='viewRates' ? (v==='full'?{t:'✓',fg:'#1A7A4A',bg:'#E4F2EA'}: v==='ro'?{t:'Read',fg:'#0074B8',bg:'#E7F1FA'}:{t:'✕',fg:'#C9CFD5',bg:'#F6F8FA'}) : (v?{t:'✓',fg:'#1A7A4A',bg:'#E4F2EA'}:{t:'✕',fg:'#C9CFD5',bg:'#F6F8FA'});
+    const matrix=this.roles.map(r=>{ const p=this.perms[r.id]; const cs=keyMap.map(k=>cell(k,p[k])); const self=r.id===this.state.role;
+      return {role:r.name, self, rowBg:self?'#FEF6F7':'#fff', c0:cs[0],c1:cs[1],c2:cs[2],c3:cs[3],c4:cs[4],c5:cs[5]}; });
+    const t=(k,label)=>({label, active:tab===k, bg:tab===k?'#13212C':'#fff', fg:tab===k?'#fff':'#64707A', border:tab===k?'#13212C':'#E4E8EC', pick:()=>this.setAdminTab(k)});
+    return { adminTabs:[t('users','Users & Roles'),t('templates','CAP Templates'),t('roles','Permission Matrix')],
+      adminShowUsers:tab==='users', adminShowTemplates:tab==='templates', adminShowRoles:tab==='roles',
+      adminUsers:users, adminTemplates:templates, rbacCols:cols, rbacMatrix:matrix,
+      adminSearchValue:this.state.adminSearch, setAdminSearch:this.setAdminSearch, adminNoUsers:users.length===0 };
+  }
+
+  integrationsVals(){
+    const exp=this.state.connExpanded; const ct=this.state.connTab||'connection';
+    const connCards=this.connectors.map(c=>{
+      const sel=c.id===exp;
+      const sm=c.status==='connected'?{bg:'#E4F2EA',fg:'#1A7A4A',label:'Connected'}:{bg:'#EDF0F3',fg:'#5B6770',label:'Not configured'};
+      return {...c, sel, stBg:sm.bg, stFg:sm.fg, stLabel:sm.label, cardBorder:sel?'#C60C30':'#E4E8EC', cardBg:sel?'#FEF6F7':'#fff',
+        expand:()=>this.setState({connExpanded:sel?null:c.id, connTab:'connection', testResult:null}),
+        testConn:()=>this.runTest(c.id), testing:this.state.testingConn===c.id};
+    });
+    const sel=exp?this.connectors.find(c=>c.id===exp):null;
+    const tabs=sel?[{k:'connection',label:'Connection'},{k:'sync',label:'Sync & Triggers'},{k:'mapping',label:'Field Mapping'},{k:'logs',label:'Activity Log'}].map(t=>({...t,active:ct===t.k,pick:()=>this.setState({connTab:t.k}),bg:ct===t.k?'#13212C':'#fff',fg:ct===t.k?'#fff':'#64707A',border:ct===t.k?'#13212C':'#E4E8EC'})):[];
+    const tr=this.state.testResult;
+    const cflds=sel?sel.connFields.map(f=>({...f,type:f.mask?'password':'text',disp:f.mask?'••••••••••':f.v})):[];
+    const sflds=sel?sel.syncFields:[]; const fmap=sel?sel.fieldMap:[]; const slogs=sel?sel.logs:[];
+    const dirColor=d=>d==='→'?'#1A7A4A':d==='←'?'#0074B8':'#B0690A';
+    const fmapRows=fmap.map(m=>({cap:m.cap,conn:m.conn,dir:m.dir,dirFg:dirColor(m.dir)}));
+    const logRows=slogs.map(l=>({ts:l.ts,msg:l.msg,icon:l.ok?'✓':l.warn?'!':'✕',iconBg:l.ok?'#E4F2EA':l.warn?'#FBF0DD':'#FDECEF',iconFg:l.ok?'#1A7A4A':l.warn?'#B0690A':'#C60C30'}));
+    return {
+      showIntegrations:this.state.screen==='integrations' && !this.state.loading,
+      connCards, connHasSel:!!sel, connTabBtns:tabs,
+      connTabConn:ct==='connection', connTabSync:ct==='sync', connTabMap:ct==='mapping', connTabLog:ct==='logs',
+      connSelName:sel?.name||'', connSelTag:sel?.tag||'', connSelTagBg:sel?.tagBg||'#EDF0F3', connSelTagFg:sel?.tagFg||'#64707A',
+      connSelDesc:sel?.desc||'', connSelProto:sel?.proto||'', connSelDir:sel?.direction||'',
+      connSelStatus:sel?.status==='connected'?'Connected':'Not configured', connSelStFg:sel?.status==='connected'?'#1A7A4A':'#5B6770',
+      connConfigFields:cflds, connSyncFields:sflds, connFmapRows:fmapRows, connLogRows:logRows,
+      connTestResult:tr&&tr.id===exp?tr:null, connSave:()=>this.toast('Settings saved','ok'),
+      connTestConn:sel?(()=>this.runTest(sel.id)):null, connTesting:this.state.testingConn===exp,
+    };
+  }
+
+  renderVals(){
+    const role=this.roles.find(r=>r.id===this.state.role)||this.roles[0];
+    const sc=this.state.screen;
+    const [crumb,pageTitle]=this.titles();
+    // dashboard rows — filter + search + sort
+    const q=this.state.search.trim().toLowerCase();
+    const statusOrder={draft:0,in_review:1,approved:2,signed:3,published:4};
+    let filtered=this.clients.filter(c=>{
+      if(this.state.statusFilter!=='all' && c.status!==this.state.statusFilter) return false;
+      if(this.state.tierFilter!=='all' && c.tier!==this.state.tierFilter) return false;
+      if(q && !(c.name.toLowerCase().includes(q)||c.prism.toLowerCase().includes(q)||c.owner.toLowerCase().includes(q)||c.ind.toLowerCase().includes(q))) return false;
+      return true;
+    });
+    const sk=this.state.sortKey, sd=this.state.sortDir==='asc'?1:-1;
+    filtered=filtered.slice().sort((a,b)=>{ let av,bv;
+      if(sk==='wse'){av=a.wse;bv=b.wse;} else if(sk==='status'){av=statusOrder[a.status];bv=statusOrder[b.status];}
+      else if(sk==='eff'){av=a.eff;bv=b.eff;} else {av=(a[sk]||'').toString().toLowerCase();bv=(b[sk]||'').toString().toLowerCase();}
+      return av<bv?-1*sd:av>bv?1*sd:0; });
+    const arrow=(k)=> this.state.sortKey===k ? (this.state.sortDir==='asc'?' ↑':' ↓') : '';
+    const sm2=(k)=>({arrow:arrow(k), on:()=>this.setSort(k), col:this.state.sortKey===k?'#1B2D3D':'#98A1A8'});
+    const sortMeta={name:sm2('name'),tier:sm2('tier'),wse:sm2('wse'),owner:sm2('owner'),status:sm2('status'),eff:sm2('eff')};
+    // Status dropdown
+    const statusOpts=[['all','All statuses'],['draft','Draft'],['in_review','In Review'],['approved','Approved'],['signed','Signed'],['published','Published']];
+    const curStatusLabel=(statusOpts.find(([k])=>k===this.state.statusFilter)||statusOpts[0])[1];
+    const statusFilters=statusOpts.map(([k,label])=>{ const a=this.state.statusFilter===k; const sm=this.statusMeta[k]; return {label, pick:()=>this.setStatusFilter(k), active:a, bg:a?'#F4F6F8':'#fff', fg:a?'#1B2D3D':'#3B4A57', dotBg:sm?sm.fg:null, hasDot:!!sm, noDot:!sm}; });
+    // Tier dropdown
+    const tierOpts=[['all','All tiers'],['Platinum','Platinum'],['Gold','Gold'],['Silver','Silver'],['Bronze','Bronze']];
+    const curTierLabel=(tierOpts.find(([k])=>k===this.state.tierFilter)||tierOpts[0])[1];
+    const tierFilters=tierOpts.map(([k,label])=>{ const a=this.state.tierFilter===k; const tf=this.tierFg[k]||null; return {label, pick:()=>this.setTierFilter(k), active:a, bg:a?'#F4F6F8':'#fff', fg:a?'#1B2D3D':'#3B4A57', tierFg:tf, noTierFg:!tf}; });
+    // --- pagination ---
+    const totalFiltered = filtered.length;
+    const pageSize = this.state.pageSize ?? (this.props.defaultPageSize ?? 10);
+    const totalPages = Math.max(1, Math.ceil(totalFiltered / pageSize));
+    const page = Math.min(this.state.page, totalPages);
+    const pageStart = (page - 1) * pageSize;
+    const pageEnd = pageStart + pageSize;
+    const pagedFiltered = filtered.slice(pageStart, pageEnd);
+    // page number buttons: show up to 7 (first, last, around current, ellipsis)
+    const pageNums = [];
+    for(let i=1;i<=totalPages;i++){
+      if(i===1||i===totalPages||Math.abs(i-page)<=1) pageNums.push({n:i, active:i===page, pick:()=>this.setPage(i), label:String(i)});
+      else if(pageNums.length && pageNums[pageNums.length-1].label!=='…') pageNums.push({n:-i, active:false, pick:()=>{}, label:'…'});
+    }
+    const canPrev = page > 1, canNext = page < totalPages;
+    const clientRows = pagedFiltered.map(c=>{ const sm=this.statusMeta[c.status];
+      let primaryLabel='Open', primary=()=>this.openClient(c);
+      if(c.type==='renewal' && ['draft','in_review'].includes(c.status)){ primaryLabel='Review Renewal'; primary=()=>this.openRenewal(c); }
+      else if(c.status==='approved'){ primaryLabel='Route Sign-off'; primary=()=>this.routeSignature(c); }
+      else if(c.status==='published'||c.status==='signed'){ primaryLabel='View Booklet'; primary=()=>{this.transition({screen:'booklet',selectedClientId:c.id,bookletGenerated:true});}; }
+      return {name:c.name, prismId:c.prism, tier:c.tier, tierFg:this.tierFg[c.tier], wse:c.wse, owner:c.owner, eff:c.eff,
+        stBg:sm.bg, stFg:sm.fg, stLabel:sm.label, primaryLabel, primary};
+    });
+    const count=(s)=>this.clients.filter(c=>c.status===s).length;
+    const metrics=[
+      {label:'Active CAPs', value:String(this.clients.length), sub:'Across all account managers', icon:this.icC(), iconBg:'#FDECEF', iconFg:'#C60C30'},
+      {label:'In Review', value:String(count('in_review')), sub:'Awaiting validation & approval', icon:this.ic(['M12 8v4l3 2','M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z']), iconBg:'#E7F1FA', iconFg:'#0074B8'},
+      {label:'Awaiting Signature', value:String(count('approved')+count('signed')), sub:'In DocuSign routing', icon:this.ic(['M3 17h18','M6 13l4-8 4 6 2-3 3 5']), iconBg:'#FBF0DD', iconFg:'#B0690A'},
+      {label:'Published 2026', value:String(count('published')), sub:'Synced to downstream systems', icon:this.ic(['M20 6L9 17l-5-5']), iconBg:'#E4F2EA', iconFg:'#1A7A4A'},
+    ];
+    const statusFilters2=statusFilters; // alias to avoid shadowing
+    const renewWindow = this.props.renewalWindowDays ?? 95;
+    const renewals=this.clients.filter(c=>c.urgDays<=renewWindow).sort((a,b)=>a.urgDays-b.urgDays).slice(0,6).map(c=>({name:c.name, day:c.renewDay, mon:c.renewMon, urg:c.urgDays+' days · '+(c.type==='new'?'New business':'Renewal'), urgFg:c.urgDays<=21?'#C60C30':'#98A1A8', dateFg:c.urgDays<=21?'#C60C30':'#1B2D3D', open:()=>this.openRenewal(c)}));
+
+    const roleSwitchList=this.roles.map(r=>({name:r.name, person:r.person, short:r.short, active:r.id===this.state.role, bg:r.id===this.state.role?'#F4F6F8':'transparent', pick:()=>this.pickRole(r.id)}));
+    const roleCards=this.roles.map(r=>({name:r.name, person:r.person, short:r.short, pick:()=>this.pickRole(r.id)}));
+
+    return {
+      showLogin: sc==='login', showApp: sc!=='login',
+      showSkeleton: this.state.loading && sc!=='login', authLoading:this.state.authLoading, authReady:!this.state.authLoading,
+      showDashboard: sc==='dashboard' && !this.state.loading, showWizard: sc==='wizard' && !this.state.loading, showValidation:false,
+      showEsign: sc==='esign' && !this.state.loading, showRenewalDiff: sc==='renewal' && !this.state.loading, showRenewalList: sc==='renewals' && !this.state.loading, showBooklet: sc==='booklet' && !this.state.loading, showAdmin: sc==='admin' && !this.state.loading,
+      ...this.wizardVals(), ...this.renewalVals(), ...this.esignVals(), ...this.bookletVals(), ...this.adminVals(), ...this.integrationsVals(), ...this.drawerVals(),
+      roleCards, roleSwitchList, roleMenuOpen:this.state.roleMenuOpen,
+      roleName:role.name, rolePerson:role.person, roleShort:role.short, roleAvatarBg: role.id==='admin'?'#5A45C7':role.id==='gab'?'#1A7A4A':role.id==='ae'?'#0074B8':'#C60C30',
+      navItems:this.navMeta(), iconArch:this.ic(['M3 3v18h18','M7 14l3-4 3 2 4-6']),
+      openArch:(e)=>{ try{e.preventDefault();}catch(_){} window.location.href='Architecture Diagram.dc.html'+window.location.search; },
+      crumb, pageTitle, canCreate:this.can('create'),
+      ssoLogin:this.ssoLogin, logout:this.logout, startWizard:this.startWizard, toggleRoleMenu:this.toggleRoleMenu, closeMenus:this.closeMenus,
+      metrics, clientRows, statusFilters, renewals, sortMeta, tierFilters,
+      searchValue:this.state.search, setSearch:this.setSearch, resultCount:totalFiltered, totalCount:this.clients.length,
+      noResults:totalFiltered===0,
+      statusMenuOpen:this.state.statusMenuOpen, tierMenuOpen:this.state.tierMenuOpen,
+      statusBtnLabel:curStatusLabel, tierBtnLabel:curTierLabel,
+      toggleStatusMenu:this.toggleStatusMenu, toggleTierMenu:this.toggleTierMenu,
+      // pagination
+      pageNums:pageNums.map(p=>({...p, bg:p.active?'#13212C':'#fff', fg:p.active?'#fff':'#3B4A57', border:p.active?'#13212C':'#E4E8EC', weight:p.active?700:500, cursor:p.label==='…'?'default':'pointer'})),
+      canPrev, canNext, totalPages, currentPage:page, pageSize, pageSizeStr:String(pageSize), setPageSize:this.setPageSize,
+      prevPage:()=>this.setPage(Math.max(1,page-1)), nextPage:()=>this.setPage(Math.min(totalPages,page+1)),
+      pageRangeLabel:`${pageStart+1}–${Math.min(pageEnd,totalFiltered)} of ${totalFiltered}`,
+      showPagination: totalFiltered > 0,
+      prevOpacity: canPrev ? 1 : 0.35, nextOpacity: canNext ? 1 : 0.35,
+      toast:this.state.toast, toastBg:this.state.toastKind==='warn'?'#CC7A00':'#1A7A4A', toastIcon:this.state.toastKind==='warn'?'!':'✓',
+    };
+  }
+}
+</script>
+</body>
+</html>
