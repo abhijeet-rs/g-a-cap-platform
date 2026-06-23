@@ -37,44 +37,41 @@ export default function LoginPage() {
   }, [screen, router]);
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', height: '100vh', background: '#0F1B24' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', height: '100vh', background: '#fff' }}>
       {/* ===== LEFT PANEL ===== */}
       <div style={{
         position: 'relative',
-        background: 'linear-gradient(160deg, #16242F 0%, #0E1A23 60%, #0B141B 100%)',
+        background: '#FAFAFA',
         padding: '56px 60px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         overflow: 'hidden',
+        borderRight: '1px solid #E5E7EB',
       }}>
-        {/* Decorative circles */}
-        <div style={{ position: 'absolute', top: -120, right: -120, width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(198,12,48,.18), transparent 70%)' }} />
-        <div style={{ position: 'absolute', bottom: -80, left: -60, width: 280, height: 280, borderRadius: '50%', background: 'radial-gradient(circle, rgba(0,116,184,.1), transparent 70%)' }} />
-
         {/* Logo */}
-        <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 13 }}>
-          <div style={{ width: 40, height: 40, borderRadius: 10, background: '#C60C30', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 16, color: '#fff', letterSpacing: -1, boxShadow: '0 6px 18px rgba(198,12,48,.4)' }}>CT</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 13 }}>
+          <div style={{ width: 40, height: 40, borderRadius: 10, background: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 13, color: '#fff', letterSpacing: -0.5 }}>G&A</div>
           <div>
-            <div style={{ color: '#fff', fontSize: 16, fontWeight: 600, letterSpacing: -0.2 }}>CAP Cloud Platform</div>
-            <div style={{ color: 'rgba(255,255,255,.45)', fontSize: 11, fontWeight: 500, letterSpacing: 0.3 }}>G&A Partners &middot; Benefits Orchestration</div>
+            <div style={{ color: '#1a1a1a', fontSize: 17, fontWeight: 700, letterSpacing: -0.3 }}>G&A Compass</div>
+            <div style={{ color: '#9CA3AF', fontSize: 10, fontWeight: 500, letterSpacing: 0.5 }}>Benefits Sales Platform &middot; Compass Foundation</div>
           </div>
         </div>
 
         {/* Headline */}
-        <div style={{ position: 'relative', maxWidth: 420 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 2, textTransform: 'uppercase', color: '#E8546E', marginBottom: 16 }}>Initiative A &middot; System of Record</div>
-          <div style={{ fontSize: 34, lineHeight: 1.15, fontWeight: 600, color: '#fff', letterSpacing: -1, marginBottom: 18 }}>The Client Approved Plan, structured and orchestrated.</div>
-          <div style={{ fontSize: 13, lineHeight: 1.7, color: 'rgba(255,255,255,.55)' }}>Replace the 29-sheet Excel workbook with a validated, version-controlled cloud platform — integrated with PrismHR, ClientSpace, WorkSight, and DocuSign.</div>
+        <div style={{ maxWidth: 420 }}>
+          <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 2, textTransform: 'uppercase', color: '#6B7280', marginBottom: 16 }}>Benefits Sales Platform</div>
+          <div style={{ fontSize: 34, lineHeight: 1.15, fontWeight: 700, color: '#1a1a1a', letterSpacing: -1, marginBottom: 18 }}>AI-powered benefits orchestration, from prospect to enrollment.</div>
+          <div style={{ fontSize: 13, lineHeight: 1.7, color: '#6B7280' }}>Prospecting, proposals, CAP management, renewals, and Prism write-back — unified on one platform integrated with PrismHR, ClientSpace, WorkSight, and DocuSign.</div>
 
           {/* Stats row */}
           <div style={{ display: 'flex', gap: 24, marginTop: 32 }}>
             {stats.map((s, i) => (
               <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
-                {i > 0 && <div style={{ width: 1, height: 32, background: 'rgba(255,255,255,.1)' }} />}
+                {i > 0 && <div style={{ width: 1, height: 32, background: '#E5E7EB' }} />}
                 <div>
-                  <div style={{ fontSize: 24, fontWeight: 600, color: '#fff' }}>{s.value}</div>
-                  <div style={{ fontSize: 10, color: 'rgba(255,255,255,.4)', marginTop: 2 }}>{s.label}</div>
+                  <div style={{ fontSize: 24, fontWeight: 700, color: '#1a1a1a' }}>{s.value}</div>
+                  <div style={{ fontSize: 10, color: '#9CA3AF', marginTop: 2 }}>{s.label}</div>
                 </div>
               </div>
             ))}
@@ -82,7 +79,7 @@ export default function LoginPage() {
         </div>
 
         {/* Footer */}
-        <div style={{ position: 'relative', fontSize: 11, color: 'rgba(255,255,255,.25)' }}>
+        <div style={{ fontSize: 11, color: '#D1D5DB' }}>
           R Systems &middot; Confidential &middot; Enterprise Preview
         </div>
       </div>
@@ -91,7 +88,7 @@ export default function LoginPage() {
       <div style={{ background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 48 }}>
         <div style={{ width: '100%', maxWidth: 400 }}>
           <div style={{ fontSize: 24, fontWeight: 600, letterSpacing: -0.4, marginBottom: 6 }}>Sign in</div>
-          <div style={{ fontSize: 13, color: '#64707A', marginBottom: 28 }}>Use your G&A enterprise credentials to access the CAP platform.</div>
+          <div style={{ fontSize: 13, color: '#64707A', marginBottom: 28 }}>Use your G&A enterprise credentials to access Compass.</div>
 
           <form onSubmit={(e) => { e.preventDefault(); login(); }}>
             {/* Email */}
@@ -123,8 +120,8 @@ export default function LoginPage() {
               disabled={authLoading}
               style={{
                 width: '100%', height: 46, border: 'none', borderRadius: 9,
-                background: '#C60C30', color: '#fff', fontSize: 14, fontWeight: 600,
-                cursor: 'pointer', boxShadow: '0 4px 14px rgba(198,12,48,.28)',
+                background: '#1a1a1a', color: '#fff', fontSize: 14, fontWeight: 600,
+                cursor: 'pointer', boxShadow: '0 4px 14px rgba(0,0,0,.2)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
                 opacity: authLoading ? 0.7 : 1,
               }}

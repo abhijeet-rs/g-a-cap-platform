@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CAP Cloud Platform — G&A Partners",
-  description: "Client Approved Plans · Benefits Orchestration Platform",
+  title: "G&A Compass — Benefits Sales Platform",
+  description: "G&A Partners · Benefits Sales Platform · Compass Foundation",
 };
 
 export default function RootLayout({

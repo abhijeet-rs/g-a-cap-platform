@@ -17,6 +17,7 @@ const pageTitles: Record<string, string> = {
   '/admin': 'Admin Console',
   '/integrations': 'Integrations',
   '/architecture': 'Architecture',
+  '/writeback': 'Ben Admin Console',
 };
 
 const crumbs: Record<string, string> = {
@@ -28,6 +29,7 @@ const crumbs: Record<string, string> = {
   '/admin': 'Administration',
   '/integrations': 'Administration',
   '/architecture': 'Reference',
+  '/writeback': 'Workspace',
 };
 
 const allRoles: { key: Role; label: string }[] = [
@@ -142,9 +144,9 @@ export default function Topbar() {
       {can('create') && (
         <Link href="/new-business" style={{
           height: 34, padding: '0 14px', border: 'none', borderRadius: 8,
-          background: '#C60C30', color: '#fff', fontSize: 12, fontWeight: 600,
+          background: '#1a1a1a', color: '#fff', fontSize: 12, fontWeight: 600,
           cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5,
-          boxShadow: '0 3px 10px rgba(198,12,48,.2)', textDecoration: 'none',
+          boxShadow: '0 2px 6px rgba(0,0,0,.15)', textDecoration: 'none',
         }}>
           <span style={{ fontSize: 14 }}>+</span> New Business CAP
         </Link>

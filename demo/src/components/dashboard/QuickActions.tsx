@@ -16,9 +16,9 @@ export default function QuickActions() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '10px 12px' }}>
         {can('create') && (
           <Link href="/new-business" style={{
-            height: 32, borderRadius: 7, background: '#C60C30', color: '#fff',
+            height: 32, borderRadius: 7, background: '#1a1a1a', color: '#fff',
             fontSize: 11, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            textDecoration: 'none', boxShadow: '0 3px 10px rgba(198,12,48,.2)',
+            textDecoration: 'none', boxShadow: '0 2px 6px rgba(0,0,0,.15)',
           }}>
             + New Business CAP
           </Link>

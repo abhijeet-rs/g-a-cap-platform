@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G&A Partners — CAP Cloud Platform Architecture</title>
+<style>
+:root{--navy:#23394A;--red:#C60C30;--blue:#0088CE;--green:#2A8F60;--purple:#8b5cf6;--amber:#FF9E1B;--grey:#6B6F70;--lgrey:#A8ACAE;--fog:#F5F7F9;--rule:#E2E8ED;--w:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:var(--navy);background:#fff;font-size:11px;line-height:1.45;padding:0}
+.page{max-width:1320px;margin:0 auto;padding:24px 32px 40px}
+.hdr{background:var(--navy);padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
+.hdr h1{color:#fff;font-size:15px;font-weight:700}
+.hdr small{color:rgba(255,255,255,.4);font-size:10px}
+.hdr-badge{font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:rgba(198,12,48,.25);color:rgba(255,255,255,.7);border:1px solid rgba(198,12,48,.3)}
+.arch{display:grid;grid-template-columns:160px 140px 1fr 180px 160px 150px;gap:0;border:2px solid var(--rule);border-radius:10px;overflow:hidden;background:var(--fog)}
+.col-hdr{padding:10px 12px;font-size:8px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;text-align:center;border-bottom:2px solid var(--rule);border-right:1px solid var(--rule)}
+.col-hdr:last-child{border-right:none}
+.zone{padding:12px;border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:8px}
+.zone:last-child{border-right:none}
+.svc{background:var(--w);border:1px solid var(--rule);border-radius:6px;padding:8px 10px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.svc-name{font-size:10px;font-weight:700;color:var(--navy);margin-bottom:2px;display:flex;align-items:center;gap:5px}
+.svc-sub{font-size:8px;color:var(--grey);line-height:1.4}
+.svc-tags{display:flex;gap:3px;flex-wrap:wrap;margin-top:4px}
+.tag{font-size:7px;font-weight:700;padding:1px 5px;border-radius:3px;white-space:nowrap}
+.svc.red{border-left:3px solid var(--red)}.svc.blue{border-left:3px solid var(--blue)}.svc.green{border-left:3px solid var(--green)}.svc.purple{border-left:3px solid var(--purple)}.svc.amber{border-left:3px solid var(--amber)}.svc.navy{border-left:3px solid var(--navy)}
+.ext{border-radius:6px;padding:8px 10px;color:#fff;font-size:10px;font-weight:700;text-align:center}
+.ext small{display:block;font-size:7px;font-weight:500;opacity:.7;margin-top:2px}
+.data-row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px}
+.data-card{background:var(--w);border:1px solid var(--rule);border-radius:6px;padding:10px 12px;border-top:3px solid var(--navy)}
+.data-card.c2{border-top-color:var(--blue)}.data-card.cr{border-top-color:var(--red)}.data-card.cg{border-top-color:var(--green)}.data-card.cp{border-top-color:var(--purple)}.data-card.ca{border-top-color:var(--amber)}
+.data-name{font-size:10px;font-weight:700;margin-bottom:2px}
+.data-desc{font-size:8px;color:var(--grey)}
+.flow-row{display:flex;align-items:center;gap:0;margin-bottom:10px;overflow-x:auto;padding-bottom:4px}
+.flow-box{padding:6px 12px;border-radius:5px;font-size:9px;font-weight:600;white-space:nowrap;border:1px solid;display:flex;align-items:center;gap:4px}
+.flow-box .num{width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;color:#fff;flex-shrink:0}
+.flow-arrow{width:28px;text-align:center;font-size:12px;color:var(--lgrey);flex-shrink:0}
+.legend{display:flex;gap:16px;flex-wrap:wrap;padding:12px 16px;background:var(--fog);border:1px solid var(--rule);border-radius:6px;margin-top:16px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:9px;color:var(--grey)}
+.legend-line{width:20px;height:2px;border-radius:1px}
+.legend-box{width:12px;height:12px;border-radius:3px}
+.sec-label{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin:20px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--rule)}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div><h1>G&A Partners — CAP Cloud Platform Architecture</h1><small>Comprehensive Platform Blueprint · All 5 PRDs · 8 Architecture Layers</small></div>
+  <div style="display:flex;gap:8px;align-items:center"><span class="hdr-badge">v1.0 · Jun 2026</span></div>
+</div>
+
+<div class="page">
+
+<div class="sec-label">Data Storage Layer</div>
+<div class="data-row">
+  <div class="data-card"><div class="data-name">PostgreSQL Primary</div><div class="data-desc">RDS Multi-AZ · Client, CAP, Product, Plan, PlanTier, UW Params, AdminConfig, TaxPlan</div></div>
+  <div class="data-card c2"><div class="data-name">PostgreSQL Replica</div><div class="data-desc">Read-heavy queries · Reporting · Analytics · Dashboard aggregations</div></div>
+  <div class="data-card cr"><div class="data-name">Redis</div><div class="data-desc">Rate table cache (TTL 5m) · Session tokens · Real-time validation cache</div></div>
+  <div class="data-card cg"><div class="data-name">S3 Object Storage</div><div class="data-desc">Uploaded documents · Generated PDFs · Template assets · Signed booklets</div></div>
+  <div class="data-card cp"><div class="data-name">Audit Log</div><div class="data-desc">WORM · SOX · 7yr retention · Field-level: who, when, what, old→new, actor type</div></div>
+  <div class="data-card ca"><div class="data-name">EventBus</div><div class="data-desc">SNS/SQS · Async service communication · CAP status events · Sync triggers</div></div>
+</div>
+
+<div class="sec-label">Service Architecture (left → right data flow)</div>
+<div class="arch">
+  <div class="col-hdr" style="background:#E7F1FA;color:var(--blue)">Client Tier</div>
+  <div class="col-hdr" style="background:#FEF9EE;color:#7a4800">Edge / Identity</div>
+  <div class="col-hdr" style="background:#E9F5EF;color:var(--green)">Domain Services</div>
+  <div class="col-hdr" style="background:#F3EEFF;color:var(--purple)">AI / Copilot</div>
+  <div class="col-hdr" style="background:#FFF4E6;color:#7a4800">MCP Servers</div>
+  <div class="col-hdr" style="background:#FEF0EE;color:var(--red)">Connectors → External</div>
+
+  <div class="zone" style="background:#F5FAFF">
+    <div class="svc blue"><div class="svc-name">Web Application</div><div class="svc-sub">Next.js 14 · React 18 · Zustand</div></div>
+    <div class="svc blue"><div class="svc-name">Dashboard</div><div class="svc-sub">Metrics · Client table · Renewal radar · Activity log</div></div>
+    <div class="svc red"><div class="svc-name">NB Wizard</div><div class="svc-sub">NB1 Intake → NB2 Extract → NB3 Assemble → NB4 Rates → NB5 Validate → NB6 Submit</div></div>
+    <div class="svc amber"><div class="svc-name">Renewal Manager</div><div class="svc-sub">R1 Radar → R2 Pre-fill → R4 Drift → R5 Diff → R6 Approve → R7 Booklet → R9 Handoff</div></div>
+    <div class="svc green"><div class="svc-name">E-Sign · Documents</div><div class="svc-sub">NB7/R7 Booklets · NB8/R8 DocuSign routing · Version history · Audit trail</div></div>
+    <div class="svc navy"><div class="svc-name">Admin Console</div><div class="svc-sub">F1-F10 · Connections · Plans · Pricing · Params · Vocab · Templates · Validation · Roles · UW</div></div>
+    <div class="svc purple"><div class="svc-name">Copilot Sidebar</div><div class="svc-sub">CP1 · Chat UI · Proposed change cards · Context-aware chips</div></div>
+  </div>
+
+  <div class="zone" style="background:#FFFBF0">
+    <div class="svc amber"><div class="svc-name">API Gateway</div><div class="svc-sub">Kong · OAuth2 · Rate limiting · Request routing</div></div>
+    <div class="svc amber"><div class="svc-name">Auth Service</div><div class="svc-sub">SAML 2.0 · JWT RS256 · Session mgmt</div></div>
+    <div class="svc" style="border-left:3px solid var(--navy);background:#F8FAFB">
+      <div class="svc-name" style="font-size:8px">6 Persona Roles</div>
+      <div class="svc-sub" style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:3px">
+        <span style="color:var(--red);font-weight:700">● AM</span><span style="color:var(--blue);font-weight:700">● AE</span>
+        <span style="color:var(--grey);font-weight:700">● Coord</span><span style="color:var(--grey);font-weight:700">● Analyst</span>
+        <span style="color:var(--green);font-weight:700">● Manager</span><span style="color:var(--purple);font-weight:700">● Admin</span>
+      </div>
+    </div>
+    <div class="svc navy">
+      <div class="svc-name">RBAC Middleware</div>
+      <div class="svc-sub">F9 field-level access · OPA</div>
+      <div class="svc-tags" style="margin-top:4px">
+        <span class="tag" style="background:#E7F1FA;color:var(--blue)">Blue</span>
+        <span class="tag" style="background:#FEF9EE;color:#7a4800">Yellow</span>
+        <span class="tag" style="background:#E9F5EF;color:var(--green)">Green</span>
+        <span class="tag" style="background:#FEF0EE;color:var(--red)">Red</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="zone" style="background:#F5FBF7">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="svc red">
+        <div class="svc-name">🏗 CAP Service</div>
+        <div class="svc-sub">State machine · Lifecycle hub</div>
+        <div style="display:flex;gap:2px;margin-top:4px">
+          <span class="tag" style="background:#EDF0F3;color:var(--grey)">Draft</span><span class="tag" style="background:#E7F1FA;color:var(--blue)">Review</span><span class="tag" style="background:#E9F5EF;color:var(--green)">Approved</span><span class="tag" style="background:#FEF9EE;color:#7a4800">Signed</span><span class="tag" style="background:#E9F5EF;color:var(--green)">Published</span>
+        </div>
+      </div>
+      <div class="svc blue">
+        <div class="svc-name">📊 Plan Config</div>
+        <div class="svc-sub">F3 Plans · F4 Pricing · Rates · Tiers</div>
+        <div style="font-family:monospace;font-size:7px;color:var(--blue);margin-top:3px;background:#F5FAFF;padding:3px 5px;border-radius:3px">Billed = Base × Bucket × AF × (1+Comm) × RF</div>
+      </div>
+      <div class="svc green"><div class="svc-name">✓ Validation</div><div class="svc-sub">F8 rules · Completeness · Source-data · Cross-field · Audit gates</div></div>
+      <div class="svc green"><div class="svc-name">📄 Template</div><div class="svc-sub">F7 · Merge fields · ER Confirm · EE SRA · Booklet</div></div>
+      <div class="svc amber"><div class="svc-name">↻ Renewal</div><div class="svc-sub">YoY diff · Pre-fill · Drift · Plan-code crosswalk</div></div>
+      <div class="svc navy"><div class="svc-name">📑 Document</div><div class="svc-sub">WeasyPrint · PDF · S3 · Version · Snapshot</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="svc purple"><div class="svc-name">✎ E-Sign</div><div class="svc-sub">DocuSign orchestration</div>
+        <div style="display:flex;gap:2px;margin-top:3px"><span class="tag" style="background:#EDF0F3;color:var(--grey)">Ready</span><span class="tag" style="background:#FEF9EE;color:#7a4800">Sent</span><span class="tag" style="background:#E7F1FA;color:var(--blue)">Partial</span><span class="tag" style="background:#E9F5EF;color:var(--green)">Complete</span></div>
+      </div>
+      <div class="svc navy"><div class="svc-name">🔔 Notification</div><div class="svc-sub">SES · WebSocket · Reminders · Alerts</div></div>
+    </div>
+  </div>
+
+  <div class="zone" style="background:#FAF7FF">
+    <div class="svc purple">
+      <div class="svc-name">✦ Copilot Orchestrator</div>
+      <div class="svc-sub">LLM · Tool-calling · Context</div>
+      <div style="margin-top:4px;display:flex;flex-direction:column;gap:2px">
+        <span class="tag" style="background:#F3EEFF;color:var(--purple)">CP2 Context</span><span class="tag" style="background:#F3EEFF;color:var(--purple)">CP3 Retrieve</span><span class="tag" style="background:#F3EEFF;color:var(--purple)">CP4 Act (write+diff)</span><span class="tag" style="background:#F3EEFF;color:var(--purple)">CP5 Explain</span><span class="tag" style="background:#FEF0EE;color:var(--red)">CP7 Guardrails</span>
+      </div>
+    </div>
+    <div class="svc blue">
+      <div class="svc-name">🤖 AI Extraction</div>
+      <div class="svc-sub">NB2/F10 · SBC · Invoice · Census</div>
+      <div class="svc-tags"><span class="tag" style="background:#E9F5EF;color:var(--green)">95%+</span><span class="tag" style="background:#FEF9EE;color:#7a4800">89-94%</span><span class="tag" style="background:#FEF0EE;color:var(--red)">&lt;89%</span></div>
+    </div>
+    <div class="svc green" style="margin-top:auto"><div class="svc-name" style="font-size:8px">CP6 Suggested Actions</div><div class="svc-sub">Context-aware chips · Proactive nudges</div></div>
+  </div>
+
+  <div class="zone" style="background:#FFF8F0">
+    <div class="svc amber"><div class="svc-name">cap-data-mcp</div><div class="svc-sub">8 tools · 6 resources<br>get_cap · get_rates · update_field · set_contrib · advance_status</div></div>
+    <div class="svc red"><div class="svc-name">prismhr-mcp</div><div class="svc-sub">12 tools · 4 resources<br>get_plans · get_setup · create_setup · enroll_benefit</div></div>
+    <div class="svc blue"><div class="svc-name">clientspace-mcp</div><div class="svc-sub">6 tools · 2 resources<br>create_case · update_status · get_details</div></div>
+    <div class="svc purple"><div class="svc-name">docusign-mcp</div><div class="svc-sub">5 tools · 2 resources<br>create_envelope · send · get_status</div></div>
+    <div class="svc green"><div class="svc-name">worksight-mcp</div><div class="svc-sub">4 tools · 1 resource<br>push_config · get_status</div></div>
+  </div>
+
+  <div class="zone" style="background:#FFF5F5">
+    <div class="svc red"><div class="svc-name">PrismConnector</div><div class="svc-sub">Bi-dir · REST · OAuth2</div><div class="svc-tags"><span class="tag" style="background:#E7F1FA;color:var(--blue)">Stream 1: Master</span><span class="tag" style="background:#E9F5EF;color:var(--green)">Stream 2: Client</span></div></div>
+    <div class="ext" style="background:var(--red)">PrismHR<small>HRIS · Payroll · SoR</small></div>
+    <div class="svc blue"><div class="svc-name">WorkSightConn</div><div class="svc-sub">Push-only · API key</div></div>
+    <div class="ext" style="background:var(--blue)">WorkSight<small>Enrollment Portal</small></div>
+    <div class="svc green"><div class="svc-name">ClientSpaceConn</div><div class="svc-sub">Bi-dir · Bearer token</div></div>
+    <div class="ext" style="background:var(--green)">ClientSpace<small>CRM · Cases</small></div>
+    <div class="svc amber"><div class="svc-name">DocuSignConn</div><div class="svc-sub">Push + webhook · JWT</div></div>
+    <div class="ext" style="background:var(--amber)">DocuSign<small>E-Signature (BAA)</small></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <div class="ext" style="background:var(--navy);font-size:8px">WEX<small>COBRA/FSA</small></div>
+      <div class="ext" style="background:var(--purple);font-size:8px">Guardian<small>Carrier API</small></div>
+    </div>
+  </div>
+</div>
+
+<div class="sec-label" style="margin-top:24px">Data Flow Paths</div>
+
+<div style="margin-bottom:12px">
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><span style="width:20px;height:20px;border-radius:50%;background:var(--red);color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center">1</span><span style="font-size:10px;font-weight:700;color:var(--red)">New Business Flow (NB1 → NB9)</span></div>
+  <div class="flow-row">
+    <div class="flow-box" style="background:#FEF0EE;border-color:#C60C3044;color:var(--red)"><span class="num" style="background:var(--red)">1</span>Upload</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#F3EEFF;border-color:#8b5cf644;color:var(--purple)"><span class="num" style="background:var(--purple)">2</span>AI Extract</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#E7F1FA;border-color:#0088CE44;color:var(--blue)"><span class="num" style="background:var(--blue)">3</span>Assemble</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#E7F1FA;border-color:#0088CE44;color:var(--blue)"><span class="num" style="background:var(--blue)">4</span>Rates F3×F4</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#E9F5EF;border-color:#2A8F6044;color:var(--green)"><span class="num" style="background:var(--green)">5</span>Validate F8</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#E9F5EF;border-color:#2A8F6044;color:var(--green)"><span class="num" style="background:var(--green)">6</span>Approve</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#FEF9EE;border-color:#FF9E1B44;color:#7a4800"><span class="num" style="background:var(--amber)">7</span>Booklet+Sign</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:var(--red);border-color:var(--red);color:#fff"><span class="num" style="background:#fff;color:var(--red)">9</span>Prism Write-back</div>
+  </div>
+</div>
+
+<div style="margin-bottom:12px">
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><span style="width:20px;height:20px;border-radius:50%;background:var(--amber);color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center">2</span><span style="font-size:10px;font-weight:700;color:#7a4800">Renewal Flow (R1 → R9)</span></div>
+  <div class="flow-row">
+    <div class="flow-box" style="background:#FEF9EE;border-color:#FF9E1B44;color:#7a4800"><span class="num" style="background:var(--amber)">R1</span>Radar</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#FEF9EE;border-color:#FF9E1B44;color:#7a4800"><span class="num" style="background:var(--amber)">R2</span>Pre-fill</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#FEF0EE;border-color:#C60C3044;color:var(--red)"><span class="num" style="background:var(--red)">R4</span>Drift</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#E7F1FA;border-color:#0088CE44;color:var(--blue)"><span class="num" style="background:var(--blue)">R5</span>YoY Diff</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#E9F5EF;border-color:#2A8F6044;color:var(--green)"><span class="num" style="background:var(--green)">R6</span>Readiness</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#E9F5EF;border-color:#2A8F6044;color:var(--green)"><span class="num" style="background:var(--green)">R7</span>Booklet</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#FEF9EE;border-color:#FF9E1B44;color:#7a4800"><span class="num" style="background:var(--amber)">R8</span>Sign</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:var(--amber);border-color:var(--amber);color:#fff"><span class="num" style="background:#fff;color:var(--amber)">R9</span>Prism Update</div>
+  </div>
+</div>
+
+<div style="margin-bottom:12px">
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><span style="width:20px;height:20px;border-radius:50%;background:var(--purple);color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center">3</span><span style="font-size:10px;font-weight:700;color:var(--purple)">Copilot Flow (CP1 → CP7)</span></div>
+  <div class="flow-row">
+    <div class="flow-box" style="background:#F3EEFF;border-color:#8b5cf644;color:var(--purple)"><span class="num" style="background:var(--purple)">CP1</span>Query</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#F3EEFF;border-color:#8b5cf644;color:var(--purple)"><span class="num" style="background:var(--purple)">CP2</span>Context</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#FFF8F0;border-color:#FF9E1B44;color:#7a4800"><span class="num" style="background:var(--amber)">MCP</span>Tool Call</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#F3EEFF;border-color:#8b5cf644;color:var(--purple)"><span class="num" style="background:var(--purple)">CP3</span>Retrieve</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#F3EEFF;border-color:#8b5cf644;color:var(--purple)"><span class="num" style="background:var(--purple)">CP5</span>Explain</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#E7F1FA;border-color:#0088CE44;color:var(--blue)"><span class="num" style="background:var(--blue)">CP4</span>Diff Preview</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#E9F5EF;border-color:#2A8F6044;color:var(--green)">✓ Confirm</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#F3EEFF;border-color:#8b5cf644;color:var(--purple)"><span class="num" style="background:var(--purple)">CP7</span>Audit</div>
+  </div>
+</div>
+
+<div style="margin-bottom:8px">
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><span style="width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center">4</span><span style="font-size:10px;font-weight:700;color:var(--blue)">Prism Sync Flow (F2 Connections)</span></div>
+  <div class="flow-row">
+    <div class="flow-box" style="background:var(--red);border-color:var(--red);color:#fff">PrismHR (SoR)</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#FEF0EE;border-color:#C60C3044;color:var(--red)">PrismConnector</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#E7F1FA;border-color:#0088CE44;color:var(--blue)"><span class="num" style="background:var(--blue)">S1</span>Master Data</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#E9F5EF;border-color:#2A8F6044;color:var(--green)">F3 Master Plans</div>
+    <div style="width:16px"></div>
+    <div class="flow-box" style="background:#E7F1FA;border-color:#0088CE44;color:var(--blue)"><span class="num" style="background:var(--blue)">S2</span>Client Records</div><div class="flow-arrow">→</div>
+    <div class="flow-box" style="background:#FEF9EE;border-color:#FF9E1B44;color:#7a4800">R2 Renewal Pre-fill</div>
+  </div>
+</div>
+
+<div class="legend">
+  <span style="font-size:8px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--lgrey)">Legend</span>
+  <div class="legend-item"><div class="legend-line" style="background:var(--navy)"></div>REST call</div>
+  <div class="legend-item"><div class="legend-line" style="background:var(--navy);border-top:2px dashed var(--navy);height:0"></div>EventBus</div>
+  <div class="legend-item"><div class="legend-line" style="background:var(--red)"></div>RBAC guard</div>
+  <div class="legend-item"><div class="legend-line" style="background:var(--purple)"></div>MCP tool</div>
+  <div class="legend-item"><div class="legend-box" style="background:#E7F1FA;border:1px solid #0088CE44"></div>Synced (Prism)</div>
+  <div class="legend-item"><div class="legend-box" style="background:#E9F5EF;border:1px solid #2A8F6044"></div>G&A-managed</div>
+  <div class="legend-item"><div class="legend-box" style="background:#F3EEFF;border:1px solid #8b5cf644"></div>AI/Copilot</div>
+  <div class="legend-item"><div class="legend-box" style="background:#FEF0EE;border:1px solid #C60C3044"></div>External</div>
+</div>
+
+<div class="sec-label" style="margin-top:20px">Implementation Roadmap</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+  <div style="background:var(--red);color:#fff;padding:10px 14px;border-radius:6px"><div style="font-size:10px;font-weight:700">Phase 1 · Init A</div><div style="font-size:8px;opacity:.8;margin-top:2px">CAP Platform (12 wk)<br>F1-F10 · NB1-NB9 · R1-R9 · CP1-CP7</div></div>
+  <div style="background:var(--blue);color:#fff;padding:10px 14px;border-radius:6px"><div style="font-size:10px;font-weight:700">Phase 2 · Init B+C</div><div style="font-size:8px;opacity:.8;margin-top:2px">AI UW + Carrier Portal (6 wk)<br>Doc extraction · Portal API/RPA</div></div>
+  <div style="background:var(--green);color:#fff;padding:10px 14px;border-radius:6px"><div style="font-size:10px;font-weight:700">Phase 3 · Init D+E+F</div><div style="font-size:8px;opacity:.8;margin-top:2px">Platform Expansions (4 wk)<br>Ciklum · Sidekick · Beacon</div></div>
+  <div style="background:var(--navy);color:#fff;padding:10px 14px;border-radius:6px"><div style="font-size:10px;font-weight:700">Total: 22 Weeks</div><div style="font-size:8px;opacity:.8;margin-top:2px">346 person-days · 9 FTEs peak<br>76 items · 6 initiatives</div></div>
+</div>
+
+<div style="text-align:center;padding:16px;font-size:9px;color:var(--lgrey);margin-top:16px">G&A Partners — CAP Cloud Platform Architecture v1.0 · Confidential · Jun 2026</div>
+</div>
+</body>
+</html>

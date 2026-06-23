@@ -15,7 +15,12 @@
       "effDate": "2025-07-01",
       "contribStrategy": "variable",
       "erPct": 72,
-      "plans": ["med1", "med2", "den", "vis"],
+      "plans": [
+        "med1",
+        "med2",
+        "den",
+        "vis"
+      ],
       "validationErrors": 2,
       "validationWarnings": 1,
       "createdAt": "2026-06-10T09:00:00",
@@ -36,7 +41,11 @@
       "effDate": "2026-01-01",
       "contribStrategy": "base_plan",
       "erPct": 65,
-      "plans": ["med1", "den", "vis"],
+      "plans": [
+        "med1",
+        "den",
+        "vis"
+      ],
       "validationErrors": 0,
       "validationWarnings": 3,
       "createdAt": "2026-05-20T14:00:00",
@@ -48,7 +57,7 @@
       "clientName": "Cascade Health",
       "prism": "GA-10193",
       "type": "renewal",
-      "status": "published",
+      "status": "in_review",
       "planYear": "2026",
       "carrier": "Aetna",
       "eeCount": 318,
@@ -57,7 +66,13 @@
       "effDate": "2026-01-01",
       "contribStrategy": "variable",
       "erPct": 80,
-      "plans": ["med1", "med2", "den", "vis", "life"],
+      "plans": [
+        "med1",
+        "med2",
+        "den",
+        "vis",
+        "life"
+      ],
       "validationErrors": 0,
       "validationWarnings": 0,
       "createdAt": "2025-10-01T08:00:00",
@@ -78,7 +93,10 @@
       "effDate": "2026-09-01",
       "contribStrategy": "flat_dollar",
       "erPct": 55,
-      "plans": ["med1", "den"],
+      "plans": [
+        "med1",
+        "den"
+      ],
       "validationErrors": 4,
       "validationWarnings": 2,
       "createdAt": "2026-06-01T10:00:00",
@@ -99,7 +117,12 @@
       "effDate": "2026-08-01",
       "contribStrategy": "base_plan",
       "erPct": 70,
-      "plans": ["med1", "med2", "den", "vis"],
+      "plans": [
+        "med1",
+        "med2",
+        "den",
+        "vis"
+      ],
       "validationErrors": 0,
       "validationWarnings": 0,
       "createdAt": "2026-04-15T13:00:00",
@@ -120,7 +143,10 @@
       "effDate": "2026-07-01",
       "contribStrategy": "flat_dollar",
       "erPct": 50,
-      "plans": ["med1", "den"],
+      "plans": [
+        "med1",
+        "den"
+      ],
       "validationErrors": 0,
       "validationWarnings": 1,
       "createdAt": "2026-05-01T09:30:00",
@@ -141,7 +167,13 @@
       "effDate": "2026-08-01",
       "contribStrategy": "variable",
       "erPct": 75,
-      "plans": ["med1", "med2", "den", "vis", "life"],
+      "plans": [
+        "med1",
+        "med2",
+        "den",
+        "vis",
+        "life"
+      ],
       "validationErrors": 1,
       "validationWarnings": 2,
       "createdAt": "2026-05-10T11:00:00",
@@ -162,7 +194,11 @@
       "effDate": "2026-10-01",
       "contribStrategy": "rolldown",
       "erPct": 68,
-      "plans": ["med1", "den", "vis"],
+      "plans": [
+        "med1",
+        "den",
+        "vis"
+      ],
       "validationErrors": 0,
       "validationWarnings": 0,
       "createdAt": "2026-06-05T15:00:00",
@@ -183,7 +219,10 @@
       "effDate": "2026-07-01",
       "contribStrategy": "base_plan",
       "erPct": 60,
-      "plans": ["med1", "den"],
+      "plans": [
+        "med1",
+        "den"
+      ],
       "validationErrors": 0,
       "validationWarnings": 1,
       "createdAt": "2026-04-20T08:00:00",
@@ -195,7 +234,7 @@
       "clientName": "Summit Financial",
       "prism": "GA-10405",
       "type": "renewal",
-      "status": "published",
+      "status": "draft",
       "planYear": "2026",
       "carrier": "Cigna",
       "eeCount": 46,
@@ -204,7 +243,10 @@
       "effDate": "2026-03-01",
       "contribStrategy": "flat_dollar",
       "erPct": 58,
-      "plans": ["med1", "vis"],
+      "plans": [
+        "med1",
+        "vis"
+      ],
       "validationErrors": 0,
       "validationWarnings": 0,
       "createdAt": "2025-12-01T10:00:00",
@@ -225,7 +267,12 @@
       "effDate": "2026-09-01",
       "contribStrategy": "variable",
       "erPct": 74,
-      "plans": ["med1", "med2", "den", "vis"],
+      "plans": [
+        "med1",
+        "med2",
+        "den",
+        "vis"
+      ],
       "validationErrors": 1,
       "validationWarnings": 3,
       "createdAt": "2026-05-25T09:00:00",
@@ -276,7 +323,7 @@
     {
       "actor": "System",
       "actorType": "system",
-      "action": "ran ACA affordability check — passed ($112.40 < $129.90)",
+      "action": "ran ACA affordability check \u2014 passed ($112.40 < $129.90)",
       "entity": "cap",
       "entityId": "cap-itafos-2026",
       "offsetMinutes": 6

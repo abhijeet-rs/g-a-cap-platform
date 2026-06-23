@@ -57,10 +57,36 @@ export default function StepIntake() {
   } = useNewBusinessStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const capFileInputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   const [uploadFeedback, setUploadFeedback] = useState<string | null>(null);
+
+  /* ── Upload Existing WIP CAP state ── */
+  const [intakeMode, setIntakeMode] = useState<'new' | 'upload'>('new');
+  const [capImporting, setCapImporting] = useState(false);
+  const [capImported, setCapImported] = useState(false);
+  const [capDragging, setCapDragging] = useState(false);
+  const [capFileName, setCapFileName] = useState<string | null>(null);
+
+  const handleCapFile = (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
+    if (!['xlsx', 'xls'].includes(ext)) return;
+    setCapFileName(file.name);
+    setCapImporting(true);
+    setTimeout(() => {
+      setCapImporting(false);
+      setCapImported(true);
+      // Auto-fill seed info from "imported" data
+      setCompany('Itafos Conda');
+      setPlanYear('2026');
+      setEeCount('298');
+      setCarrier('BCBS Texas');
+    }, 1500);
+  };
 
   const markTouched = (field: string) => setTouched(p => ({ ...p, [field]: true }));
 
@@ -86,7 +112,238 @@ export default function StepIntake() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      {/* Two-column grid */}
+      {/* ── Intake Mode Toggle ── */}
+      <div style={{
+        background: '#fff',
+        borderRadius: 10,
+        border: '1px solid #E4E8ED',
+        padding: 20,
+      }}>
+        <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2D3D', marginBottom: 14 }}>
+          How would you like to start?
+        </div>
+        <div style={{ display: 'flex', gap: 12 }}>
+          <button
+            onClick={() => { setIntakeMode('new'); setCapImported(false); setCapImporting(false); setCapFileName(null); }}
+            style={{
+              flex: 1,
+              padding: '14px 16px',
+              borderRadius: 8,
+              border: intakeMode === 'new' ? '2px solid #C60C30' : '1px solid #E4E8ED',
+              background: intakeMode === 'new' ? '#FFF5F7' : '#FBFCFD',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+              transition: 'all 0.15s ease',
+            }}
+          >
+            <div style={{
+              width: 18, height: 18, borderRadius: '50%',
+              border: intakeMode === 'new' ? '5px solid #C60C30' : '2px solid #DCE2E8',
+              background: '#fff',
+              flexShrink: 0,
+            }} />
+            <div style={{ textAlign: 'left' }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2D3D' }}>Start from scratch</div>
+              <div style={{ fontSize: 10, color: '#98A1A8', marginTop: 2 }}>Fill in seed info and upload documents manually</div>
+            </div>
+          </button>
+          <button
+            onClick={() => setIntakeMode('upload')}
+            style={{
+              flex: 1,
+              padding: '14px 16px',
+              borderRadius: 8,
+              border: intakeMode === 'upload' ? '2px solid #C60C30' : '1px solid #E4E8ED',
+              background: intakeMode === 'upload' ? '#FFF5F7' : '#FBFCFD',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+              transition: 'all 0.15s ease',
+            }}
+          >
+            <div style={{
+              width: 18, height: 18, borderRadius: '50%',
+              border: intakeMode === 'upload' ? '5px solid #C60C30' : '2px solid #DCE2E8',
+              background: '#fff',
+              flexShrink: 0,
+            }} />
+            <div style={{ textAlign: 'left' }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2D3D' }}>Upload existing WIP CAP</div>
+              <div style={{ fontSize: 10, color: '#98A1A8', marginTop: 2 }}>Import fields from an existing CAP workbook (.xlsx)</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      {/* ── Upload Existing CAP Mode ── */}
+      {intakeMode === 'upload' && (
+        <div style={{
+          background: '#fff',
+          borderRadius: 10,
+          border: '1px solid #E4E8ED',
+          padding: 20,
+        }}>
+          {!capImporting && !capImported && (
+            <>
+              <div
+                onDragOver={(e) => { e.preventDefault(); setCapDragging(true); }}
+                onDragLeave={() => setCapDragging(false)}
+                onDrop={(e) => { e.preventDefault(); setCapDragging(false); handleCapFile(e.dataTransfer.files); }}
+                onClick={() => capFileInputRef.current?.click()}
+                style={{
+                  border: `2px dashed ${capDragging ? '#0074B8' : '#DCE2E8'}`,
+                  background: capDragging ? '#F0F7FF' : '#FAFBFC',
+                  borderRadius: 10,
+                  padding: 36,
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                <input
+                  ref={capFileInputRef}
+                  type="file"
+                  accept=".xlsx,.xls"
+                  onChange={(e) => { handleCapFile(e.target.files); e.target.value = ''; }}
+                  style={{ display: 'none' }}
+                />
+                <div style={{ fontSize: 28, color: capDragging ? '#0074B8' : '#98A1A8', marginBottom: 8 }}>&#x1F4CA;</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: capDragging ? '#0074B8' : '#4A5568' }}>
+                  Drop your existing CAP workbook (.xlsx) to import
+                </div>
+                <div style={{ fontSize: 11, color: '#98A1A8', marginTop: 6 }}>
+                  Supports .xlsx and .xls files
+                </div>
+              </div>
+            </>
+          )}
+
+          {capImporting && (
+            <div style={{ textAlign: 'center', padding: '32px 0' }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: '#0074B8', marginBottom: 12 }}>
+                Importing...
+              </div>
+              <div style={{ width: 200, height: 4, background: '#EDF0F3', borderRadius: 2, margin: '0 auto', overflow: 'hidden' }}>
+                <div style={{
+                  width: '60%', height: '100%', background: '#0074B8', borderRadius: 2,
+                  animation: 'capImportPulse 1.5s ease-in-out infinite',
+                }} />
+              </div>
+              <style>{`@keyframes capImportPulse { 0% { width: 10%; } 50% { width: 80%; } 100% { width: 100%; } }`}</style>
+              <div style={{ fontSize: 10, color: '#98A1A8', marginTop: 8 }}>
+                Reading {capFileName}...
+              </div>
+            </div>
+          )}
+
+          {capImported && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {/* Success message */}
+              <div style={{
+                background: '#F0FFF5',
+                border: '1px solid #C6F0D4',
+                borderRadius: 8,
+                padding: '14px 16px',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                  <div style={{
+                    width: 22, height: 22, borderRadius: '50%', background: '#1A7A4A',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: '#fff', fontSize: 11, fontWeight: 700, flexShrink: 0,
+                  }}>
+                    &#x2713;
+                  </div>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: '#1A7A4A' }}>
+                    Imported 24 fields from CAP workbook
+                  </span>
+                </div>
+                <div style={{ fontSize: 11, color: '#64707A', marginLeft: 30 }}>
+                  Company Info: 8 fields &middot; Products: 4 fields &middot; Rates: 8 fields &middot; UW Params: 4 fields
+                </div>
+                <div style={{ fontSize: 10, color: '#98A1A8', marginLeft: 30, marginTop: 4 }}>
+                  Source: {capFileName}
+                </div>
+              </div>
+
+              {/* Imported seed info preview */}
+              <div style={{
+                background: '#FAFBFC',
+                borderRadius: 8,
+                border: '1px solid #EEF1F4',
+                padding: 14,
+              }}>
+                <div style={{ fontSize: 10, fontWeight: 600, color: '#98A1A8', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 10 }}>
+                  Imported Seed Data
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  {[
+                    { label: 'Company', value: company },
+                    { label: 'Plan Year', value: planYear },
+                    { label: 'Est. EE Count', value: eeCount },
+                    { label: 'Primary Carrier', value: carrier },
+                  ].map((item) => (
+                    <div key={item.label}>
+                      <div style={{ fontSize: 10, color: '#98A1A8' }}>{item.label}</div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2D3D' }}>{item.value}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Document checklist - all done */}
+              <div style={{
+                background: '#FAFBFC',
+                borderRadius: 8,
+                border: '1px solid #EEF1F4',
+                padding: 14,
+              }}>
+                <div style={{ fontSize: 10, fontWeight: 600, color: '#98A1A8', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 10 }}>
+                  Document Checklist &mdash; All from CAP
+                </div>
+                {documentChecklist.map((doc, i) => (
+                  <div key={doc.name} style={{
+                    display: 'flex', alignItems: 'center', gap: 8,
+                    padding: '6px 0',
+                    borderTop: i > 0 ? '1px solid #EEF1F4' : 'none',
+                  }}>
+                    <div style={{
+                      width: 18, height: 18, borderRadius: '50%',
+                      background: '#E4F2EA', color: '#1A7A4A',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 9, flexShrink: 0,
+                    }}>&#x2713;</div>
+                    <span style={{ fontSize: 11, fontWeight: 500, color: '#1B2D3D' }}>{doc.name}</span>
+                    <span style={{ fontSize: 9, color: '#1A7A4A', fontWeight: 500, marginLeft: 'auto' }}>From CAP</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Continue button */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <button
+                  onClick={() => setIntakeMode('new')}
+                  style={{
+                    height: 38, padding: '0 22px',
+                    background: '#C60C30', color: '#fff',
+                    borderRadius: 8, fontSize: 12, fontWeight: 600,
+                    border: 'none', cursor: 'pointer',
+                    boxShadow: '0 3px 10px rgba(198,12,48,.2)',
+                    fontFamily: "'IBM Plex Sans', sans-serif",
+                  }}
+                >
+                  Continue with imported data &#x2192;
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Two-column grid — "Start from scratch" mode */}
+      {intakeMode === 'new' && (<div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
         {/* Left card: Seed Information */}
         <div
@@ -442,6 +699,7 @@ export default function StepIntake() {
           </div>
         </div>
       )}
+      </div>)}
     </div>
   );
 }

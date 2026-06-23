@@ -22,7 +22,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   if (screen === 'login') return null;
 
   return (
-    <div style={{ height: '100vh', display: 'flex', background: '#F5F7FA' }}>
+    <div style={{ height: '100vh', display: 'flex', background: '#FAFAFA' }}>
       <Sidebar />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, position: 'relative' }}>
         <Topbar />

@@ -282,6 +282,100 @@ export default function StepPreview() {
         ))}
       </div>
 
+      {/* ClientSpace Case Card */}
+      <div style={{ ...cardStyle, padding: 20 }}>
+        {/* Header */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          marginBottom: 14, paddingBottom: 12, borderBottom: '1px solid #E4E8ED',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: '#1B2D3D' }}>ClientSpace PRO</span>
+            <span style={{ color: '#98A1A8', fontSize: 11 }}>&middot;</span>
+            <span style={{ fontSize: 11, color: '#64707A' }}>Case Management</span>
+          </div>
+          <span style={{
+            fontFamily: "'IBM Plex Mono', monospace",
+            fontSize: 10, fontWeight: 600, color: '#0074B8',
+            background: '#E7F1FA', padding: '3px 8px', borderRadius: 4,
+          }}>CS-2026-1847</span>
+        </div>
+
+        {/* Case Details */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
+          {[
+            { label: 'Case Type', value: 'New Business Onboarding' },
+            { label: 'Client', value: `${company} (GA-2908)` },
+            { label: 'Status', value: null, custom: (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#B0690A' }} />
+                <span style={{ fontSize: 11, fontWeight: 500, color: '#B0690A' }}>Open &mdash; Pending AM Submission</span>
+              </div>
+            )},
+            { label: 'Assigned To', value: 'Dana Whitfield (AM)' },
+            { label: 'Created', value: 'Jun 18, 2026 9:14 AM' },
+            { label: 'SLA', value: '5 business days' },
+          ].map((row, i) => (
+            <div key={i} style={{ display: 'grid', gridTemplateColumns: '130px 1fr', alignItems: 'center' }}>
+              <span style={{ fontSize: 10, fontWeight: 600, color: '#98A1A8', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+                {row.label}
+              </span>
+              {row.custom ?? <span style={{ fontSize: 11, fontWeight: 500, color: '#1B2D3D' }}>{row.value}</span>}
+            </div>
+          ))}
+        </div>
+
+        {/* Case Timeline */}
+        <div style={{ borderTop: '1px solid #E4E8ED', paddingTop: 14, marginBottom: 14 }}>
+          <div style={{
+            fontSize: 10, fontWeight: 600, color: '#98A1A8',
+            textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 10,
+          }}>Case Timeline</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {[
+              { done: true, time: 'Jun 18 9:14 AM', text: 'Case auto-created from CAP intake' },
+              { done: true, time: 'Jun 18 9:17 AM', text: 'Documents attached (3 files)' },
+              { done: true, time: 'Jun 20 2:30 PM', text: 'Rate table validated (system)' },
+              { done: false, time: 'Pending', text: 'AM submission for coordinator review' },
+            ].map((evt, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                <div style={{
+                  width: 14, height: 14, borderRadius: '50%', marginTop: 1,
+                  background: evt.done ? '#1A7A4A' : '#E4E8ED',
+                  border: evt.done ? 'none' : '2px solid #DCE2E8',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 8, color: '#fff', flexShrink: 0,
+                }}>
+                  {evt.done && <span>&#x2713;</span>}
+                </div>
+                <div>
+                  <span style={{
+                    fontSize: 10, fontWeight: 600,
+                    color: evt.done ? '#64707A' : '#B0690A',
+                    fontFamily: "'IBM Plex Mono', monospace",
+                  }}>{evt.time}</span>
+                  <span style={{ fontSize: 10, color: '#4A5568', marginLeft: 8 }}>{evt.text}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* On Submit info */}
+        <div style={{
+          background: '#FAFBFC', border: '1px solid #EEF1F4', borderRadius: 8,
+          padding: 12,
+        }}>
+          <div style={{ fontSize: 10, fontWeight: 600, color: '#64707A', marginBottom: 6 }}>On Submit:</div>
+          <div style={{ fontSize: 10, color: '#4A5568', lineHeight: 1.6 }}>
+            Case advances to &ldquo;Coordinator QC&rdquo; stage<br />
+            &#x2192; Assigned to: Lena Ortiz (Coordinator)<br />
+            &#x2192; ClientSpace benefits page updated<br />
+            &#x2192; Commission tracking initiated
+          </div>
+        </div>
+      </div>
+
       {/* Summary card */}
       <div style={{ ...cardStyle, padding: 20 }}>
         {/* Header */}

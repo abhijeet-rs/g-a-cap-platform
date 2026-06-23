@@ -557,6 +557,22 @@ export default function RenewalPage() {
               <div style={{ fontSize: 10, color: '#98A1A8', marginTop: 2 }}>
                 {selectedClient.prism} &middot; {selectedClient.tier} &middot; {selectedClient.wse} WSE &middot; {selectedClient.owner}
               </div>
+              {/* ClientSpace Case Reference */}
+              <div style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                marginTop: 6, padding: '3px 10px', borderRadius: 5,
+                background: '#F5F7FA', border: '1px solid #E4E8ED',
+              }}>
+                <span style={{ fontSize: 10, fontWeight: 600, color: '#0074B8' }}>ClientSpace Case:</span>
+                <span style={{
+                  fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, fontWeight: 600,
+                  color: '#1B2D3D',
+                }}>CS-2026-R-{String(selectedClient.prism).replace('GA-', '').slice(0, 4)}</span>
+                <span style={{ color: '#DCE2E8' }}>&middot;</span>
+                <span style={{ fontSize: 10, color: '#64707A' }}>Renewal</span>
+                <span style={{ color: '#DCE2E8' }}>&middot;</span>
+                <span style={{ fontSize: 10, fontWeight: 600, color: '#B0690A' }}>Open</span>
+              </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               {/* Medical increase card */}
