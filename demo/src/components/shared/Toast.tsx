@@ -27,9 +27,9 @@ export default function Toast() {
         display: 'flex', alignItems: 'center', gap: 8,
         background: kind.bg, color: '#fff',
         boxShadow: '0 8px 24px rgba(0,0,0,.2)',
-        fontSize: 13, fontWeight: 500, whiteSpace: 'nowrap',
+        fontSize: 'var(--type-body)', fontWeight: 500, whiteSpace: 'nowrap',
       }}>
-        <span style={{ fontSize: 14 }}>{kind.icon}</span>
+        <span style={{ fontSize: 'var(--type-body-sm)' }}>{kind.icon}</span>
         <span>{toast}</span>
       </div>
     </div>

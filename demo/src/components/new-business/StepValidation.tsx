@@ -140,7 +140,7 @@ export default function StepValidation() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: 16,
+              fontSize: 'var(--type-section-title)',
               fontWeight: 600,
               color: '#fff',
               flexShrink: 0,
@@ -154,14 +154,14 @@ export default function StepValidation() {
           <div style={{ flex: 1 }}>
             <div
               style={{
-                fontSize: 14,
+                fontSize: 'var(--type-section-title)',
                 fontWeight: 600,
                 color: hasErrors ? '#C60C30' : '#1A7A4A',
               }}
             >
               {hasErrors ? 'Validation Issues' : 'Ready for Handoff'}
             </div>
-            <div style={{ fontSize: 11, color: '#4A5568', marginTop: 2 }}>
+            <div style={{ fontSize: 'var(--type-body-sm)', color: '#374151', marginTop: 2 }}>
               {hasErrors
                 ? `${totalErrors} error(s) block handoff · ${totalPasses} check(s) passed`
                 : 'All checks passed'}
@@ -175,7 +175,7 @@ export default function StepValidation() {
             disabled={rerunning}
             style={{
               padding: '6px 14px',
-              fontSize: 11,
+              fontSize: 'var(--type-body-sm)',
               fontWeight: 600,
               borderRadius: 6,
               border: '1px solid rgba(0,0,0,0.12)',
@@ -203,7 +203,7 @@ export default function StepValidation() {
                 }}
               />
             ) : (
-              <span style={{ fontSize: 13 }}>↻</span>
+              <span style={{ fontSize: 'var(--type-body-sm)' }}>↻</span>
             )}
             {rerunning ? 'Running...' : 'Re-run Validation'}
           </button>
@@ -234,7 +234,7 @@ export default function StepValidation() {
           </div>
           <span
             style={{
-              fontSize: 10,
+              fontSize: 'var(--type-section-title)',
               fontWeight: 600,
               color: hasErrors ? '#C60C30' : '#1A7A4A',
               flexShrink: 0,
@@ -260,10 +260,10 @@ export default function StepValidation() {
         >
           <h3
             style={{
-              fontSize: 9,
+              fontSize: 'var(--type-table-header)',
               textTransform: 'uppercase',
               fontWeight: 600,
-              color: '#64707A',
+              color: '#374151',
               letterSpacing: '0.04em',
               marginBottom: 8,
               marginTop: 0,
@@ -313,7 +313,7 @@ export default function StepValidation() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: 10,
+                        fontSize: 'var(--type-section-title)',
                         fontWeight: 600,
                         flexShrink: 0,
                         background:
@@ -349,7 +349,7 @@ export default function StepValidation() {
                     >
                       <div
                         style={{
-                          fontSize: 11,
+                          fontSize: 'var(--type-body-sm)',
                           fontWeight: 500,
                           color: '#1B2D3D',
                           display: 'flex',
@@ -377,7 +377,7 @@ export default function StepValidation() {
                       {check.message && (
                         <div
                           style={{
-                            fontSize: 10,
+                            fontSize: 'var(--type-body-sm)',
                             fontFamily: "'IBM Plex Mono', monospace",
                             marginTop: 2,
                             color:
@@ -397,7 +397,7 @@ export default function StepValidation() {
                         onClick={() => toggleFixPanel(check.label)}
                         style={{
                           padding: '3px 10px',
-                          fontSize: 10,
+                          fontSize: 'var(--type-body-sm)',
                           fontWeight: 600,
                           borderRadius: 4,
                           border: '1px solid rgba(198,12,48,0.3)',
@@ -417,7 +417,7 @@ export default function StepValidation() {
                         onClick={() => dismissWarning(check.label)}
                         style={{
                           padding: '3px 10px',
-                          fontSize: 10,
+                          fontSize: 'var(--type-body-sm)',
                           fontWeight: 600,
                           borderRadius: 4,
                           border: '1px solid rgba(176,105,10,0.3)',
@@ -436,8 +436,8 @@ export default function StepValidation() {
                   {isExpanded && detail && (
                     <div
                       style={{
-                        fontSize: 10,
-                        color: '#4A5568',
+                        fontSize: 'var(--type-body-sm)',
+                        color: '#374151',
                         background: '#F7F9FB',
                         borderRadius: 6,
                         padding: '8px 12px',
@@ -467,7 +467,7 @@ export default function StepValidation() {
                       >
                         <div
                           style={{
-                            fontSize: 10,
+                            fontSize: 'var(--type-label)',
                             fontWeight: 600,
                             color: '#C60C30',
                             textTransform: 'uppercase',
@@ -478,7 +478,7 @@ export default function StepValidation() {
                         </div>
                         <div
                           style={{
-                            fontSize: 11,
+                            fontSize: 'var(--type-body-sm)',
                             color: '#1B2D3D',
                             lineHeight: 1.5,
                           }}
@@ -491,7 +491,7 @@ export default function StepValidation() {
                             onClick={() => goStep(3)}
                             style={{
                               padding: '6px 16px',
-                              fontSize: 11,
+                              fontSize: 'var(--type-body-sm)',
                               fontWeight: 600,
                               borderRadius: 6,
                               border: 'none',
@@ -523,7 +523,7 @@ export default function StepValidation() {
                       >
                         <div
                           style={{
-                            fontSize: 10,
+                            fontSize: 'var(--type-label)',
                             fontWeight: 600,
                             color: '#C60C30',
                             textTransform: 'uppercase',
@@ -534,7 +534,7 @@ export default function StepValidation() {
                         </div>
                         <div
                           style={{
-                            fontSize: 11,
+                            fontSize: 'var(--type-body-sm)',
                             color: '#1B2D3D',
                             lineHeight: 1.5,
                           }}
@@ -554,7 +554,7 @@ export default function StepValidation() {
                             onClick={() => { acceptDentalRate(); toggleFixPanel(check.label); }}
                             style={{
                               padding: '6px 16px',
-                              fontSize: 11,
+                              fontSize: 'var(--type-body-sm)',
                               fontWeight: 600,
                               borderRadius: 6,
                               border: 'none',
@@ -569,7 +569,7 @@ export default function StepValidation() {
                             onClick={() => toggleFixPanel(check.label)}
                             style={{
                               padding: '6px 16px',
-                              fontSize: 11,
+                              fontSize: 'var(--type-body-sm)',
                               fontWeight: 600,
                               borderRadius: 6,
                               border: '1px solid #C60C30',

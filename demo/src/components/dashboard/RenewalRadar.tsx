@@ -22,24 +22,32 @@ export default function RenewalRadar() {
     .slice(0, 5);
 
   return (
-    <div style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, overflow: 'hidden' }}>
-      <div style={{ padding: '12px 14px', borderBottom: '1px solid #EEF1F4' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <div style={{
+      background: '#fff', borderRadius: 12, overflow: 'hidden',
+      boxShadow: 'var(--shadow-sm)',
+    }}>
+      <div style={{ padding: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
           <div>
-            <div style={{ fontSize: 12, fontWeight: 600 }}>Renewal Radar</div>
-            <div style={{ fontSize: 9, color: '#98A1A8' }}>Upcoming 90 days &middot; R1</div>
+            <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#111827' }}>Renewal Radar</div>
+            <div style={{ fontSize: 'var(--type-label)', color: '#9CA3AF', marginTop: 2 }}>Upcoming 90 days &middot; R1</div>
           </div>
-          <div style={{ fontSize: 9, fontWeight: 600, color: '#0074B8', background: '#E7F1FA', padding: '2px 7px', borderRadius: 4 }}>Prism &middot; synced</div>
+          <div style={{
+            fontSize: 'var(--type-badge)', fontWeight: 600, color: '#1D4ED8', background: '#DBEAFE',
+            padding: '2px 8px', borderRadius: 10, height: 20,
+            display: 'inline-flex', alignItems: 'center',
+          }}>Prism &middot; synced</div>
         </div>
-        <div style={{ fontSize: 8, color: '#98A1A8', marginTop: 3 }}>synced 2 min ago</div>
+        <div style={{ fontSize: 'var(--type-label)', color: '#9CA3AF', marginBottom: 8 }}>synced 2 min ago</div>
         <input
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
           placeholder="Search renewals..."
           style={{
-            width: '100%', marginTop: 8, height: 26, padding: '0 8px',
-            borderRadius: 6, border: '1px solid #E4E8ED', fontSize: 10,
+            width: '100%', height: 32, padding: '0 10px',
+            borderRadius: 6, border: '1px solid #F3F4F6', fontSize: 'var(--type-label)',
             outline: 'none', boxSizing: 'border-box',
+            background: '#F9FAFB', color: '#111827',
           }}
         />
       </div>
@@ -51,33 +59,37 @@ export default function RenewalRadar() {
           onMouseEnter={() => setHoveredId(c.id)}
           onMouseLeave={() => setHoveredId(null)}
           style={{
-            width: '100%', display: 'flex', alignItems: 'center', gap: 10,
-            padding: '9px 12px', border: 'none', background: hoveredId === c.id ? '#FAFBFC' : 'none',
-            cursor: 'pointer', textAlign: 'left', borderTop: '1px solid #F4F6F8',
-            borderLeft: hoveredId === c.id ? `3px solid ${urgencyColor(c.urgDays)}` : '3px solid transparent',
-            transition: 'background .12s, border-left .12s',
+            width: '100%', display: 'flex', alignItems: 'center', gap: 12,
+            padding: '10px 16px', border: 'none',
+            background: hoveredId === c.id ? '#F9FAFB' : 'transparent',
+            cursor: 'pointer', textAlign: 'left',
+            borderBottom: '1px solid #F3F4F6',
+            transition: 'background .12s ease',
           }}
         >
-          <div style={{ width: 36, textAlign: 'center' }}>
-            <div style={{ fontSize: 15, fontWeight: 600, color: urgencyColor(c.urgDays), lineHeight: 1 }}>{c.renewDay}</div>
-            <div style={{ fontSize: 8, fontWeight: 600, color: '#98A1A8', textTransform: 'uppercase', marginTop: 1 }}>{c.renewMon}</div>
+          <div style={{ width: 32, textAlign: 'center', flexShrink: 0 }}>
+            <div style={{ fontSize: 'var(--type-body-lg)', fontWeight: 700, color: urgencyColor(c.urgDays), lineHeight: 1 }}>{c.renewDay}</div>
+            <div style={{ fontSize: 'var(--type-badge)', fontWeight: 600, color: '#9CA3AF', textTransform: 'uppercase', marginTop: 2 }}>{c.renewMon}</div>
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 11, fontWeight: 600, lineHeight: 1.2 }}>{c.name}</div>
-            <div style={{ fontSize: 9, color: urgencyColor(c.urgDays) }}>
+            <div style={{ fontSize: 'var(--type-caption)', fontWeight: 600, color: '#111827', lineHeight: 1.3 }}>{c.name}</div>
+            <div style={{ fontSize: 'var(--type-label)', color: urgencyColor(c.urgDays) }}>
               {c.urgDays} days &middot; Renewal
             </div>
           </div>
-          <span style={{ fontSize: 9, color: '#98A1A8', flexShrink: 0 }}>{c.wse}</span>
+          <span style={{ fontSize: 'var(--type-label)', color: '#9CA3AF', flexShrink: 0, fontFamily: "'IBM Plex Mono', monospace" }}>{c.wse}</span>
         </button>
       ))}
 
       <div
         onClick={() => router.push('/renewal')}
         style={{
-          padding: '8px 14px', borderTop: '1px solid #EEF1F4', textAlign: 'center',
-          fontSize: 10, fontWeight: 600, color: '#0074B8', cursor: 'pointer',
+          padding: 12, borderTop: '1px solid #F3F4F6', textAlign: 'center',
+          fontSize: 'var(--type-caption)', fontWeight: 500, color: '#6B7280', cursor: 'pointer',
+          transition: 'color 0.12s ease',
         }}
+        onMouseEnter={(e) => (e.currentTarget.style.color = '#111827')}
+        onMouseLeave={(e) => (e.currentTarget.style.color = '#6B7280')}
       >
         View all renewals &rarr;
       </div>

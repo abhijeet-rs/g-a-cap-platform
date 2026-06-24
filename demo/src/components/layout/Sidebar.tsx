@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuthStore, useUserInfo } from '@/stores/authStore';
 import { useDataStore } from '@/stores/dataStore';
+import { clients } from '@/data/clients';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -14,12 +15,15 @@ export default function Sidebar() {
   const { userName, userRole, userShort, userColor } = useUserInfo();
   const caps = useDataStore((s) => s.caps);
 
-  const renewalCount = caps.filter(c => c.type === 'renewal' && (c.status === 'draft' || c.status === 'in_review')).length;
+  const renewalCount = clients.filter(c => c.urgDays <= 95).length;
+  const esignCount = 4;
+  const docCount = 3;
   const approvedCount = caps.filter(c => c.status === 'approved').length;
 
   const [expanded, setExpanded] = useState<Record<string, boolean>>({
     cap: true, prospecting: false, proposal: false,
   });
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
   const toggle = (key: string) => setExpanded(p => ({ ...p, [key]: !p[key] }));
 
@@ -34,148 +38,221 @@ export default function Sidebar() {
     return true;
   };
 
-  // ── Styles (white/black theme) ──
   const link = (href: string): React.CSSProperties => ({
-    display: 'flex', alignItems: 'center', gap: 8,
-    padding: '7px 12px', borderRadius: 6, marginBottom: 1,
-    background: isActive(href) ? '#F0F2F5' : 'transparent',
-    color: isActive(href) ? '#1a1a1a' : '#6B7280',
-    fontSize: 13, fontWeight: isActive(href) ? 600 : 400,
+    display: 'flex', alignItems: 'center', gap: 10,
+    padding: '8px 12px', borderRadius: 8, marginBottom: 1,
+    background: isActive(href) ? 'var(--bg-hover)' : (hoveredLink === href ? 'var(--bg-secondary)' : 'transparent'),
+    color: isActive(href) ? 'var(--text-primary)' : 'var(--text-secondary)',
+    fontSize: 'var(--type-nav)', fontWeight: isActive(href) ? 600 : 500,
     textDecoration: 'none',
+    transition: 'all 0.1s ease',
   });
 
   const subLink = (href: string): React.CSSProperties => ({
     display: 'flex', alignItems: 'center', gap: 8,
-    padding: '6px 12px 6px 38px', borderRadius: 6, marginBottom: 1,
-    background: isActive(href) ? '#F0F2F5' : 'transparent',
-    color: isActive(href) ? '#1a1a1a' : '#9CA3AF',
-    fontSize: 12, fontWeight: isActive(href) ? 600 : 400,
+    padding: '6px 12px 6px 38px', borderRadius: 8, marginBottom: 1,
+    background: isActive(href) ? 'var(--bg-hover)' : (hoveredLink === href ? 'var(--bg-secondary)' : 'transparent'),
+    color: isActive(href) ? 'var(--text-primary)' : 'var(--text-secondary)',
+    fontSize: 'var(--type-nav-sub)', fontWeight: isActive(href) ? 600 : 400,
     textDecoration: 'none',
+    transition: 'all 0.1s ease',
   });
 
   const sectionBtn = (exp: boolean): React.CSSProperties => ({
-    display: 'flex', alignItems: 'center', gap: 8, width: '100%',
-    padding: '7px 12px', borderRadius: 6, marginBottom: 1,
-    background: exp ? '#F0F2F5' : 'transparent',
-    color: exp ? '#1a1a1a' : '#6B7280',
-    fontSize: 13, fontWeight: 600, cursor: 'pointer',
+    display: 'flex', alignItems: 'center', gap: 10, width: '100%',
+    padding: '8px 12px', borderRadius: 8, marginBottom: 1,
+    background: exp ? 'var(--bg-hover)' : 'transparent',
+    color: exp ? 'var(--text-primary)' : 'var(--text-secondary)',
+    fontSize: 'var(--type-nav)', fontWeight: 600, cursor: 'pointer',
     border: 'none', textAlign: 'left',
+    transition: 'all 0.1s ease',
+  });
+
+  const badgeStyle = (fg: string, bg: string): React.CSSProperties => ({
+    fontSize: 'var(--type-badge)', fontWeight: 600, color: fg, background: bg,
+    padding: '1px 6px', borderRadius: 6, height: 18, minWidth: 18,
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    lineHeight: 1,
+  });
+
+  const sectionHeader: React.CSSProperties = {
+    fontSize: 'var(--type-nav-section)', fontWeight: 600, letterSpacing: '0.06em',
+    color: 'var(--text-tertiary)', textTransform: 'uppercase',
+    padding: '20px 12px 6px',
+  };
+
+  const iconCol: React.CSSProperties = {
+    width: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+    opacity: 0.7,
+  };
+
+  const chevron = (open: boolean): React.CSSProperties => ({
+    fontSize: 8, color: 'var(--text-tertiary)',
+    transform: open ? 'rotate(90deg)' : 'none',
+    transition: 'transform .15s ease',
+    flexShrink: 0,
   });
 
   return (
     <div style={{
-      width: 240, flexShrink: 0, background: '#fff',
+      width: 'var(--sidebar-width)', flexShrink: 0, background: '#fff',
       display: 'flex', flexDirection: 'column', height: '100%',
-      borderRight: '1px solid #E5E7EB',
+      borderRight: '1px solid var(--border-primary)',
     }}>
-      {/* ── Logo ── */}
-      <div style={{ padding: '16px 16px', display: 'flex', alignItems: 'center', gap: 10, borderBottom: '1px solid #F3F4F6' }}>
+      {/* Logo */}
+      <div style={{
+        height: 'var(--topbar-height)', padding: '0 16px',
+        display: 'flex', alignItems: 'center', gap: 10,
+        borderBottom: '1px solid var(--border-primary)', flexShrink: 0,
+      }}>
         <div style={{
-          width: 32, height: 32, borderRadius: 8,
-          background: '#1a1a1a',
+          width: 30, height: 30, borderRadius: 8,
+          background: 'var(--text-primary)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontWeight: 800, fontSize: 10, color: '#fff', letterSpacing: -0.3,
+          fontWeight: 800, fontSize: 'var(--type-nav-section)', color: '#fff', letterSpacing: -0.3,
         }}>G&A</div>
-        <div>
-          <div style={{ color: '#1a1a1a', fontSize: 14, fontWeight: 700, letterSpacing: -0.3 }}>G&A Compass</div>
-          <div style={{ color: '#9CA3AF', fontSize: 9, letterSpacing: 0.3 }}>Benefits Sales Platform</div>
+        <div style={{ minWidth: 0 }}>
+          <div style={{ color: 'var(--text-primary)', fontSize: 'var(--type-nav)', fontWeight: 700, letterSpacing: -0.3, lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>G&A Compass</div>
+          <div style={{ color: 'var(--text-tertiary)', fontSize: 'var(--type-nav-section)', letterSpacing: 0.3, lineHeight: 1.2 }}>Benefits Sales Platform</div>
         </div>
       </div>
 
-      {/* ── Nav ── */}
-      <div style={{ padding: '8px 8px', flex: 1, overflowY: 'auto' }}>
+      {/* Nav */}
+      <div style={{ padding: '4px 8px', flex: 1, overflowY: 'auto' }}>
 
-        {/* Agents */}
-        <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: 0.5, color: '#9CA3AF', textTransform: 'uppercase', padding: '12px 12px 6px' }}>Agents</div>
+        <div style={sectionHeader}>Agents</div>
 
         <button onClick={() => toggle('prospecting')} style={sectionBtn(expanded.prospecting)}>
-          <span style={{ fontSize: 14 }}>🔍</span>
-          <div style={{ flex: 1 }}>
-            <div>Prospecting Agent</div>
-            <div style={{ fontSize: 10, fontWeight: 400, color: '#9CA3AF', marginTop: 1 }}>Lead qualification</div>
+          <span style={iconCol}><i className="fa-solid fa-magnifying-glass-chart" style={{ fontSize: 'var(--type-nav)', color: 'inherit' }}></i></span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Prospecting Agent</div>
+            <div style={{ fontSize: 'var(--type-nav-sub)', fontWeight: 400, color: 'var(--text-tertiary)', marginTop: 1 }}>Lead qualification</div>
           </div>
-          <span style={{ fontSize: 8, color: '#D1D5DB', transform: expanded.prospecting ? 'rotate(90deg)' : 'none', transition: 'transform .15s' }}>▶</span>
+          <span style={chevron(expanded.prospecting)}>&#9654;</span>
         </button>
         {expanded.prospecting && (
           <div style={{ marginBottom: 4 }}>
-            <div style={{ ...subLink('#'), cursor: 'default' }}>Prospects</div>
-            <div style={{ ...subLink('#'), cursor: 'default' }}>Research</div>
-            <div style={{ ...subLink('#'), cursor: 'default' }}>Outreach</div>
-            <div style={{ padding: '3px 38px', fontSize: 10, color: '#D1D5DB', fontStyle: 'italic' }}>Coming in Phase 2</div>
+            {['Prospects', 'Research', 'Outreach'].map(item => (
+              <div key={item} style={{ ...subLink('#'), cursor: 'default' }}>
+                <span style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--color-slate-300)', flexShrink: 0 }} />
+                {item}
+              </div>
+            ))}
+            <div style={{ padding: '4px 38px', fontSize: 'var(--type-nav-sub)', color: 'var(--text-tertiary)', fontStyle: 'italic' }}>Coming in Phase 2</div>
           </div>
         )}
 
         <button onClick={() => toggle('proposal')} style={sectionBtn(expanded.proposal)}>
-          <span style={{ fontSize: 14 }}>📋</span>
-          <div style={{ flex: 1 }}>
-            <div>Proposal Agent</div>
-            <div style={{ fontSize: 10, fontWeight: 400, color: '#9CA3AF', marginTop: 1 }}>Proposal workflow</div>
+          <span style={iconCol}><i className="fa-solid fa-file-signature" style={{ fontSize: 'var(--type-nav)', color: 'inherit' }}></i></span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Proposal Agent</div>
+            <div style={{ fontSize: 'var(--type-nav-sub)', fontWeight: 400, color: 'var(--text-tertiary)', marginTop: 1 }}>Proposal workflow</div>
           </div>
-          <span style={{ fontSize: 8, color: '#D1D5DB', transform: expanded.proposal ? 'rotate(90deg)' : 'none', transition: 'transform .15s' }}>▶</span>
+          <span style={chevron(expanded.proposal)}>&#9654;</span>
         </button>
         {expanded.proposal && (
           <div style={{ marginBottom: 4 }}>
-            <div style={{ ...subLink('#'), cursor: 'default' }}>Artifacts</div>
-            <div style={{ ...subLink('#'), cursor: 'default' }}>Assembly</div>
-            <div style={{ ...subLink('#'), cursor: 'default' }}>Proposal Draft</div>
-            <div style={{ ...subLink('#'), cursor: 'default' }}>Review & Send</div>
-            <div style={{ padding: '3px 38px', fontSize: 10, color: '#D1D5DB', fontStyle: 'italic' }}>Coming in Phase 2</div>
+            {['Artifacts', 'Assembly', 'Proposal Draft', 'Review & Send'].map(item => (
+              <div key={item} style={{ ...subLink('#'), cursor: 'default' }}>
+                <span style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--color-slate-300)', flexShrink: 0 }} />
+                {item}
+              </div>
+            ))}
+            <div style={{ padding: '4px 38px', fontSize: 'var(--type-nav-sub)', color: 'var(--text-tertiary)', fontStyle: 'italic' }}>Coming in Phase 2</div>
           </div>
         )}
 
-        {/* CAP Tool */}
-        <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: 0.5, color: '#9CA3AF', textTransform: 'uppercase', padding: '14px 12px 6px' }}>CAP Tool</div>
+        <div style={sectionHeader}>CAP Tool</div>
 
         <button onClick={() => toggle('cap')} style={sectionBtn(expanded.cap)}>
-          <span style={{ fontSize: 14 }}>📊</span>
-          <div style={{ flex: 1 }}>
-            <div>Client Approved Plans</div>
-            <div style={{ fontSize: 10, fontWeight: 400, color: '#9CA3AF', marginTop: 1 }}>CAP build & renewals</div>
+          <span style={iconCol}><i className="fa-solid fa-table-columns" style={{ fontSize: 'var(--type-nav)', color: 'inherit' }}></i></span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Client Approved Plans</div>
+            <div style={{ fontSize: 'var(--type-nav-sub)', fontWeight: 400, color: 'var(--text-tertiary)', marginTop: 1 }}>CAP build & renewals</div>
           </div>
-          <span style={{ fontSize: 8, color: '#D1D5DB', transform: expanded.cap ? 'rotate(90deg)' : 'none', transition: 'transform .15s' }}>▶</span>
+          <span style={chevron(expanded.cap)}>&#9654;</span>
         </button>
         {expanded.cap && (
           <div style={{ marginBottom: 4 }}>
-            <Link href="/dashboard" style={subLink('/dashboard')}>Dashboard</Link>
-            {shouldShow(undefined, 'create') && <Link href="/new-business" style={subLink('/new-business')}>New Business</Link>}
-            <Link href="/renewal" style={subLink('/renewal')}>
-              <span style={{ flex: 1 }}>Renewals</span>
-              {renewalCount > 0 && <span style={{ fontSize: 9, fontWeight: 600, color: '#EF4444', background: '#FEF2F2', padding: '1px 6px', borderRadius: 10 }}>{renewalCount}</span>}
+            <Link href="/dashboard" style={subLink('/dashboard')}
+              onMouseEnter={() => setHoveredLink('/dashboard')} onMouseLeave={() => setHoveredLink(null)}>
+              <span style={{ width: 5, height: 5, borderRadius: '50%', background: isActive('/dashboard') ? 'var(--text-primary)' : 'var(--color-slate-300)', flexShrink: 0, transition: 'background 0.1s' }} />
+              Dashboard
             </Link>
-            {shouldShow(undefined, 'esign') && <Link href="/esign" style={subLink('/esign')}>E-Signature</Link>}
-            <Link href="/documents" style={subLink('/documents')}>Documents</Link>
+            {shouldShow(undefined, 'create') && (
+              <Link href="/new-business" style={subLink('/new-business')}
+                onMouseEnter={() => setHoveredLink('/new-business')} onMouseLeave={() => setHoveredLink(null)}>
+                <span style={{ width: 5, height: 5, borderRadius: '50%', background: isActive('/new-business') ? 'var(--text-primary)' : 'var(--color-slate-300)', flexShrink: 0, transition: 'background 0.1s' }} />
+                New Business
+              </Link>
+            )}
+            <Link href="/renewal" style={subLink('/renewal')}
+              onMouseEnter={() => setHoveredLink('/renewal')} onMouseLeave={() => setHoveredLink(null)}>
+              <span style={{ width: 5, height: 5, borderRadius: '50%', background: isActive('/renewal') ? 'var(--text-primary)' : 'var(--color-slate-300)', flexShrink: 0, transition: 'background 0.1s' }} />
+              <span style={{ flex: 1 }}>Renewals</span>
+              {renewalCount > 0 && <span style={badgeStyle('#C60C30', '#FDECEF')}>{renewalCount}</span>}
+            </Link>
+            {shouldShow(undefined, 'esign') && (
+              <Link href="/esign" style={subLink('/esign')}
+                onMouseEnter={() => setHoveredLink('/esign')} onMouseLeave={() => setHoveredLink(null)}>
+                <span style={{ width: 5, height: 5, borderRadius: '50%', background: isActive('/esign') ? 'var(--text-primary)' : 'var(--color-slate-300)', flexShrink: 0, transition: 'background 0.1s' }} />
+                <span style={{ flex: 1 }}>E-Signature</span>
+                {esignCount > 0 && <span style={badgeStyle('#B0690A', '#FBF0DD')}>{esignCount}</span>}
+              </Link>
+            )}
+            <Link href="/documents" style={subLink('/documents')}
+              onMouseEnter={() => setHoveredLink('/documents')} onMouseLeave={() => setHoveredLink(null)}>
+              <span style={{ width: 5, height: 5, borderRadius: '50%', background: isActive('/documents') ? 'var(--text-primary)' : 'var(--color-slate-300)', flexShrink: 0, transition: 'background 0.1s' }} />
+              <span style={{ flex: 1 }}>Documents</span>
+              {docCount > 0 && <span style={badgeStyle('var(--text-secondary)', 'var(--bg-hover)')}>{docCount}</span>}
+            </Link>
             {shouldShow(['analyst', 'gab', 'admin']) && (
-              <Link href="/writeback" style={subLink('/writeback')}>
+              <Link href="/writeback" style={subLink('/writeback')}
+                onMouseEnter={() => setHoveredLink('/writeback')} onMouseLeave={() => setHoveredLink(null)}>
+                <span style={{ width: 5, height: 5, borderRadius: '50%', background: isActive('/writeback') ? 'var(--text-primary)' : 'var(--color-slate-300)', flexShrink: 0, transition: 'background 0.1s' }} />
                 <span style={{ flex: 1 }}>Ben Admin</span>
-                {approvedCount > 0 && <span style={{ fontSize: 9, fontWeight: 600, color: '#7C3AED', background: '#F5F3FF', padding: '1px 6px', borderRadius: 10 }}>{approvedCount}</span>}
+                {approvedCount > 0 && <span style={badgeStyle('#5A45C7', '#F8F6FE')}>{approvedCount}</span>}
               </Link>
             )}
           </div>
         )}
 
-        {/* Administration */}
-        <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: 0.5, color: '#9CA3AF', textTransform: 'uppercase', padding: '14px 12px 6px' }}>Administration</div>
-        <Link href="/admin" style={link('/admin')}><span style={{ fontSize: 13, width: 16, textAlign: 'center' }}>⚙</span>Admin Console</Link>
-        <Link href="/integrations" style={link('/integrations')}><span style={{ fontSize: 13, width: 16, textAlign: 'center' }}>⇋</span>Integrations</Link>
-        <Link href="/architecture" style={link('/architecture')}><span style={{ fontSize: 13, width: 16, textAlign: 'center' }}>◇</span>Architecture</Link>
+        <div style={sectionHeader}>Administration</div>
+        <Link href="/admin" style={link('/admin')}
+          onMouseEnter={() => setHoveredLink('/admin')} onMouseLeave={() => setHoveredLink(null)}>
+          <span style={iconCol}><i className="fa-solid fa-gear" style={{ fontSize: 'var(--type-nav)' }} /></span>
+          Admin Console
+        </Link>
+        <Link href="/integrations" style={link('/integrations')}
+          onMouseEnter={() => setHoveredLink('/integrations')} onMouseLeave={() => setHoveredLink(null)}>
+          <span style={iconCol}><i className="fa-solid fa-plug" style={{ fontSize: 'var(--type-nav)' }} /></span>
+          Integrations
+        </Link>
+        <Link href="/architecture" style={link('/architecture')}
+          onMouseEnter={() => setHoveredLink('/architecture')} onMouseLeave={() => setHoveredLink(null)}>
+          <span style={iconCol}><i className="fa-solid fa-diagram-project" style={{ fontSize: 'var(--type-nav)' }} /></span>
+          Architecture
+        </Link>
       </div>
 
-      {/* ── User ── */}
-      <div style={{ padding: 8, borderTop: '1px solid #F3F4F6' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '8px 10px', borderRadius: 8 }}>
+      {/* User */}
+      <div style={{ padding: '8px', borderTop: '1px solid var(--border-primary)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 8px', borderRadius: 8 }}>
           <div style={{
-            width: 30, height: 30, borderRadius: 7, backgroundColor: userColor,
+            width: 28, height: 28, borderRadius: 7, backgroundColor: userColor,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 10, fontWeight: 700, color: '#fff',
+            fontSize: 'var(--type-badge)', fontWeight: 700, color: '#fff',
           }}>{userShort}</div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ color: '#1a1a1a', fontSize: 12, fontWeight: 600 }}>{userName}</div>
-            <div style={{ color: '#9CA3AF', fontSize: 10 }}>{userRole}</div>
+            <div style={{ color: 'var(--text-primary)', fontSize: 'var(--type-nav-sub)', fontWeight: 600, lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{userName}</div>
+            <div style={{ color: 'var(--text-tertiary)', fontSize: 'var(--type-nav-section)', lineHeight: 1.3 }}>{userRole}</div>
           </div>
           <button onClick={logout} title="Sign out" style={{
-            border: '1px solid #E5E7EB', background: '#fff', color: '#1a1a1a',
-            cursor: 'pointer', fontSize: 12, padding: '4px 6px', borderRadius: 5,
-          }}>⏻</button>
+            border: '1px solid var(--border-primary)', background: '#fff', color: 'var(--text-secondary)',
+            cursor: 'pointer', fontSize: 'var(--type-nav)', padding: '4px 6px', borderRadius: 6,
+            transition: 'all 0.12s ease',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>&#9211;</button>
         </div>
       </div>
     </div>

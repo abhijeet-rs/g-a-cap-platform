@@ -29,7 +29,7 @@ interface QueueItem {
 }
 
 const signatureQueue: QueueItem[] = [
-  { id: 'itafos', client: 'Itafos Conda', prism: 'GA-2908', status: 'ready', type: 'New Business', daysOpen: 0 },
+  { id: 'westlake', client: 'Westlake Financial Group', prism: 'GA-3041', status: 'ready', type: 'Renewal', daysOpen: 0 },
   { id: 'brightline', client: 'Brightline Staffing', prism: 'GA-10337', status: 'sent', type: 'Renewal', daysOpen: 3 },
   { id: 'northgate', client: 'Northgate Mfg', prism: 'GA-10074', status: 'partial', type: 'Renewal', daysOpen: 7 },
   { id: 'harbor', client: 'Harbor Point Senior Living', prism: 'GA-10298', status: 'complete', type: 'New Business', daysOpen: 12 },
@@ -37,13 +37,13 @@ const signatureQueue: QueueItem[] = [
 ];
 
 const statusBadgeMap: Record<EsignState, { label: string; bg: string; fg: string }> = {
-  ready:    { label: 'Ready to Send',     bg: '#EDF0F3', fg: '#64707A' },
+  ready:    { label: 'Ready to Send',     bg: '#EDF0F3', fg: '#374151' },
   sent:     { label: 'Awaiting Signature', bg: '#FBF0DD', fg: '#B0690A' },
   partial:  { label: 'Partially Signed',   bg: '#E7F1FA', fg: '#0074B8' },
   complete: { label: 'All Signed',         bg: '#E4F2EA', fg: '#1A7A4A' },
 };
 
-/* Static signer snapshots for non-Itafos queue items */
+/* Static signer snapshots for non-Westlake queue items */
 const staticSigners: Record<string, { role: string; name: string; org: string; status: 'signed' | 'pending' | 'waiting'; date?: string }[]> = {
   brightline: [
     { role: 'Account Manager', name: 'Jessica Park', org: 'G&A Partners', status: 'signed', date: 'Jun 18' },
@@ -67,7 +67,7 @@ const staticSigners: Record<string, { role: string; name: string; org: string; s
   ],
 };
 
-/* Static timeline events for non-Itafos items */
+/* Static timeline events for non-Westlake items */
 const staticTimelines: Record<string, { completed: boolean; text: string }[]> = {
   brightline: [
     { completed: true, text: 'Envelope created — Jun 18, 9:45 AM' },
@@ -104,7 +104,7 @@ const staticTimelines: Record<string, { completed: boolean; text: string }[]> = 
   ],
 };
 
-/* Static audit trails for non-Itafos items */
+/* Static audit trails for non-Westlake items */
 const staticAuditTrails: Record<string, { time: string; text: string }[]> = {
   brightline: [
     { time: 'Jun 18 9:45 AM', text: 'System created DocuSign envelope ENV-2026-0903' },
@@ -136,10 +136,10 @@ const staticAuditTrails: Record<string, { time: string; text: string }[]> = {
 };
 
 /* ------------------------------------------------------------------ */
-/*  Dynamic timeline builder for Itafos based on esign state          */
+/*  Dynamic timeline builder for Westlake based on esign state          */
 /* ------------------------------------------------------------------ */
 
-function getItafosTimeline(esignState: EsignState): { completed: boolean; text: string }[] {
+function getWestlakeTimeline(esignState: EsignState): { completed: boolean; text: string }[] {
   const base: { completed: boolean; text: string }[] = [
     { completed: true, text: 'Envelope created — Jun 14, 2:30 PM' },
     { completed: true, text: 'Sent to Dana Whitfield (AM) — Jun 14, 2:31 PM' },
@@ -184,7 +184,7 @@ function getItafosTimeline(esignState: EsignState): { completed: boolean; text: 
   ];
 }
 
-function getItafosAuditTrail(esignState: EsignState): { time: string; text: string }[] {
+function getWestlakeAuditTrail(esignState: EsignState): { time: string; text: string }[] {
   const base: { time: string; text: string }[] = [];
 
   if (esignState === 'ready') {
@@ -231,7 +231,7 @@ function getItafosAuditTrail(esignState: EsignState): { time: string; text: stri
 
 export default function EsignPage() {
   const [loading, setLoading] = useState(true);
-  const [selectedId, setSelectedId] = useState('itafos');
+  const [selectedId, setSelectedId] = useState('westlake');
 
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 400);
@@ -265,33 +265,33 @@ export default function EsignPage() {
   const signerCircleStyle = (status: string): React.CSSProperties => {
     if (status === 'signed') return { background: '#E4F2EA', color: '#1A7A4A' };
     if (status === 'pending') return { background: '#FBF0DD', color: '#B0690A' };
-    return { background: '#EDF0F3', color: '#98A1A8' };
+    return { background: '#EDF0F3', color: '#374151' };
   };
 
   /* Resolve which queue item is selected */
   const selectedItem = signatureQueue.find((q) => q.id === selectedId)!;
-  const isItafos = selectedId === 'itafos';
+  const isWestlake = selectedId === 'westlake';
 
   /* Determine the effective status for the selected item.
-     For Itafos, the state machine drives it. For others, use static data. */
-  const effectiveStatus: EsignState = isItafos ? esignState : selectedItem.status;
+     For Westlake, the state machine drives it. For others, use static data. */
+  const effectiveStatus: EsignState = isWestlake ? esignState : selectedItem.status;
 
-  /* Derive the queue with Itafos reflecting dynamic state */
+  /* Derive the queue with Westlake reflecting dynamic state */
   const resolvedQueue = signatureQueue.map((q) =>
-    q.id === 'itafos' ? { ...q, status: esignState } : q,
+    q.id === 'westlake' ? { ...q, status: esignState } : q,
   );
 
   /* Resolve signers for display */
-  const displaySigners = isItafos ? signers : (staticSigners[selectedId] ?? []);
+  const displaySigners = isWestlake ? signers : (staticSigners[selectedId] ?? []);
 
   /* Timeline */
-  const timeline = isItafos
-    ? getItafosTimeline(esignState)
+  const timeline = isWestlake
+    ? getWestlakeTimeline(esignState)
     : (staticTimelines[selectedId] ?? []);
 
   /* Audit trail */
-  const auditTrail = isItafos
-    ? getItafosAuditTrail(esignState)
+  const auditTrail = isWestlake
+    ? getWestlakeAuditTrail(esignState)
     : (staticAuditTrails[selectedId] ?? []);
 
   /* Header summary stats */
@@ -305,14 +305,14 @@ export default function EsignPage() {
       <div style={{ marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
-            <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700, color: '#C60C30' }}>
+            <div style={{ fontSize: 'var(--type-section-title)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700, color: '#C60C30' }}>
               E-Signature Routing &middot; NB8/R8
             </div>
-            <div style={{ fontSize: 12, color: '#64707A', marginTop: 2 }}>
+            <div style={{ fontSize: 'var(--type-body-lg)', color: '#374151', marginTop: 2 }}>
               {resolvedQueue.length} envelopes &middot; {awaitingCount} awaiting signature
             </div>
           </div>
-          <span style={{ display: 'inline-flex', alignItems: 'center', height: 22, background: '#E7F1FA', color: '#0074B8', fontSize: 9, fontWeight: 600, borderRadius: 4, padding: '0 10px' }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', height: 22, background: '#E7F1FA', color: '#0074B8', fontSize: 'var(--type-badge)', fontWeight: 600, borderRadius: 4, padding: '0 10px' }}>
             DocuSign &middot; F2
           </span>
         </div>
@@ -324,7 +324,7 @@ export default function EsignPage() {
         {/* ════════ LEFT: Signature Queue ════════ */}
         <div style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, padding: 0, overflow: 'hidden' }}>
           <div style={{ padding: '14px 16px 10px', borderBottom: '1px solid #E4E8ED' }}>
-            <h2 style={{ fontSize: 13, fontWeight: 600, margin: 0 }}>Signature Queue</h2>
+            <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, margin: 0 }}>Signature Queue</h2>
           </div>
 
           {resolvedQueue.map((item) => {
@@ -347,16 +347,16 @@ export default function EsignPage() {
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
                   <div style={{ minWidth: 0, flex: 1 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {item.client}
                     </div>
-                    <div style={{ fontSize: 10, color: '#98A1A8', marginTop: 2 }}>
+                    <div style={{ fontSize: 'var(--type-body-lg)', color: '#374151', marginTop: 2 }}>
                       {item.prism} &middot; {item.type}
                     </div>
                   </div>
                   <span style={{
                     flexShrink: 0,
-                    fontSize: 9,
+                    fontSize: 'var(--type-badge)',
                     fontWeight: 600,
                     borderRadius: 4,
                     padding: '2px 7px',
@@ -368,7 +368,7 @@ export default function EsignPage() {
                   </span>
                 </div>
                 {item.daysOpen > 0 && (
-                  <div style={{ fontSize: 9, color: '#98A1A8', marginTop: 4 }}>
+                  <div style={{ fontSize: 'var(--type-body)', color: '#374151', marginTop: 4 }}>
                     Open {item.daysOpen} day{item.daysOpen !== 1 ? 's' : ''}
                   </div>
                 )}
@@ -382,9 +382,9 @@ export default function EsignPage() {
 
           {/* Detail header */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <h1 style={{ fontSize: 18, fontWeight: 600, margin: 0 }}>{selectedItem.client}</h1>
+            <h1 style={{ fontSize: 'var(--type-section-title)', fontWeight: 600, margin: 0 }}>{selectedItem.client}</h1>
             <span style={{
-              fontSize: 9,
+              fontSize: 'var(--type-badge)',
               fontWeight: 600,
               borderRadius: 4,
               padding: '2px 8px',
@@ -400,7 +400,7 @@ export default function EsignPage() {
 
             {/* ── Signing Order card ── */}
             <div style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, padding: 16 }}>
-              <h2 style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Signing Order</h2>
+              <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, marginBottom: 4 }}>Signing Order</h2>
 
               {displaySigners.map((signer, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 0', borderTop: '1px solid #E4E8ED' }}>
@@ -412,7 +412,7 @@ export default function EsignPage() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: 12,
+                      fontSize: 'var(--type-body-lg)',
                       flexShrink: 0,
                       ...signerCircleStyle(signer.status),
                     }}
@@ -420,20 +420,20 @@ export default function EsignPage() {
                     {signer.status === 'signed' ? '✓' : signer.status === 'pending' ? '…' : '·'}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 11, fontWeight: 600 }}>{signer.role}</div>
-                    <div style={{ fontSize: 10, color: '#98A1A8' }}>
+                    <div style={{ fontSize: 'var(--type-body)', fontWeight: 600 }}>{signer.role}</div>
+                    <div style={{ fontSize: 'var(--type-body-lg)', color: '#374151' }}>
                       {signer.name} &middot; {signer.org}
                     </div>
                   </div>
                   <div style={{ flexShrink: 0 }}>
                     {signer.status === 'signed' && (
-                      <span style={{ fontSize: 10, color: '#1A7A4A', fontWeight: 500 }}>Signed {signer.date}</span>
+                      <span style={{ fontSize: 'var(--type-body-lg)', color: '#1A7A4A', fontWeight: 500 }}>Signed {signer.date}</span>
                     )}
                     {signer.status === 'pending' && (
-                      <span style={{ fontSize: 10, color: '#B0690A', fontWeight: 500 }}>Pending</span>
+                      <span style={{ fontSize: 'var(--type-body-lg)', color: '#B0690A', fontWeight: 500 }}>Pending</span>
                     )}
                     {signer.status === 'waiting' && (
-                      <span style={{ fontSize: 10, color: '#98A1A8' }}>Waiting</span>
+                      <span style={{ fontSize: 'var(--type-body-lg)', color: '#374151' }}>Waiting</span>
                     )}
                   </div>
                 </div>
@@ -442,16 +442,16 @@ export default function EsignPage() {
 
             {/* ── Envelope Contents card ── */}
             <div style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, padding: 16 }}>
-              <h2 style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Envelope Contents</h2>
+              <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, marginBottom: 4 }}>Envelope Contents</h2>
 
               {envelopeContents.map((doc, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderTop: '1px solid #E4E8ED' }}>
                   <div
-                    style={{ width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 10, fontWeight: 700, flexShrink: 0, background: doc.color }}
+                    style={{ width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 'var(--type-body-lg)', fontWeight: 700, flexShrink: 0, background: doc.color }}
                   >
                     PDF
                   </div>
-                  <span style={{ fontSize: 11, fontWeight: 500 }}>{doc.name}</span>
+                  <span style={{ fontSize: 'var(--type-body)', fontWeight: 500 }}>{doc.name}</span>
                 </div>
               ))}
             </div>
@@ -459,7 +459,7 @@ export default function EsignPage() {
 
           {/* ── DocuSign Timeline card ── */}
           <div style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, padding: 16 }}>
-            <h2 style={{ fontSize: 13, fontWeight: 600, marginBottom: 12 }}>DocuSign Timeline</h2>
+            <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, marginBottom: 12 }}>DocuSign Timeline</h2>
 
             <div style={{ position: 'relative', paddingLeft: 20 }}>
               {/* Vertical connector line */}
@@ -488,8 +488,8 @@ export default function EsignPage() {
                     flexShrink: 0,
                   }} />
                   <span style={{
-                    fontSize: 11,
-                    color: event.completed ? '#2D3339' : '#98A1A8',
+                    fontSize: 'var(--type-body)',
+                    color: event.completed ? '#2D3339' : '#374151',
                     fontStyle: event.completed ? 'normal' : 'italic',
                   }}>
                     {event.text}
@@ -500,20 +500,20 @@ export default function EsignPage() {
           </div>
 
           {/* ── Action Panel ── */}
-          {isItafos && (
+          {isWestlake && (
             <div style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, padding: 16 }}>
-              <h2 style={{ fontSize: 13, fontWeight: 600, marginBottom: 8 }}>Actions</h2>
+              <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, marginBottom: 8 }}>Actions</h2>
 
               {esignState === 'ready' && (
                 <>
-                  <p style={{ fontSize: 11, color: '#64707A', marginBottom: 12 }}>
+                  <p style={{ fontSize: 'var(--type-body)', color: '#374151', marginBottom: 12 }}>
                     CAP approved. Send DocuSign envelope to begin the signing workflow.
                   </p>
                   <button
                     onClick={handleSendEnvelope}
                     onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = '#A80A28'; }}
                     onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = '#C60C30'; }}
-                    style={{ height: 34, padding: '0 16px', background: '#C60C30', color: '#fff', borderRadius: 8, fontWeight: 600, fontSize: 12, boxShadow: '0 1px 2px rgba(0,0,0,0.08)', border: 'none', cursor: 'pointer', transition: 'background .12s' }}
+                    style={{ height: 34, padding: '0 16px', background: '#C60C30', color: '#fff', borderRadius: 8, fontWeight: 600, fontSize: 'var(--type-body-sm)', boxShadow: '0 1px 2px rgba(0,0,0,0.08)', border: 'none', cursor: 'pointer', transition: 'background .12s' }}
                   >
                     Send Envelope &rarr;
                   </button>
@@ -522,14 +522,14 @@ export default function EsignPage() {
 
               {esignState === 'sent' && (
                 <>
-                  <p style={{ fontSize: 11, color: '#64707A', marginBottom: 12 }}>
+                  <p style={{ fontSize: 'var(--type-body)', color: '#374151', marginBottom: 12 }}>
                     Envelope sent. Waiting on client signer (Robert Hale).
                   </p>
                   <button
                     onClick={simulateClientSign}
                     onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = '#8E5408'; }}
                     onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = '#B0690A'; }}
-                    style={{ height: 34, padding: '0 16px', background: '#B0690A', color: '#fff', borderRadius: 8, fontWeight: 600, fontSize: 12, border: 'none', cursor: 'pointer', transition: 'background .12s' }}
+                    style={{ height: 34, padding: '0 16px', background: '#B0690A', color: '#fff', borderRadius: 8, fontWeight: 600, fontSize: 'var(--type-body-sm)', border: 'none', cursor: 'pointer', transition: 'background .12s' }}
                   >
                     Simulate Client Signature
                   </button>
@@ -538,14 +538,14 @@ export default function EsignPage() {
 
               {esignState === 'partial' && (
                 <>
-                  <p style={{ fontSize: 11, color: '#64707A', marginBottom: 12 }}>
+                  <p style={{ fontSize: 'var(--type-body)', color: '#374151', marginBottom: 12 }}>
                     Client signed. Waiting on AE countersign (Marcus Reyes).
                   </p>
                   <button
                     onClick={publish}
                     onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = '#005F94'; }}
                     onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = '#0074B8'; }}
-                    style={{ height: 34, padding: '0 16px', background: '#0074B8', color: '#fff', borderRadius: 8, fontWeight: 600, fontSize: 12, border: 'none', cursor: 'pointer', transition: 'background .12s' }}
+                    style={{ height: 34, padding: '0 16px', background: '#0074B8', color: '#fff', borderRadius: 8, fontWeight: 600, fontSize: 'var(--type-body-sm)', border: 'none', cursor: 'pointer', transition: 'background .12s' }}
                   >
                     Complete Signatures
                   </button>
@@ -554,14 +554,14 @@ export default function EsignPage() {
 
               {esignState === 'complete' && (
                 <>
-                  <p style={{ fontSize: 11, color: '#1A7A4A', fontWeight: 500, marginBottom: 12 }}>
+                  <p style={{ fontSize: 'var(--type-body)', color: '#1A7A4A', fontWeight: 500, marginBottom: 12 }}>
                     &#x2713; All parties signed. Ready to publish downstream.
                   </p>
                   <button
                     onClick={handlePublish}
                     onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = '#4A36A8'; }}
                     onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = '#5A45C7'; }}
-                    style={{ height: 34, padding: '0 16px', background: '#5A45C7', color: '#fff', borderRadius: 8, fontWeight: 600, fontSize: 12, border: 'none', cursor: 'pointer', transition: 'background .12s' }}
+                    style={{ height: 34, padding: '0 16px', background: '#5A45C7', color: '#fff', borderRadius: 8, fontWeight: 600, fontSize: 'var(--type-body-sm)', border: 'none', cursor: 'pointer', transition: 'background .12s' }}
                   >
                     Publish to Downstream &middot; NB9 &rarr;
                   </button>
@@ -570,33 +570,33 @@ export default function EsignPage() {
             </div>
           )}
 
-          {/* Static action panel for non-Itafos items */}
-          {!isItafos && (
+          {/* Static action panel for non-Westlake items */}
+          {!isWestlake && (
             <div style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, padding: 16 }}>
-              <h2 style={{ fontSize: 13, fontWeight: 600, marginBottom: 8 }}>Actions</h2>
+              <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, marginBottom: 8 }}>Actions</h2>
               {effectiveStatus === 'ready' && (
-                <p style={{ fontSize: 11, color: '#64707A', margin: 0 }}>
+                <p style={{ fontSize: 'var(--type-body)', color: '#374151', margin: 0 }}>
                   CAP approved. Envelope ready to send.
                 </p>
               )}
               {effectiveStatus === 'sent' && (
-                <p style={{ fontSize: 11, color: '#B0690A', margin: 0 }}>
+                <p style={{ fontSize: 'var(--type-body)', color: '#B0690A', margin: 0 }}>
                   Envelope sent. Awaiting client signature.
                 </p>
               )}
               {effectiveStatus === 'partial' && (
-                <p style={{ fontSize: 11, color: '#0074B8', margin: 0 }}>
+                <p style={{ fontSize: 'var(--type-body)', color: '#0074B8', margin: 0 }}>
                   Partially signed. Awaiting remaining signatures.
                 </p>
               )}
               {effectiveStatus === 'complete' && (
                 <>
-                  <p style={{ fontSize: 11, color: '#1A7A4A', fontWeight: 500, marginBottom: 12 }}>
+                  <p style={{ fontSize: 'var(--type-body)', color: '#1A7A4A', fontWeight: 500, marginBottom: 12 }}>
                     &#x2713; All parties signed. Ready to publish downstream.
                   </p>
                   <button
                     onClick={handlePublish}
-                    style={{ height: 34, padding: '0 16px', background: '#5A45C7', color: '#fff', borderRadius: 8, fontWeight: 600, fontSize: 12, border: 'none', cursor: 'pointer' }}
+                    style={{ height: 34, padding: '0 16px', background: '#5A45C7', color: '#fff', borderRadius: 8, fontWeight: 600, fontSize: 'var(--type-body-sm)', border: 'none', cursor: 'pointer' }}
                   >
                     Publish to Downstream &middot; NB9 &rarr;
                   </button>
@@ -607,7 +607,7 @@ export default function EsignPage() {
 
           {/* ── Audit Trail card ── */}
           <div style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, padding: 16 }}>
-            <h2 style={{ fontSize: 13, fontWeight: 600, marginBottom: 12 }}>
+            <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, marginBottom: 12 }}>
               Audit Trail &middot; {auditTrail.length} event{auditTrail.length !== 1 ? 's' : ''}
             </h2>
 
@@ -626,8 +626,8 @@ export default function EsignPage() {
                   {entry.time ? (
                     <>
                       <span style={{
-                        fontSize: 10,
-                        color: '#98A1A8',
+                        fontSize: 'var(--type-caption)',
+                        color: '#374151',
                         fontFamily: 'monospace',
                         whiteSpace: 'nowrap',
                         minWidth: 110,
@@ -635,10 +635,10 @@ export default function EsignPage() {
                       }}>
                         [{entry.time}]
                       </span>
-                      <span style={{ fontSize: 11, color: '#2D3339' }}>{entry.text}</span>
+                      <span style={{ fontSize: 'var(--type-body)', color: '#2D3339' }}>{entry.text}</span>
                     </>
                   ) : (
-                    <span style={{ fontSize: 11, color: '#98A1A8', fontStyle: 'italic', paddingLeft: 0 }}>
+                    <span style={{ fontSize: 'var(--type-body)', color: '#374151', fontStyle: 'italic', paddingLeft: 0 }}>
                       {entry.text}
                     </span>
                   )}

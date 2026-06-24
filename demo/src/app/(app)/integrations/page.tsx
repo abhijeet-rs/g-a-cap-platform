@@ -42,14 +42,33 @@ const connectionsData: Connection[] = [
     description: 'System of record for plan configurations, carrier rates, enrollments, and payroll execution.',
     color: '#C60C30',
     fieldMappings: [
-      { from: 'prism.plan_name', to: 'plan.name' },
-      { from: 'prism.carrier_id', to: 'plan.carrierId' },
-      { from: 'prism.rate_eo', to: 'tierRate.eo' },
-      { from: 'prism.rate_es', to: 'tierRate.es' },
-      { from: 'prism.rate_ec', to: 'tierRate.ec' },
-      { from: 'prism.rate_ef', to: 'tierRate.ef' },
-      { from: 'prism.eff_date', to: 'plan.effectiveDate' },
-      { from: 'prism.client_id', to: 'client.prismId' },
+      { from: 'BenefitService.getClientBenefitPlans', to: 'plan.lineup[] → R2 Pre-fill' },
+      { from: 'BenefitService.getClientBenefitPlanSetupDetails', to: 'plan.config{rates,tiers,classes} → R2, R4' },
+      { from: 'BenefitService.getBenefitPlanList', to: 'masterPlan.catalog[] → F3 Library' },
+      { from: 'BenefitService.getGroupBenefitRates', to: 'tierRate{eo,es,ec,ef} → NB4 Rates' },
+      { from: 'BenefitService.getGroupBenefitTypes', to: 'benefitType[] → NB5 Validation' },
+      { from: 'BenefitService.getActiveBenefitPlans', to: 'enrollment.active[] → Census' },
+      { from: 'BenefitService.getEmployeePremium', to: 'billing.rate{} → Deduction Audit' },
+      { from: 'BenefitService.getFlexPlans', to: 'taxPlan{fsa,hsa} → NB4 Tax Plans' },
+      { from: 'BenefitService.getBenefitRule', to: 'eligibility.rule{} → F8 Validation' },
+      { from: 'BenefitService.getEnrollInputList', to: 'enroll.required[] → NB9 Pre-check' },
+      { from: 'BenefitService.setClientBenefitPlanSetupDetails', to: 'prism.planConfig ← NB9 Write-back' },
+      { from: 'BenefitService.setGroupBenefitBillingRates', to: 'prism.billingRates ← NB9 Write-back' },
+      { from: 'BenefitService.setGroupBenefitPremiumRates', to: 'prism.premiumRates ← NB9 Write-back' },
+      { from: 'BenefitService.setBenefitRule', to: 'prism.eligibility ← NB9 Write-back' },
+      { from: 'BenefitService.enrollBenefit', to: 'prism.enrollment ← NB9 per-WSE' },
+      { from: 'BenefitService.setDependent', to: 'prism.dependent ← NB9 per-WSE' },
+      { from: 'BenefitService.setFlexPlan', to: 'prism.fsa/hsa ← NB9 Write-back' },
+      { from: 'BenefitService.getBenefitConfirmationList', to: 'confirm.ids[] → NB9 Verify' },
+      { from: 'ClientMasterService.getClientInfo', to: 'client{name,id,type} → Lookup' },
+      { from: 'ClientMasterService.getClientLocations', to: 'location[] → Setup' },
+      { from: 'ClientMasterService.addBillPending', to: 'prism.billing ← Config' },
+      { from: 'EmployeeService.getEmployeeInfo', to: 'employee{demo,status,pay} → Census' },
+      { from: 'EmployeeService.getDependents', to: 'dependent[] → Enrollment' },
+      { from: 'EmployeeService.benefitPlanSetWaive', to: 'prism.waiver ← NB9 per-WSE' },
+      { from: 'EmployeeService.setHSA', to: 'prism.hsa ← NB9 Write-back' },
+      { from: 'PayrollService.getDeductionRegister', to: 'deduction.register → Audit' },
+      { from: 'DeductionService.getDeductionCodes', to: 'deduction.codes → Mapping' },
     ],
     syncLog: [
       { date: 'Jun 21, 2:30 PM', records: 42, status: 'success', message: '42 plans synced, 0 errors' },
@@ -65,10 +84,18 @@ const connectionsData: Connection[] = [
     description: 'Workflow/case/audit engine. CAP lifecycle events create and advance cases.',
     color: '#0074B8',
     fieldMappings: [
-      { from: 'cs.caseId', to: 'workflow.caseId' },
-      { from: 'cs.status', to: 'lifecycle.stage' },
-      { from: 'cs.auditLog', to: 'audit.entries' },
-      { from: 'cs.commTrack', to: 'commission.schedule' },
+      { from: 'POST /api/cases', to: 'workflow.case → Auto-create on CAP intake (NB1)' },
+      { from: 'PUT /api/cases/{id}/status', to: 'lifecycle.stage → Advance on submit/approve/sign' },
+      { from: 'GET /api/cases/{id}', to: 'case.details → Copilot CP3 retrieval' },
+      { from: 'POST /api/cases/{id}/notes', to: 'audit.note → Comment from AM/Coordinator' },
+      { from: 'PUT /api/benefits-page/{clientId}', to: 'benefits.page → Structured CAP data export' },
+      { from: 'GET /api/commissions/{clientId}', to: 'commission.schedule → Broker tracking' },
+      { from: 'WEBHOOK /events/case-update', to: 'platform.notification → Status change alerts' },
+      { from: 'WEBHOOK /events/approval', to: 'platform.approval → Coordinator QC trigger' },
+      { from: 'GET /api/audit/{caseId}', to: 'audit.trail → SOX-compliant event log' },
+      { from: 'PUT /api/cases/{id}/assign', to: 'workflow.assignee → Role-based routing' },
+      { from: 'POST /api/cases/{id}/handoff', to: 'handoff.trigger → GAB→BenAdmin boundary' },
+      { from: 'GET /api/cases/queue', to: 'queue.pending → Ben Admin write-back queue' },
     ],
     syncLog: [
       { date: 'Jun 21, 2:16 PM', records: 18, status: 'success', message: '18 cases updated, 0 errors' },
@@ -217,10 +244,10 @@ export default function IntegrationsPage() {
     <div style={{ padding: '20px 24px 48px', maxWidth: 1280 }}>
       {/* Page header */}
       <div style={{ marginBottom: 20 }}>
-        <h1 style={{ fontSize: 20, fontWeight: 700, color: '#1B2D3D', margin: 0 }}>
+        <h1 style={{ fontSize: 'var(--type-section-title)', fontWeight: 700, color: '#1B2D3D', margin: 0 }}>
           Integrations Hub
         </h1>
-        <p style={{ fontSize: 12, color: '#64707A', marginTop: 4, marginBottom: 0 }}>
+        <p style={{ fontSize: 'var(--type-body-lg)', color: '#374151', marginTop: 4, marginBottom: 0 }}>
           Manage connections to PrismHR, ClientSpace, WorkSight, and DocuSign.
         </p>
       </div>
@@ -235,17 +262,17 @@ export default function IntegrationsPage() {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ color: '#1A7A4A', fontSize: 16 }}>●</span>
-            <span style={{ fontSize: 14, fontWeight: 700, color: '#1A7A4A' }}>All Systems Operational</span>
+            <span style={{ color: '#1A7A4A', fontSize: 'var(--type-body-lg)' }}>●</span>
+            <span style={{ fontSize: 'var(--type-section-title)', fontWeight: 700, color: '#1A7A4A' }}>All Systems Operational</span>
           </div>
-          <div style={{ fontSize: 11, color: '#64707A' }}>
+          <div style={{ fontSize: 'var(--type-body)', color: '#374151' }}>
             5 active &middot; {totalSyncs.toLocaleString()} total syncs &middot; Last sync {lastSynced['PrismHR'] || '2 min ago'}
           </div>
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginTop: 10 }}>
           {connectionsData.map((c) => (
-            <span key={c.name} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 600, color: '#1B2D3D' }}>
-              <span style={{ color: c.status === 'connected' ? '#1A7A4A' : '#C60C30', fontSize: 10 }}>●</span>
+            <span key={c.name} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 'var(--type-body)', fontWeight: 600, color: '#1B2D3D' }}>
+              <span style={{ color: c.status === 'connected' ? '#1A7A4A' : '#C60C30', fontSize: 'var(--type-body-lg)' }}>●</span>
               {c.name === 'Carrier Underwriting' ? 'Carrier UW' : c.name}
             </span>
           ))}
@@ -277,21 +304,21 @@ export default function IntegrationsPage() {
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <span style={{
-                    fontSize: 10, color: '#98A1A8', flexShrink: 0,
+                    fontSize: 'var(--type-body-lg)', color: '#374151', flexShrink: 0,
                     transform: expanded[conn.name] ? 'rotate(90deg)' : 'rotate(0deg)',
                     transition: 'transform 0.2s ease', display: 'inline-block',
                   }}>▶</span>
-                  <span style={{ color: '#1A7A4A', fontSize: 12 }}>●</span>
-                  <span style={{ fontSize: 14, fontWeight: 700, color: '#1B2D3D' }}>{conn.name}</span>
-                  <span style={{ fontSize: 9, fontWeight: 600, padding: '2px 8px', borderRadius: 9999, background: '#E8F5E9', color: '#1A7A4A' }}>Connected</span>
-                  <span style={{ fontSize: 10, color: '#98A1A8' }}>&middot; {conn.syncs.toLocaleString()} syncs</span>
-                  <span style={{ fontSize: 10, color: '#98A1A8' }}>&middot; Last sync: {currentLastSync}</span>
+                  <span style={{ color: '#1A7A4A', fontSize: 'var(--type-body-lg)' }}>●</span>
+                  <span style={{ fontSize: 'var(--type-section-title)', fontWeight: 700, color: '#1B2D3D' }}>{conn.name}</span>
+                  <span style={{ fontSize: 'var(--type-badge)', fontWeight: 600, padding: '2px 8px', borderRadius: 9999, background: '#E8F5E9', color: '#1A7A4A' }}>Connected</span>
+                  <span style={{ fontSize: 'var(--type-body-lg)', color: '#374151' }}>&middot; {conn.syncs.toLocaleString()} syncs</span>
+                  <span style={{ fontSize: 'var(--type-body-lg)', color: '#374151' }}>&middot; Last sync: {currentLastSync}</span>
                   <div style={{ marginLeft: 'auto', display: 'flex', gap: 6 }} onClick={e => e.stopPropagation()}>
                     <button
                       onClick={() => handleTestConnection(conn.name)}
                       disabled={testState === 'testing'}
                       style={{
-                        height: 28, padding: '0 12px', borderRadius: 6, fontSize: 10, fontWeight: 600,
+                        height: 28, padding: '0 12px', borderRadius: 6, fontSize: 'var(--type-body-sm)', fontWeight: 600,
                         cursor: testState === 'testing' ? 'default' : 'pointer',
                         background: testState === 'done' ? '#E8F5E9' : '#F4F6F8',
                         color: testState === 'done' ? '#1A7A4A' : '#1B2D3D',
@@ -302,20 +329,20 @@ export default function IntegrationsPage() {
                       {testState === 'testing' && (
                         <span style={{ display: 'inline-block', width: 10, height: 10, border: '2px solid #E4E8ED', borderTopColor: '#0074B8', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
                       )}
-                      {testState === 'done' && <span style={{ fontSize: 11 }}>✓</span>}
+                      {testState === 'done' && <span style={{ fontSize: 'var(--type-body-sm)' }}>✓</span>}
                       {testState === 'testing' ? 'Testing...' : testState === 'done' ? 'Connected' : 'Test Connection'}
                     </button>
                     {conn.name === 'PrismHR' && (
                       <button
                         onClick={() => handleReSync()}
-                        style={{ height: 28, padding: '0 14px', borderRadius: 6, fontSize: 10, fontWeight: 600, cursor: 'pointer', background: conn.color, color: '#fff', border: 'none' }}
+                        style={{ height: 28, padding: '0 14px', borderRadius: 6, fontSize: 'var(--type-body-sm)', fontWeight: 600, cursor: 'pointer', background: conn.color, color: '#fff', border: 'none' }}
                       >
                         Re-sync
                       </button>
                     )}
                   </div>
                 </div>
-                <p style={{ fontSize: 11, color: '#64707A', marginTop: 6, marginBottom: 0, lineHeight: 1.5 }}>
+                <p style={{ fontSize: 'var(--type-body)', color: '#374151', marginTop: 6, marginBottom: 0, lineHeight: 1.5 }}>
                   {conn.description}
                 </p>
               </div>
@@ -334,22 +361,22 @@ export default function IntegrationsPage() {
                       borderRadius: 8,
                       padding: '12px 14px',
                     }}>
-                      <div style={{ fontSize: 9, fontWeight: 700, color: '#64707A', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 10 }}>
+                      <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 700, color: '#374151', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 10 }}>
                         Sync Settings
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontSize: 11, color: '#1B2D3D', fontWeight: 500 }}>Schedule</span>
-                          <span style={{ fontSize: 10, color: '#64707A', fontWeight: 600 }}>Nightly</span>
+                          <span style={{ fontSize: 'var(--type-body)', color: '#1B2D3D', fontWeight: 500 }}>Schedule</span>
+                          <span style={{ fontSize: 'var(--type-body-lg)', color: '#374151', fontWeight: 600 }}>Nightly</span>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontSize: 11, color: '#1B2D3D', fontWeight: 500 }}>Last run</span>
-                          <span style={{ fontSize: 10, color: '#64707A', fontWeight: 600 }}>{currentLastSync}</span>
+                          <span style={{ fontSize: 'var(--type-body)', color: '#1B2D3D', fontWeight: 500 }}>Last run</span>
+                          <span style={{ fontSize: 'var(--type-body-lg)', color: '#374151', fontWeight: 600 }}>{currentLastSync}</span>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontSize: 11, color: '#1B2D3D', fontWeight: 500 }}>Delta sync</span>
+                          <span style={{ fontSize: 'var(--type-body)', color: '#1B2D3D', fontWeight: 500 }}>Delta sync</span>
                           <span style={{
-                            fontSize: 9,
+                            fontSize: 'var(--type-badge)',
                             fontWeight: 600,
                             padding: '2px 6px',
                             borderRadius: 4,
@@ -360,8 +387,8 @@ export default function IntegrationsPage() {
                           </span>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontSize: 11, color: '#1B2D3D', fontWeight: 500 }}>Records</span>
-                          <span style={{ fontSize: 10, color: '#64707A', fontWeight: 600 }}>{conn.syncs.toLocaleString()}</span>
+                          <span style={{ fontSize: 'var(--type-body)', color: '#1B2D3D', fontWeight: 500 }}>Records</span>
+                          <span style={{ fontSize: 'var(--type-body-lg)', color: '#374151', fontWeight: 600 }}>{conn.syncs.toLocaleString()}</span>
                         </div>
                         <button
                           onClick={() => toggleConfig(conn.name)}
@@ -369,7 +396,7 @@ export default function IntegrationsPage() {
                             marginTop: 4,
                             height: 28,
                             borderRadius: 6,
-                            fontSize: 10,
+                            fontSize: 'var(--type-body-sm)',
                             fontWeight: 600,
                             cursor: 'pointer',
                             background: '#fff',
@@ -390,23 +417,23 @@ export default function IntegrationsPage() {
                       borderRadius: 8,
                       padding: '12px 14px',
                     }}>
-                      <div style={{ fontSize: 9, fontWeight: 700, color: '#64707A', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>
+                      <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 700, color: '#374151', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>
                         Field Mapping
                       </div>
-                      <table style={{ width: '100%', fontSize: 11, borderCollapse: 'collapse' }}>
+                      <table style={{ width: '100%', fontSize: 'var(--type-body)', borderCollapse: 'collapse' }}>
                         <thead>
                           <tr style={{ borderBottom: '1px solid #E4E8ED' }}>
-                            <th style={{ textAlign: 'left', padding: '4px 8px', color: '#98A1A8', fontWeight: 600, fontSize: 9 }}>Prism Field</th>
-                            <th style={{ textAlign: 'center', padding: '4px 0', color: '#98A1A8', fontWeight: 600, fontSize: 9, width: 30 }}></th>
-                            <th style={{ textAlign: 'left', padding: '4px 8px', color: '#98A1A8', fontWeight: 600, fontSize: 9 }}>Platform Field</th>
+                            <th style={{ textAlign: 'left', padding: '4px 8px', color: '#374151', fontWeight: 600, fontSize: 'var(--type-table-header)' }}>Prism Field</th>
+                            <th style={{ textAlign: 'center', padding: '4px 0', color: '#374151', fontWeight: 600, fontSize: 'var(--type-table-header)', width: 30 }}></th>
+                            <th style={{ textAlign: 'left', padding: '4px 8px', color: '#374151', fontWeight: 600, fontSize: 'var(--type-table-header)' }}>Platform Field</th>
                           </tr>
                         </thead>
                         <tbody>
                           {conn.fieldMappings!.map((m) => (
                             <tr key={m.from} style={{ borderBottom: '1px solid #F4F6F8' }}>
-                              <td style={{ padding: '4px 8px', fontFamily: 'monospace', color: conn.color, fontSize: 10 }}>{m.from}</td>
-                              <td style={{ padding: '4px 0', textAlign: 'center', color: '#98A1A8', fontSize: 10 }}>→</td>
-                              <td style={{ padding: '4px 8px', fontFamily: 'monospace', color: '#1A7A4A', fontSize: 10 }}>{m.to}</td>
+                              <td style={{ padding: '4px 8px', fontFamily: 'monospace', color: conn.color, fontSize: 'var(--type-body-lg)' }}>{m.from}</td>
+                              <td style={{ padding: '4px 0', textAlign: 'center', color: '#374151', fontSize: 'var(--type-body-lg)' }}>→</td>
+                              <td style={{ padding: '4px 8px', fontFamily: 'monospace', color: '#1A7A4A', fontSize: 'var(--type-body-lg)' }}>{m.to}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -424,23 +451,23 @@ export default function IntegrationsPage() {
                         padding: '12px 14px',
                         flex: 1,
                       }}>
-                        <div style={{ fontSize: 9, fontWeight: 700, color: '#64707A', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>
+                        <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 700, color: '#374151', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>
                           Field Mapping
                         </div>
-                        <table style={{ width: '100%', fontSize: 11, borderCollapse: 'collapse' }}>
+                        <table style={{ width: '100%', fontSize: 'var(--type-body)', borderCollapse: 'collapse' }}>
                           <thead>
                             <tr style={{ borderBottom: '1px solid #E4E8ED' }}>
-                              <th style={{ textAlign: 'left', padding: '4px 8px', color: '#98A1A8', fontWeight: 600, fontSize: 9 }}>Source</th>
-                              <th style={{ textAlign: 'center', padding: '4px 0', color: '#98A1A8', fontWeight: 600, fontSize: 9, width: 30 }}></th>
-                              <th style={{ textAlign: 'left', padding: '4px 8px', color: '#98A1A8', fontWeight: 600, fontSize: 9 }}>Platform</th>
+                              <th style={{ textAlign: 'left', padding: '4px 8px', color: '#374151', fontWeight: 600, fontSize: 'var(--type-table-header)' }}>Source</th>
+                              <th style={{ textAlign: 'center', padding: '4px 0', color: '#374151', fontWeight: 600, fontSize: 'var(--type-table-header)', width: 30 }}></th>
+                              <th style={{ textAlign: 'left', padding: '4px 8px', color: '#374151', fontWeight: 600, fontSize: 'var(--type-table-header)' }}>Platform</th>
                             </tr>
                           </thead>
                           <tbody>
                             {conn.fieldMappings.map((m) => (
                               <tr key={m.from} style={{ borderBottom: '1px solid #F4F6F8' }}>
-                                <td style={{ padding: '4px 8px', fontFamily: 'monospace', color: conn.color, fontSize: 10 }}>{m.from}</td>
-                                <td style={{ padding: '4px 0', textAlign: 'center', color: '#98A1A8', fontSize: 10 }}>→</td>
-                                <td style={{ padding: '4px 8px', fontFamily: 'monospace', color: '#1A7A4A', fontSize: 10 }}>{m.to}</td>
+                                <td style={{ padding: '4px 8px', fontFamily: 'monospace', color: conn.color, fontSize: 'var(--type-body-lg)' }}>{m.from}</td>
+                                <td style={{ padding: '4px 0', textAlign: 'center', color: '#374151', fontSize: 'var(--type-body-lg)' }}>→</td>
+                                <td style={{ padding: '4px 8px', fontFamily: 'monospace', color: '#1A7A4A', fontSize: 'var(--type-body-lg)' }}>{m.to}</td>
                               </tr>
                             ))}
                           </tbody>
@@ -455,21 +482,21 @@ export default function IntegrationsPage() {
                         padding: '12px 14px',
                         flex: 1,
                       }}>
-                        <div style={{ fontSize: 9, fontWeight: 700, color: '#64707A', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 10 }}>
+                        <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 700, color: '#374151', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 10 }}>
                           Quick Info
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <span style={{ fontSize: 10, color: '#64707A' }}>Total syncs</span>
-                            <span style={{ fontSize: 10, fontWeight: 600, color: '#1B2D3D' }}>{conn.syncs}</span>
+                            <span style={{ fontSize: 'var(--type-body-lg)', color: '#374151' }}>Total syncs</span>
+                            <span style={{ fontSize: 'var(--type-body-lg)', fontWeight: 600, color: '#1B2D3D' }}>{conn.syncs}</span>
                           </div>
                           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <span style={{ fontSize: 10, color: '#64707A' }}>Status</span>
-                            <span style={{ fontSize: 10, fontWeight: 600, color: '#1A7A4A' }}>Active</span>
+                            <span style={{ fontSize: 'var(--type-body-lg)', color: '#374151' }}>Status</span>
+                            <span style={{ fontSize: 'var(--type-body-lg)', fontWeight: 600, color: '#1A7A4A' }}>Active</span>
                           </div>
                           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <span style={{ fontSize: 10, color: '#64707A' }}>Last sync</span>
-                            <span style={{ fontSize: 10, fontWeight: 600, color: '#1B2D3D' }}>{currentLastSync}</span>
+                            <span style={{ fontSize: 'var(--type-body-lg)', color: '#374151' }}>Last sync</span>
+                            <span style={{ fontSize: 'var(--type-body-lg)', fontWeight: 600, color: '#1B2D3D' }}>{currentLastSync}</span>
                           </div>
                         </div>
                         <button
@@ -478,7 +505,7 @@ export default function IntegrationsPage() {
                             marginTop: 10,
                             height: 28,
                             borderRadius: 6,
-                            fontSize: 10,
+                            fontSize: 'var(--type-body-sm)',
                             fontWeight: 600,
                             cursor: 'pointer',
                             background: '#fff',
@@ -504,7 +531,7 @@ export default function IntegrationsPage() {
                     marginBottom: 14,
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-                      <div style={{ fontSize: 10, fontWeight: 700, color: '#1B2D3D', textTransform: 'uppercase', letterSpacing: '.04em' }}>
+                      <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 700, color: '#1B2D3D', textTransform: 'uppercase', letterSpacing: '.04em' }}>
                         Configuration — {conn.name}
                       </div>
                       <button
@@ -516,7 +543,7 @@ export default function IntegrationsPage() {
                           height: 26,
                           padding: '0 14px',
                           borderRadius: 6,
-                          fontSize: 10,
+                          fontSize: 'var(--type-body-sm)',
                           fontWeight: 600,
                           cursor: 'pointer',
                           background: conn.color,
@@ -531,7 +558,7 @@ export default function IntegrationsPage() {
                     {conn.name === 'PrismHR' && (
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
                         <div>
-                          <label style={{ fontSize: 10, fontWeight: 600, color: '#64707A', display: 'block', marginBottom: 4 }}>
+                          <label style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#374151', display: 'block', marginBottom: 4 }}>
                             Sync Schedule
                           </label>
                           <select
@@ -543,7 +570,7 @@ export default function IntegrationsPage() {
                               borderRadius: 6,
                               border: '1px solid #E4E8ED',
                               padding: '0 8px',
-                              fontSize: 11,
+                              fontSize: 'var(--type-body-sm)',
                               color: '#1B2D3D',
                               background: '#fff',
                               outline: 'none',
@@ -556,7 +583,7 @@ export default function IntegrationsPage() {
                           </select>
                         </div>
                         <div>
-                          <label style={{ fontSize: 10, fontWeight: 600, color: '#64707A', display: 'block', marginBottom: 4 }}>
+                          <label style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#374151', display: 'block', marginBottom: 4 }}>
                             Delta Sync
                           </label>
                           <button
@@ -567,9 +594,9 @@ export default function IntegrationsPage() {
                               borderRadius: 6,
                               border: '1px solid ' + (prismDelta ? '#C6F0D4' : '#E4E8ED'),
                               padding: '0 10px',
-                              fontSize: 11,
+                              fontSize: 'var(--type-body-sm)',
                               fontWeight: 600,
-                              color: prismDelta ? '#1A7A4A' : '#98A1A8',
+                              color: prismDelta ? '#1A7A4A' : '#374151',
                               background: prismDelta ? '#E8F5E9' : '#fff',
                               cursor: 'pointer',
                               display: 'flex',
@@ -584,7 +611,7 @@ export default function IntegrationsPage() {
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              fontSize: 9,
+                              fontSize: 'var(--type-body-sm)',
                               background: prismDelta ? '#1A7A4A' : '#E4E8ED',
                               color: '#fff',
                             }}>
@@ -594,7 +621,7 @@ export default function IntegrationsPage() {
                           </button>
                         </div>
                         <div>
-                          <label style={{ fontSize: 10, fontWeight: 600, color: '#64707A', display: 'block', marginBottom: 4 }}>
+                          <label style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#374151', display: 'block', marginBottom: 4 }}>
                             Webhook URL
                           </label>
                           <input
@@ -606,7 +633,7 @@ export default function IntegrationsPage() {
                               borderRadius: 6,
                               border: '1px solid #E4E8ED',
                               padding: '0 10px',
-                              fontSize: 10,
+                              fontSize: 'var(--type-body-sm)',
                               fontFamily: 'monospace',
                               color: '#1B2D3D',
                               background: '#fff',
@@ -621,7 +648,7 @@ export default function IntegrationsPage() {
                     {conn.name === 'ClientSpace' && (
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                         <div>
-                          <label style={{ fontSize: 10, fontWeight: 600, color: '#64707A', display: 'block', marginBottom: 4 }}>
+                          <label style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#374151', display: 'block', marginBottom: 4 }}>
                             Case Template
                           </label>
                           <select
@@ -633,7 +660,7 @@ export default function IntegrationsPage() {
                               borderRadius: 6,
                               border: '1px solid #E4E8ED',
                               padding: '0 8px',
-                              fontSize: 11,
+                              fontSize: 'var(--type-body-sm)',
                               color: '#1B2D3D',
                               background: '#fff',
                               outline: 'none',
@@ -647,7 +674,7 @@ export default function IntegrationsPage() {
                           </select>
                         </div>
                         <div>
-                          <label style={{ fontSize: 10, fontWeight: 600, color: '#64707A', display: 'block', marginBottom: 4 }}>
+                          <label style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#374151', display: 'block', marginBottom: 4 }}>
                             Workflow Mapping
                           </label>
                           <select
@@ -659,7 +686,7 @@ export default function IntegrationsPage() {
                               borderRadius: 6,
                               border: '1px solid #E4E8ED',
                               padding: '0 8px',
-                              fontSize: 11,
+                              fontSize: 'var(--type-body-sm)',
                               color: '#1B2D3D',
                               background: '#fff',
                               outline: 'none',
@@ -677,7 +704,7 @@ export default function IntegrationsPage() {
                     {conn.name === 'DocuSign' && (
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                         <div>
-                          <label style={{ fontSize: 10, fontWeight: 600, color: '#64707A', display: 'block', marginBottom: 4 }}>
+                          <label style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#374151', display: 'block', marginBottom: 4 }}>
                             Template ID
                           </label>
                           <input
@@ -689,7 +716,7 @@ export default function IntegrationsPage() {
                               borderRadius: 6,
                               border: '1px solid #E4E8ED',
                               padding: '0 10px',
-                              fontSize: 10,
+                              fontSize: 'var(--type-body-sm)',
                               fontFamily: 'monospace',
                               color: '#1B2D3D',
                               background: '#fff',
@@ -699,7 +726,7 @@ export default function IntegrationsPage() {
                           />
                         </div>
                         <div>
-                          <label style={{ fontSize: 10, fontWeight: 600, color: '#64707A', display: 'block', marginBottom: 4 }}>
+                          <label style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#374151', display: 'block', marginBottom: 4 }}>
                             Signer Routing
                           </label>
                           <select
@@ -711,7 +738,7 @@ export default function IntegrationsPage() {
                               borderRadius: 6,
                               border: '1px solid #E4E8ED',
                               padding: '0 8px',
-                              fontSize: 11,
+                              fontSize: 'var(--type-body-sm)',
                               color: '#1B2D3D',
                               background: '#fff',
                               outline: 'none',
@@ -729,7 +756,7 @@ export default function IntegrationsPage() {
                     {conn.name === 'WorkSight' && (
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 16, maxWidth: 300 }}>
                         <div>
-                          <label style={{ fontSize: 10, fontWeight: 600, color: '#64707A', display: 'block', marginBottom: 4 }}>
+                          <label style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#374151', display: 'block', marginBottom: 4 }}>
                             Portal Sync
                           </label>
                           <button
@@ -740,9 +767,9 @@ export default function IntegrationsPage() {
                               borderRadius: 6,
                               border: '1px solid ' + (wsPortalSync ? '#C6F0D4' : '#E4E8ED'),
                               padding: '0 10px',
-                              fontSize: 11,
+                              fontSize: 'var(--type-body-sm)',
                               fontWeight: 600,
-                              color: wsPortalSync ? '#1A7A4A' : '#98A1A8',
+                              color: wsPortalSync ? '#1A7A4A' : '#374151',
                               background: wsPortalSync ? '#E8F5E9' : '#fff',
                               cursor: 'pointer',
                               display: 'flex',
@@ -757,7 +784,7 @@ export default function IntegrationsPage() {
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              fontSize: 9,
+                              fontSize: 'var(--type-body-sm)',
                               background: wsPortalSync ? '#1A7A4A' : '#E4E8ED',
                               color: '#fff',
                             }}>
@@ -772,7 +799,7 @@ export default function IntegrationsPage() {
                     {conn.name === 'Carrier Underwriting' && (
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 16, maxWidth: 400 }}>
                         <div>
-                          <label style={{ fontSize: 10, fontWeight: 600, color: '#64707A', display: 'block', marginBottom: 4 }}>
+                          <label style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#374151', display: 'block', marginBottom: 4 }}>
                             Accepted Upload Formats
                           </label>
                           <input
@@ -784,14 +811,14 @@ export default function IntegrationsPage() {
                               borderRadius: 6,
                               border: '1px solid #E4E8ED',
                               padding: '0 10px',
-                              fontSize: 11,
+                              fontSize: 'var(--type-body-sm)',
                               color: '#1B2D3D',
                               background: '#fff',
                               outline: 'none',
                               boxSizing: 'border-box',
                             }}
                           />
-                          <div style={{ fontSize: 9, color: '#98A1A8', marginTop: 4 }}>
+                          <div style={{ fontSize: 'var(--type-body)', color: '#374151', marginTop: 4 }}>
                             Comma-separated list of file extensions. AI extraction supports PDF and XLSX natively.
                           </div>
                         </div>
@@ -803,7 +830,7 @@ export default function IntegrationsPage() {
                 {/* Sync Log */}
                 {conn.syncLog && (
                   <div>
-                    <div style={{ fontSize: 9, fontWeight: 700, color: '#64707A', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 6 }}>
+                    <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 700, color: '#374151', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 6 }}>
                       Sync Log
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -818,17 +845,17 @@ export default function IntegrationsPage() {
                             borderRadius: 6,
                             background: entry.status === 'warning' ? '#FFFBF0' : '#FAFBFC',
                             border: '1px solid ' + (entry.status === 'warning' ? '#FFE4B5' : '#F0F2F5'),
-                            fontSize: 10,
+                            fontSize: 'var(--type-body-lg)',
                           }}
                         >
                           <span style={{
                             color: entry.status === 'success' ? '#1A7A4A' : entry.status === 'warning' ? '#B0690A' : '#C60C30',
-                            fontSize: 11,
+                            fontSize: 'var(--type-body)',
                             flexShrink: 0,
                           }}>
                             {entry.status === 'success' ? '✓' : entry.status === 'warning' ? '⚠' : '✕'}
                           </span>
-                          <span style={{ color: '#98A1A8', fontWeight: 500, minWidth: 110, flexShrink: 0 }}>
+                          <span style={{ color: '#374151', fontWeight: 500, minWidth: 110, flexShrink: 0 }}>
                             {entry.date}
                           </span>
                           <span style={{ color: '#1B2D3D' }}>

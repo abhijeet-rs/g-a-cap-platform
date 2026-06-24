@@ -1,0 +1,10 @@
+Parameter,Value,Source,Confidence
+Carrier,BCBS Texas,Hero Risk Scoring,100%
+Bucket,0.975,Hero Risk Scoring,98%
+Admin Factor,1.013,G&A Pricing Stack v4,100%
+Commission,0.03,OB-Friendly Default,100%
+Risk Factor,1.043,Hero Risk Scoring,96%
+Combined Multiplier,1.0610,Calculated,100%
+Renewal Increase,5.3%,Carrier Letter,100%
+Rate Relief,No,Underwriting Review,100%
+Extended Rates,No,Standard Terms,100%

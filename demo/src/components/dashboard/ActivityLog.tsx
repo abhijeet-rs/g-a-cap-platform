@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 interface Activity {
   id: number;
   text: string;
@@ -24,22 +26,26 @@ const activities: Activity[] = [
 ];
 
 export default function ActivityLog() {
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
+
   return (
     <div style={{
-      background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10,
-      overflow: 'hidden', marginTop: 14,
+      background: '#fff', borderRadius: 12,
+      overflow: 'hidden', marginTop: 20,
+      boxShadow: 'var(--shadow-sm)',
     }}>
       <div style={{
-        padding: '12px 16px', borderBottom: '1px solid #EEF1F4',
+        padding: '16px 20px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
         <div>
-          <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2D3D' }}>Recent Activity</div>
-          <div style={{ fontSize: 9, color: '#98A1A8' }}>Last 24 hours</div>
+          <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, color: '#111827' }}>Recent Activity</div>
+          <div style={{ fontSize: 'var(--type-label)', color: '#9CA3AF', marginTop: 2 }}>Last 24 hours</div>
         </div>
         <div style={{
-          fontSize: 9, fontWeight: 600, color: '#5A45C7', background: '#F8F4FF',
-          padding: '2px 7px', borderRadius: 4,
+          fontSize: 'var(--type-badge)', fontWeight: 600, color: '#5A45C7', background: '#F8F4FF',
+          padding: '2px 8px', borderRadius: 10, height: 20,
+          display: 'inline-flex', alignItems: 'center',
         }}>
           {activities.length} events
         </div>
@@ -48,19 +54,27 @@ export default function ActivityLog() {
       {activities.map((a) => (
         <div
           key={a.id}
+          onMouseEnter={() => setHoveredId(a.id)}
+          onMouseLeave={() => setHoveredId(null)}
           style={{
-            display: 'flex', alignItems: 'flex-start', gap: 10,
-            padding: '10px 16px', borderTop: '1px solid #F4F6F8',
+            display: 'flex', alignItems: 'flex-start', gap: 12,
+            padding: '10px 20px',
+            borderTop: '1px solid #F3F4F6',
+            background: hoveredId === a.id ? '#F9FAFB' : 'transparent',
+            transition: 'background 0.1s ease',
           }}
         >
           <span style={{
-            width: 8, height: 8, borderRadius: '50%', flexShrink: 0, marginTop: 3,
+            width: 8, height: 8, borderRadius: '50%', flexShrink: 0, marginTop: 5,
             background: typeColors[a.type],
           }} />
-          <span style={{ flex: 1, fontSize: 11, color: '#1B2D3D', lineHeight: 1.4 }}>
+          <span style={{ flex: 1, fontSize: 'var(--type-caption)', color: '#374151', lineHeight: 1.5 }}>
             {a.text}
           </span>
-          <span style={{ fontSize: 9, color: '#98A1A8', flexShrink: 0, whiteSpace: 'nowrap' }}>
+          <span style={{
+            fontSize: 'var(--type-label)', color: '#9CA3AF', flexShrink: 0, whiteSpace: 'nowrap',
+            fontFamily: "'IBM Plex Mono', monospace",
+          }}>
             {a.time}
           </span>
         </div>

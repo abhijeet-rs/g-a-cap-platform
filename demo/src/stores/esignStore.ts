@@ -19,7 +19,7 @@ const initialSigners: Signer[] = [
 ];
 
 export const useEsignStore = create<EsignStoreState>((set) => ({
-  client: 'Itafos Conda',
+  client: 'Westlake Financial Group',
   state: 'ready',
   signers: initialSigners,
   send: () => {
@@ -33,8 +33,8 @@ export const useEsignStore = create<EsignStoreState>((set) => ({
     });
     useDataStore.getState().addAudit({
       actor: 'Dana Whitfield', actorType: 'user',
-      action: 'sent e-sign envelope for Itafos Conda',
-      entity: 'esign', entityId: 'cap-itafos-2026',
+      action: 'sent e-sign envelope for Westlake Financial Group',
+      entity: 'esign', entityId: 'cap-westlake-2026',
     });
   },
   simulateClientSign: () => {
@@ -49,7 +49,7 @@ export const useEsignStore = create<EsignStoreState>((set) => ({
     useDataStore.getState().addAudit({
       actor: 'Robert Hale', actorType: 'user',
       action: 'signed e-sign envelope as Client Signer',
-      entity: 'esign', entityId: 'cap-itafos-2026',
+      entity: 'esign', entityId: 'cap-westlake-2026',
     });
   },
   publish: () => {
@@ -64,8 +64,8 @@ export const useEsignStore = create<EsignStoreState>((set) => ({
     useDataStore.getState().addAudit({
       actor: 'Marcus Reyes', actorType: 'user',
       action: 'completed final signature and published CAP',
-      entity: 'esign', entityId: 'cap-itafos-2026',
+      entity: 'esign', entityId: 'cap-westlake-2026',
     });
   },
-  reset: () => set({ client: 'Itafos Conda', state: 'ready', signers: initialSigners }),
+  reset: () => set({ client: 'Westlake Financial Group', state: 'ready', signers: initialSigners }),
 }));

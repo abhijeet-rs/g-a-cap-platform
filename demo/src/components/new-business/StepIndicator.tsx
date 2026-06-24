@@ -62,14 +62,14 @@ export default function StepIndicator({ steps, current }: Props) {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 11,
+                  fontSize: 'var(--type-badge)',
                   fontWeight: 600,
                   background: isCompleted
                     ? '#1A7A4A'
                     : isActive
                     ? '#C60C30'
                     : '#EDF0F3',
-                  color: isCompleted || isActive ? '#fff' : '#64707A',
+                  color: isCompleted || isActive ? '#fff' : '#374151',
                 }}
               >
                 {isCompleted ? '✓' : step.num}
@@ -77,10 +77,10 @@ export default function StepIndicator({ steps, current }: Props) {
               {/* Label */}
               <span
                 style={{
-                  fontSize: 10.5,
+                  fontSize: 'var(--type-body-sm)',
                   whiteSpace: 'nowrap',
                   fontWeight: isActive ? 600 : 400,
-                  color: isActive ? '#1B2D3D' : '#64707A',
+                  color: isActive ? '#1B2D3D' : '#374151',
                 }}
               >
                 {step.label}

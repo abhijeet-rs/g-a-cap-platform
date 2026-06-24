@@ -31,7 +31,7 @@ const cardStyle: React.CSSProperties = {
 };
 
 const badgeSmall = (bg: string, color: string): React.CSSProperties => ({
-  fontSize: 9,
+  fontSize: 'var(--type-badge)',
   fontWeight: 600,
   padding: '2px 8px',
   borderRadius: 4,
@@ -121,7 +121,7 @@ export default function StepRates() {
       {/* Rate formula card */}
       <div style={cardStyle}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-          <h3 style={{ fontSize: 13, fontWeight: 600, color: '#1B2D3D', margin: 0 }}>
+          <h3 style={{ fontSize: 'var(--type-section-title)', fontWeight: 600, color: '#1B2D3D', margin: 0 }}>
             Rate Formula
           </h3>
           <span style={badgeSmall('#E7F1FA', '#0074B8')}>F3 x F4</span>
@@ -133,8 +133,8 @@ export default function StepRates() {
         <div
           style={{
             ...monoStyle,
-            fontSize: 12,
-            color: '#4A5568',
+            fontSize: 'var(--type-body)',
+            color: '#374151',
             marginBottom: 16,
             background: '#F8F9FA',
             borderRadius: 6,
@@ -165,7 +165,7 @@ export default function StepRates() {
               <div
                 style={{
                   fontSize: 8,
-                  color: '#98A1A8',
+                  color: '#374151',
                   textTransform: 'uppercase',
                   fontWeight: 600,
                   letterSpacing: '0.04em',
@@ -175,7 +175,7 @@ export default function StepRates() {
               </div>
               <div
                 style={{
-                  fontSize: 13,
+                  fontSize: 'var(--type-body-sm)',
                   ...monoStyle,
                   fontWeight: 600,
                   color: '#1B2D3D',
@@ -192,10 +192,10 @@ export default function StepRates() {
       {/* Contribution strategy card */}
       <div style={cardStyle}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-          <h3 style={{ fontSize: 13, fontWeight: 600, color: '#1B2D3D', margin: 0 }}>
+          <h3 style={{ fontSize: 'var(--type-section-title)', fontWeight: 600, color: '#1B2D3D', margin: 0 }}>
             Contribution Strategy
           </h3>
-          <span style={badgeSmall('#F1F3F5', '#64707A')}>NB4</span>
+          <span style={badgeSmall('#F1F3F5', '#374151')}>NB4</span>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
@@ -207,7 +207,7 @@ export default function StepRates() {
                 height: 32,
                 padding: '0 16px',
                 borderRadius: 6,
-                fontSize: 11,
+                fontSize: 'var(--type-body-sm)',
                 fontWeight: 600,
                 cursor: 'pointer',
                 border:
@@ -215,7 +215,7 @@ export default function StepRates() {
                 background:
                   contribStrategy === s.key ? '#13212C' : '#fff',
                 color:
-                  contribStrategy === s.key ? '#fff' : '#4A5568',
+                  contribStrategy === s.key ? '#fff' : '#374151',
                 fontFamily: "'IBM Plex Sans', sans-serif",
               }}
             >
@@ -224,7 +224,7 @@ export default function StepRates() {
           ))}
         </div>
 
-        <p style={{ fontSize: 11, color: '#64707A', margin: '0 0 8px 0' }}>
+        <p style={{ fontSize: 'var(--type-body-sm)', color: '#374151', margin: '0 0 8px 0' }}>
           {strategyDescriptions[contribStrategy]}
         </p>
         {contribStrategy !== 'variable' && (
@@ -236,11 +236,11 @@ export default function StepRates() {
             display: 'flex',
             alignItems: 'center',
             gap: 8,
-            fontSize: 10,
+            fontSize: 'var(--type-body-sm)',
             color: '#0074B8',
             fontWeight: 500,
           }}>
-            <span style={{ fontSize: 12, flexShrink: 0 }}>&#x2139;</span>
+            <span style={{ fontSize: 'var(--type-body-sm)', flexShrink: 0 }}>&#x2139;</span>
             ER% values below are auto-calculated by the {contribStrategy.replace('_', ' ')} strategy. Switch to Variable to edit per-plan.
           </div>
         )}
@@ -274,7 +274,7 @@ export default function StepRates() {
                 >
                   {plan.masterOrOpen}
                 </span>
-                <h3 style={{ fontSize: 12, fontWeight: 600, color: '#1B2D3D', margin: 0 }}>
+                <h3 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, color: '#1B2D3D', margin: 0 }}>
                   {plan.carrier} {plan.plan}
                 </h3>
                 {isMaster ? (
@@ -284,7 +284,7 @@ export default function StepRates() {
                 )}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 10, color: '#64707A', fontWeight: 500 }}>ER%</span>
+                <span style={{ fontSize: 'var(--type-body-sm)', color: '#374151', fontWeight: 500 }}>ER%</span>
                 <input
                   type="number"
                   value={currentErPct}
@@ -299,18 +299,18 @@ export default function StepRates() {
                     border: isErEditable ? '1.5px solid #0074B8' : '1px solid #DCE2E8',
                     borderRadius: 6,
                     padding: '0 8px',
-                    fontSize: 11,
+                    fontSize: 'var(--type-body-sm)',
                     ...monoStyle,
                     textAlign: 'center',
                     background: isErEditable ? '#fff' : '#F4F6F8',
                     outline: 'none',
                     cursor: isErEditable ? 'text' : 'default',
-                    color: isErEditable ? '#1B2D3D' : '#98A1A8',
+                    color: isErEditable ? '#1B2D3D' : '#374151',
                   }}
                   title={isErEditable ? 'Edit ER%' : `ER% is calculated by ${contribStrategy} strategy`}
                 />
                 {!isErEditable && (
-                  <span style={{ fontSize: 8, color: '#98A1A8', fontStyle: 'italic' }}>auto</span>
+                  <span style={{ fontSize: 8, color: '#374151', fontStyle: 'italic' }}>auto</span>
                 )}
               </div>
             </div>
@@ -331,10 +331,10 @@ export default function StepRates() {
                   <div
                     key={col}
                     style={{
-                      fontSize: 9,
+                      fontSize: 'var(--type-table-header)',
                       textTransform: 'uppercase',
                       fontWeight: 600,
-                      color: '#64707A',
+                      color: '#374151',
                       letterSpacing: '0.04em',
                       textAlign: col !== 'Tier' ? 'right' : 'left',
                     }}
@@ -362,14 +362,14 @@ export default function StepRates() {
                       alignItems: 'center',
                     }}
                   >
-                    <div style={{ fontSize: 11, fontWeight: 500, color: '#1B2D3D' }}>
+                    <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 500, color: '#1B2D3D' }}>
                       {tierLabels[tier]}
                     </div>
                     <div
                       style={{
-                        fontSize: 11,
+                        fontSize: 'var(--type-body-sm)',
                         ...monoStyle,
-                        color: '#64707A',
+                        color: '#374151',
                         textAlign: 'right',
                         display: 'flex',
                         alignItems: 'center',
@@ -383,7 +383,7 @@ export default function StepRates() {
                     </div>
                     <div
                       style={{
-                        fontSize: 11,
+                        fontSize: 'var(--type-body-sm)',
                         ...monoStyle,
                         fontWeight: 600,
                         color: '#1B2D3D',
@@ -400,7 +400,7 @@ export default function StepRates() {
                     </div>
                     <div
                       style={{
-                        fontSize: 11,
+                        fontSize: 'var(--type-body-sm)',
                         ...monoStyle,
                         color: '#1A7A4A',
                         textAlign: 'right',
@@ -415,9 +415,9 @@ export default function StepRates() {
                     </div>
                     <div
                       style={{
-                        fontSize: 11,
+                        fontSize: 'var(--type-body-sm)',
                         ...monoStyle,
-                        color: '#4A5568',
+                        color: '#374151',
                         textAlign: 'right',
                         display: 'flex',
                         alignItems: 'center',
@@ -430,7 +430,7 @@ export default function StepRates() {
                     </div>
                     <div
                       style={{
-                        fontSize: 11,
+                        fontSize: 'var(--type-body-sm)',
                         ...monoStyle,
                         color: '#0074B8',
                         textAlign: 'right',
@@ -462,15 +462,15 @@ export default function StepRates() {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <h3 style={{ fontSize: 13, fontWeight: 600, color: '#1B2D3D', margin: 0 }}>
+            <h3 style={{ fontSize: 'var(--type-section-title)', fontWeight: 600, color: '#1B2D3D', margin: 0 }}>
               ACA Affordability Check
             </h3>
-            <span style={badgeSmall('#F1F3F5', '#64707A')}>F5 &middot; Parameters</span>
+            <span style={badgeSmall('#F1F3F5', '#374151')}>F5 &middot; Parameters</span>
             <span style={provenanceChip('#F0EDFA', '#5A45C7')}>F5 &middot; Parameters &middot; 2026</span>
           </div>
           <span
             style={{
-              fontSize: 10,
+              fontSize: 'var(--type-badge)',
               fontWeight: 600,
               padding: '4px 10px',
               borderRadius: 4,
@@ -482,7 +482,7 @@ export default function StepRates() {
           </span>
         </div>
 
-        <p style={{ fontSize: 11, color: '#4A5568', margin: 0 }}>
+        <p style={{ fontSize: 'var(--type-body-sm)', color: '#374151', margin: 0 }}>
           Min EE-only contribution:{' '}
           <span style={{ ...monoStyle, fontWeight: 600 }}>${minEeOnly.toFixed(2)}/mo</span> vs.
           threshold{' '}

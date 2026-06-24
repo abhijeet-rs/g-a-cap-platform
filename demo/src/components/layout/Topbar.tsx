@@ -70,69 +70,64 @@ export default function Topbar() {
 
   return (
     <div style={{
-      height: 54, flexShrink: 0, background: '#fff',
-      borderBottom: '1px solid #E4E8ED',
-      display: 'flex', alignItems: 'center', padding: '0 24px', gap: 14,
+      height: 'var(--topbar-height)', flexShrink: 0, background: '#fff',
+      borderBottom: '1px solid var(--border-primary)',
+      display: 'flex', alignItems: 'center',
+      padding: '0 20px', gap: 12,
     }}>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 10, color: '#98A1A8', fontWeight: 500 }}>{crumb}</div>
-        <div style={{ fontSize: 14, fontWeight: 600, letterSpacing: -0.2 }}>{pageTitle}</div>
+      {/* LEFT: page context */}
+      <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <div style={{ fontSize: 'var(--type-caption)', color: 'var(--text-tertiary)', fontWeight: 500, lineHeight: 1.2, letterSpacing: '0.01em' }}>{crumb}</div>
+        <div style={{ fontSize: 'var(--type-section-title)', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.01em', lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{pageTitle}</div>
       </div>
 
-      {/* Viewing As role indicator */}
-      <div ref={dropdownRef} style={{ position: 'relative', marginRight: 8 }}>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            cursor: 'pointer',
-            padding: '4px 12px',
-            borderRadius: 6,
-            border: '1px solid #E4E8ED',
-            background: '#FBFCFD',
-          }}
+      {/* CENTER-RIGHT: role switcher */}
+      <div ref={dropdownRef} style={{ position: 'relative' }}>
+        <button
           onClick={() => setRoleDropdownOpen(!roleDropdownOpen)}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 6,
+            padding: '6px 12px', borderRadius: 8,
+            border: '1px solid var(--border-primary)',
+            background: 'var(--bg-secondary)',
+            cursor: 'pointer', whiteSpace: 'nowrap',
+          }}
         >
-          <span style={{ fontSize: 10, color: '#98A1A8', fontWeight: 500, lineHeight: '14px' }}>
-            VIEWING AS
+          <span style={{ fontSize: 'var(--type-badge)', color: 'var(--text-tertiary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Viewing as
           </span>
-          <span style={{ fontSize: 12, fontWeight: 600, color: '#1B2D3D', lineHeight: '16px' }}>
-            {roles[currentRole]?.label ?? 'User'} &#9662;
+          <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            {roles[currentRole]?.label ?? 'User'}
           </span>
-        </div>
+          <span style={{ fontSize: 'var(--type-badge)', color: 'var(--text-tertiary)' }}>&#9662;</span>
+        </button>
         {roleDropdownOpen && (
-          <div
-            style={{
-              position: 'absolute',
-              top: '100%',
-              right: 0,
-              marginTop: 4,
-              background: '#fff',
-              border: '1px solid #E4E8ED',
-              borderRadius: 8,
-              boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-              zIndex: 100,
-              minWidth: 180,
-              overflow: 'hidden',
-            }}
-          >
+          <div style={{
+            position: 'absolute', top: '100%', right: 0, marginTop: 4,
+            background: '#fff', border: '1px solid var(--border-primary)',
+            borderRadius: 10, boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+            zIndex: 100, minWidth: 200, overflow: 'hidden',
+            animation: 'fade-in .1s ease',
+          }}>
+            <div style={{ padding: '8px 12px', borderBottom: '1px solid var(--border-secondary)', fontSize: 'var(--type-badge)', fontWeight: 600, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Switch Role
+            </div>
             {allRoles.map((r) => (
               <div
                 key={r.key}
-                onClick={() => {
-                  switchRole(r.key);
-                  setRoleDropdownOpen(false);
-                }}
+                onClick={() => { switchRole(r.key); setRoleDropdownOpen(false); }}
                 style={{
-                  padding: '8px 14px',
-                  fontSize: 12,
+                  padding: '8px 12px',
+                  fontSize: 'var(--type-body-sm)',
                   fontWeight: currentRole === r.key ? 600 : 400,
-                  color: currentRole === r.key ? '#C60C30' : '#1B2D3D',
+                  color: currentRole === r.key ? '#C60C30' : 'var(--text-primary)',
                   background: currentRole === r.key ? '#FFF5F7' : '#fff',
                   cursor: 'pointer',
-                  borderBottom: '1px solid #F1F3F5',
+                  borderBottom: '1px solid var(--border-secondary)',
+                  transition: 'background 0.1s ease',
                 }}
+                onMouseEnter={(e) => { if (currentRole !== r.key) e.currentTarget.style.background = 'var(--bg-hover)'; }}
+                onMouseLeave={(e) => { if (currentRole !== r.key) e.currentTarget.style.background = '#fff'; }}
               >
                 {r.label}
               </div>
@@ -141,30 +136,41 @@ export default function Topbar() {
         )}
       </div>
 
+      {/* RIGHT: actions */}
       {can('create') && (
         <Link href="/new-business" style={{
           height: 34, padding: '0 14px', border: 'none', borderRadius: 8,
-          background: '#1a1a1a', color: '#fff', fontSize: 12, fontWeight: 600,
+          background: 'var(--text-primary)', color: '#fff',
+          fontSize: 'var(--type-body-sm)', fontWeight: 600,
           cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5,
-          boxShadow: '0 2px 6px rgba(0,0,0,.15)', textDecoration: 'none',
+          boxShadow: '0 1px 3px rgba(0,0,0,.12)', textDecoration: 'none',
+          transition: 'background 0.12s ease',
+          whiteSpace: 'nowrap',
         }}>
-          <span style={{ fontSize: 14 }}>+</span> New Business CAP
+          <span style={{ fontSize: 'var(--type-body-sm)' }}>+</span> New Business CAP
         </Link>
       )}
 
       <Link href="/renewal" style={{
-        height: 34, padding: '0 14px', border: '1px solid #E4E8ED', borderRadius: 8,
-        background: '#fff', color: '#1B2D3D', fontSize: 12, fontWeight: 600,
+        height: 34, padding: '0 14px',
+        border: '1px solid var(--border-primary)', borderRadius: 8,
+        background: '#fff', color: 'var(--text-primary)',
+        fontSize: 'var(--type-body-sm)', fontWeight: 600,
         cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5,
-        textDecoration: 'none',
+        textDecoration: 'none', whiteSpace: 'nowrap',
+        transition: 'border-color 0.12s ease',
       }}>
         ↻ Renewal CAP
       </Link>
 
       <button onClick={toggle} style={{
-        height: 34, padding: '0 12px', border: '1px solid #ECE9FA', borderRadius: 8,
-        background: '#F8F6FE', color: '#5A45C7', fontSize: 12, fontWeight: 600,
+        height: 34, padding: '0 12px',
+        border: '1px solid var(--color-cap-purple-border)', borderRadius: 8,
+        background: 'var(--color-cap-purple-light)', color: 'var(--color-cap-purple)',
+        fontSize: 'var(--type-body-sm)', fontWeight: 600,
         cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5,
+        whiteSpace: 'nowrap',
+        transition: 'background 0.12s ease',
       }}>
         ✦ Copilot
       </button>

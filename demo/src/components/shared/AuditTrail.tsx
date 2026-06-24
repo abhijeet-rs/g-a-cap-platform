@@ -34,7 +34,6 @@ export default function AuditTrail({ entityId }: AuditTrailProps) {
     ? auditLog.filter((e) => e.entityId === entityId)
     : auditLog;
 
-  // Show most recent first for display, but keep original order logic
   const events = filtered.map(formatEntry);
 
   return (
@@ -48,16 +47,16 @@ export default function AuditTrail({ entityId }: AuditTrailProps) {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 13, fontWeight: 600 }}>Audit Trail</span>
+          <span style={{ fontSize: 'var(--type-card-title)', fontWeight: 600 }}>Audit Trail</span>
           <span style={{
-            fontSize: 9, fontWeight: 600, padding: '2px 7px', borderRadius: 4,
-            background: '#F1F3F5', color: '#64707A',
+            fontSize: 'var(--type-badge)', fontWeight: 600, padding: '2px 7px', borderRadius: 4,
+            background: '#F1F3F5', color: '#374151',
           }}>
             {events.length} events
           </span>
         </div>
         <span style={{
-          fontSize: 10, color: '#98A1A8',
+          fontSize: 'var(--type-body-sm)', color: '#374151',
           transform: expanded ? 'rotate(180deg)' : 'none',
           transition: 'transform 0.2s ease', display: 'inline-block',
         }}>
@@ -74,9 +73,9 @@ export default function AuditTrail({ entityId }: AuditTrailProps) {
             borderBottom: '1px solid #EEF1F4',
           }}>
             <span />
-            <span style={{ fontSize: 9, fontWeight: 600, color: '#98A1A8', textTransform: 'uppercase', letterSpacing: 0.5 }}>Event</span>
-            <span style={{ fontSize: 9, fontWeight: 600, color: '#98A1A8', textTransform: 'uppercase', letterSpacing: 0.5, textAlign: 'right' }}>Date</span>
-            <span style={{ fontSize: 9, fontWeight: 600, color: '#98A1A8', textTransform: 'uppercase', letterSpacing: 0.5, textAlign: 'right' }}>Time</span>
+            <span style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', textTransform: 'uppercase', letterSpacing: 0.5 }}>Event</span>
+            <span style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', textTransform: 'uppercase', letterSpacing: 0.5, textAlign: 'right' }}>Date</span>
+            <span style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', textTransform: 'uppercase', letterSpacing: 0.5, textAlign: 'right' }}>Time</span>
           </div>
 
           {/* Event rows */}
@@ -86,7 +85,6 @@ export default function AuditTrail({ entityId }: AuditTrailProps) {
               gap: 8, padding: '7px 16px', alignItems: 'center',
               borderBottom: i < events.length - 1 ? '1px solid #F4F6F8' : 'none',
             }}>
-              {/* Dot */}
               <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <div style={{
                   width: 7, height: 7, borderRadius: '50%',
@@ -94,23 +92,20 @@ export default function AuditTrail({ entityId }: AuditTrailProps) {
                 }} />
               </div>
 
-              {/* Event text */}
-              <div style={{ fontSize: 11, color: '#1B2D3D', lineHeight: 1.4, minWidth: 0 }}>
+              <div style={{ fontSize: 'var(--type-body-sm)', color: '#1B2D3D', lineHeight: 1.4, minWidth: 0 }}>
                 <span style={{ fontWeight: 600 }}>{evt.name}</span>
                 {' '}{evt.action}
               </div>
 
-              {/* Date */}
               <div style={{
-                fontSize: 10, color: '#98A1A8', textAlign: 'right',
+                fontSize: 'var(--type-caption)', color: '#374151', textAlign: 'right',
                 fontFamily: "'IBM Plex Mono', monospace", whiteSpace: 'nowrap',
               }}>
                 {evt.date}
               </div>
 
-              {/* Time */}
               <div style={{
-                fontSize: 10, color: '#98A1A8', textAlign: 'right',
+                fontSize: 'var(--type-caption)', color: '#374151', textAlign: 'right',
                 fontFamily: "'IBM Plex Mono', monospace", whiteSpace: 'nowrap',
               }}>
                 {evt.time}
@@ -119,7 +114,7 @@ export default function AuditTrail({ entityId }: AuditTrailProps) {
           ))}
 
           {events.length === 0 && (
-            <div style={{ padding: '16px', textAlign: 'center', fontSize: 11, color: '#98A1A8' }}>
+            <div style={{ padding: '16px', textAlign: 'center', fontSize: 'var(--type-body)', color: '#374151' }}>
               No audit events recorded yet.
             </div>
           )}
@@ -131,11 +126,11 @@ export default function AuditTrail({ entityId }: AuditTrailProps) {
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#0074B8' }} />
-              <span style={{ fontSize: 9, color: '#64707A', fontWeight: 500 }}>User action</span>
+              <span style={{ fontSize: 'var(--type-caption)', color: '#374151', fontWeight: 500 }}>User action</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#5A45C7' }} />
-              <span style={{ fontSize: 9, color: '#64707A', fontWeight: 500 }}>System action</span>
+              <span style={{ fontSize: 'var(--type-caption)', color: '#374151', fontWeight: 500 }}>System action</span>
             </div>
           </div>
         </div>

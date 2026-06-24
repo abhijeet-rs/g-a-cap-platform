@@ -30,7 +30,7 @@ const monoStyle: React.CSSProperties = {
 };
 
 const badgeSmall = (bg: string, color: string): React.CSSProperties => ({
-  fontSize: 9,
+  fontSize: 'var(--type-badge)',
   fontWeight: 600,
   padding: '2px 8px',
   borderRadius: 4,
@@ -101,14 +101,14 @@ export default function StepPreview() {
         <div style={{ ...cardStyle, padding: 20 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <h3 style={{ fontSize: 14, fontWeight: 700, color: '#1B2D3D', margin: 0 }}>
+              <h3 style={{ fontSize: 'var(--type-section-title)', fontWeight: 700, color: '#1B2D3D', margin: 0 }}>
                 BEN ADMIN HANDOFF
               </h3>
               <span style={badgeSmall('#F0EDFA', '#5A45C7')}>NB9</span>
             </div>
             <span style={{
               display: 'inline-flex', alignItems: 'center', height: 24,
-              background: '#E4F2EA', color: '#1A7A4A', fontSize: 10, fontWeight: 600,
+              background: '#E4F2EA', color: '#1A7A4A', fontSize: 'var(--type-badge)', fontWeight: 600,
               borderRadius: 6, padding: '0 10px',
             }}>
               Submitted for Review
@@ -116,7 +116,7 @@ export default function StepPreview() {
           </div>
 
           <div style={{ borderTop: '2px solid #5A45C7', paddingTop: 16 }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: '#5A45C7', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 12 }}>
+            <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#5A45C7', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 12 }}>
               Structured Prism Payload
             </div>
             <div style={{
@@ -141,10 +141,10 @@ export default function StepPreview() {
                   borderBottom: i < arr.length - 1 ? '1px solid #EEF1F4' : 'none',
                   alignItems: 'center',
                 }}>
-                  <div style={{ fontSize: 10, fontWeight: 600, color: '#98A1A8', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+                  <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
                     {row.label}
                   </div>
-                  <div style={{ fontSize: 11, fontWeight: 500, fontFamily: "'IBM Plex Mono', monospace", color: '#1B2D3D' }}>
+                  <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 500, fontFamily: "'IBM Plex Mono', monospace", color: '#1B2D3D' }}>
                     {row.value}
                   </div>
                 </div>
@@ -155,7 +155,7 @@ export default function StepPreview() {
 
         {/* Downstream Systems */}
         <div style={{ ...cardStyle, padding: 20 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: '#64707A', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 12 }}>
+          <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 12 }}>
             Downstream Systems
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
@@ -173,15 +173,15 @@ export default function StepPreview() {
                 <div style={{
                   width: 22, height: 22, borderRadius: '50%',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 10, flexShrink: 0,
+                  fontSize: 'var(--type-body-sm)', flexShrink: 0,
                   background: '#E4F2EA', color: '#1A7A4A',
                 }}>
                   &#x2713;
                 </div>
-                <span style={{ fontSize: 11, fontWeight: 500, color: '#1B2D3D' }}>
+                <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 500, color: '#1B2D3D' }}>
                   {item.system}
                 </span>
-                <span style={{ fontSize: 10, color: '#64707A' }}>
+                <span style={{ fontSize: 'var(--type-body-sm)', color: '#374151' }}>
                   &mdash; {item.action}
                 </span>
               </div>
@@ -195,8 +195,8 @@ export default function StepPreview() {
             onClick={() => setSubmitted(false)}
             style={{
               height: 38, padding: '0 20px', borderRadius: 6,
-              border: '1px solid #DCE2E8', fontSize: 12, fontWeight: 600,
-              color: '#4A5568', background: '#fff', cursor: 'pointer',
+              border: '1px solid #DCE2E8', fontSize: 'var(--type-body-sm)', fontWeight: 600,
+              color: '#374151', background: '#fff', cursor: 'pointer',
               fontFamily: "'IBM Plex Sans', sans-serif",
             }}
           >
@@ -206,7 +206,7 @@ export default function StepPreview() {
             onClick={() => showToast('Prism payload generated', 'success')}
             style={{
               height: 38, padding: '0 20px', background: '#5A45C7', color: '#fff',
-              borderRadius: 6, fontSize: 12, fontWeight: 600,
+              borderRadius: 6, fontSize: 'var(--type-body-sm)', fontWeight: 600,
               border: 'none', cursor: 'pointer',
               fontFamily: "'IBM Plex Sans', sans-serif",
             }}
@@ -217,7 +217,7 @@ export default function StepPreview() {
             onClick={() => showToast('Opening ClientSpace case...', 'info')}
             style={{
               height: 38, padding: '0 20px', borderRadius: 6,
-              border: '1px solid #5A45C7', fontSize: 12, fontWeight: 600,
+              border: '1px solid #5A45C7', fontSize: 'var(--type-body-sm)', fontWeight: 600,
               color: '#5A45C7', background: '#fff', cursor: 'pointer',
               fontFamily: "'IBM Plex Sans', sans-serif",
             }}
@@ -253,11 +253,11 @@ export default function StepPreview() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: 9,
+                fontSize: 'var(--type-badge)',
                 fontWeight: 600,
                 flexShrink: 0,
                 background: ws.active ? '#C60C30' : '#EDF0F3',
-                color: ws.active ? '#fff' : '#98A1A8',
+                color: ws.active ? '#fff' : '#374151',
               }}
             >
               {i + 1}
@@ -265,18 +265,18 @@ export default function StepPreview() {
             {/* Label */}
             <span
               style={{
-                fontSize: 10,
+                fontSize: 'var(--type-body-sm)',
                 marginLeft: 6,
                 whiteSpace: 'nowrap',
                 fontWeight: ws.active ? 600 : 400,
-                color: ws.active ? '#1B2D3D' : '#98A1A8',
+                color: ws.active ? '#1B2D3D' : '#374151',
               }}
             >
               {ws.label}
             </span>
             {/* Arrow */}
             {i < workflowSteps.length - 1 && (
-              <span style={{ color: '#CBD2D9', margin: '0 12px', fontSize: 10 }}>&#8594;</span>
+              <span style={{ color: '#CBD2D9', margin: '0 12px', fontSize: 'var(--type-body-sm)' }}>&#8594;</span>
             )}
           </div>
         ))}
@@ -290,13 +290,13 @@ export default function StepPreview() {
           marginBottom: 14, paddingBottom: 12, borderBottom: '1px solid #E4E8ED',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: 13, fontWeight: 700, color: '#1B2D3D' }}>ClientSpace PRO</span>
-            <span style={{ color: '#98A1A8', fontSize: 11 }}>&middot;</span>
-            <span style={{ fontSize: 11, color: '#64707A' }}>Case Management</span>
+            <span style={{ fontSize: 'var(--type-card-title)', fontWeight: 700, color: '#1B2D3D' }}>ClientSpace PRO</span>
+            <span style={{ color: '#374151', fontSize: 'var(--type-body-sm)' }}>&middot;</span>
+            <span style={{ fontSize: 'var(--type-body-sm)', color: '#374151' }}>Case Management</span>
           </div>
           <span style={{
             fontFamily: "'IBM Plex Mono', monospace",
-            fontSize: 10, fontWeight: 600, color: '#0074B8',
+            fontSize: 'var(--type-badge)', fontWeight: 600, color: '#0074B8',
             background: '#E7F1FA', padding: '3px 8px', borderRadius: 4,
           }}>CS-2026-1847</span>
         </div>
@@ -309,7 +309,7 @@ export default function StepPreview() {
             { label: 'Status', value: null, custom: (
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#B0690A' }} />
-                <span style={{ fontSize: 11, fontWeight: 500, color: '#B0690A' }}>Open &mdash; Pending AM Submission</span>
+                <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 500, color: '#B0690A' }}>Open &mdash; Pending AM Submission</span>
               </div>
             )},
             { label: 'Assigned To', value: 'Dana Whitfield (AM)' },
@@ -317,10 +317,10 @@ export default function StepPreview() {
             { label: 'SLA', value: '5 business days' },
           ].map((row, i) => (
             <div key={i} style={{ display: 'grid', gridTemplateColumns: '130px 1fr', alignItems: 'center' }}>
-              <span style={{ fontSize: 10, fontWeight: 600, color: '#98A1A8', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+              <span style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
                 {row.label}
               </span>
-              {row.custom ?? <span style={{ fontSize: 11, fontWeight: 500, color: '#1B2D3D' }}>{row.value}</span>}
+              {row.custom ?? <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 500, color: '#1B2D3D' }}>{row.value}</span>}
             </div>
           ))}
         </div>
@@ -328,7 +328,7 @@ export default function StepPreview() {
         {/* Case Timeline */}
         <div style={{ borderTop: '1px solid #E4E8ED', paddingTop: 14, marginBottom: 14 }}>
           <div style={{
-            fontSize: 10, fontWeight: 600, color: '#98A1A8',
+            fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151',
             textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 10,
           }}>Case Timeline</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -350,11 +350,11 @@ export default function StepPreview() {
                 </div>
                 <div>
                   <span style={{
-                    fontSize: 10, fontWeight: 600,
-                    color: evt.done ? '#64707A' : '#B0690A',
+                    fontSize: 'var(--type-caption)', fontWeight: 600,
+                    color: evt.done ? '#374151' : '#B0690A',
                     fontFamily: "'IBM Plex Mono', monospace",
                   }}>{evt.time}</span>
-                  <span style={{ fontSize: 10, color: '#4A5568', marginLeft: 8 }}>{evt.text}</span>
+                  <span style={{ fontSize: 'var(--type-body-sm)', color: '#374151', marginLeft: 8 }}>{evt.text}</span>
                 </div>
               </div>
             ))}
@@ -366,8 +366,8 @@ export default function StepPreview() {
           background: '#FAFBFC', border: '1px solid #EEF1F4', borderRadius: 8,
           padding: 12,
         }}>
-          <div style={{ fontSize: 10, fontWeight: 600, color: '#64707A', marginBottom: 6 }}>On Submit:</div>
-          <div style={{ fontSize: 10, color: '#4A5568', lineHeight: 1.6 }}>
+          <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#374151', marginBottom: 6 }}>On Submit:</div>
+          <div style={{ fontSize: 'var(--type-body-sm)', color: '#374151', lineHeight: 1.6 }}>
             Case advances to &ldquo;Coordinator QC&rdquo; stage<br />
             &#x2192; Assigned to: Lena Ortiz (Coordinator)<br />
             &#x2192; ClientSpace benefits page updated<br />
@@ -388,7 +388,7 @@ export default function StepPreview() {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <h3 style={{ fontSize: 14, fontWeight: 600, color: '#1B2D3D', margin: 0 }}>
+            <h3 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, color: '#1B2D3D', margin: 0 }}>
               {company}
             </h3>
             <div
@@ -396,8 +396,8 @@ export default function StepPreview() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 8,
-                fontSize: 10,
-                color: '#64707A',
+                fontSize: 'var(--type-body-sm)',
+                color: '#374151',
               }}
             >
               <span>
@@ -416,8 +416,8 @@ export default function StepPreview() {
           <div style={{ textAlign: 'right' }}>
             <div
               style={{
-                fontSize: 10,
-                color: '#98A1A8',
+                fontSize: 'var(--type-table-header)',
+                color: '#374151',
                 textTransform: 'uppercase',
                 fontWeight: 600,
                 letterSpacing: '0.04em',
@@ -427,7 +427,7 @@ export default function StepPreview() {
             </div>
             <div
               style={{
-                fontSize: 16,
+                fontSize: 'var(--type-body-sm)',
                 fontWeight: 600,
                 color: '#1A7A4A',
                 ...monoStyle,
@@ -463,15 +463,15 @@ export default function StepPreview() {
                   >
                     {plan.masterOrOpen}
                   </span>
-                  <span style={{ fontSize: 11, fontWeight: 500, color: '#1B2D3D' }}>
+                  <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 500, color: '#1B2D3D' }}>
                     {plan.carrier} {plan.plan}
                   </span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                  <span style={{ fontSize: 10, color: '#64707A' }}>ER {plan.erPct}%</span>
+                  <span style={{ fontSize: 'var(--type-body-sm)', color: '#374151' }}>ER {plan.erPct}%</span>
                   <span
                     style={{
-                      fontSize: 11,
+                      fontSize: 'var(--type-body-sm)',
                       ...monoStyle,
                       fontWeight: 600,
                       color: '#1B2D3D',
@@ -509,7 +509,7 @@ export default function StepPreview() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: 11,
+              fontSize: 'var(--type-badge)',
               fontWeight: 700,
               flexShrink: 0,
               marginTop: 1,
@@ -520,7 +520,7 @@ export default function StepPreview() {
           <div style={{ flex: 1 }}>
             <div
               style={{
-                fontSize: 12,
+                fontSize: 'var(--type-body-sm)',
                 fontWeight: 600,
                 color: '#991B1B',
                 marginBottom: 4,
@@ -528,7 +528,7 @@ export default function StepPreview() {
             >
               Cannot submit &mdash; {errorCount} error{errorCount !== 1 ? 's' : ''} block Ben Admin handoff
             </div>
-            <div style={{ fontSize: 11, color: '#B91C1C', lineHeight: 1.5 }}>
+            <div style={{ fontSize: 'var(--type-body-sm)', color: '#B91C1C', lineHeight: 1.5 }}>
               Go to{' '}
               <span
                 onClick={() => goStep(5)}
@@ -555,9 +555,9 @@ export default function StepPreview() {
             padding: '0 20px',
             borderRadius: 6,
             border: '1px solid #DCE2E8',
-            fontSize: 12,
+            fontSize: 'var(--type-body-sm)',
             fontWeight: 600,
-            color: '#4A5568',
+            color: '#374151',
             background: '#fff',
             cursor: 'pointer',
             fontFamily: "'IBM Plex Sans', sans-serif",
@@ -579,7 +579,7 @@ export default function StepPreview() {
             background: '#C60C30',
             color: '#fff',
             borderRadius: 6,
-            fontSize: 12,
+            fontSize: 'var(--type-body-sm)',
             fontWeight: 600,
             boxShadow: submitBlocked ? 'none' : '0 3px 10px rgba(198,12,48,.2)',
             border: 'none',

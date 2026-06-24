@@ -9,33 +9,38 @@ export default function QuickActions() {
   const toggle = useCopilotStore((s) => s.toggle);
 
   return (
-    <div style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, overflow: 'hidden' }}>
-      <div style={{ padding: '12px 14px', borderBottom: '1px solid #EEF1F4' }}>
-        <div style={{ fontSize: 12, fontWeight: 600 }}>Quick Actions</div>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '10px 12px' }}>
+    <div style={{
+      background: '#fff', borderRadius: 12, overflow: 'hidden', padding: 16,
+      boxShadow: 'var(--shadow-sm)',
+    }}>
+      <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#111827', marginBottom: 12 }}>Quick Actions</div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {can('create') && (
           <Link href="/new-business" style={{
-            height: 32, borderRadius: 7, background: '#1a1a1a', color: '#fff',
-            fontSize: 11, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            textDecoration: 'none', boxShadow: '0 2px 6px rgba(0,0,0,.15)',
+            height: 36, borderRadius: 8, background: '#111827', color: '#fff',
+            fontSize: 'var(--type-caption)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            textDecoration: 'none',
+            boxShadow: 'var(--shadow-xs)',
+            transition: 'background 0.12s ease',
           }}>
             + New Business CAP
           </Link>
         )}
         <Link href="/renewal" style={{
-          height: 32, borderRadius: 7, border: '1px solid #E4E8ED', background: '#fff', color: '#1B2D3D',
-          fontSize: 11, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          height: 36, borderRadius: 8, border: '1px solid #E5E7EB', background: '#fff', color: '#374151',
+          fontSize: 'var(--type-caption)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center',
           textDecoration: 'none',
+          transition: 'background 0.12s ease',
         }}>
-          ↻ Start Renewal
+          &#8635; Start Renewal
         </Link>
         <button onClick={toggle} style={{
-          height: 32, borderRadius: 7, border: '1px solid #E4DDF7', background: '#F8F6FE', color: '#5A45C7',
-          fontSize: 11, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          height: 36, borderRadius: 8, border: '1px solid #E5E7EB', background: '#fff', color: '#374151',
+          fontSize: 'var(--type-caption)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center',
           cursor: 'pointer',
+          transition: 'background 0.12s ease',
         }}>
-          ✦ Ask Copilot
+          &#10022; Ask Copilot
         </button>
       </div>
     </div>

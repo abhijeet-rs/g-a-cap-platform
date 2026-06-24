@@ -139,7 +139,7 @@ export default function StepAssembly() {
                 backgroundColor: cfg.color,
               }}
             />
-            <span style={{ fontSize: 10, fontWeight: 600, color: '#4A5568' }}>{cfg.label}</span>
+            <span style={{ fontSize: 'var(--type-label)', fontWeight: 600, color: '#374151' }}>{cfg.label}</span>
           </div>
         ))}
       </div>
@@ -158,8 +158,8 @@ export default function StepAssembly() {
             gap: 10,
           }}
         >
-          <span style={{ fontSize: 16 }}>&#9888;</span>
-          <span style={{ fontSize: 11, fontWeight: 500, color: '#B0690A' }}>
+          <span style={{ fontSize: 'var(--type-body-sm)' }}>&#9888;</span>
+          <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 500, color: '#B0690A' }}>
             {attentionCount} items need attention &mdash; confirm values and fill missing fields
           </span>
         </div>
@@ -191,7 +191,7 @@ export default function StepAssembly() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <h3
                   style={{
-                    fontSize: 9,
+                    fontSize: 'var(--type-table-header)',
                     textTransform: 'uppercase',
                     fontWeight: 700,
                     color: '#C60C30',
@@ -203,7 +203,7 @@ export default function StepAssembly() {
                 </h3>
                 <span
                   style={{
-                    fontSize: 9,
+                    fontSize: 'var(--type-badge)',
                     fontWeight: 600,
                     padding: '2px 8px',
                     borderRadius: 4,
@@ -214,7 +214,7 @@ export default function StepAssembly() {
                   {section.source}
                 </span>
               </div>
-              <span style={{ fontSize: 10, color: '#98A1A8', fontWeight: 500 }}>
+              <span style={{ fontSize: 'var(--type-caption)', color: '#374151', fontWeight: 500 }}>
                 {counts.filled}/{counts.total} filled
               </span>
             </div>
@@ -271,10 +271,10 @@ export default function StepAssembly() {
                           backgroundColor: effectiveConfig.color,
                         }}
                       />
-                      <span style={{ fontSize: 10, color: '#64707A' }}>{field.label}</span>
+                      <span style={{ fontSize: 'var(--type-body-sm)', color: '#374151' }}>{field.label}</span>
                       {/* Confirmed checkmark next to label */}
                       {field.provenance === 'upload' && isConfirmed && (
-                        <span style={{ fontSize: 10, color: '#1A7A4A', fontWeight: 700 }}>&#10003;</span>
+                        <span style={{ fontSize: 'var(--type-badge)', color: '#1A7A4A', fontWeight: 700 }}>&#10003;</span>
                       )}
                       {/* Prism sync refresh icon */}
                       {(field as SyncableField).syncSource && (
@@ -288,9 +288,9 @@ export default function StepAssembly() {
                           }}
                           style={{
                             marginLeft: 'auto',
-                            fontSize: 11,
+                            fontSize: 'var(--type-badge)',
                             cursor: 'pointer',
-                            color: syncingField === key ? '#0074B8' : '#98A1A8',
+                            color: syncingField === key ? '#0074B8' : '#374151',
                             animation: syncingField === key ? 'spin .7s linear infinite' : 'none',
                             display: 'inline-flex',
                             alignItems: 'center',
@@ -304,7 +304,7 @@ export default function StepAssembly() {
                           {hoveredSync === key && syncingField !== key && (
                             <span style={{
                               position: 'absolute', bottom: '100%', right: 0, marginBottom: 4,
-                              background: '#1B2D3D', color: '#fff', fontSize: 9, fontWeight: 500,
+                              background: '#1B2D3D', color: '#fff', fontSize: 'var(--type-caption)', fontWeight: 500,
                               padding: '4px 8px', borderRadius: 5, whiteSpace: 'nowrap', zIndex: 20,
                               boxShadow: '0 2px 8px rgba(0,0,0,.15)',
                             }}>
@@ -316,7 +316,7 @@ export default function StepAssembly() {
                       {comment && (
                         <span
                           style={{
-                            fontSize: 10,
+                            fontSize: 'var(--type-badge)',
                             cursor: 'pointer',
                             marginLeft: 2,
                             position: 'relative',
@@ -334,7 +334,7 @@ export default function StepAssembly() {
                                 marginBottom: 4,
                                 background: '#1B2D3D',
                                 color: '#fff',
-                                fontSize: 10,
+                                fontSize: 'var(--type-caption)',
                                 fontWeight: 500,
                                 padding: '6px 10px',
                                 borderRadius: 6,
@@ -380,7 +380,7 @@ export default function StepAssembly() {
                                 height: 32,
                                 borderRadius: 6,
                                 padding: '0 10px',
-                                fontSize: 11,
+                                fontSize: 'var(--type-body-sm)',
                                 fontWeight: 500,
                                 outline: 'none',
                                 border: `1.5px solid ${inputBorderColor}`,
@@ -398,7 +398,7 @@ export default function StepAssembly() {
                                   border: 'none',
                                   background: '#E4F2EA',
                                   color: '#1A7A4A',
-                                  fontSize: 9,
+                                  fontSize: 'var(--type-body-sm)',
                                   fontWeight: 600,
                                   cursor: 'pointer',
                                   marginLeft: 6,
@@ -410,10 +410,10 @@ export default function StepAssembly() {
                             )}
                           </div>
                           {showError && (
-                            <div style={{ fontSize: 10, color: '#C60C30', marginTop: 3 }}>{validation.error}</div>
+                            <div style={{ fontSize: 'var(--type-caption)', color: '#C60C30', marginTop: 3 }}>{validation.error}</div>
                           )}
                           {!showError && rule?.hint && (
-                            <div style={{ fontSize: 10, color: '#98A1A8', marginTop: 3 }}>{rule.hint}</div>
+                            <div style={{ fontSize: 'var(--type-caption)', color: '#374151', marginTop: 3 }}>{rule.hint}</div>
                           )}
                         </div>
                       );
@@ -423,7 +423,7 @@ export default function StepAssembly() {
                           height: 32,
                           borderRadius: 6,
                           padding: '0 10px',
-                          fontSize: 11,
+                          fontSize: 'var(--type-body-sm)',
                           display: 'flex',
                           alignItems: 'center',
                           background: effectiveConfig.bg,
@@ -459,7 +459,7 @@ export default function StepAssembly() {
                                   marginBottom: 4,
                                   background: '#1B2D3D',
                                   color: '#fff',
-                                  fontSize: 10,
+                                  fontSize: 'var(--type-caption)',
                                   fontWeight: 500,
                                   padding: '6px 10px',
                                   borderRadius: 6,

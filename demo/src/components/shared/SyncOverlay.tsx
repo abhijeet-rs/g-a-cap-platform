@@ -19,9 +19,9 @@ export default function SyncOverlay() {
       <div style={{
         background: '#fff', borderRadius: 14, maxWidth: 500, width: '100%',
         margin: '0 16px', padding: 32,
-        boxShadow: '0 20px 60px rgba(16,32,45,.3)',
+        boxShadow: 'var(--shadow-overlay)',
       }}>
-        <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 20 }}>{title}</h3>
+        <h3 style={{ fontSize: 'var(--type-section-title)', fontWeight: 600, marginBottom: 20 }}>{title}</h3>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           {steps.map((step, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0' }}>
@@ -37,20 +37,20 @@ export default function SyncOverlay() {
                   <div style={{
                     width: 16, height: 16, borderRadius: '50%', background: '#E4F2EA',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: '#1A7A4A', fontSize: 10,
+                    color: '#1A7A4A', fontSize: 'var(--type-badge)',
                   }}>✓</div>
                 )}
                 {step.status === 'pending' && (
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#C0C8D0', margin: 'auto' }} />
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#9CA3AF', margin: 'auto' }} />
                 )}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{
-                  fontSize: 13,
-                  color: step.status === 'running' ? '#1B2D3D' : '#98A1A8',
+                  fontSize: 'var(--type-body)',
+                  color: step.status === 'running' ? '#1B2D3D' : '#374151',
                   fontWeight: step.status === 'running' ? 500 : 400,
                 }}>{step.label}</div>
-                <div style={{ fontSize: 10, fontFamily: "'IBM Plex Mono', monospace", color: '#C0C8D0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{step.api}</div>
+                <div style={{ fontSize: 'var(--type-caption)', fontFamily: "'IBM Plex Mono', monospace", color: '#9CA3AF', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{step.api}</div>
               </div>
             </div>
           ))}

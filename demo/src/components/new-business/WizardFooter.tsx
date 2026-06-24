@@ -74,9 +74,9 @@ export default function WizardFooter() {
             padding: '0 20px',
             borderRadius: 6,
             border: '1px solid #E4E8ED',
-            fontSize: 12,
+            fontSize: 'var(--type-body-sm)',
             fontWeight: 600,
-            color: '#4A5568',
+            color: '#374151',
             background: '#fff',
             cursor: 'pointer',
             fontFamily: "'IBM Plex Sans', sans-serif",
@@ -102,7 +102,7 @@ export default function WizardFooter() {
           />
           <span
             style={{
-              fontSize: 11,
+              fontSize: 'var(--type-body-sm)',
               fontWeight: 600,
               color: '#B0690A',
             }}
@@ -126,7 +126,7 @@ export default function WizardFooter() {
               />
               <span
                 style={{
-                  fontSize: 11,
+                  fontSize: 'var(--type-body-sm)',
                   fontWeight: 600,
                   color: '#C60C30',
                 }}
@@ -147,7 +147,7 @@ export default function WizardFooter() {
               />
               <span
                 style={{
-                  fontSize: 11,
+                  fontSize: 'var(--type-body-sm)',
                   fontWeight: 600,
                   color: '#1A7A4A',
                 }}
@@ -176,7 +176,7 @@ export default function WizardFooter() {
               background: submitBlocked ? '#C60C30' : '#C60C30',
               color: '#fff',
               borderRadius: 6,
-              fontSize: 12,
+              fontSize: 'var(--type-body-sm)',
               fontWeight: 600,
               boxShadow: submitBlocked ? 'none' : '0 3px 10px rgba(198,12,48,.2)',
               border: 'none',
@@ -199,7 +199,7 @@ export default function WizardFooter() {
             background: '#C60C30',
             color: '#fff',
             borderRadius: 6,
-            fontSize: 12,
+            fontSize: 'var(--type-body-sm)',
             fontWeight: 600,
             boxShadow: '0 3px 10px rgba(198,12,48,.2)',
             border: 'none',

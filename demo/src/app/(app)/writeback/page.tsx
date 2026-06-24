@@ -15,7 +15,7 @@ interface QueueItem {
 }
 
 const queue: QueueItem[] = [
-  { id: 'itafos', name: 'Itafos Conda', wse: 298, carrier: 'BCBSTX', status: 'validated' },
+  { id: 'westlake', name: 'Westlake Financial Group', wse: 312, carrier: 'BCBSTX', status: 'validated' },
   { id: 'northwind', name: 'Northwind LLC', wse: 54, carrier: 'Cigna', status: 'validated' },
   { id: 'acme', name: 'Acme Foods', wse: 112, carrier: 'Aetna', status: 'needs_review' },
   { id: 'sterling', name: 'Sterling Mfg', wse: 38, carrier: 'Aetna', status: 'validated' },
@@ -147,10 +147,10 @@ function PrismSyncOverlay({ onClose }: { onClose: () => void }) {
         width: 480, boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
       }}>
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2D3D' }}>
+          <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 700, color: '#1B2D3D' }}>
             Pushing to Prism
           </div>
-          <div style={{ fontSize: 11, color: '#98A1A8', marginTop: 4 }}>
+          <div style={{ fontSize: 'var(--type-body)', color: '#374151', marginTop: 4 }}>
             PrismHR Services API &middot; BenefitService + EmployeeService
           </div>
         </div>
@@ -168,29 +168,29 @@ function PrismSyncOverlay({ onClose }: { onClose: () => void }) {
                 <div style={{
                   width: 24, height: 24, borderRadius: '50%',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 10, fontWeight: 700, flexShrink: 0,
+                  fontSize: 'var(--type-badge)', fontWeight: 700, flexShrink: 0,
                   background: isDone ? '#1A7A4A' : isActive ? '#0074B8' : '#EDF0F3',
-                  color: isDone || isActive ? '#fff' : '#98A1A8',
+                  color: isDone || isActive ? '#fff' : '#374151',
                 }}>
                   {isDone ? '✓' : s.step}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: '#1B2D3D' }}>
+                  <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, color: '#1B2D3D' }}>
                     Step {s.step} &middot; {s.label}
                     <span style={{
-                      fontSize: 9, fontWeight: 600, marginLeft: 6,
+                      fontSize: 'var(--type-badge)', fontWeight: 600, marginLeft: 6,
                       padding: '1px 5px', borderRadius: 3,
                       background: s.mode === 'read' ? '#E7F1FA' : '#FEF2F2',
                       color: s.mode === 'read' ? '#0074B8' : '#C60C30',
                     }}>{s.mode}</span>
                   </div>
                   {isActive && (
-                    <div style={{ fontSize: 10, color: '#0074B8', marginTop: 2 }}>
+                    <div style={{ fontSize: 'var(--type-body-lg)', color: '#0074B8', marginTop: 2 }}>
                       Processing {s.methods.length} API calls...
                     </div>
                   )}
                   {isDone && (
-                    <div style={{ fontSize: 10, color: '#1A7A4A', marginTop: 2 }}>
+                    <div style={{ fontSize: 'var(--type-body-lg)', color: '#1A7A4A', marginTop: 2 }}>
                       {s.methods.length} calls completed
                     </div>
                   )}
@@ -204,12 +204,12 @@ function PrismSyncOverlay({ onClose }: { onClose: () => void }) {
             <div style={{
               width: 40, height: 40, borderRadius: '50%', background: '#1A7A4A',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              margin: '0 auto 10px', color: '#fff', fontSize: 18, fontWeight: 700,
+              margin: '0 auto 10px', color: '#fff', fontSize: 'var(--type-display)', fontWeight: 700,
             }}>{'✓'}</div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: '#1A7A4A' }}>
+            <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, color: '#1A7A4A' }}>
               Push Complete
             </div>
-            <div style={{ fontSize: 11, color: '#64707A', marginTop: 4 }}>
+            <div style={{ fontSize: 'var(--type-body)', color: '#374151', marginTop: 4 }}>
               18 API calls &middot; 298 WSE enrolled &middot; Confirmation #PRH-2026-84721
             </div>
             <button
@@ -217,7 +217,7 @@ function PrismSyncOverlay({ onClose }: { onClose: () => void }) {
               style={{
                 marginTop: 16, height: 36, padding: '0 24px',
                 background: '#1A7A4A', color: '#fff', borderRadius: 8,
-                fontSize: 12, fontWeight: 600, border: 'none', cursor: 'pointer',
+                fontSize: 'var(--type-body-sm)', fontWeight: 600, border: 'none', cursor: 'pointer',
               }}
             >
               Done
@@ -234,7 +234,7 @@ function PrismSyncOverlay({ onClose }: { onClose: () => void }) {
 /* ------------------------------------------------------------------ */
 
 export default function WritebackPage() {
-  const [selectedId, setSelectedId] = useState('itafos');
+  const [selectedId, setSelectedId] = useState('westlake');
   const [commentText, setCommentText] = useState('');
   const [comments, setComments] = useState<Comment[]>(existingComments);
   const [showSync, setShowSync] = useState(false);
@@ -258,9 +258,9 @@ export default function WritebackPage() {
   };
 
   const sectionLabel: React.CSSProperties = {
-    fontSize: 10,
+    fontSize: 'var(--type-table-header)',
     fontWeight: 600,
-    color: '#98A1A8',
+    color: '#374151',
     textTransform: 'uppercase',
     letterSpacing: '0.04em',
     marginBottom: 10,
@@ -268,7 +268,7 @@ export default function WritebackPage() {
 
   const mono: React.CSSProperties = {
     fontFamily: "'IBM Plex Mono', monospace",
-    fontSize: 11,
+    fontSize: 'var(--type-caption)',
   };
 
   return (
@@ -278,10 +278,10 @@ export default function WritebackPage() {
       <div style={{ marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
-            <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700, color: '#5A45C7' }}>
+            <div style={{ fontSize: 'var(--type-section-title)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700, color: '#5A45C7' }}>
               Ben Admin Console &middot; Prism Write-Back
             </div>
-            <div style={{ fontSize: 12, color: '#64707A', marginTop: 2 }}>
+            <div style={{ fontSize: 'var(--type-body-lg)', color: '#374151', marginTop: 2 }}>
               {queue.length} CAPs approved and ready for Prism setup
             </div>
           </div>
@@ -295,7 +295,7 @@ export default function WritebackPage() {
               <div key={note.label} style={{
                 padding: '4px 8px', borderRadius: 5,
                 background: '#F8F6FE', border: '1px solid #ECE9FA',
-                fontSize: 9, color: '#5A45C7', fontWeight: 500,
+                fontSize: 'var(--type-body)', color: '#5A45C7', fontWeight: 500,
                 maxWidth: 160,
               }}>
                 <span style={{ fontWeight: 700 }}>{note.label}:</span> {note.detail}
@@ -311,8 +311,8 @@ export default function WritebackPage() {
         {/* ──────── LEFT: Approved CAPs Queue ──────── */}
         <div style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, overflow: 'hidden' }}>
           <div style={{ padding: '14px 16px 10px', borderBottom: '1px solid #E4E8ED' }}>
-            <h2 style={{ fontSize: 13, fontWeight: 600, margin: 0 }}>Approved CAPs</h2>
-            <div style={{ fontSize: 10, color: '#98A1A8', marginTop: 2 }}>Ready for Prism setup</div>
+            <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, margin: 0 }}>Approved CAPs</h2>
+            <div style={{ fontSize: 'var(--type-body-lg)', color: '#374151', marginTop: 2 }}>Ready for Prism setup</div>
           </div>
           {queue.map((item) => {
             const isSelected = item.id === selectedId;
@@ -331,13 +331,13 @@ export default function WritebackPage() {
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2D3D' }}>{item.name}</div>
-                    <div style={{ fontSize: 10, color: '#98A1A8', marginTop: 2 }}>
+                    <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, color: '#1B2D3D' }}>{item.name}</div>
+                    <div style={{ fontSize: 'var(--type-body-lg)', color: '#374151', marginTop: 2 }}>
                       {item.wse} WSE &middot; {item.carrier}
                     </div>
                   </div>
                   <span style={{
-                    fontSize: 9, fontWeight: 600, padding: '2px 7px', borderRadius: 4,
+                    fontSize: 'var(--type-badge)', fontWeight: 600, padding: '2px 7px', borderRadius: 4,
                     background: item.status === 'validated' ? '#E4F2EA' : '#FBF0DD',
                     color: item.status === 'validated' ? '#1A7A4A' : '#B0690A',
                   }}>
@@ -355,18 +355,18 @@ export default function WritebackPage() {
           {/* Header */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <h1 style={{ fontSize: 18, fontWeight: 600, margin: 0 }}>{selected.name}</h1>
-              <div style={{ fontSize: 10, color: '#98A1A8', marginTop: 2 }}>
+              <h1 style={{ fontSize: 'var(--type-section-title)', fontWeight: 600, margin: 0 }}>{selected.name}</h1>
+              <div style={{ fontSize: 'var(--type-body-lg)', color: '#374151', marginTop: 2 }}>
                 {selected.wse} WSE &middot; {selected.carrier} &middot; Approved CAP
               </div>
             </div>
             <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
               <span style={{
-                fontSize: 9, fontWeight: 600, padding: '3px 8px', borderRadius: 4,
+                fontSize: 'var(--type-badge)', fontWeight: 600, padding: '3px 8px', borderRadius: 4,
                 background: '#F0EDFA', color: '#5A45C7',
               }}>PrismHR Target</span>
               <span style={{
-                fontSize: 9, fontWeight: 600, padding: '3px 8px', borderRadius: 4,
+                fontSize: 'var(--type-badge)', fontWeight: 600, padding: '3px 8px', borderRadius: 4,
                 background: selected.status === 'validated' ? '#E4F2EA' : '#FBF0DD',
                 color: selected.status === 'validated' ? '#1A7A4A' : '#B0690A',
               }}>
@@ -378,16 +378,16 @@ export default function WritebackPage() {
           {/* ════════ Section 1: Payload Preview ════════ */}
           <div style={cardStyle}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-              <h2 style={{ fontSize: 13, fontWeight: 600, margin: 0 }}>Payload Preview</h2>
+              <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, margin: 0 }}>Payload Preview</h2>
               <span style={{
                 display: 'inline-flex', alignItems: 'center', height: 20,
                 background: '#F0EDFA', color: '#5A45C7',
-                fontSize: 9, fontWeight: 600, borderRadius: 4, padding: '0 8px',
+                fontSize: 'var(--type-badge)', fontWeight: 600, borderRadius: 4, padding: '0 8px',
               }}>Structured Data</span>
             </div>
             <div style={{ background: '#FAFBFC', borderRadius: 8, border: '1px solid #EEF1F4', overflow: 'hidden' }}>
               {[
-                { label: 'Client', value: 'Itafos Conda (2908)' },
+                { label: 'Client', value: 'Westlake Financial Group (3041)' },
                 { label: 'Plans', value: '5 medical, 2 dental, 1 vision' },
                 { label: 'Tier Rates', value: 'EO $931.52, ES $2,022.31, EC $1,831.84, EF $2,933.04' },
                 { label: 'ER Contribution', value: 'Variable 72/50%' },
@@ -401,7 +401,7 @@ export default function WritebackPage() {
                   padding: '8px 14px', alignItems: 'center',
                   borderBottom: i < arr.length - 1 ? '1px solid #EEF1F4' : 'none',
                 }}>
-                  <div style={{ fontSize: 10, fontWeight: 600, color: '#98A1A8', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+                  <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
                     {row.label}
                   </div>
                   <div style={{ ...mono, fontWeight: 500, color: '#1B2D3D' }}>{row.value}</div>
@@ -412,7 +412,7 @@ export default function WritebackPage() {
 
           {/* ════════ Section 2: Pre-Write Validation ════════ */}
           <div style={cardStyle}>
-            <h2 style={{ fontSize: 13, fontWeight: 600, margin: 0, marginBottom: 12 }}>Pre-Write Validation</h2>
+            <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, margin: 0, marginBottom: 12 }}>Pre-Write Validation</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               {validationChecks.map((check, i) => (
                 <div key={i} style={{
@@ -423,14 +423,14 @@ export default function WritebackPage() {
                   <div style={{
                     width: 18, height: 18, borderRadius: '50%', flexShrink: 0, marginTop: 1,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 9, fontWeight: 700,
+                    fontSize: 'var(--type-badge)', fontWeight: 700,
                     background: check.pass ? '#E4F2EA' : '#FBF0DD',
                     color: check.pass ? '#1A7A4A' : '#B0690A',
                   }}>
                     {check.pass ? '✓' : '⚠'}
                   </div>
                   <span style={{
-                    fontSize: 11, fontWeight: 500,
+                    fontSize: 'var(--type-body)', fontWeight: 500,
                     color: check.pass ? '#2D3339' : '#B0690A',
                   }}>
                     {check.label}
@@ -443,12 +443,12 @@ export default function WritebackPage() {
           {/* ════════ Section 3: API Call Sequence ════════ */}
           <div style={cardStyle}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-              <h2 style={{ fontSize: 13, fontWeight: 600, margin: 0 }}>Prism Write-Back Orchestration</h2>
-              <span style={{ fontSize: 10, color: '#64707A' }}>
+              <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, margin: 0 }}>Prism Write-Back Orchestration</h2>
+              <span style={{ fontSize: 'var(--type-body-lg)', color: '#374151' }}>
                 PrismHR Services API &middot; BenefitService + EmployeeService
               </span>
             </div>
-            <div style={{ fontSize: 10, color: '#98A1A8', marginBottom: 14 }}>
+            <div style={{ fontSize: 'var(--type-body-lg)', color: '#374151', marginBottom: 14 }}>
               {apiSteps.reduce((sum, s) => sum + s.methods.length, 0)} total API calls across {apiSteps.length} orchestration steps
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -468,14 +468,14 @@ export default function WritebackPage() {
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                       <span style={{
-                        fontSize: 10, fontWeight: 700,
+                        fontSize: 'var(--type-badge)', fontWeight: 700,
                         padding: '2px 8px', borderRadius: 4,
                         background: labelBg, color: labelFg,
                       }}>
                         Step {step.step} &middot; {step.label}
                       </span>
                       <span style={{
-                        fontSize: 9, fontWeight: 600, padding: '1px 5px',
+                        fontSize: 'var(--type-badge)', fontWeight: 600, padding: '1px 5px',
                         borderRadius: 3, background: labelBg, color: labelFg,
                       }}>{step.mode}</span>
                     </div>
@@ -488,13 +488,13 @@ export default function WritebackPage() {
                       {step.methods.map((method) => (
                         <div key={method} style={{
                           fontFamily: "'IBM Plex Mono', monospace",
-                          fontSize: 11, color: '#1B2D3D', fontWeight: 500,
+                          fontSize: 'var(--type-caption)', color: '#1B2D3D', fontWeight: 500,
                         }}>
                           {method}
                         </div>
                       ))}
                     </div>
-                    <div style={{ fontSize: 10, color: '#64707A', marginTop: 6, fontStyle: 'italic' }}>
+                    <div style={{ fontSize: 'var(--type-body-lg)', color: '#374151', marginTop: 6, fontStyle: 'italic' }}>
                       &rarr; {step.description}
                     </div>
                   </div>
@@ -505,7 +505,7 @@ export default function WritebackPage() {
 
           {/* ════════ Section 4: Comments & Notes ════════ */}
           <div style={cardStyle}>
-            <h2 style={{ fontSize: 13, fontWeight: 600, margin: 0, marginBottom: 12 }}>Comments &amp; Notes</h2>
+            <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, margin: 0, marginBottom: 12 }}>Comments &amp; Notes</h2>
 
             {/* Comment input */}
             <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
@@ -517,7 +517,7 @@ export default function WritebackPage() {
                 placeholder="Add a comment or note..."
                 style={{
                   flex: 1, height: 34, border: '1px solid #DCE2E8', borderRadius: 6,
-                  padding: '0 10px', fontSize: 12, background: '#FBFCFD', outline: 'none',
+                  padding: '0 10px', fontSize: 'var(--type-body-sm)', background: '#FBFCFD', outline: 'none',
                   fontFamily: "'IBM Plex Sans', sans-serif",
                 }}
               />
@@ -526,7 +526,7 @@ export default function WritebackPage() {
                 style={{
                   height: 34, padding: '0 14px', borderRadius: 6,
                   background: '#5A45C7', color: '#fff', border: 'none',
-                  fontSize: 11, fontWeight: 600, cursor: 'pointer',
+                  fontSize: 'var(--type-body-sm)', fontWeight: 600, cursor: 'pointer',
                 }}
               >
                 Post
@@ -542,15 +542,15 @@ export default function WritebackPage() {
                   border: `1px solid ${c.author === 'System' ? '#E4E8ED' : '#EEF1F4'}`,
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                    <span style={{ fontSize: 11, fontWeight: 600, color: '#1B2D3D' }}>{c.author}</span>
+                    <span style={{ fontSize: 'var(--type-body)', fontWeight: 600, color: '#1B2D3D' }}>{c.author}</span>
                     <span style={{
                       fontSize: 8, fontWeight: 600, padding: '1px 5px', borderRadius: 3,
                       background: c.author === 'System' ? '#EDF0F3' : '#E7F1FA',
-                      color: c.author === 'System' ? '#64707A' : '#0074B8',
+                      color: c.author === 'System' ? '#374151' : '#0074B8',
                     }}>{c.role}</span>
-                    <span style={{ fontSize: 10, color: '#98A1A8', marginLeft: 'auto' }}>{c.time}</span>
+                    <span style={{ fontSize: 'var(--type-caption)', color: '#374151', marginLeft: 'auto' }}>{c.time}</span>
                   </div>
-                  <div style={{ fontSize: 11, color: '#4A5568', lineHeight: 1.5 }}>{c.text}</div>
+                  <div style={{ fontSize: 'var(--type-body)', color: '#374151', lineHeight: 1.5 }}>{c.text}</div>
                 </div>
               ))}
             </div>
@@ -566,7 +566,7 @@ export default function WritebackPage() {
               style={{
                 height: 40, padding: '0 24px',
                 background: '#C60C30', color: '#fff',
-                borderRadius: 8, fontSize: 13, fontWeight: 700,
+                borderRadius: 8, fontSize: 'var(--type-body-sm)', fontWeight: 700,
                 border: 'none', cursor: 'pointer',
                 boxShadow: '0 3px 12px rgba(198,12,48,.25)',
                 fontFamily: "'IBM Plex Sans', sans-serif",
@@ -577,7 +577,7 @@ export default function WritebackPage() {
             <button style={{
               height: 40, padding: '0 20px',
               background: '#fff', color: '#C60C30',
-              borderRadius: 8, fontSize: 12, fontWeight: 600,
+              borderRadius: 8, fontSize: 'var(--type-body-sm)', fontWeight: 600,
               border: '1px solid #C60C30', cursor: 'pointer',
               fontFamily: "'IBM Plex Sans', sans-serif",
             }}>
@@ -585,8 +585,8 @@ export default function WritebackPage() {
             </button>
             <button style={{
               height: 40, padding: '0 20px',
-              background: '#fff', color: '#64707A',
-              borderRadius: 8, fontSize: 12, fontWeight: 600,
+              background: '#fff', color: '#374151',
+              borderRadius: 8, fontSize: 'var(--type-body-sm)', fontWeight: 600,
               border: '1px solid #DCE2E8', cursor: 'pointer',
               fontFamily: "'IBM Plex Sans', sans-serif",
             }}>

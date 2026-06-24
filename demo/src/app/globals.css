@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  /* === Colors === */
+  /* === Brand Colors === */
   --color-brand-red: #C60C30;
   --color-brand-red-hover: #A50A28;
   --color-brand-red-light: #FDECEF;
@@ -21,6 +21,7 @@
   --color-sidebar-bg: #13212C;
   --color-page-bg: #F5F7FA;
 
+  /* === Slate Grayscale === */
   --color-slate-900: #1B2D3D;
   --color-slate-800: #253644;
   --color-slate-700: #3B4A57;
@@ -36,7 +37,7 @@
   --color-slate-25: #FBFCFD;
 
   /* === Fonts === */
-  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-sans: 'Inter', 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
 
   /* === Shadows === */
@@ -85,7 +86,106 @@
   }
 }
 
-/* === Global resets === */
+/* ══════════════════════════════════════════════════
+   ENTERPRISE DESIGN SYSTEM — G&A Compass
+   ══════════════════════════════════════════════════ */
+
+:root {
+  /* ── Typography Scale ──
+     rem-based: scales with responsive body font-size
+     (16px → 17px @1024 → 18px @1440).
+     At 1440px+: section-title≈20px, card-title≈17px, body≈16px */
+  --type-display:        1.75rem;
+  --type-page-title:     1.375rem;
+  --type-section-title:  1.125rem;
+  --type-card-title:     0.9375rem;
+  --type-table-header:   0.6875rem;
+  --type-body-lg:        0.9375rem;
+  --type-body:           0.875rem;
+  --type-body-sm:        0.8125rem;
+  --type-caption:        0.75rem;
+  --type-label:          0.6875rem;
+  --type-badge:          0.625rem;
+
+  /* ── Font Weights ── */
+  --weight-regular:   400;
+  --weight-medium:    500;
+  --weight-semibold:  600;
+  --weight-bold:      700;
+
+  /* ── Line Heights ── */
+  --leading-none:     1;
+  --leading-tight:    1.2;
+  --leading-snug:     1.35;
+  --leading-normal:   1.5;
+  --leading-relaxed:  1.6;
+
+  /* ── Sidebar Typography ── */
+  --type-nav:          0.8125rem;
+  --type-nav-sub:      0.75rem;
+  --type-nav-section:  0.625rem;
+
+  /* ── Spacing (8px grid) ── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* ── Elevation ── */
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.06), 0 2px 4px -2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.06), 0 4px 6px -4px rgba(0,0,0,0.04);
+
+  /* ── Radii ── */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* ── Semantic Colors ── */
+  --bg-primary: #ffffff;
+  --bg-secondary: #F9FAFB;
+  --bg-hover: #F3F4F6;
+  --border-primary: #E5E7EB;
+  --border-secondary: #F3F4F6;
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+  --text-tertiary: #9CA3AF;
+
+  /* ── Status Badge System ── */
+  --status-draft-bg: #F3F4F6;
+  --status-draft-fg: #6B7280;
+  --status-review-bg: #DBEAFE;
+  --status-review-fg: #1D4ED8;
+  --status-approved-bg: #D1FAE5;
+  --status-approved-fg: #065F46;
+  --status-signed-bg: #FEF3C7;
+  --status-signed-fg: #92400E;
+  --status-published-bg: #D1FAE5;
+  --status-published-fg: #065F46;
+  --status-ready-bg: #E4F2EA;
+  --status-ready-fg: #1A7A4A;
+  --status-awaiting-bg: #FBF0DD;
+  --status-awaiting-fg: #B0690A;
+  --status-connected-bg: #E4F2EA;
+  --status-connected-fg: #1A7A4A;
+  --status-failed-bg: #FDECEF;
+  --status-failed-fg: #C60C30;
+
+  /* ── Layout ── */
+  --topbar-height: 56px;
+  --sidebar-width: 240px;
+}
+
+/* ══════════════════════════════════════════════════
+   GLOBAL RESETS
+   ══════════════════════════════════════════════════ */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -98,15 +198,75 @@ html, body {
 
 body {
   font-family: var(--font-sans);
-  color: #1B2D3D;
-  background: #F5F7FA;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: #fff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Responsive body font-size */
+@media (min-width: 768px) {
+  body { font-size: 16px; }
+}
+@media (min-width: 1024px) {
+  body { font-size: 17px; }
+}
+@media (min-width: 1440px) {
+  body { font-size: 18px; }
+}
+
 /* Scrollbars */
-::-webkit-scrollbar { width: 7px; height: 7px; }
-::-webkit-scrollbar-thumb { background: #C0C8D0; border-radius: 8px; border: 2px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: var(--color-slate-300); border-radius: 8px; border: 1px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-slate-400); background-clip: content-box; }
 ::-webkit-scrollbar-track { background: transparent; }
 
 input, button, select, textarea { font-family: inherit; }
+
+/* Focus ring for accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-cap-blue);
+  outline-offset: 2px;
+}
+
+/* ══════════════════════════════════════════════════
+   ENTERPRISE COMPONENT STANDARDS
+   ══════════════════════════════════════════════════ */
+
+/* Status badge utility classes */
+.badge-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: var(--type-badge);
+  font-weight: 600;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+/* Card standard */
+.card-enterprise {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+  transition: box-shadow 0.15s ease;
+}
+.card-enterprise:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+/* Table header standard */
+.th-enterprise {
+  font-size: var(--type-table-header);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 10px 16px;
+}

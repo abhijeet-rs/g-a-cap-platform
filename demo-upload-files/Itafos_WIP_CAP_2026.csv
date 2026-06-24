@@ -1,0 +1,25 @@
+Section,Field,Value,Status
+Header,Company Name,Itafos Conda,Complete
+Header,Prism ID,2908,Complete
+Header,Plan Year,July 2026 - June 2027,Complete
+Header,Type,Renewal,Complete
+Header,Medical Carrier,BCBS Texas,Complete
+Header,EE Count,298,Complete
+General,Pay Periods,Semi-Monthly (24),Complete
+General,Classes,"Primary, Grandfathered, CEO",Complete
+General,Waiting Period,Date of Hire,Complete
+UW,Bucket,0.975,Complete
+UW,Admin Factor,1.013,Complete
+UW,Commission,0.03,Complete
+UW,Risk Factor,1.043,Complete
+Products,Medical,Master BCBSTX (plans+rates changed),Complete
+Products,Dental,Master Guardian TX 1.0 (rates only),Complete
+Products,Vision,Master Guardian (same),Complete
+Rates,PPO $500 EO Total,$931.52,Complete
+Rates,PPO $500 EO ER,$670.69,Complete
+Rates,PPO $500 EO EE,$260.83,Complete
+Rates,HDHP $3300 EO Total,$745.55,Complete
+Rates,Dental EO Total,$29.00,Needs Review
+Rates,Vision EO Total,$6.00,Complete
+Admin,Enrollment Method,NextGen Electronic,Complete
+Admin,Billing,Monthly 1st PP,Complete

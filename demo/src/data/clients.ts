@@ -1,7 +1,7 @@
 import { Client } from '@/lib/types';
 
 export const clients: Client[] = [
-  { id: 'itafos', name: 'Itafos Conda', prism: 'GA-2908', tier: 'Platinum', wse: 298, owner: 'Danielle Andre', status: 'in_review', eff: '2025-07-01', urgDays: 28, renewDay: '01', renewMon: 'Jul' },
+  { id: 'westlake', name: 'Westlake Financial Group', prism: 'GA-3041', tier: 'Platinum', wse: 312, owner: 'Danielle Andre', status: 'in_review', eff: '2025-07-01', urgDays: 28, renewDay: '01', renewMon: 'Jul' },
   { id: 'meridian', name: 'Meridian Logistics Group', prism: 'GA-10428', tier: 'Gold', wse: 142, owner: 'Dana Whitfield', status: 'draft', eff: '2026-01-01', urgDays: 45, renewDay: '15', renewMon: 'Jul' },
   { id: 'cascade', name: 'Cascade Health', prism: 'GA-10193', tier: 'Platinum', wse: 318, owner: 'Marcus Reyes', status: 'published', eff: '2026-01-01', urgDays: 167, renewDay: '01', renewMon: 'Dec' },
   { id: 'ironwood', name: 'Ironwood Construction', prism: 'GA-10551', tier: 'Silver', wse: 67, owner: 'Dana Whitfield', status: 'draft', eff: '2026-09-01', urgDays: 76, renewDay: '01', renewMon: 'Sep' },

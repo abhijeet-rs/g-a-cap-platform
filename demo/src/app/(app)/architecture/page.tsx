@@ -72,7 +72,7 @@ export default function ArchitecturePage() {
               height: 30,
               padding: '0 12px',
               borderRadius: 7,
-              fontSize: 10,
+              fontSize: 'var(--type-body-sm)',
               fontWeight: 600,
               cursor: 'pointer',
               background: activeTab === tab.key ? '#13212C' : '#fff',
@@ -93,14 +93,14 @@ export default function ArchitecturePage() {
               key={step.title}
               style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, padding: 16, marginBottom: 8, display: 'flex', alignItems: 'flex-start', gap: 12 }}
             >
-              <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#C60C30', color: '#fff', fontSize: 12, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#C60C30', color: '#fff', fontSize: 'var(--type-label)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 {i + 1}
               </div>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2D3D' }}>
+                <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, color: '#1B2D3D' }}>
                   {step.title}
                 </div>
-                <p style={{ fontSize: 10.5, color: '#64707A', marginTop: 2 }}>
+                <p style={{ fontSize: 'var(--type-body)', color: '#374151', marginTop: 2 }}>
                   {step.desc}
                 </p>
               </div>
@@ -117,10 +117,10 @@ export default function ArchitecturePage() {
               key={card.title}
               style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, padding: 14, borderLeft: `4px solid ${card.accent}` }}
             >
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2D3D' }}>
+              <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, color: '#1B2D3D' }}>
                 {card.title}
               </div>
-              <p style={{ fontSize: 10.5, color: '#64707A', lineHeight: 1.6, marginTop: 4 }}>
+              <p style={{ fontSize: 'var(--type-body)', color: '#374151', lineHeight: 1.6, marginTop: 4 }}>
                 {card.body}
               </p>
             </div>
@@ -136,10 +136,10 @@ export default function ArchitecturePage() {
               key={card.title}
               style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, padding: 14, borderLeft: `4px solid ${card.accent}` }}
             >
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2D3D' }}>
+              <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, color: '#1B2D3D' }}>
                 {card.title}
               </div>
-              <p style={{ fontSize: 10.5, color: '#64707A', lineHeight: 1.6, marginTop: 4 }}>
+              <p style={{ fontSize: 'var(--type-body)', color: '#374151', lineHeight: 1.6, marginTop: 4 }}>
                 {card.body}
               </p>
             </div>
@@ -155,10 +155,10 @@ export default function ArchitecturePage() {
               key={card.title}
               style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, padding: 14, borderLeft: '4px solid #C60C30' }}
             >
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2D3D' }}>
+              <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, color: '#1B2D3D' }}>
                 {card.title}
               </div>
-              <p style={{ fontSize: 10.5, color: '#64707A', lineHeight: 1.6, marginTop: 4 }}>
+              <p style={{ fontSize: 'var(--type-body)', color: '#374151', lineHeight: 1.6, marginTop: 4 }}>
                 {card.body}
               </p>
             </div>

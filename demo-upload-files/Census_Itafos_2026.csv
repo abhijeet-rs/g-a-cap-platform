@@ -1,0 +1,11 @@
+Employee ID,First Name,Last Name,DOB,Hire Date,Class,Status,Coverage Tier,Medical Plan,Dental,Vision,Annual Salary
+E-1001,Mark,Kirby,1978-03-15,2019-06-01,Primary,Active,EE+Family,PPO $500 80%,Guardian PPO 1500,Base PPO,92000
+E-1002,Sarah,Chen,1985-11-22,2020-01-15,Primary,Active,EE+Spouse,HDHP $3300 90%,Guardian PPO 1500,Base PPO,78000
+E-1003,James,Rodriguez,1990-07-08,2021-03-01,Primary,Active,EE Only,PPO $500 80%,Guardian PPO 1500,Base PPO,65000
+E-1004,Emily,Johnson,1982-01-30,2018-09-15,Management,Active,EE+Child,PPO $500 80%,Guardian PPO 1500,Base PPO,105000
+E-1005,Michael,Thompson,1975-05-12,2017-02-01,Primary,Active,EE+Family,HDHP $3300 90%,Guardian PPO 1500,Base PPO,88000
+E-1006,Lisa,Park,1988-09-19,2022-06-01,Primary,Active,EE Only,PPO $500 80%,Waived,Base PPO,62000
+E-1007,David,Williams,1992-12-04,2023-01-15,Primary,Active,EE+Spouse,PPO $500 80%,Guardian PPO 1500,Waived,71000
+E-1008,Jennifer,Davis,1980-08-25,2016-11-01,CEO,Active,EE+Family,PPO $500 80%,Guardian PPO 1500,Base PPO,185000
+E-1009,Robert,Martinez,1995-04-17,2024-02-01,Primary,Active,EE Only,HDHP $3300 90%,Waived,Waived,58000
+E-1010,Amanda,Wilson,1987-06-30,2019-08-15,Primary,Active,EE+Child,PPO $500 80%,Guardian PPO 1500,Base PPO,73000

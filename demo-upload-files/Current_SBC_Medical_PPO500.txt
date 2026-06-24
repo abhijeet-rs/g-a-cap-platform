@@ -1,0 +1,40 @@
+SUMMARY OF BENEFITS AND COVERAGE (SBC)
+Blue Cross Blue Shield of Texas — PPO $500 80%
+Plan Year: July 1, 2026 - June 30, 2027
+Group: Itafos Conda (#2908)
+
+═══════════════════════════════════════════
+
+IMPORTANT QUESTIONS          ANSWERS
+─────────────────────────────────────────
+What is the overall         $500/individual
+deductible?                 $1,000/family
+
+What is the out-of-pocket   $6,350/individual
+limit for this plan?        $12,700/family
+
+What is not included in     Premiums, balance-billing
+the out-of-pocket limit?    charges, penalties for
+                            non-compliance
+
+Is there an overall annual  No
+limit on what the plan pays?
+
+Does the plan use a         Yes. See provider
+network of providers?       directory at bcbstx.com
+
+Do I need a referral to     No
+see a specialist?
+
+COMMON MEDICAL EVENTS       IN-NETWORK     OUT-OF-NETWORK
+─────────────────────────────────────────────────────────
+Primary care visit          $30 copay      40% coinsurance
+Specialist visit            $50 copay      40% coinsurance
+Preventive care             No charge      40% coinsurance
+Diagnostic test (blood)     $30 copay      40% coinsurance
+Imaging (CT/MRI)            20% coinsurance 40% coinsurance
+Generic drugs               $15 copay      Not covered
+Brand drugs                 $40 copay      Not covered
+Emergency room              $250 copay     $250 copay
+Urgent care                 $75 copay      40% coinsurance
+Hospital stay               20% coinsurance 40% coinsurance

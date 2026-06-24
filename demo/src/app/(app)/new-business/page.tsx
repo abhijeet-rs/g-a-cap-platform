@@ -40,21 +40,21 @@ function CAPInfoBar() {
       display: 'flex',
       alignItems: 'center',
       gap: 16,
-      fontSize: 11,
+      fontSize: 'var(--type-body)',
       marginBottom: 2,
       position: 'relative',
-      boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+      boxShadow: 'var(--shadow-xs)',
     }}>
       {/* CAP ID + Client */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
         <span style={{
           fontFamily: "'IBM Plex Mono', monospace",
           fontWeight: 600,
-          fontSize: 11,
+          fontSize: 'var(--type-body)',
           color: '#1B2D3D',
         }}>CAP-2026-0847</span>
-        <span style={{ color: '#98A1A8' }}>&middot;</span>
-        <span style={{ fontWeight: 500, color: '#4A5568' }}>Itafos Conda</span>
+        <span style={{ color: '#374151' }}>&middot;</span>
+        <span style={{ fontWeight: 500, color: '#374151' }}>Itafos Conda</span>
       </div>
 
       {/* Version Badge */}
@@ -65,7 +65,7 @@ function CAPInfoBar() {
             display: 'inline-flex', alignItems: 'center', gap: 4,
             height: 22, padding: '0 8px', borderRadius: 4,
             background: '#E7F1FA', color: '#0074B8',
-            fontSize: 10, fontWeight: 600, border: 'none',
+            fontSize: 'var(--type-badge)', fontWeight: 600, border: 'none',
             cursor: 'pointer',
           }}
         >
@@ -80,7 +80,7 @@ function CAPInfoBar() {
           }}>
             <div style={{
               padding: '8px 12px', borderBottom: '1px solid #E4E8ED',
-              fontSize: 10, fontWeight: 600, color: '#98A1A8',
+              fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151',
               textTransform: 'uppercase', letterSpacing: '0.04em',
             }}>Version History</div>
             {versionHistory.map((v, i) => (
@@ -92,16 +92,16 @@ function CAPInfoBar() {
               }}>
                 <span style={{
                   fontFamily: "'IBM Plex Mono', monospace",
-                  fontSize: 10, fontWeight: 700,
-                  color: i === 0 ? '#0074B8' : '#64707A',
+                  fontSize: 'var(--type-caption)', fontWeight: 700,
+                  color: i === 0 ? '#0074B8' : '#374151',
                   minWidth: 20,
                 }}>{v.version}</span>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 10, color: '#1B2D3D' }}>
+                  <div style={{ fontSize: 'var(--type-caption)', color: '#1B2D3D' }}>
                     <span style={{ fontWeight: 500 }}>{v.date}</span>
-                    <span style={{ color: '#98A1A8' }}> &middot; {v.author}</span>
+                    <span style={{ color: '#374151' }}> &middot; {v.author}</span>
                   </div>
-                  <div style={{ fontSize: 10, color: '#64707A', fontStyle: 'italic', marginTop: 1 }}>
+                  <div style={{ fontSize: 'var(--type-caption)', color: '#374151', fontStyle: 'italic', marginTop: 1 }}>
                     &ldquo;{v.note}&rdquo;
                   </div>
                 </div>
@@ -128,21 +128,21 @@ function CAPInfoBar() {
           animation: 'capPresencePulse 2s ease-in-out infinite',
         }} />
         <style>{`@keyframes capPresencePulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }`}</style>
-        <span style={{ fontSize: 10, color: '#1B2D3D', fontWeight: 500 }}>Dana W. editing</span>
+        <span style={{ fontSize: 'var(--type-caption)', color: '#1B2D3D', fontWeight: 500 }}>Dana W. editing</span>
         <span style={{ color: '#DCE2E8' }}>|</span>
-        <span style={{ fontSize: 10, color: '#98A1A8' }}>&#x1F441; Marcus R. viewing</span>
+        <span style={{ fontSize: 'var(--type-caption)', color: '#374151' }}>&#x1F441; Marcus R. viewing</span>
       </div>
 
       {/* Comments */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
-        <span style={{ fontSize: 12 }}>&#x1F4AC;</span>
-        <span style={{ fontSize: 10, fontWeight: 600, color: '#64707A' }}>3 comments</span>
+        <span style={{ fontSize: 'var(--type-body-sm)' }}>&#x1F4AC;</span>
+        <span style={{ fontSize: 'var(--type-caption)', fontWeight: 600, color: '#374151' }}>3 comments</span>
       </div>
 
       {/* Audit events */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
-        <span style={{ fontSize: 12 }}>&#x1F4CB;</span>
-        <span style={{ fontSize: 10, fontWeight: 600, color: '#64707A' }}>14 events</span>
+        <span style={{ fontSize: 'var(--type-body-sm)' }}>&#x1F4CB;</span>
+        <span style={{ fontSize: 'var(--type-caption)', fontWeight: 600, color: '#374151' }}>14 events</span>
       </div>
     </div>
   );

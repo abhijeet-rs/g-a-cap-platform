@@ -21,8 +21,8 @@ type RenewalStep = 'prefill' | 'drift' | 'documents' | 'diff' | 'readiness' | 'b
 
 const renewalSteps: { key: RenewalStep; label: string }[] = [
   { key: 'prefill', label: 'R2 · Pre-fill' },
-  { key: 'drift', label: 'R4 · Data Currency' },
   { key: 'documents', label: 'R3 · Doc Updates' },
+  { key: 'drift', label: 'R4 · Data Currency' },
   { key: 'diff', label: 'R5 · Renewal Diff' },
   { key: 'readiness', label: 'R6 · Readiness' },
   { key: 'booklet', label: 'R7 · Booklet' },
@@ -69,7 +69,7 @@ const renewalQueue: RenewalQueueItem[] = clients
   }));
 
 const statusBadgeMap: Record<RenewalStatus, { label: string; bg: string; fg: string }> = {
-  not_started: { label: 'Not Started', bg: '#EDF0F3', fg: '#64707A' },
+  not_started: { label: 'Not Started', bg: '#EDF0F3', fg: '#374151' },
   in_progress: { label: 'In Progress', bg: '#FBF0DD', fg: '#B0690A' },
   approved:    { label: 'Approved',    bg: '#E4F2EA', fg: '#1A7A4A' },
 };
@@ -102,13 +102,13 @@ interface ClientRenewalData {
 }
 
 const clientRenewalData: Record<string, ClientRenewalData> = {
-  itafos: {
+  westlake: {
     carrier: 'BCBSTX',
     effDate: '2025-07-01',
     contribStrategy: 'Variable',
     planLineup: ['Medical PPO $500', 'Dental PPO $1500', 'Vision Base PPO'],
-    priorWSE: 289,
-    currentWSE: 298,
+    priorWSE: 304,
+    currentWSE: 312,
     medicalIncrease: '+5.3%',
     planCrosswalk: [
       { old: 'BCBS-PPO-500-2025', new: 'BCBS-PPO-500-2026', plan: 'Medical PPO $500' },
@@ -137,7 +137,7 @@ const clientRenewalData: Record<string, ClientRenewalData> = {
       { year: '2024', status: 'Signed', signed: 'Jul 1, 2024', version: 'v2' },
     ],
     prismPayload: [
-      { field: 'Client ID', value: 'GA-2908' },
+      { field: 'Client ID', value: 'GA-3041' },
       { field: 'Plan Year', value: '2026' },
       { field: 'Effective Date', value: '07/01/2026' },
       { field: 'Medical Plan Code', value: 'BCBS-PPO-500-2026' },
@@ -148,7 +148,7 @@ const clientRenewalData: Record<string, ClientRenewalData> = {
       { field: 'Vision Plan Code', value: 'VSP-BASE-2026' },
       { field: 'Vision EE Premium', value: '$6.00' },
       { field: 'Contribution Strategy', value: 'Variable' },
-      { field: 'WSE Count', value: '298' },
+      { field: 'WSE Count', value: '312' },
     ],
   },
   sterling: {
@@ -295,7 +295,7 @@ function getClientData(clientId: string): ClientRenewalData {
 
 export default function RenewalPage() {
   const [loading, setLoading] = useState(true);
-  const [selectedClientId, setSelectedClientId] = useState(renewalQueue[0]?.id ?? 'itafos');
+  const [selectedClientId, setSelectedClientId] = useState(renewalQueue[0]?.id ?? 'westlake');
   const [activeStep, setActiveStep] = useState<RenewalStep>('prefill');
   const [bookletGenerating, setBookletGenerating] = useState(false);
   const [handoffGenerated, setHandoffGenerated] = useState(false);
@@ -409,9 +409,9 @@ export default function RenewalPage() {
   };
 
   const sectionLabelStyle: React.CSSProperties = {
-    fontSize: 10,
+    fontSize: 'var(--type-table-header)',
     fontWeight: 600,
-    color: '#98A1A8',
+    color: '#374151',
     textTransform: 'uppercase',
     letterSpacing: '0.05em',
     marginBottom: 8,
@@ -419,7 +419,7 @@ export default function RenewalPage() {
 
   const monoStyle: React.CSSProperties = {
     fontFamily: "'IBM Plex Mono', monospace",
-    fontSize: 11,
+    fontSize: 'var(--type-body)',
   };
 
   const btnPrimary: React.CSSProperties = {
@@ -429,7 +429,7 @@ export default function RenewalPage() {
     color: '#fff',
     borderRadius: 8,
     fontWeight: 600,
-    fontSize: 12,
+    fontSize: 'var(--type-body-sm)',
     boxShadow: '0 1px 2px rgba(0,0,0,0.08)',
     border: 'none',
     cursor: 'pointer',
@@ -443,7 +443,7 @@ export default function RenewalPage() {
     color: '#C60C30',
     borderRadius: 8,
     fontWeight: 600,
-    fontSize: 12,
+    fontSize: 'var(--type-body-sm)',
     border: '1px solid #C60C30',
     cursor: 'pointer',
     transition: 'background .12s, color .12s',
@@ -456,14 +456,14 @@ export default function RenewalPage() {
       <div style={{ marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
-            <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700, color: '#C60C30' }}>
+            <div style={{ fontSize: 'var(--type-section-title)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700, color: '#C60C30' }}>
               Renewal Management &middot; R1-R9
             </div>
-            <div style={{ fontSize: 12, color: '#64707A', marginTop: 2 }}>
+            <div style={{ fontSize: 'var(--type-body)', color: '#374151', marginTop: 2 }}>
               {upcomingCount} upcoming renewal{upcomingCount !== 1 ? 's' : ''} &middot; Next 90 days
             </div>
           </div>
-          <span style={{ display: 'inline-flex', alignItems: 'center', height: 22, background: '#FDECEF', color: '#C60C30', fontSize: 9, fontWeight: 600, borderRadius: 4, padding: '0 10px' }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', height: 22, background: '#FDECEF', color: '#C60C30', fontSize: 'var(--type-badge)', fontWeight: 600, borderRadius: 4, padding: '0 10px' }}>
             Renewal Radar &middot; R1
           </span>
         </div>
@@ -475,8 +475,8 @@ export default function RenewalPage() {
         {/* ──────── LEFT: Renewal Queue (R1 Radar) ──────── */}
         <div style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, overflow: 'hidden' }}>
           <div style={{ padding: '14px 16px 10px', borderBottom: '1px solid #E4E8ED' }}>
-            <h2 style={{ fontSize: 13, fontWeight: 600, margin: 0 }}>Renewal Queue</h2>
-            <div style={{ fontSize: 10, color: '#98A1A8', marginTop: 2 }}>Sorted by urgency</div>
+            <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, margin: 0 }}>Renewal Queue</h2>
+            <div style={{ fontSize: 'var(--type-body)', color: '#374151', marginTop: 2 }}>Sorted by urgency</div>
           </div>
 
           {renewalQueue.map((item) => {
@@ -513,21 +513,21 @@ export default function RenewalPage() {
                     justifyContent: 'center',
                     flexShrink: 0,
                   }}>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: urgColor, lineHeight: 1 }}>{item.renewDay}</div>
-                    <div style={{ fontSize: 9, fontWeight: 600, color: urgColor, textTransform: 'uppercase' }}>{item.renewMon}</div>
+                    <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 700, color: urgColor, lineHeight: 1 }}>{item.renewDay}</div>
+                    <div style={{ fontSize: 'var(--type-badge)', fontWeight: 600, color: urgColor, textTransform: 'uppercase' }}>{item.renewMon}</div>
                   </div>
 
                   {/* Client info */}
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {item.name}
                     </div>
-                    <div style={{ fontSize: 10, color: '#98A1A8', marginTop: 1 }}>
+                    <div style={{ fontSize: 'var(--type-body)', color: '#374151', marginTop: 1 }}>
                       {item.prism}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
                       <span style={{
-                        fontSize: 9,
+                        fontSize: 'var(--type-badge)',
                         fontWeight: 600,
                         borderRadius: 4,
                         padding: '1px 6px',
@@ -536,7 +536,7 @@ export default function RenewalPage() {
                       }}>
                         {badge.label}
                       </span>
-                      <span style={{ fontSize: 9, color: urgColor, fontWeight: 600 }}>
+                      <span style={{ fontSize: 'var(--type-badge)', color: urgColor, fontWeight: 600 }}>
                         {item.urgDays}d
                       </span>
                     </div>
@@ -553,8 +553,8 @@ export default function RenewalPage() {
           {/* Client header bar */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <div>
-              <h1 style={{ fontSize: 18, fontWeight: 600, margin: 0 }}>{selectedClient.name}</h1>
-              <div style={{ fontSize: 10, color: '#98A1A8', marginTop: 2 }}>
+              <h1 style={{ fontSize: 'var(--type-section-title)', fontWeight: 600, margin: 0 }}>{selectedClient.name}</h1>
+              <div style={{ fontSize: 'var(--type-body)', color: '#374151', marginTop: 2 }}>
                 {selectedClient.prism} &middot; {selectedClient.tier} &middot; {selectedClient.wse} WSE &middot; {selectedClient.owner}
               </div>
               {/* ClientSpace Case Reference */}
@@ -563,30 +563,30 @@ export default function RenewalPage() {
                 marginTop: 6, padding: '3px 10px', borderRadius: 5,
                 background: '#F5F7FA', border: '1px solid #E4E8ED',
               }}>
-                <span style={{ fontSize: 10, fontWeight: 600, color: '#0074B8' }}>ClientSpace Case:</span>
+                <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#0074B8' }}>ClientSpace Case:</span>
                 <span style={{
-                  fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, fontWeight: 600,
+                  fontFamily: "'IBM Plex Mono', monospace", fontSize: 'var(--type-body-sm)', fontWeight: 600,
                   color: '#1B2D3D',
                 }}>CS-2026-R-{String(selectedClient.prism).replace('GA-', '').slice(0, 4)}</span>
                 <span style={{ color: '#DCE2E8' }}>&middot;</span>
-                <span style={{ fontSize: 10, color: '#64707A' }}>Renewal</span>
+                <span style={{ fontSize: 'var(--type-body)', color: '#374151' }}>Renewal</span>
                 <span style={{ color: '#DCE2E8' }}>&middot;</span>
-                <span style={{ fontSize: 10, fontWeight: 600, color: '#B0690A' }}>Open</span>
+                <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#B0690A' }}>Open</span>
               </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               {/* Medical increase card */}
               <div style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 8, padding: '8px 14px', textAlign: 'center' }}>
-                <div style={{ fontSize: 16, fontWeight: 600, color: '#B0690A' }}>{clientData.medicalIncrease}</div>
-                <div style={{ fontSize: 9, color: '#98A1A8' }}>Medical YoY</div>
+                <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#B0690A' }}>{clientData.medicalIncrease}</div>
+                <div style={{ fontSize: 'var(--type-body)', color: '#374151' }}>Medical YoY</div>
               </div>
               {/* Days remaining card */}
               <div style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 8, padding: '8px 14px', textAlign: 'center' }}>
-                <div style={{ fontSize: 16, fontWeight: 600, color: urgencyColor(selectedClient.urgDays) }}>{selectedClient.urgDays}d</div>
-                <div style={{ fontSize: 9, color: '#98A1A8' }}>Until Renewal</div>
+                <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: urgencyColor(selectedClient.urgDays) }}>{selectedClient.urgDays}d</div>
+                <div style={{ fontSize: 'var(--type-body)', color: '#374151' }}>Until Renewal</div>
               </div>
               {approved && (
-                <span style={{ display: 'inline-flex', alignItems: 'center', height: 24, background: '#E4F2EA', color: '#1A7A4A', fontSize: 10, fontWeight: 600, borderRadius: 6, padding: '0 10px' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', height: 24, background: '#E4F2EA', color: '#1A7A4A', fontSize: 'var(--type-badge)', fontWeight: 600, borderRadius: 6, padding: '0 10px' }}>
                   Approved
                 </span>
               )}
@@ -607,12 +607,12 @@ export default function RenewalPage() {
                   key={step.key}
                   onClick={() => setActiveStep(step.key)}
                   onMouseEnter={(e) => { if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = '#1B2D3D'; }}
-                  onMouseLeave={(e) => { if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = '#64707A'; }}
+                  onMouseLeave={(e) => { if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = '#374151'; }}
                   style={{
                     padding: '10px 16px',
-                    fontSize: 11,
+                    fontSize: 'var(--type-body-sm)',
                     fontWeight: isActive ? 700 : 500,
-                    color: isActive ? '#C60C30' : '#64707A',
+                    color: isActive ? '#C60C30' : '#374151',
                     background: 'none',
                     border: 'none',
                     borderBottom: isActive ? '2px solid #C60C30' : '2px solid transparent',
@@ -636,8 +636,8 @@ export default function RenewalPage() {
 
               {/* Pre-fill Summary */}
               <div style={cardStyle}>
-                <h2 style={{ fontSize: 13, fontWeight: 600, marginBottom: 12 }}>Pre-fill Summary</h2>
-                <p style={{ fontSize: 11, color: '#64707A', marginBottom: 16, lineHeight: 1.5 }}>
+                <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, marginBottom: 12 }}>Pre-fill Summary</h2>
+                <p style={{ fontSize: 'var(--type-body)', color: '#374151', marginBottom: 16, lineHeight: 1.5 }}>
                   Baseline carried forward from prior plan year and Prism client record. Review the pre-filled values below before starting the renewal diff.
                 </p>
 
@@ -649,16 +649,16 @@ export default function RenewalPage() {
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                       <div>
-                        <div style={{ fontSize: 10, color: '#98A1A8' }}>Plan Lineup</div>
-                        <div style={{ fontSize: 11, fontWeight: 500 }}>{clientData.planLineup.join(', ')}</div>
+                        <div style={{ fontSize: 'var(--type-body)', color: '#374151' }}>Plan Lineup</div>
+                        <div style={{ fontSize: 'var(--type-body)', fontWeight: 500 }}>{clientData.planLineup.join(', ')}</div>
                       </div>
                       <div>
-                        <div style={{ fontSize: 10, color: '#98A1A8' }}>Contribution Strategy</div>
-                        <div style={{ fontSize: 11, fontWeight: 500 }}>{clientData.contribStrategy}</div>
+                        <div style={{ fontSize: 'var(--type-body)', color: '#374151' }}>Contribution Strategy</div>
+                        <div style={{ fontSize: 'var(--type-body)', fontWeight: 500 }}>{clientData.contribStrategy}</div>
                       </div>
                       <div>
-                        <div style={{ fontSize: 10, color: '#98A1A8' }}>Prior WSE Count</div>
-                        <div style={{ fontSize: 11, fontWeight: 500 }}>{clientData.priorWSE}</div>
+                        <div style={{ fontSize: 'var(--type-body)', color: '#374151' }}>Prior WSE Count</div>
+                        <div style={{ fontSize: 'var(--type-body)', fontWeight: 500 }}>{clientData.priorWSE}</div>
                       </div>
                     </div>
                   </div>
@@ -669,16 +669,16 @@ export default function RenewalPage() {
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                       <div>
-                        <div style={{ fontSize: 10, color: '#98A1A8' }}>Carrier</div>
-                        <div style={{ fontSize: 11, fontWeight: 500 }}>{clientData.carrier}</div>
+                        <div style={{ fontSize: 'var(--type-body)', color: '#374151' }}>Carrier</div>
+                        <div style={{ fontSize: 'var(--type-body)', fontWeight: 500 }}>{clientData.carrier}</div>
                       </div>
                       <div>
-                        <div style={{ fontSize: 10, color: '#98A1A8' }}>Effective Date</div>
-                        <div style={{ fontSize: 11, fontWeight: 500 }}>{clientData.effDate}</div>
+                        <div style={{ fontSize: 'var(--type-body)', color: '#374151' }}>Effective Date</div>
+                        <div style={{ fontSize: 'var(--type-body)', fontWeight: 500 }}>{clientData.effDate}</div>
                       </div>
                       <div>
-                        <div style={{ fontSize: 10, color: '#98A1A8' }}>Current WSE Count</div>
-                        <div style={{ fontSize: 11, fontWeight: 500 }}>{clientData.currentWSE}</div>
+                        <div style={{ fontSize: 'var(--type-body)', color: '#374151' }}>Current WSE Count</div>
+                        <div style={{ fontSize: 'var(--type-body)', fontWeight: 500 }}>{clientData.currentWSE}</div>
                       </div>
                     </div>
                   </div>
@@ -687,7 +687,7 @@ export default function RenewalPage() {
 
               {/* Plan-Code Crosswalk */}
               <div style={cardStyle}>
-                <h2 style={{ fontSize: 13, fontWeight: 600, marginBottom: 12 }}>Plan-Code Crosswalk Migration</h2>
+                <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, marginBottom: 12 }}>Plan-Code Crosswalk Migration</h2>
                 <div style={{ background: '#FAFBFC', borderRadius: 8, border: '1px solid #EEF1F4', overflow: 'hidden' }}>
                   {/* Header */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1.2fr 1fr', padding: '8px 14px', borderBottom: '1px solid #EEF1F4' }}>
@@ -703,9 +703,9 @@ export default function RenewalPage() {
                       borderBottom: i < clientData.planCrosswalk.length - 1 ? '1px solid #EEF1F4' : 'none',
                       alignItems: 'center',
                     }}>
-                      <div style={{ ...monoStyle, color: '#98A1A8', textDecoration: 'line-through' }}>{row.old}</div>
+                      <div style={{ ...monoStyle, color: '#374151', textDecoration: 'line-through' }}>{row.old}</div>
                       <div style={{ ...monoStyle, color: '#1A7A4A', fontWeight: 600 }}>{row.new}</div>
-                      <div style={{ fontSize: 11 }}>{row.plan}</div>
+                      <div style={{ fontSize: 'var(--type-body)' }}>{row.plan}</div>
                     </div>
                   ))}
                 </div>
@@ -714,7 +714,7 @@ export default function RenewalPage() {
               {/* Start Renewal button */}
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <button
-                  onClick={() => setActiveStep('diff')}
+                  onClick={() => setActiveStep('documents')}
                   onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = '#A80A28'; }}
                   onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = '#C60C30'; }}
                   style={btnPrimary}
@@ -730,12 +730,12 @@ export default function RenewalPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
               {/* Existing DataCurrencyBanner */}
-              {selectedClientId === 'itafos' && <DataCurrencyBanner />}
+              {selectedClientId === 'westlake' && <DataCurrencyBanner />}
 
               {/* Expanded version comparison */}
               <div style={cardStyle}>
-                <h2 style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Data Currency &middot; Version Comparison</h2>
-                <p style={{ fontSize: 11, color: '#64707A', marginBottom: 14 }}>
+                <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, marginBottom: 4 }}>Data Currency &middot; Version Comparison</h2>
+                <p style={{ fontSize: 'var(--type-body)', color: '#374151', marginBottom: 14 }}>
                   {rebaseDone
                     ? 'All modules have been re-baselined onto current data.'
                     : 'This renewal is based on 2025 master data. 2026 data is available for some modules.'}
@@ -745,9 +745,9 @@ export default function RenewalPage() {
                 {!rebaseDone && (
                   <div style={{ background: '#FBF0DD', border: '1px solid #F0DDB5', borderRadius: 8, padding: '10px 14px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 10 }}>
                     <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#B0690A', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <span style={{ color: '#fff', fontSize: 11 }}>&#x26A0;</span>
+                      <span style={{ color: '#fff', fontSize: 'var(--type-body)' }}>&#x26A0;</span>
                     </div>
-                    <span style={{ fontSize: 11, color: '#B0690A', fontWeight: 500 }}>
+                    <span style={{ fontSize: 'var(--type-body)', color: '#B0690A', fontWeight: 500 }}>
                       Based on 2025 master data. 2026 available.
                     </span>
                   </div>
@@ -770,16 +770,16 @@ export default function RenewalPage() {
                       borderBottom: i < clientData.dataCurrency.length - 1 ? '1px solid #EEF1F4' : 'none',
                       alignItems: 'center',
                     }}>
-                      <div style={{ fontSize: 11, fontWeight: 500 }}>{row.module}</div>
+                      <div style={{ fontSize: 'var(--type-body)', fontWeight: 500 }}>{row.module}</div>
                       <div style={monoStyle}>{row.pinned}</div>
                       <div style={{ ...monoStyle, fontWeight: row.outdated && !rebaseDone ? 600 : 400 }}>{row.current}</div>
                       <div>
                         {row.outdated && !rebaseDone ? (
-                          <span style={{ display: 'inline-flex', alignItems: 'center', fontSize: 9, fontWeight: 600, color: '#B0690A', background: '#FBF0DD', borderRadius: 4, padding: '2px 7px' }}>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', fontSize: 'var(--type-badge)', fontWeight: 600, color: '#B0690A', background: '#FBF0DD', borderRadius: 4, padding: '2px 7px' }}>
                             &#x26A0; Outdated
                           </span>
                         ) : (
-                          <span style={{ display: 'inline-flex', alignItems: 'center', fontSize: 9, fontWeight: 600, color: '#1A7A4A', background: '#E4F2EA', borderRadius: 4, padding: '2px 7px' }}>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', fontSize: 'var(--type-badge)', fontWeight: 600, color: '#1A7A4A', background: '#E4F2EA', borderRadius: 4, padding: '2px 7px' }}>
                             &#x2713; Current
                           </span>
                         )}
@@ -798,8 +798,11 @@ export default function RenewalPage() {
                 </div>
               )}
               {rebaseDone && (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 8 }}>
-                  <span style={{ fontSize: 11, color: '#1A7A4A', fontWeight: 600 }}>&#x2713; All modules current</span>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10 }}>
+                  <span style={{ fontSize: 'var(--type-body)', color: '#1A7A4A', fontWeight: 600 }}>&#x2713; All modules current</span>
+                  <button onClick={() => setActiveStep('diff')} style={btnPrimary}>
+                    Continue to Renewal Diff &rarr;
+                  </button>
                 </div>
               )}
             </div>
@@ -809,11 +812,40 @@ export default function RenewalPage() {
           {activeStep === 'documents' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
-              {/* Upload Area */}
+              {/* Prior-Year Documents (already available) */}
               <div style={cardStyle}>
-                <h2 style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Document Upload</h2>
-                <p style={{ fontSize: 11, color: '#64707A', marginBottom: 14, lineHeight: 1.5 }}>
-                  Upload renewal documents (carrier letters, census updates, rate sheets) to extract proposed changes against the baseline.
+                <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, marginBottom: 4 }}>Prior-Year Documents</h2>
+                <p style={{ fontSize: 'var(--type-body)', color: '#374151', marginBottom: 10, lineHeight: 1.5 }}>
+                  These documents were carried forward from the prior-year CAP and are available for reference.
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  {[
+                    { name: 'Benefits_Booklet_2025.pdf', type: 'Signed Booklet', date: 'Jun 15, 2025', size: '2.4 MB' },
+                    { name: 'ER_Confirmation_2025.pdf', type: 'ER Confirmation', date: 'Jun 12, 2025', size: '340 KB' },
+                    { name: 'Census_2025.xlsx', type: 'Employee Census', date: 'May 28, 2025', size: '186 KB' },
+                    { name: 'BCBSTX_Rate_Notice_2025.pdf', type: 'Carrier Rate Letter', date: 'Apr 15, 2025', size: '520 KB' },
+                  ].map((doc, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 10px', background: '#FAFBFC', borderRadius: 6, border: '1px solid #F3F4F6' }}>
+                      <div style={{ width: 28, height: 28, borderRadius: 5, background: doc.name.endsWith('.pdf') ? '#FEF2F2' : '#E4F2EA', color: doc.name.endsWith('.pdf') ? '#C60C30' : '#1A7A4A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 8, fontWeight: 700, flexShrink: 0 }}>
+                        {doc.name.endsWith('.pdf') ? 'PDF' : 'XLS'}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 'var(--type-body)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{doc.name}</div>
+                        <div style={{ fontSize: 'var(--type-body)', color: '#374151' }}>{doc.type} &middot; {doc.date}</div>
+                      </div>
+                      <span style={{ fontSize: 'var(--type-body)', color: '#374151', flexShrink: 0 }}>{doc.size}</span>
+                      <span style={{ fontSize: 'var(--type-badge)', fontWeight: 600, color: '#1A7A4A', background: '#E4F2EA', padding: '1px 6px', borderRadius: 4 }}>Available</span>
+                      <button style={{ border: 'none', background: 'none', color: '#9CA3AF', cursor: 'pointer', fontSize: 'var(--type-body-sm)', padding: '0 4px', flexShrink: 0, lineHeight: 1 }} title={`Remove ${doc.name}`} onClick={(e) => { (e.currentTarget.parentElement as HTMLElement).style.display = 'none'; }}>&times;</button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Upload New Documents */}
+              <div style={cardStyle}>
+                <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, marginBottom: 4 }}>Upload Renewal Updates</h2>
+                <p style={{ fontSize: 'var(--type-body)', color: '#374151', marginBottom: 14, lineHeight: 1.5 }}>
+                  Upload new renewal documents (updated census, carrier renewal letters, revised rate sheets) to extract proposed changes against the baseline.
                 </p>
 
                 <div
@@ -848,11 +880,11 @@ export default function RenewalPage() {
                       }
                     }}
                   />
-                  <div style={{ fontSize: 22, color: '#98A1A8', marginBottom: 6 }}>&#x21E7;</div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: '#1B2D3D' }}>
+                  <div style={{ fontSize: 22, color: '#374151', marginBottom: 6 }}>&#x21E7;</div>
+                  <div style={{ fontSize: 'var(--type-body)', fontWeight: 600, color: '#1B2D3D' }}>
                     Drop carrier letters, census updates, or rate sheets here
                   </div>
-                  <div style={{ fontSize: 9, color: '#98A1A8', marginTop: 4 }}>
+                  <div style={{ fontSize: 'var(--type-body)', color: '#374151', marginTop: 4 }}>
                     Supports PDF, Excel, CSV, Word, PNG, JPG
                   </div>
                 </div>
@@ -876,14 +908,14 @@ export default function RenewalPage() {
                         }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                          <span style={{ fontSize: 12, color: '#0074B8' }}>&#x2B24;</span>
-                          <span style={{ fontSize: 10, color: '#1B2D3D' }}>{file}</span>
+                          <span style={{ fontSize: 'var(--type-body-sm)', color: '#0074B8' }}>&#x2B24;</span>
+                          <span style={{ fontSize: 'var(--type-body-sm)', color: '#1B2D3D' }}>{file}</span>
                         </div>
                         <button
                           onClick={() => setDocFiles((prev) => prev.filter((_, idx) => idx !== i))}
                           style={{
                             width: 20, height: 20, borderRadius: 4, border: '1px solid #E4E8ED',
-                            background: '#fff', cursor: 'pointer', fontSize: 10, color: '#C60C30',
+                            background: '#fff', cursor: 'pointer', fontSize: 'var(--type-body-sm)', color: '#C60C30',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                           }}
                         >
@@ -899,10 +931,10 @@ export default function RenewalPage() {
               {docDeltas.length > 0 && (
                 <div style={cardStyle}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                    <h2 style={{ fontSize: 13, fontWeight: 600, margin: 0 }}>Proposed Deltas from Uploaded Documents</h2>
+                    <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, margin: 0 }}>Proposed Deltas from Uploaded Documents</h2>
                     <span style={{
                       display: 'inline-flex', alignItems: 'center', height: 20,
-                      background: '#FBF0DD', color: '#B0690A', fontSize: 9, fontWeight: 600,
+                      background: '#FBF0DD', color: '#B0690A', fontSize: 'var(--type-badge)', fontWeight: 600,
                       borderRadius: 4, padding: '0 8px',
                     }}>
                       {docDeltas.filter((d) => d.decision === 'pending' && d.hasChange).length} pending
@@ -936,24 +968,24 @@ export default function RenewalPage() {
                           background: delta.decision === 'accepted' ? '#F0FFF5' : delta.decision === 'rejected' ? '#FFF5F5' : 'transparent',
                         }}
                       >
-                        <div style={{ fontSize: 11, fontWeight: 500 }}>{delta.field}</div>
-                        <div style={{ ...monoStyle, fontSize: 11, color: '#64707A' }}>{delta.baseline}</div>
+                        <div style={{ fontSize: 'var(--type-body)', fontWeight: 500 }}>{delta.field}</div>
+                        <div style={{ ...monoStyle, fontSize: 'var(--type-body)', color: '#374151' }}>{delta.baseline}</div>
                         <div style={{
-                          ...monoStyle, fontSize: 11,
+                          ...monoStyle, fontSize: 'var(--type-body)',
                           fontWeight: delta.hasChange ? 600 : 400,
-                          color: delta.hasChange ? '#B0690A' : '#98A1A8',
+                          color: delta.hasChange ? '#B0690A' : '#374151',
                         }}>
                           {delta.proposed}
                         </div>
                         <div>
                           {!delta.hasChange ? (
-                            <span style={{ fontSize: 9, color: '#98A1A8', fontWeight: 500 }}>No change</span>
+                            <span style={{ fontSize: 'var(--type-body)', color: '#374151', fontWeight: 500 }}>No change</span>
                           ) : delta.decision === 'pending' ? (
                             <div style={{ display: 'flex', gap: 4 }}>
                               <button
                                 onClick={() => handleDeltaDecision(i, 'accepted')}
                                 style={{
-                                  height: 22, padding: '0 8px', borderRadius: 4, fontSize: 9, fontWeight: 600,
+                                  height: 22, padding: '0 8px', borderRadius: 4, fontSize: 'var(--type-body-sm)', fontWeight: 600,
                                   cursor: 'pointer', background: '#E4F2EA', color: '#1A7A4A', border: '1px solid #C6F0D4',
                                 }}
                               >
@@ -962,7 +994,7 @@ export default function RenewalPage() {
                               <button
                                 onClick={() => handleDeltaDecision(i, 'rejected')}
                                 style={{
-                                  height: 22, padding: '0 8px', borderRadius: 4, fontSize: 9, fontWeight: 600,
+                                  height: 22, padding: '0 8px', borderRadius: 4, fontSize: 'var(--type-body-sm)', fontWeight: 600,
                                   cursor: 'pointer', background: '#FEF2F2', color: '#C60C30', border: '1px solid #FDECEF',
                                 }}
                               >
@@ -971,7 +1003,7 @@ export default function RenewalPage() {
                             </div>
                           ) : (
                             <span style={{
-                              fontSize: 9, fontWeight: 600, padding: '2px 8px', borderRadius: 4,
+                              fontSize: 'var(--type-badge)', fontWeight: 600, padding: '2px 8px', borderRadius: 4,
                               background: delta.decision === 'accepted' ? '#E4F2EA' : '#FEF2F2',
                               color: delta.decision === 'accepted' ? '#1A7A4A' : '#C60C30',
                             }}>
@@ -986,26 +1018,26 @@ export default function RenewalPage() {
                   {/* Summary */}
                   <div style={{ display: 'flex', gap: 16, marginTop: 12 }}>
                     <div>
-                      <span style={{ fontSize: 10, color: '#98A1A8' }}>Accepted</span>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: '#1A7A4A' }}>
+                      <span style={{ fontSize: 'var(--type-body)', color: '#374151' }}>Accepted</span>
+                      <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#1A7A4A' }}>
                         {docDeltas.filter((d) => d.decision === 'accepted').length}
                       </div>
                     </div>
                     <div>
-                      <span style={{ fontSize: 10, color: '#98A1A8' }}>Rejected</span>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: '#C60C30' }}>
+                      <span style={{ fontSize: 'var(--type-body)', color: '#374151' }}>Rejected</span>
+                      <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#C60C30' }}>
                         {docDeltas.filter((d) => d.decision === 'rejected').length}
                       </div>
                     </div>
                     <div>
-                      <span style={{ fontSize: 10, color: '#98A1A8' }}>Pending</span>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: '#B0690A' }}>
+                      <span style={{ fontSize: 'var(--type-body)', color: '#374151' }}>Pending</span>
+                      <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#B0690A' }}>
                         {docDeltas.filter((d) => d.decision === 'pending' && d.hasChange).length}
                       </div>
                     </div>
                     <div>
-                      <span style={{ fontSize: 10, color: '#98A1A8' }}>No Change</span>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: '#98A1A8' }}>
+                      <span style={{ fontSize: 'var(--type-body)', color: '#374151' }}>No Change</span>
+                      <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#374151' }}>
                         {docDeltas.filter((d) => !d.hasChange).length}
                       </div>
                     </div>
@@ -1016,10 +1048,10 @@ export default function RenewalPage() {
               {/* Navigation */}
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <button
-                  onClick={() => setActiveStep('diff')}
+                  onClick={() => setActiveStep('drift')}
                   style={btnPrimary}
                 >
-                  Continue to Renewal Diff &rarr;
+                  Continue to Data Currency &rarr;
                 </button>
               </div>
             </div>
@@ -1029,7 +1061,7 @@ export default function RenewalPage() {
           {activeStep === 'diff' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {/* Embed existing DataCurrencyBanner for context */}
-              {selectedClientId === 'itafos' && <DataCurrencyBanner />}
+              {selectedClientId === 'westlake' && <DataCurrencyBanner />}
 
               {/* Embed existing RenewalHeader */}
               <RenewalHeader />
@@ -1054,8 +1086,8 @@ export default function RenewalPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
               <div style={cardStyle}>
-                <h2 style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Renewal Readiness Gates</h2>
-                <p style={{ fontSize: 11, color: '#64707A', marginBottom: 14 }}>
+                <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, marginBottom: 4 }}>Renewal Readiness Gates</h2>
+                <p style={{ fontSize: 'var(--type-body)', color: '#374151', marginBottom: 14 }}>
                   All gates must pass before the renewal can be approved and routed for signature.
                 </p>
 
@@ -1067,8 +1099,8 @@ export default function RenewalPage() {
                   return (
                     <div style={{ marginBottom: 16 }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                        <span style={{ fontSize: 10, fontWeight: 600, color: '#64707A' }}>{passedCount}/{gates.length} gates passed</span>
-                        <span style={{ fontSize: 10, fontWeight: 600, color: pct === 100 ? '#1A7A4A' : '#B0690A' }}>{pct}%</span>
+                        <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#374151' }}>{passedCount}/{gates.length} gates passed</span>
+                        <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: pct === 100 ? '#1A7A4A' : '#B0690A' }}>{pct}%</span>
                       </div>
                       <div style={{ height: 6, background: '#EDF0F3', borderRadius: 3, overflow: 'hidden' }}>
                         <div style={{
@@ -1103,16 +1135,16 @@ export default function RenewalPage() {
                         <div style={{
                           width: 24, height: 24, borderRadius: '50%',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          fontSize: 12, flexShrink: 0,
+                          fontSize: 'var(--type-body-sm)', flexShrink: 0,
                           background: gate.passed ? '#E4F2EA' : '#FEF2F2',
                           color: gate.passed ? '#1A7A4A' : '#C60C30',
                         }}>
                           {gate.passed ? '✓' : '✗'}
                         </div>
-                        <span style={{ flex: 1, fontSize: 11, fontWeight: 500, color: gate.passed ? '#2D3339' : '#C60C30' }}>
+                        <span style={{ flex: 1, fontSize: 'var(--type-body)', fontWeight: 500, color: gate.passed ? '#2D3339' : '#C60C30' }}>
                           {gate.label}
                           {fix && (
-                            <span style={{ display: 'block', fontSize: 10, fontWeight: 400, color: '#98A1A8', marginTop: 2 }}>
+                            <span style={{ display: 'block', fontSize: 'var(--type-body)', fontWeight: 400, color: '#374151', marginTop: 2 }}>
                               {fix.hint}
                             </span>
                           )}
@@ -1123,7 +1155,7 @@ export default function RenewalPage() {
                             style={{
                               height: 26, padding: '0 10px', borderRadius: 6,
                               border: '1px solid #C60C30', background: '#fff',
-                              color: '#C60C30', fontSize: 10, fontWeight: 600,
+                              color: '#C60C30', fontSize: 'var(--type-body-sm)', fontWeight: 600,
                               cursor: 'pointer', flexShrink: 0,
                             }}
                           >
@@ -1138,29 +1170,29 @@ export default function RenewalPage() {
 
               {/* Diff decisions summary */}
               <div style={cardStyle}>
-                <h2 style={{ fontSize: 13, fontWeight: 600, marginBottom: 8 }}>Diff Resolution Summary</h2>
+                <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, marginBottom: 8 }}>Diff Resolution Summary</h2>
                 <div style={{ display: 'flex', gap: 16 }}>
                   <div>
-                    <span style={{ fontSize: 10, color: '#98A1A8' }}>Accepted</span>
-                    <div style={{ fontSize: 16, fontWeight: 600, color: '#1A7A4A' }}>
+                    <span style={{ fontSize: 'var(--type-body)', color: '#374151' }}>Accepted</span>
+                    <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#1A7A4A' }}>
                       {Object.values(diffDecisions).filter((d) => d === 'accept').length}
                     </div>
                   </div>
                   <div>
-                    <span style={{ fontSize: 10, color: '#98A1A8' }}>Flagged</span>
-                    <div style={{ fontSize: 16, fontWeight: 600, color: '#C60C30' }}>
+                    <span style={{ fontSize: 'var(--type-body)', color: '#374151' }}>Flagged</span>
+                    <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#C60C30' }}>
                       {Object.values(diffDecisions).filter((d) => d === 'reject').length}
                     </div>
                   </div>
                   <div>
-                    <span style={{ fontSize: 10, color: '#98A1A8' }}>Pending</span>
-                    <div style={{ fontSize: 16, fontWeight: 600, color: '#B0690A' }}>
+                    <span style={{ fontSize: 'var(--type-body)', color: '#374151' }}>Pending</span>
+                    <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#B0690A' }}>
                       {4 - Object.keys(diffDecisions).length}
                     </div>
                   </div>
                   <div>
-                    <span style={{ fontSize: 10, color: '#98A1A8' }}>Data Rebased</span>
-                    <div style={{ fontSize: 16, fontWeight: 600, color: rebaseDone ? '#1A7A4A' : '#98A1A8' }}>
+                    <span style={{ fontSize: 'var(--type-body)', color: '#374151' }}>Data Rebased</span>
+                    <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: rebaseDone ? '#1A7A4A' : '#374151' }}>
                       {rebaseDone ? 'Yes' : 'No'}
                     </div>
                   </div>
@@ -1175,7 +1207,7 @@ export default function RenewalPage() {
                     {!allGatesPassed && (
                       <div style={{
                         background: '#FEF2F2', border: '1px solid rgba(198,12,48,.15)',
-                        borderRadius: 8, padding: '8px 14px', fontSize: 11, color: '#C60C30',
+                        borderRadius: 8, padding: '8px 14px', fontSize: 'var(--type-body)', color: '#C60C30',
                         display: 'flex', alignItems: 'center', gap: 6,
                       }}>
                         <span style={{ fontWeight: 600 }}>⚠</span>
@@ -1195,7 +1227,7 @@ export default function RenewalPage() {
                         {approved ? 'Renewal Approved ✓' : !allGatesPassed ? `${failedCount} gates block approval` : 'Approve Renewal →'}
                       </button>
                     ) : (
-                      <div style={{ height: 36, padding: '0 18px', display: 'flex', alignItems: 'center', fontSize: 11, color: '#98A1A8' }}>
+                      <div style={{ height: 36, padding: '0 18px', display: 'flex', alignItems: 'center', fontSize: 'var(--type-body)', color: '#374151' }}>
                         Only AE, Manager, or Admin can approve
                       </div>
                     )}
@@ -1212,9 +1244,9 @@ export default function RenewalPage() {
               {/* Booklet Preview */}
               <div style={cardStyle}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                  <h2 style={{ fontSize: 13, fontWeight: 600, margin: 0 }}>Benefits Booklet Preview</h2>
+                  <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, margin: 0 }}>Benefits Booklet Preview</h2>
                   {bookletGenerating && (
-                    <span style={{ display: 'inline-flex', alignItems: 'center', height: 20, background: '#E4F2EA', color: '#1A7A4A', fontSize: 9, fontWeight: 600, borderRadius: 4, padding: '0 8px' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', height: 20, background: '#E4F2EA', color: '#1A7A4A', fontSize: 'var(--type-badge)', fontWeight: 600, borderRadius: 4, padding: '0 8px' }}>
                       Generated
                     </span>
                   )}
@@ -1243,26 +1275,26 @@ export default function RenewalPage() {
                     alignItems: 'center',
                     justifyContent: 'center',
                     color: '#fff',
-                    fontSize: 14,
+                    fontSize: 'var(--type-body-sm)',
                     fontWeight: 700,
                   }}>
                     PDF
                   </div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#2D3339' }}>
+                  <div style={{ fontSize: 'var(--type-body)', fontWeight: 600, color: '#2D3339' }}>
                     {selectedClient.name} &mdash; Benefits Booklet 2026
                   </div>
-                  <div style={{ fontSize: 10, color: '#98A1A8' }}>
+                  <div style={{ fontSize: 'var(--type-body)', color: '#374151' }}>
                     12 pages &middot; EN + ES &middot; {bookletGenerating ? 'v4 (latest)' : 'v3 (prior year)'}
                   </div>
                   <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-                    <div style={{ fontSize: 10, color: '#64707A', background: '#EDF0F3', borderRadius: 4, padding: '3px 8px' }}>
+                    <div style={{ fontSize: 'var(--type-body)', color: '#374151', background: '#EDF0F3', borderRadius: 4, padding: '3px 8px' }}>
                       Medical: {clientData.planLineup[0] ?? 'PPO $500'}
                     </div>
-                    <div style={{ fontSize: 10, color: '#64707A', background: '#EDF0F3', borderRadius: 4, padding: '3px 8px' }}>
+                    <div style={{ fontSize: 'var(--type-body)', color: '#374151', background: '#EDF0F3', borderRadius: 4, padding: '3px 8px' }}>
                       Dental: {clientData.planLineup[1] ?? 'PPO $1500'}
                     </div>
                     {clientData.planLineup[2] && (
-                      <div style={{ fontSize: 10, color: '#64707A', background: '#EDF0F3', borderRadius: 4, padding: '3px 8px' }}>
+                      <div style={{ fontSize: 'var(--type-body)', color: '#374151', background: '#EDF0F3', borderRadius: 4, padding: '3px 8px' }}>
                         Vision: {clientData.planLineup[2]}
                       </div>
                     )}
@@ -1279,8 +1311,8 @@ export default function RenewalPage() {
 
               {/* Annual Contract Management */}
               <div style={cardStyle}>
-                <h2 style={{ fontSize: 13, fontWeight: 600, marginBottom: 12 }}>Annual Contract Management</h2>
-                <p style={{ fontSize: 11, color: '#64707A', marginBottom: 12 }}>
+                <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, marginBottom: 12 }}>Annual Contract Management</h2>
+                <p style={{ fontSize: 'var(--type-body)', color: '#374151', marginBottom: 12 }}>
                   Year-over-year sign-off history for this client.
                 </p>
 
@@ -1300,10 +1332,10 @@ export default function RenewalPage() {
                       borderBottom: i < clientData.bookletHistory.length - 1 ? '1px solid #EEF1F4' : 'none',
                       alignItems: 'center',
                     }}>
-                      <div style={{ fontSize: 12, fontWeight: 600 }}>{row.year}</div>
+                      <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600 }}>{row.year}</div>
                       <div>
                         <span style={{
-                          fontSize: 9,
+                          fontSize: 'var(--type-badge)',
                           fontWeight: 600,
                           borderRadius: 4,
                           padding: '2px 7px',
@@ -1313,8 +1345,8 @@ export default function RenewalPage() {
                           {row.status}
                         </span>
                       </div>
-                      <div style={{ fontSize: 11, color: row.signed === '—' ? '#98A1A8' : '#2D3339' }}>{row.signed}</div>
-                      <div style={{ ...monoStyle, color: '#64707A' }}>{row.version}</div>
+                      <div style={{ fontSize: 'var(--type-body)', color: row.signed === '—' ? '#374151' : '#2D3339' }}>{row.signed}</div>
+                      <div style={{ ...monoStyle, color: '#374151' }}>{row.version}</div>
                     </div>
                   ))}
                 </div>
@@ -1339,8 +1371,8 @@ export default function RenewalPage() {
               {/* Prism Write-back Payload Preview */}
               <div style={cardStyle}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                  <h2 style={{ fontSize: 13, fontWeight: 600, margin: 0 }}>Prism Write-back Payload</h2>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', height: 20, background: '#E7F1FA', color: '#0074B8', fontSize: 9, fontWeight: 600, borderRadius: 4, padding: '0 8px' }}>
+                  <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, margin: 0 }}>Prism Write-back Payload</h2>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', height: 20, background: '#E7F1FA', color: '#0074B8', fontSize: 'var(--type-badge)', fontWeight: 600, borderRadius: 4, padding: '0 8px' }}>
                     PrismHR &middot; R9
                   </span>
                 </div>
@@ -1354,7 +1386,7 @@ export default function RenewalPage() {
                       borderBottom: i < clientData.prismPayload.length - 1 ? '1px solid #EEF1F4' : 'none',
                       alignItems: 'center',
                     }}>
-                      <div style={{ fontSize: 10, fontWeight: 600, color: '#98A1A8', textTransform: 'uppercase', letterSpacing: '0.03em' }}>{row.field}</div>
+                      <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', textTransform: 'uppercase', letterSpacing: '0.03em' }}>{row.field}</div>
                       <div style={{ ...monoStyle, fontWeight: 500 }}>{row.value}</div>
                     </div>
                   ))}
@@ -1378,24 +1410,24 @@ export default function RenewalPage() {
               {/* Ben Admin Handoff View */}
               <div style={cardStyle}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                  <h2 style={{ fontSize: 13, fontWeight: 600, margin: 0 }}>Ben Admin Handoff</h2>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', height: 20, background: '#F3EEFF', color: '#5A45C7', fontSize: 9, fontWeight: 600, borderRadius: 4, padding: '0 8px' }}>
+                  <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, margin: 0 }}>Ben Admin Handoff</h2>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', height: 20, background: '#F3EEFF', color: '#5A45C7', fontSize: 'var(--type-badge)', fontWeight: 600, borderRadius: 4, padding: '0 8px' }}>
                     WorkSight &middot; Enrollment
                   </span>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginBottom: 14 }}>
                   <div style={{ background: '#FAFBFC', borderRadius: 8, padding: 12, border: '1px solid #EEF1F4', textAlign: 'center' }}>
-                    <div style={{ fontSize: 9, color: '#98A1A8', textTransform: 'uppercase', marginBottom: 4 }}>Target System</div>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: '#5A45C7' }}>WorkSight</div>
+                    <div style={{ fontSize: 'var(--type-label)', color: '#374151', textTransform: 'uppercase', marginBottom: 4 }}>Target System</div>
+                    <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#5A45C7' }}>WorkSight</div>
                   </div>
                   <div style={{ background: '#FAFBFC', borderRadius: 8, padding: 12, border: '1px solid #EEF1F4', textAlign: 'center' }}>
-                    <div style={{ fontSize: 9, color: '#98A1A8', textTransform: 'uppercase', marginBottom: 4 }}>Sync Type</div>
-                    <div style={{ fontSize: 12, fontWeight: 600 }}>Full Enrollment</div>
+                    <div style={{ fontSize: 'var(--type-label)', color: '#374151', textTransform: 'uppercase', marginBottom: 4 }}>Sync Type</div>
+                    <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600 }}>Full Enrollment</div>
                   </div>
                   <div style={{ background: '#FAFBFC', borderRadius: 8, padding: 12, border: '1px solid #EEF1F4', textAlign: 'center' }}>
-                    <div style={{ fontSize: 9, color: '#98A1A8', textTransform: 'uppercase', marginBottom: 4 }}>WSE Count</div>
-                    <div style={{ fontSize: 12, fontWeight: 600 }}>{clientData.currentWSE}</div>
+                    <div style={{ fontSize: 'var(--type-label)', color: '#374151', textTransform: 'uppercase', marginBottom: 4 }}>WSE Count</div>
+                    <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600 }}>{clientData.currentWSE}</div>
                   </div>
                 </div>
 
@@ -1422,16 +1454,16 @@ export default function RenewalPage() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: 10,
+                        fontSize: 'var(--type-body-sm)',
                         flexShrink: 0,
                         background: item.ready ? '#E4F2EA' : '#EDF0F3',
-                        color: item.ready ? '#1A7A4A' : '#98A1A8',
+                        color: item.ready ? '#1A7A4A' : '#374151',
                       }}>
                         {item.ready ? '✓' : '·'}
                       </div>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: 11, fontWeight: 500 }}>{item.system}</div>
-                        <div style={{ fontSize: 10, color: '#98A1A8' }}>{item.action}</div>
+                        <div style={{ fontSize: 'var(--type-body)', fontWeight: 500 }}>{item.system}</div>
+                        <div style={{ fontSize: 'var(--type-body)', color: '#374151' }}>{item.action}</div>
                       </div>
                     </div>
                   ))}

@@ -22,11 +22,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   if (screen === 'login') return null;
 
   return (
-    <div style={{ height: '100vh', display: 'flex', background: '#FAFAFA' }}>
+    <div style={{ height: '100vh', display: 'flex', background: 'var(--bg-secondary)' }}>
       <Sidebar />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, position: 'relative' }}>
         <Topbar />
-        <div style={{ flex: 1, overflowY: 'auto' }}>
+        <div style={{ flex: 1, overflowY: 'auto', background: 'var(--bg-secondary)' }}>
           {children}
         </div>
         <CopilotSidebar />

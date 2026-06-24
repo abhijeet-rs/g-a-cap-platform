@@ -25,14 +25,22 @@ function actionLabel(status: Status): string {
   return 'View';
 }
 
-const gridCols = 'minmax(140px,2fr) 56px 48px 100px 110px 82px 100px';
+const statusBadgeColors: Record<Status, { bg: string; fg: string }> = {
+  draft: { bg: '#F3F4F6', fg: '#6B7280' },
+  in_review: { bg: '#DBEAFE', fg: '#1D4ED8' },
+  approved: { bg: '#D1FAE5', fg: '#065F46' },
+  signed: { bg: '#FEF3C7', fg: '#92400E' },
+  published: { bg: '#D1FAE5', fg: '#065F46' },
+};
+
+const gridCols = '2.5fr 0.7fr 0.5fr 1.2fr 1fr 1fr 0.7fr';
 
 const selectStyle: React.CSSProperties = {
-  height: 30, padding: '0 28px 0 10px', border: '1px solid #E4E8ED',
-  borderRadius: 7, fontSize: 11, fontWeight: 600, color: '#1B2D3D',
+  height: 32, padding: '0 28px 0 10px', border: '1px solid #E5E7EB',
+  borderRadius: 6, fontSize: 'var(--type-label)', fontWeight: 500, color: '#374151',
   background: '#fff', cursor: 'pointer', outline: 'none',
   appearance: 'none', WebkitAppearance: 'none',
-  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2398A1A8'/%3E%3C/svg%3E")`,
+  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239CA3AF'/%3E%3C/svg%3E")`,
   backgroundRepeat: 'no-repeat',
   backgroundPosition: 'right 10px center',
 };
@@ -53,6 +61,8 @@ export default function ClientTable() {
   const router = useRouter();
   const { search, statusFilter, tierFilter, setSearch, setStatusFilter, setTierFilter, filteredClients } = useClientStore();
   const filtered = filteredClients();
+  const [hoveredRowId, setHoveredRowId] = useState<string | null>(null);
+  const [hoveredBtn, setHoveredBtn] = useState<string | null>(null);
 
   const [sortKey, setSortKey] = useState<SortKey>('name');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
@@ -83,23 +93,27 @@ export default function ClientTable() {
   };
 
   return (
-    <div style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, overflow: 'hidden' }}>
+    <div style={{
+      background: '#fff', borderRadius: 12, overflow: 'hidden',
+      boxShadow: 'var(--shadow-sm)',
+    }}>
       {/* Header */}
-      <div style={{ padding: '12px 16px', borderBottom: '1px solid #EEF1F4' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-          <div style={{ fontSize: 13, fontWeight: 600 }}>Client Approved Plans</div>
-          <span style={{ fontSize: 10, color: '#98A1A8' }}>{filtered.length}/{clients.length}</span>
+      <div style={{ padding: '16px 20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+          <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 700, color: '#111827' }}>Client Approved Plans</div>
+          <span style={{ fontSize: 'var(--type-label)', color: '#6B7280', fontWeight: 500 }}>{filtered.length}/{clients.length}</span>
           <div style={{ flex: 1 }} />
           <div style={{
             display: 'flex', alignItems: 'center', gap: 6,
-            height: 30, width: 220, border: '1px solid #E4E8ED', borderRadius: 7,
-            padding: '0 9px', background: '#FBFCFD',
+            height: 36, width: 240, borderRadius: 8,
+            padding: '0 12px', background: '#F9FAFB',
+            border: '1px solid #F3F4F6',
           }}>
-            <span style={{ color: '#98A1A8', fontSize: 12 }}>&#x2315;</span>
+            <span style={{ color: '#9CA3AF', fontSize: 'var(--type-body-sm)' }}>&#x2315;</span>
             <input
               value={search} onChange={(e) => setSearch(e.target.value)}
               placeholder="Search client, ID..."
-              style={{ flex: 1, border: 'none', background: 'none', outline: 'none', fontSize: 11, color: '#1B2D3D' }}
+              style={{ flex: 1, border: 'none', background: 'none', outline: 'none', fontSize: 'var(--type-caption)', color: '#111827' }}
             />
           </div>
         </div>
@@ -128,13 +142,15 @@ export default function ClientTable() {
       {/* Table Header */}
       <div style={{
         display: 'grid', gridTemplateColumns: gridCols,
-        background: '#FAFBFC', borderBottom: '1px solid #EEF1F4',
+        background: '#F9FAFB',
+        position: 'sticky', top: 0, zIndex: 1,
       }}>
         {columnDefs.map((col, i) => (
           <div key={col.label || i} style={{
-            padding: col.label === 'Client' ? '7px 16px' : '7px 6px',
-            fontSize: 9, fontWeight: 600,
-            color: '#98A1A8', textTransform: 'uppercase', letterSpacing: 0.5,
+            padding: '10px 16px',
+            fontSize: 'var(--type-table-header)', fontWeight: 600,
+            color: sortKey === col.key ? '#111827' : '#6B7280',
+            textTransform: 'uppercase', letterSpacing: '0.05em',
             ...(col.label === 'WSE' ? { textAlign: 'right' as const } : {}),
           }}>
             {col.key ? (
@@ -142,14 +158,18 @@ export default function ClientTable() {
                 onClick={() => handleSort(col.key!)}
                 style={{
                   border: 'none', background: 'none', cursor: 'pointer',
-                  fontSize: 9, fontWeight: 600, color: sortKey === col.key ? '#1B2D3D' : '#98A1A8',
-                  textTransform: 'uppercase', letterSpacing: 0.5, padding: 0,
-                  display: 'inline-flex', alignItems: 'center', gap: 3,
+                  fontSize: 'var(--type-table-header)', fontWeight: 600,
+                  color: sortKey === col.key ? '#111827' : '#6B7280',
+                  textTransform: 'uppercase', letterSpacing: '0.05em', padding: 0,
+                  display: 'inline-flex', alignItems: 'center', gap: 4,
                 }}
               >
                 {col.label}
                 {sortKey === col.key && (
-                  <span style={{ fontSize: 8 }}>{sortDir === 'asc' ? '▲' : '▼'}</span>
+                  <span style={{ fontSize: 8, color: '#111827' }}>{sortDir === 'asc' ? '▲' : '▼'}</span>
+                )}
+                {sortKey !== col.key && (
+                  <span style={{ fontSize: 8, color: '#9CA3AF' }}>{'▲'}</span>
                 )}
               </button>
             ) : col.label}
@@ -159,41 +179,51 @@ export default function ClientTable() {
 
       {/* Table Rows */}
       {sorted.length === 0 ? (
-        <div style={{ padding: '36px 16px', textAlign: 'center', fontSize: 12, color: '#64707A' }}>
+        <div style={{ padding: '40px 20px', textAlign: 'center', fontSize: 'var(--type-body-sm)', color: '#6B7280' }}>
           No matching CAPs found.
         </div>
       ) : sorted.map((c) => {
+        const badge = statusBadgeColors[c.status];
         const sm = statusMeta[c.status];
         return (
-          <div key={c.id} style={{
-            display: 'grid', gridTemplateColumns: gridCols,
-            borderTop: '1px solid #EEF1F4', alignItems: 'center',
-          }}>
-            <div style={{ padding: '9px 16px' }}>
-              <div style={{ fontSize: 12, fontWeight: 600 }}>{c.name}</div>
-              <div style={{ fontSize: 9, color: '#98A1A8', fontFamily: "'IBM Plex Mono', monospace" }}>{c.prism}</div>
+          <div key={c.id}
+            onMouseEnter={() => setHoveredRowId(c.id)}
+            onMouseLeave={() => setHoveredRowId(null)}
+            style={{
+              display: 'grid', gridTemplateColumns: gridCols,
+              borderBottom: '1px solid #F3F4F6', alignItems: 'center',
+              background: hoveredRowId === c.id ? '#F9FAFB' : 'transparent',
+              transition: 'background 0.1s ease',
+            }}>
+            <div style={{ padding: '12px 16px' }}>
+              <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#111827' }}>{c.name}</div>
+              <div style={{ fontSize: 'var(--type-label)', color: '#9CA3AF', fontFamily: "'IBM Plex Mono', monospace" }}>{c.prism}</div>
             </div>
-            <div style={{ padding: '9px 6px', fontSize: 10, fontWeight: 600, color: tierColors[c.tier] }}>{c.tier}</div>
-            <div style={{ padding: '9px 6px', textAlign: 'right', fontSize: 11, fontFamily: "'IBM Plex Mono', monospace" }}>{c.wse}</div>
-            <div style={{ padding: '9px 6px', fontSize: 11, color: '#3B4A57' }}>{c.owner}</div>
-            <div style={{ padding: '9px 6px' }}>
+            <div style={{ padding: '12px 16px', fontSize: 'var(--type-caption)', fontWeight: 600, color: tierColors[c.tier] }}>{c.tier}</div>
+            <div style={{ padding: '12px 16px', textAlign: 'right', fontSize: 'var(--type-caption)', fontFamily: "'IBM Plex Mono', monospace", color: '#374151' }}>{c.wse}</div>
+            <div style={{ padding: '12px 16px', fontSize: 'var(--type-caption)', color: '#374151' }}>{c.owner}</div>
+            <div style={{ padding: '12px 16px' }}>
               <span style={{
-                display: 'inline-flex', alignItems: 'center', gap: 3,
-                height: 20, padding: '0 7px', borderRadius: 5,
-                background: sm.bg, color: sm.fg, fontSize: 9, fontWeight: 600,
+                display: 'inline-flex', alignItems: 'center',
+                height: 22, padding: '0 8px', borderRadius: 10,
+                background: badge.bg, color: badge.fg,
+                fontSize: 'var(--type-badge)', fontWeight: 600,
               }}>
-                <span style={{ width: 4, height: 4, borderRadius: '50%', background: sm.fg }} />
                 {sm.label}
               </span>
             </div>
-            <div style={{ padding: '9px 6px', fontSize: 10, color: '#3B4A57', fontFamily: "'IBM Plex Mono', monospace" }}>{c.eff}</div>
-            <div style={{ padding: '9px 12px', textAlign: 'right' }}>
+            <div style={{ padding: '12px 16px', fontSize: 'var(--type-caption)', color: '#374151', fontFamily: "'IBM Plex Mono', monospace" }}>{c.eff}</div>
+            <div style={{ padding: '12px 16px', textAlign: 'right' }}>
               <button
                 onClick={() => handleAction(c.id, c.status)}
+                onMouseEnter={() => setHoveredBtn(c.id)}
+                onMouseLeave={() => setHoveredBtn(null)}
                 style={{
-                  height: 26, padding: '0 9px', border: '1px solid #E4E8ED',
-                  borderRadius: 6, background: '#fff', color: '#1B2D3D',
-                  fontSize: 10, fontWeight: 600, cursor: 'pointer',
+                  height: 28, padding: '0 10px',
+                  border: hoveredBtn === c.id ? '1px solid #111827' : '1px solid #E5E7EB',
+                  borderRadius: 6, background: '#fff', color: '#374151',
+                  fontSize: 'var(--type-badge)', fontWeight: 600, cursor: 'pointer',
+                  transition: 'border-color 0.12s ease',
                 }}
               >
                 {actionLabel(c.status)}

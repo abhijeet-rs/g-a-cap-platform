@@ -21,15 +21,15 @@ function sourceBadge(source: string): { bg: string; color: string } {
     case 'Needs input':
       return { bg: '#FDECEF', color: '#C60C30' };
     default:
-      return { bg: '#F1F3F5', color: '#64707A' };
+      return { bg: '#F1F3F5', color: '#374151' };
   }
 }
 
 const headerCellStyle: React.CSSProperties = {
-  fontSize: 9,
+  fontSize: 'var(--type-table-header)',
   textTransform: 'uppercase',
   fontWeight: 600,
-  color: '#64707A',
+  color: '#374151',
   letterSpacing: '0.04em',
 };
 
@@ -43,10 +43,10 @@ export default function StepExtraction() {
       {/* Status cards */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
         <div style={{ borderRadius: 10, padding: 12, textAlign: 'center', background: '#E4F2EA' }}>
-          <div style={{ fontSize: 22, fontWeight: 600, color: '#1A7A4A' }}>{extracted}</div>
+          <div style={{ fontSize: 'var(--type-display)', fontWeight: 600, color: '#1A7A4A' }}>{extracted}</div>
           <div
             style={{
-              fontSize: 9,
+              fontSize: 'var(--type-table-header)',
               textTransform: 'uppercase',
               fontWeight: 600,
               color: '#1A7A4A',
@@ -57,10 +57,10 @@ export default function StepExtraction() {
           </div>
         </div>
         <div style={{ borderRadius: 10, padding: 12, textAlign: 'center', background: '#FBF0DD' }}>
-          <div style={{ fontSize: 22, fontWeight: 600, color: '#B0690A' }}>{lowConf}</div>
+          <div style={{ fontSize: 'var(--type-display)', fontWeight: 600, color: '#B0690A' }}>{lowConf}</div>
           <div
             style={{
-              fontSize: 9,
+              fontSize: 'var(--type-table-header)',
               textTransform: 'uppercase',
               fontWeight: 600,
               color: '#B0690A',
@@ -71,10 +71,10 @@ export default function StepExtraction() {
           </div>
         </div>
         <div style={{ borderRadius: 10, padding: 12, textAlign: 'center', background: '#FDECEF' }}>
-          <div style={{ fontSize: 22, fontWeight: 600, color: '#C60C30' }}>{missing}</div>
+          <div style={{ fontSize: 'var(--type-display)', fontWeight: 600, color: '#C60C30' }}>{missing}</div>
           <div
             style={{
-              fontSize: 9,
+              fontSize: 'var(--type-table-header)',
               textTransform: 'uppercase',
               fontWeight: 600,
               color: '#C60C30',
@@ -125,12 +125,12 @@ export default function StepExtraction() {
                 alignItems: 'center',
               }}
             >
-              <div style={{ fontSize: 11, fontWeight: 500, color: '#1B2D3D' }}>{row.field}</div>
+              <div style={{ fontSize: 'var(--type-body)', fontWeight: 500, color: '#1B2D3D' }}>{row.field}</div>
               <div
                 style={{
-                  fontSize: 11,
+                  fontSize: 'var(--type-caption)',
                   fontFamily: "'IBM Plex Mono', monospace",
-                  color: '#4A5568',
+                  color: '#374151',
                 }}
               >
                 {row.value}
@@ -158,8 +158,8 @@ export default function StepExtraction() {
                 </div>
                 <span
                   style={{
-                    fontSize: 9,
-                    color: '#64707A',
+                    fontSize: 'var(--type-caption)',
+                    color: '#374151',
                     fontWeight: 500,
                     width: 28,
                     textAlign: 'right',
@@ -171,7 +171,7 @@ export default function StepExtraction() {
               <div>
                 <span
                   style={{
-                    fontSize: 9,
+                    fontSize: 'var(--type-badge)',
                     fontWeight: 600,
                     padding: '2px 8px',
                     borderRadius: 4,

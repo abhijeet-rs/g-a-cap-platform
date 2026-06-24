@@ -42,7 +42,7 @@ const filterOptions: { value: DocStatus | 'all'; label: string }[] = [
 
 const selectStyle: React.CSSProperties = {
   height: 30, padding: '0 28px 0 10px', border: '1px solid #E4E8ED',
-  borderRadius: 7, fontSize: 11, fontWeight: 600, color: '#1B2D3D',
+  borderRadius: 7, fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#1B2D3D',
   background: '#fff', cursor: 'pointer', outline: 'none',
   appearance: 'none', WebkitAppearance: 'none',
   backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2398A1A8'/%3E%3C/svg%3E")`,
@@ -262,7 +262,7 @@ export default function DocumentsPage() {
   }
 
   const sectionHeadingStyle: React.CSSProperties = {
-    fontSize: 11,
+    fontSize: 'var(--type-table-header)',
     fontWeight: 700,
     color: '#1B2D3D',
     textTransform: 'uppercase' as const,
@@ -281,13 +281,13 @@ export default function DocumentsPage() {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
         <div>
-          <h1 style={{ fontSize: 13, fontWeight: 600, margin: 0 }}>Generated Documents</h1>
-          <p style={{ fontSize: 10, color: '#98A1A8', margin: '4px 0 0' }}>
+          <h1 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, margin: 0 }}>Generated Documents</h1>
+          <p style={{ fontSize: 'var(--type-body-lg)', color: '#374151', margin: '4px 0 0' }}>
             Auto-generated from approved CAP data &middot; F7
           </p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: 10, color: '#98A1A8', fontWeight: 600 }}>{filtered.length} document{filtered.length !== 1 ? 's' : ''}</span>
+          <span style={{ fontSize: 'var(--type-body-lg)', color: '#374151', fontWeight: 600 }}>{filtered.length} document{filtered.length !== 1 ? 's' : ''}</span>
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value as DocStatus | 'all')}
@@ -318,21 +318,21 @@ export default function DocumentsPage() {
               }}
             >
               {/* File icon */}
-              <div style={{ width: 32, height: 40, borderRadius: 6, background: 'linear-gradient(to bottom, #13212C, #3B4A57)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 8, fontWeight: 700, flexShrink: 0 }}>
+              <div style={{ width: 32, height: 40, borderRadius: 6, background: 'linear-gradient(to bottom, #13212C, #1F2937)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 8, fontWeight: 700, flexShrink: 0 }}>
                 {doc.type}
               </div>
 
               {/* Details */}
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 12, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{doc.name}</div>
-                <div style={{ fontSize: 9, color: '#98A1A8', fontFamily: "'IBM Plex Mono', monospace" }}>
+                <div style={{ fontSize: 'var(--type-section-title)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{doc.name}</div>
+                <div style={{ fontSize: 'var(--type-body)', color: '#374151', fontFamily: "'IBM Plex Mono', monospace" }}>
                   {doc.type} &middot; Itafos Conda
                 </div>
               </div>
 
               {/* Status badge */}
               <span
-                style={{ display: 'inline-flex', alignItems: 'center', height: 20, fontSize: 9, fontWeight: 600, borderRadius: 4, padding: '0 8px', flexShrink: 0, backgroundColor: sm.bg, color: sm.fg }}
+                style={{ display: 'inline-flex', alignItems: 'center', height: 20, fontSize: 'var(--type-badge)', fontWeight: 600, borderRadius: 4, padding: '0 8px', flexShrink: 0, backgroundColor: sm.bg, color: sm.fg }}
               >
                 {sm.label}
               </span>
@@ -345,7 +345,7 @@ export default function DocumentsPage() {
                 style={{
                   height: 26, padding: '0 9px', border: '1px solid #E4E8ED',
                   borderRadius: 6, background: '#fff', color: '#1B2D3D',
-                  fontSize: 10, fontWeight: 600, cursor: 'pointer', flexShrink: 0,
+                  fontSize: 'var(--type-body-sm)', fontWeight: 600, cursor: 'pointer', flexShrink: 0,
                   transition: 'background .12s',
                 }}
               >
@@ -358,7 +358,7 @@ export default function DocumentsPage() {
                 style={{
                   height: 26, padding: '0 9px', border: 'none',
                   borderRadius: 6, background: '#C60C30', color: '#fff',
-                  fontSize: 10, fontWeight: 600, cursor: 'pointer', flexShrink: 0,
+                  fontSize: 'var(--type-body-sm)', fontWeight: 600, cursor: 'pointer', flexShrink: 0,
                   transition: 'background .12s',
                 }}
               >
@@ -370,7 +370,7 @@ export default function DocumentsPage() {
       </div>
 
       {filtered.length === 0 && (
-        <div style={{ padding: '36px 16px', textAlign: 'center', fontSize: 12, color: '#64707A' }}>
+        <div style={{ padding: '36px 16px', textAlign: 'center', fontSize: 'var(--type-body-lg)', color: '#374151' }}>
           No documents match the selected filter.
         </div>
       )}
@@ -430,7 +430,7 @@ export default function DocumentsPage() {
               {/* Drawer Header */}
               <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid #EEF1F4', flexShrink: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 10 }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2D3D', lineHeight: 1.3, paddingRight: 16 }}>
+                  <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 700, color: '#1B2D3D', lineHeight: 1.3, paddingRight: 16 }}>
                     {drawerDoc.name}
                   </div>
                   <button
@@ -440,9 +440,9 @@ export default function DocumentsPage() {
                     style={{
                       border: 'none',
                       background: hoveredBtn === 'close-x' ? '#F3F4F6' : 'none',
-                      fontSize: 18,
+                      fontSize: 'var(--type-body-sm)',
                       cursor: 'pointer',
-                      color: '#98A1A8',
+                      color: '#374151',
                       width: 30,
                       height: 30,
                       borderRadius: 6,
@@ -459,19 +459,19 @@ export default function DocumentsPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{
                     display: 'inline-flex', alignItems: 'center', height: 20,
-                    fontSize: 9, fontWeight: 600, borderRadius: 4, padding: '0 8px',
+                    fontSize: 'var(--type-badge)', fontWeight: 600, borderRadius: 4, padding: '0 8px',
                     backgroundColor: sm.bg, color: sm.fg,
                   }}>
                     {sm.label}
                   </span>
                   <span style={{
                     display: 'inline-flex', alignItems: 'center', height: 20,
-                    fontSize: 9, fontWeight: 600, borderRadius: 4, padding: '0 8px',
+                    fontSize: 'var(--type-badge)', fontWeight: 600, borderRadius: 4, padding: '0 8px',
                     backgroundColor: tb.bg, color: tb.fg,
                   }}>
                     {drawerDoc.type}
                   </span>
-                  <span style={{ fontSize: 10, color: '#98A1A8', marginLeft: 4 }}>
+                  <span style={{ fontSize: 'var(--type-caption)', color: '#374151', marginLeft: 4 }}>
                     Generated {drawerDoc.generatedDate} &middot; v{drawerDoc.version}
                   </span>
                 </div>
@@ -500,10 +500,10 @@ export default function DocumentsPage() {
                         borderRight: idx % 2 === 0 ? '1px solid #EEF1F4' : 'none',
                       }}
                     >
-                      <div style={{ fontSize: 9, fontWeight: 700, color: '#98A1A8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 3 }}>
+                      <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 700, color: '#374151', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 3 }}>
                         {field.label}
                       </div>
-                      <div style={{ fontSize: 11, fontWeight: 600, color: '#1B2D3D' }}>
+                      <div style={{ fontSize: 'var(--type-body)', fontWeight: 600, color: '#1B2D3D' }}>
                         {field.label === 'STATUS' ? (
                           <span style={{ color: sm.fg }}>{field.value}</span>
                         ) : field.value}
@@ -528,7 +528,7 @@ export default function DocumentsPage() {
                   <pre style={{
                     margin: 0,
                     fontFamily: "'IBM Plex Mono', 'SF Mono', 'Consolas', monospace",
-                    fontSize: 10.5,
+                    fontSize: 'var(--type-body-lg)',
                     lineHeight: 1.6,
                     color: '#1B2D3D',
                     whiteSpace: 'pre-wrap',
@@ -560,19 +560,19 @@ export default function DocumentsPage() {
                       }}
                     >
                       <span style={{
-                        fontSize: 10,
+                        fontSize: 'var(--type-body-lg)',
                         fontWeight: 700,
-                        color: idx === 0 ? '#1A7A4A' : '#98A1A8',
+                        color: idx === 0 ? '#1A7A4A' : '#374151',
                         fontFamily: "'IBM Plex Mono', monospace",
                         minWidth: 72,
                         flexShrink: 0,
                       }}>
                         {v.version}
                       </span>
-                      <span style={{ fontSize: 10, color: '#64707A', minWidth: 90, flexShrink: 0 }}>
+                      <span style={{ fontSize: 'var(--type-caption)', color: '#374151', minWidth: 90, flexShrink: 0 }}>
                         {v.date}
                       </span>
-                      <span style={{ fontSize: 10, color: '#1B2D3D' }}>
+                      <span style={{ fontSize: 'var(--type-body-lg)', color: '#1B2D3D' }}>
                         {v.note}
                       </span>
                     </div>
@@ -585,9 +585,9 @@ export default function DocumentsPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
                   <span style={{ ...sectionHeadingStyle, marginBottom: 0 }}>Audit Trail</span>
                   <span style={{
-                    fontSize: 9,
+                    fontSize: 'var(--type-badge)',
                     fontWeight: 600,
-                    color: '#98A1A8',
+                    color: '#374151',
                     background: '#EDF0F3',
                     borderRadius: 10,
                     padding: '2px 7px',
@@ -622,8 +622,8 @@ export default function DocumentsPage() {
                         }} />
                       </div>
                       <div style={{
-                        fontSize: 10,
-                        color: '#98A1A8',
+                        fontSize: 'var(--type-caption)',
+                        color: '#374151',
                         fontFamily: "'IBM Plex Mono', monospace",
                         minWidth: 100,
                         flexShrink: 0,
@@ -631,7 +631,7 @@ export default function DocumentsPage() {
                       }}>
                         {entry.date}
                       </div>
-                      <div style={{ fontSize: 10, color: '#1B2D3D', lineHeight: 1.4, paddingTop: 1 }}>
+                      <div style={{ fontSize: 'var(--type-body-lg)', color: '#1B2D3D', lineHeight: 1.4, paddingTop: 1 }}>
                         {entry.event}
                       </div>
                     </div>
@@ -663,7 +663,7 @@ export default function DocumentsPage() {
                     border: '1px solid #E4E8ED',
                     borderRadius: 8,
                     background: hoveredBtn === 'close-btn' ? '#F8F9FA' : '#fff',
-                    fontSize: 12,
+                    fontSize: 'var(--type-body-sm)',
                     fontWeight: 600,
                     cursor: 'pointer',
                     color: '#1B2D3D',
@@ -683,7 +683,7 @@ export default function DocumentsPage() {
                     borderRadius: 8,
                     background: hoveredBtn === 'download-btn' ? '#A80A28' : '#C60C30',
                     color: '#fff',
-                    fontSize: 12,
+                    fontSize: 'var(--type-body-sm)',
                     fontWeight: 600,
                     cursor: 'pointer',
                     boxShadow: '0 3px 10px rgba(198,12,48,.2)',
@@ -704,7 +704,7 @@ export default function DocumentsPage() {
                       borderRadius: 8,
                       background: hoveredBtn === 'docusign-btn' ? '#4A36A8' : '#5A45C7',
                       color: '#fff',
-                      fontSize: 12,
+                      fontSize: 'var(--type-body-sm)',
                       fontWeight: 600,
                       cursor: 'pointer',
                       boxShadow: '0 3px 10px rgba(90,69,199,.2)',
@@ -725,7 +725,7 @@ export default function DocumentsPage() {
         <div style={{
           position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)',
           background: '#13212C', color: '#fff', padding: '10px 20px', borderRadius: 8,
-          fontSize: 12, fontWeight: 600, zIndex: 200,
+          fontSize: 'var(--type-body-sm)', fontWeight: 600, zIndex: 200,
           boxShadow: '0 4px 20px rgba(16,32,45,.3)',
         }}>
           {toast}

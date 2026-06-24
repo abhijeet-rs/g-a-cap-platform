@@ -1,0 +1,5 @@
+Invoice Date,Group #,Plan,Tier,Rate,Enrolled,Total Premium
+2026-04-01,GRD-TX-4521,PPO $1500,Employee Only,$29.00,189,"$5,481.00"
+2026-04-01,GRD-TX-4521,PPO $1500,Employee + Spouse,$66.15,52,"$3,439.80"
+2026-04-01,GRD-TX-4521,PPO $1500,Employee + Child,$84.00,31,"$2,604.00"
+2026-04-01,GRD-TX-4521,PPO $1500,Employee + Family,$115.50,26,"$3,003.00"

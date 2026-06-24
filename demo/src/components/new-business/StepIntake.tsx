@@ -19,7 +19,7 @@ const inputStyle: React.CSSProperties = {
   border: '1px solid #DCE2E8',
   borderRadius: 6,
   padding: '0 10px',
-  fontSize: 14,
+  fontSize: 'var(--type-body-sm)',
   background: '#FBFCFD',
   outline: 'none',
   fontFamily: "'IBM Plex Sans', sans-serif",
@@ -27,9 +27,9 @@ const inputStyle: React.CSSProperties = {
 
 const labelStyle: React.CSSProperties = {
   display: 'block',
-  fontSize: 11,
+  fontSize: 'var(--type-table-header)',
   fontWeight: 600,
-  color: '#64707A',
+  color: '#374151',
   textTransform: 'uppercase',
   letterSpacing: '0.04em',
   marginBottom: 6,
@@ -47,7 +47,7 @@ function getFileIcon(filename: string): { icon: string; color: string } {
   if (ext === 'pdf') return { icon: '\u{1F4C4}', color: '#C60C30' };
   if (['xlsx', 'xls', 'csv'].includes(ext)) return { icon: '\u{1F4CA}', color: '#1A7A4A' };
   if (['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(ext)) return { icon: '\u{1F5BC}', color: '#0074B8' };
-  return { icon: '\u{1F4CE}', color: '#64707A' };
+  return { icon: '\u{1F4CE}', color: '#374151' };
 }
 
 export default function StepIntake() {
@@ -119,7 +119,7 @@ export default function StepIntake() {
         border: '1px solid #E4E8ED',
         padding: 20,
       }}>
-        <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2D3D', marginBottom: 14 }}>
+        <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, color: '#1B2D3D', marginBottom: 14 }}>
           How would you like to start?
         </div>
         <div style={{ display: 'flex', gap: 12 }}>
@@ -145,8 +145,8 @@ export default function StepIntake() {
               flexShrink: 0,
             }} />
             <div style={{ textAlign: 'left' }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2D3D' }}>Start from scratch</div>
-              <div style={{ fontSize: 10, color: '#98A1A8', marginTop: 2 }}>Fill in seed info and upload documents manually</div>
+              <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#1B2D3D' }}>Start from scratch</div>
+              <div style={{ fontSize: 'var(--type-body-sm)', color: '#374151', marginTop: 2 }}>Fill in seed info and upload documents manually</div>
             </div>
           </button>
           <button
@@ -171,8 +171,8 @@ export default function StepIntake() {
               flexShrink: 0,
             }} />
             <div style={{ textAlign: 'left' }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2D3D' }}>Upload existing WIP CAP</div>
-              <div style={{ fontSize: 10, color: '#98A1A8', marginTop: 2 }}>Import fields from an existing CAP workbook (.xlsx)</div>
+              <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#1B2D3D' }}>Upload existing WIP CAP</div>
+              <div style={{ fontSize: 'var(--type-body-sm)', color: '#374151', marginTop: 2 }}>Import fields from an existing CAP workbook (.xlsx)</div>
             </div>
           </button>
         </div>
@@ -210,11 +210,11 @@ export default function StepIntake() {
                   onChange={(e) => { handleCapFile(e.target.files); e.target.value = ''; }}
                   style={{ display: 'none' }}
                 />
-                <div style={{ fontSize: 28, color: capDragging ? '#0074B8' : '#98A1A8', marginBottom: 8 }}>&#x1F4CA;</div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: capDragging ? '#0074B8' : '#4A5568' }}>
+                <div style={{ fontSize: 36, color: capDragging ? '#0074B8' : '#374151', marginBottom: 8 }}>&#x1F4CA;</div>
+                <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: capDragging ? '#0074B8' : '#374151' }}>
                   Drop your existing CAP workbook (.xlsx) to import
                 </div>
-                <div style={{ fontSize: 11, color: '#98A1A8', marginTop: 6 }}>
+                <div style={{ fontSize: 'var(--type-body-sm)', color: '#374151', marginTop: 6 }}>
                   Supports .xlsx and .xls files
                 </div>
               </div>
@@ -223,7 +223,7 @@ export default function StepIntake() {
 
           {capImporting && (
             <div style={{ textAlign: 'center', padding: '32px 0' }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: '#0074B8', marginBottom: 12 }}>
+              <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#0074B8', marginBottom: 12 }}>
                 Importing...
               </div>
               <div style={{ width: 200, height: 4, background: '#EDF0F3', borderRadius: 2, margin: '0 auto', overflow: 'hidden' }}>
@@ -233,7 +233,7 @@ export default function StepIntake() {
                 }} />
               </div>
               <style>{`@keyframes capImportPulse { 0% { width: 10%; } 50% { width: 80%; } 100% { width: 100%; } }`}</style>
-              <div style={{ fontSize: 10, color: '#98A1A8', marginTop: 8 }}>
+              <div style={{ fontSize: 'var(--type-body-sm)', color: '#374151', marginTop: 8 }}>
                 Reading {capFileName}...
               </div>
             </div>
@@ -252,18 +252,18 @@ export default function StepIntake() {
                   <div style={{
                     width: 22, height: 22, borderRadius: '50%', background: '#1A7A4A',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: '#fff', fontSize: 11, fontWeight: 700, flexShrink: 0,
+                    color: '#fff', fontSize: 'var(--type-badge)', fontWeight: 700, flexShrink: 0,
                   }}>
                     &#x2713;
                   </div>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: '#1A7A4A' }}>
+                  <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#1A7A4A' }}>
                     Imported 24 fields from CAP workbook
                   </span>
                 </div>
-                <div style={{ fontSize: 11, color: '#64707A', marginLeft: 30 }}>
+                <div style={{ fontSize: 'var(--type-body-sm)', color: '#374151', marginLeft: 30 }}>
                   Company Info: 8 fields &middot; Products: 4 fields &middot; Rates: 8 fields &middot; UW Params: 4 fields
                 </div>
-                <div style={{ fontSize: 10, color: '#98A1A8', marginLeft: 30, marginTop: 4 }}>
+                <div style={{ fontSize: 'var(--type-body-sm)', color: '#374151', marginLeft: 30, marginTop: 4 }}>
                   Source: {capFileName}
                 </div>
               </div>
@@ -275,7 +275,7 @@ export default function StepIntake() {
                 border: '1px solid #EEF1F4',
                 padding: 14,
               }}>
-                <div style={{ fontSize: 10, fontWeight: 600, color: '#98A1A8', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 10 }}>
+                <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 10 }}>
                   Imported Seed Data
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
@@ -286,8 +286,8 @@ export default function StepIntake() {
                     { label: 'Primary Carrier', value: carrier },
                   ].map((item) => (
                     <div key={item.label}>
-                      <div style={{ fontSize: 10, color: '#98A1A8' }}>{item.label}</div>
-                      <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2D3D' }}>{item.value}</div>
+                      <div style={{ fontSize: 'var(--type-body-sm)', color: '#374151' }}>{item.label}</div>
+                      <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#1B2D3D' }}>{item.value}</div>
                     </div>
                   ))}
                 </div>
@@ -300,7 +300,7 @@ export default function StepIntake() {
                 border: '1px solid #EEF1F4',
                 padding: 14,
               }}>
-                <div style={{ fontSize: 10, fontWeight: 600, color: '#98A1A8', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 10 }}>
+                <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 10 }}>
                   Document Checklist &mdash; All from CAP
                 </div>
                 {documentChecklist.map((doc, i) => (
@@ -313,10 +313,10 @@ export default function StepIntake() {
                       width: 18, height: 18, borderRadius: '50%',
                       background: '#E4F2EA', color: '#1A7A4A',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 9, flexShrink: 0,
+                      fontSize: 'var(--type-badge)', flexShrink: 0,
                     }}>&#x2713;</div>
-                    <span style={{ fontSize: 11, fontWeight: 500, color: '#1B2D3D' }}>{doc.name}</span>
-                    <span style={{ fontSize: 9, color: '#1A7A4A', fontWeight: 500, marginLeft: 'auto' }}>From CAP</span>
+                    <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 500, color: '#1B2D3D' }}>{doc.name}</span>
+                    <span style={{ fontSize: 'var(--type-body-sm)', color: '#1A7A4A', fontWeight: 500, marginLeft: 'auto' }}>From CAP</span>
                   </div>
                 ))}
               </div>
@@ -328,7 +328,7 @@ export default function StepIntake() {
                   style={{
                     height: 38, padding: '0 22px',
                     background: '#C60C30', color: '#fff',
-                    borderRadius: 8, fontSize: 12, fontWeight: 600,
+                    borderRadius: 8, fontSize: 'var(--type-body-sm)', fontWeight: 600,
                     border: 'none', cursor: 'pointer',
                     boxShadow: '0 3px 10px rgba(198,12,48,.2)',
                     fontFamily: "'IBM Plex Sans', sans-serif",
@@ -355,12 +355,12 @@ export default function StepIntake() {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-            <h3 style={{ fontSize: 13, fontWeight: 600, color: '#1B2D3D', margin: 0 }}>
+            <h3 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, color: '#1B2D3D', margin: 0 }}>
               Seed Information
             </h3>
             <span
               style={{
-                fontSize: 9,
+                fontSize: 'var(--type-badge)',
                 fontWeight: 600,
                 padding: '2px 8px',
                 borderRadius: 4,
@@ -389,10 +389,10 @@ export default function StepIntake() {
                 }}
               />
               {touched.company && !companyValidation.valid && (
-                <div style={{ fontSize: 10, color: '#C60C30', marginTop: 3 }}>{companyValidation.error}</div>
+                <div style={{ fontSize: 'var(--type-caption)', color: '#C60C30', marginTop: 3 }}>{companyValidation.error}</div>
               )}
               {!(touched.company && !companyValidation.valid) && seedFieldRules.company.hint && (
-                <div style={{ fontSize: 10, color: '#98A1A8', marginTop: 3 }}>{seedFieldRules.company.hint}</div>
+                <div style={{ fontSize: 'var(--type-caption)', color: '#374151', marginTop: 3 }}>{seedFieldRules.company.hint}</div>
               )}
             </div>
 
@@ -411,10 +411,10 @@ export default function StepIntake() {
                   }}
                 />
                 {touched.planYear && !planYearValidation.valid && (
-                  <div style={{ fontSize: 10, color: '#C60C30', marginTop: 3 }}>{planYearValidation.error}</div>
+                  <div style={{ fontSize: 'var(--type-caption)', color: '#C60C30', marginTop: 3 }}>{planYearValidation.error}</div>
                 )}
                 {!(touched.planYear && !planYearValidation.valid) && seedFieldRules.planYear.hint && (
-                  <div style={{ fontSize: 10, color: '#98A1A8', marginTop: 3 }}>{seedFieldRules.planYear.hint}</div>
+                  <div style={{ fontSize: 'var(--type-caption)', color: '#374151', marginTop: 3 }}>{seedFieldRules.planYear.hint}</div>
                 )}
               </div>
               <div>
@@ -430,10 +430,10 @@ export default function StepIntake() {
                   }}
                 />
                 {touched.eeCount && !eeCountValidation.valid && (
-                  <div style={{ fontSize: 10, color: '#C60C30', marginTop: 3 }}>{eeCountValidation.error}</div>
+                  <div style={{ fontSize: 'var(--type-caption)', color: '#C60C30', marginTop: 3 }}>{eeCountValidation.error}</div>
                 )}
                 {!(touched.eeCount && !eeCountValidation.valid) && seedFieldRules.eeCount.hint && (
-                  <div style={{ fontSize: 10, color: '#98A1A8', marginTop: 3 }}>{seedFieldRules.eeCount.hint}</div>
+                  <div style={{ fontSize: 'var(--type-caption)', color: '#374151', marginTop: 3 }}>{seedFieldRules.eeCount.hint}</div>
                 )}
               </div>
             </div>
@@ -459,7 +459,7 @@ export default function StepIntake() {
                   <option value="">Select month...</option>
                   {monthOptions.map(m => <option key={m} value={m}>{m}</option>)}
                 </select>
-                <div style={{ fontSize: 10, color: '#98A1A8', marginTop: 3 }}>Benefit plan effective month</div>
+                <div style={{ fontSize: 'var(--type-caption)', color: '#374151', marginTop: 3 }}>Benefit plan effective month</div>
               </div>
               <div>
                 <label style={labelStyle}>Primary Carrier <span style={{ color: '#C60C30' }}>*</span></label>
@@ -480,7 +480,7 @@ export default function StepIntake() {
                   <option value="">Select carrier...</option>
                   {carrierOptions.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
-                <div style={{ fontSize: 10, color: '#98A1A8', marginTop: 3 }}>G&A master carrier or Open Market</div>
+                <div style={{ fontSize: 'var(--type-caption)', color: '#374151', marginTop: 3 }}>G&A master carrier or Open Market</div>
               </div>
             </div>
           </div>
@@ -496,12 +496,12 @@ export default function StepIntake() {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-            <h3 style={{ fontSize: 13, fontWeight: 600, color: '#1B2D3D', margin: 0 }}>
+            <h3 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, color: '#1B2D3D', margin: 0 }}>
               Document Checklist
             </h3>
             <span
               style={{
-                fontSize: 9,
+                fontSize: 'var(--type-badge)',
                 fontWeight: 600,
                 padding: '2px 8px',
                 borderRadius: 4,
@@ -536,17 +536,17 @@ export default function StepIntake() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: 11,
+                    fontSize: 'var(--type-badge)',
                     background: doc.status === 'done' ? '#E4F2EA' : '#F1F3F5',
-                    color: doc.status === 'done' ? '#1A7A4A' : '#98A1A8',
+                    color: doc.status === 'done' ? '#1A7A4A' : '#374151',
                   }}
                 >
                   {doc.status === 'done' ? '✓' : '·'}
                 </div>
                 {/* Text */}
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 500, color: '#1B2D3D' }}>{doc.name}</div>
-                  <div style={{ fontSize: 10, color: '#98A1A8' }}>{doc.unlocks}</div>
+                  <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 500, color: '#1B2D3D' }}>{doc.name}</div>
+                  <div style={{ fontSize: 'var(--type-body-sm)', color: '#374151' }}>{doc.unlocks}</div>
                 </div>
               </div>
             ))}
@@ -581,14 +581,14 @@ export default function StepIntake() {
         {uploadFeedback ? (
           <>
             <div style={{ fontSize: 22, color: '#1A7A4A', marginBottom: 4 }}>✓</div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: '#1A7A4A' }}>{uploadFeedback}</div>
-            <div style={{ fontSize: 11, color: '#98A1A8', marginTop: 4 }}>Click to upload more files</div>
+            <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#1A7A4A' }}>{uploadFeedback}</div>
+            <div style={{ fontSize: 'var(--type-body-sm)', color: '#374151', marginTop: 4 }}>Click to upload more files</div>
           </>
         ) : (
           <>
-            <div style={{ fontSize: 22, color: dragging ? '#0074B8' : '#98A1A8', marginBottom: 4, transition: 'color 0.15s ease' }}>&#8593;</div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: dragging ? '#0074B8' : '#4A5568', transition: 'color 0.15s ease' }}>Drop files or click to upload</div>
-            <div style={{ fontSize: 11, color: '#98A1A8', marginTop: 4 }}>PDF, Excel, CSV, Image, Word &mdash; up to 25MB each</div>
+            <div style={{ fontSize: 22, color: dragging ? '#0074B8' : '#374151', marginBottom: 4, transition: 'color 0.15s ease' }}>&#8593;</div>
+            <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: dragging ? '#0074B8' : '#374151', transition: 'color 0.15s ease' }}>Drop files or click to upload</div>
+            <div style={{ fontSize: 'var(--type-body-sm)', color: '#374151', marginTop: 4 }}>PDF, Excel, CSV, Image, Word &mdash; up to 25MB each</div>
           </>
         )}
       </div>
@@ -605,9 +605,9 @@ export default function StepIntake() {
         >
           <h4
             style={{
-              fontSize: 11,
+              fontSize: 'var(--type-table-header)',
               fontWeight: 600,
-              color: '#64707A',
+              color: '#374151',
               textTransform: 'uppercase',
               letterSpacing: '0.04em',
               marginBottom: 12,
@@ -626,8 +626,8 @@ export default function StepIntake() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: 10,
-                    fontSize: 12,
-                    color: '#4A5568',
+                    fontSize: 'var(--type-body-sm)',
+                    color: '#374151',
                     padding: '6px 8px',
                     borderRadius: 6,
                     background: '#FBFCFD',
@@ -643,7 +643,7 @@ export default function StepIntake() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: 14,
+                      fontSize: 'var(--type-body-sm)',
                       background: `${color}14`,
                       color: color,
                       flexShrink: 0,
@@ -656,7 +656,7 @@ export default function StepIntake() {
                     {file.name}
                   </span>
                   {/* File size */}
-                  <span style={{ fontSize: 11, color: '#98A1A8', flexShrink: 0 }}>
+                  <span style={{ fontSize: 'var(--type-caption)', color: '#374151', flexShrink: 0 }}>
                     {formatFileSize(file.size)}
                   </span>
                   {/* Remove button */}
@@ -668,8 +668,8 @@ export default function StepIntake() {
                       borderRadius: '50%',
                       border: '1px solid #E4E8ED',
                       background: '#fff',
-                      color: '#98A1A8',
-                      fontSize: 13,
+                      color: '#374151',
+                      fontSize: 'var(--type-badge)',
                       lineHeight: '20px',
                       cursor: 'pointer',
                       display: 'flex',
@@ -687,7 +687,7 @@ export default function StepIntake() {
                     onMouseLeave={(e) => {
                       (e.currentTarget as HTMLButtonElement).style.background = '#fff';
                       (e.currentTarget as HTMLButtonElement).style.borderColor = '#E4E8ED';
-                      (e.currentTarget as HTMLButtonElement).style.color = '#98A1A8';
+                      (e.currentTarget as HTMLButtonElement).style.color = '#374151';
                     }}
                     title={`Remove ${file.name}`}
                   >

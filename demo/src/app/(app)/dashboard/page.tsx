@@ -18,11 +18,11 @@ export default function DashboardPage() {
   if (loading) return <PageSkeleton />;
 
   return (
-    <div style={{ padding: '20px 24px 48px', maxWidth: 1280 }}>
+    <div style={{ padding: '24px 24px 32px' }}>
       <MetricGrid />
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 14, alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 20, alignItems: 'start' }}>
         <ClientTable />
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <RenewalRadar />
           <QuickActions />
         </div>

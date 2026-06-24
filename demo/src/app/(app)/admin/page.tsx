@@ -25,11 +25,11 @@ const expandedDetails: Record<string, React.ReactNode> = {
   /* Connections */
   PrismHR: (
     <div>
-      <div style={{ fontSize: 9, fontWeight: 600, color: '#64707A', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Field Mapping</div>
-      <table style={{ width: '100%', fontSize: 10, borderCollapse: 'collapse' }}>
+      <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Field Mapping</div>
+      <table style={{ width: '100%', fontSize: 'var(--type-body-sm)', borderCollapse: 'collapse' }}>
         <thead><tr style={{ borderBottom: '1px solid #E4E8ED' }}>
-          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#98A1A8', fontWeight: 600, fontSize: 8 }}>Prism Field</th>
-          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#98A1A8', fontWeight: 600, fontSize: 8 }}>Platform Field</th>
+          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>Prism Field</th>
+          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>Platform Field</th>
         </tr></thead>
         <tbody>
           {[['clientId','client.prismId'],['planCode','plan.carrierId'],['eeRate','tierRates.eo'],['erRate','contribution.erPct'],['effDate','plan.effectiveDate']].map(([a,b])=>(
@@ -44,11 +44,11 @@ const expandedDetails: Record<string, React.ReactNode> = {
   ),
   ClientSpace: (
     <div>
-      <div style={{ fontSize: 9, fontWeight: 600, color: '#64707A', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Field Mapping</div>
-      <table style={{ width: '100%', fontSize: 10, borderCollapse: 'collapse' }}>
+      <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Field Mapping</div>
+      <table style={{ width: '100%', fontSize: 'var(--type-body-sm)', borderCollapse: 'collapse' }}>
         <thead><tr style={{ borderBottom: '1px solid #E4E8ED' }}>
-          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#98A1A8', fontWeight: 600, fontSize: 8 }}>CS Field</th>
-          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#98A1A8', fontWeight: 600, fontSize: 8 }}>Platform Field</th>
+          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>CS Field</th>
+          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>Platform Field</th>
         </tr></thead>
         <tbody>
           {[['caseId','workflow.caseId'],['status','lifecycle.stage'],['auditLog','audit.entries'],['commTrack','commission.schedule']].map(([a,b])=>(
@@ -63,11 +63,11 @@ const expandedDetails: Record<string, React.ReactNode> = {
   ),
   WorkSight: (
     <div>
-      <div style={{ fontSize: 9, fontWeight: 600, color: '#64707A', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Field Mapping</div>
-      <table style={{ width: '100%', fontSize: 10, borderCollapse: 'collapse' }}>
+      <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Field Mapping</div>
+      <table style={{ width: '100%', fontSize: 'var(--type-body-sm)', borderCollapse: 'collapse' }}>
         <thead><tr style={{ borderBottom: '1px solid #E4E8ED' }}>
-          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#98A1A8', fontWeight: 600, fontSize: 8 }}>WS Field</th>
-          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#98A1A8', fontWeight: 600, fontSize: 8 }}>Platform Field</th>
+          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>WS Field</th>
+          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>Platform Field</th>
         </tr></thead>
         <tbody>
           {[['enrollPlan','plan.id'],['rateTable','tierRates.*'],['portalConfig','enrollment.config'],['eligibility','class.type']].map(([a,b])=>(
@@ -82,11 +82,11 @@ const expandedDetails: Record<string, React.ReactNode> = {
   ),
   DocuSign: (
     <div>
-      <div style={{ fontSize: 9, fontWeight: 600, color: '#64707A', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Field Mapping</div>
-      <table style={{ width: '100%', fontSize: 10, borderCollapse: 'collapse' }}>
+      <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Field Mapping</div>
+      <table style={{ width: '100%', fontSize: 'var(--type-body-sm)', borderCollapse: 'collapse' }}>
         <thead><tr style={{ borderBottom: '1px solid #E4E8ED' }}>
-          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#98A1A8', fontWeight: 600, fontSize: 8 }}>DS Field</th>
-          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#98A1A8', fontWeight: 600, fontSize: 8 }}>Platform Field</th>
+          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>DS Field</th>
+          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>Platform Field</th>
         </tr></thead>
         <tbody>
           {[['envelopeId','esign.envelopeId'],['signerStatus','esign.signerStatus'],['completedAt','esign.completedDate'],['templateId','template.docusignRef']].map(([a,b])=>(
@@ -101,11 +101,11 @@ const expandedDetails: Record<string, React.ReactNode> = {
   ),
   'Carrier Underwriting': (
     <div>
-      <div style={{ fontSize: 9, fontWeight: 600, color: '#64707A', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Field Mapping</div>
-      <table style={{ width: '100%', fontSize: 10, borderCollapse: 'collapse' }}>
+      <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Field Mapping</div>
+      <table style={{ width: '100%', fontSize: 'var(--type-body-sm)', borderCollapse: 'collapse' }}>
         <thead><tr style={{ borderBottom: '1px solid #E4E8ED' }}>
-          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#98A1A8', fontWeight: 600, fontSize: 8 }}>Upload Field</th>
-          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#98A1A8', fontWeight: 600, fontSize: 8 }}>Platform Field</th>
+          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>Upload Field</th>
+          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>Platform Field</th>
         </tr></thead>
         <tbody>
           {[['sbcDoc','uw.sbcDocument'],['rateSheet','uw.carrierRates'],['factors','uw.riskFactors'],['confidence','uw.extractConfidence']].map(([a,b])=>(
@@ -121,11 +121,11 @@ const expandedDetails: Record<string, React.ReactNode> = {
   /* Master Plans */
   'Plan Catalog': (
     <div>
-      <div style={{ fontSize: 9, fontWeight: 600, color: '#64707A', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Sample Rate Table</div>
-      <table style={{ width: '100%', fontSize: 10, borderCollapse: 'collapse' }}>
+      <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Sample Rate Table</div>
+      <table style={{ width: '100%', fontSize: 'var(--type-body-sm)', borderCollapse: 'collapse' }}>
         <thead><tr style={{ borderBottom: '1px solid #E4E8ED' }}>
-          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#98A1A8', fontWeight: 600, fontSize: 8 }}>Tier</th>
-          <th style={{ textAlign: 'right', padding: '3px 6px', color: '#98A1A8', fontWeight: 600, fontSize: 8 }}>Rate</th>
+          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>Tier</th>
+          <th style={{ textAlign: 'right', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>Rate</th>
         </tr></thead>
         <tbody>
           {[['EO','$624.18'],['ES','$1,310.78'],['EC','$1,123.52'],['EF','$1,810.12']].map(([t,r])=>(
@@ -140,11 +140,11 @@ const expandedDetails: Record<string, React.ReactNode> = {
   ),
   'BCBS Texas': (
     <div>
-      <div style={{ fontSize: 9, fontWeight: 600, color: '#64707A', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>PPO $500 80% Tier Rates</div>
-      <table style={{ width: '100%', fontSize: 10, borderCollapse: 'collapse' }}>
+      <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>PPO $500 80% Tier Rates</div>
+      <table style={{ width: '100%', fontSize: 'var(--type-body-sm)', borderCollapse: 'collapse' }}>
         <thead><tr style={{ borderBottom: '1px solid #E4E8ED' }}>
-          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#98A1A8', fontWeight: 600, fontSize: 8 }}>Tier</th>
-          <th style={{ textAlign: 'right', padding: '3px 6px', color: '#98A1A8', fontWeight: 600, fontSize: 8 }}>Rate</th>
+          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>Tier</th>
+          <th style={{ textAlign: 'right', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>Rate</th>
         </tr></thead>
         <tbody>
           {[['EO','$654.32'],['ES','$1,373.07'],['EC','$1,176.77'],['EF','$1,897.55']].map(([t,r])=>(
@@ -159,11 +159,11 @@ const expandedDetails: Record<string, React.ReactNode> = {
   ),
   'Cigna National': (
     <div>
-      <div style={{ fontSize: 9, fontWeight: 600, color: '#64707A', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>OAP Tier Rates</div>
-      <table style={{ width: '100%', fontSize: 10, borderCollapse: 'collapse' }}>
+      <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>OAP Tier Rates</div>
+      <table style={{ width: '100%', fontSize: 'var(--type-body-sm)', borderCollapse: 'collapse' }}>
         <thead><tr style={{ borderBottom: '1px solid #E4E8ED' }}>
-          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#98A1A8', fontWeight: 600, fontSize: 8 }}>Tier</th>
-          <th style={{ textAlign: 'right', padding: '3px 6px', color: '#98A1A8', fontWeight: 600, fontSize: 8 }}>Rate</th>
+          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>Tier</th>
+          <th style={{ textAlign: 'right', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>Rate</th>
         </tr></thead>
         <tbody>
           {[['EO','$589.44'],['ES','$1,237.82'],['EC','$1,060.99'],['EF','$1,709.37']].map(([t,r])=>(
@@ -178,11 +178,11 @@ const expandedDetails: Record<string, React.ReactNode> = {
   ),
   Guardian: (
     <div>
-      <div style={{ fontSize: 9, fontWeight: 600, color: '#64707A', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Dental PPO Tier Rates</div>
-      <table style={{ width: '100%', fontSize: 10, borderCollapse: 'collapse' }}>
+      <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Dental PPO Tier Rates</div>
+      <table style={{ width: '100%', fontSize: 'var(--type-body-sm)', borderCollapse: 'collapse' }}>
         <thead><tr style={{ borderBottom: '1px solid #E4E8ED' }}>
-          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#98A1A8', fontWeight: 600, fontSize: 8 }}>Tier</th>
-          <th style={{ textAlign: 'right', padding: '3px 6px', color: '#98A1A8', fontWeight: 600, fontSize: 8 }}>Rate</th>
+          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>Tier</th>
+          <th style={{ textAlign: 'right', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>Rate</th>
         </tr></thead>
         <tbody>
           {[['EO','$42.10'],['ES','$84.20'],['EC','$88.41'],['EF','$126.30']].map(([t,r])=>(
@@ -197,11 +197,11 @@ const expandedDetails: Record<string, React.ReactNode> = {
   ),
   'Unum / Northwestern': (
     <div>
-      <div style={{ fontSize: 9, fontWeight: 600, color: '#64707A', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Life/AD&D Rate per $1,000</div>
-      <table style={{ width: '100%', fontSize: 10, borderCollapse: 'collapse' }}>
+      <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Life/AD&D Rate per $1,000</div>
+      <table style={{ width: '100%', fontSize: 'var(--type-body-sm)', borderCollapse: 'collapse' }}>
         <thead><tr style={{ borderBottom: '1px solid #E4E8ED' }}>
-          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#98A1A8', fontWeight: 600, fontSize: 8 }}>Age Band</th>
-          <th style={{ textAlign: 'right', padding: '3px 6px', color: '#98A1A8', fontWeight: 600, fontSize: 8 }}>Rate</th>
+          <th style={{ textAlign: 'left', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>Age Band</th>
+          <th style={{ textAlign: 'right', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>Rate</th>
         </tr></thead>
         <tbody>
           {[['<30','$0.084'],['30-39','$0.098'],['40-49','$0.152'],['50-59','$0.284']].map(([t,r])=>(
@@ -216,14 +216,14 @@ const expandedDetails: Record<string, React.ReactNode> = {
   ),
   /* Pricing Stack */
   'Rate Formula': (
-    <div style={{ padding: '6px 8px', background: '#F8F4FF', borderRadius: 6, fontFamily: 'monospace', fontSize: 10, color: '#5A45C7', lineHeight: 1.8 }}>
+    <div style={{ padding: '6px 8px', background: '#F8F4FF', borderRadius: 6, fontFamily: 'monospace', fontSize: 'var(--type-body-sm)', color: '#5A45C7', lineHeight: 1.8 }}>
       <div>Billed = $624.18 x 1.020 x 1.015 x (1 + 0.03) x 1.000</div>
       <div>Billed = $624.18 x 1.020 x 1.015 x 1.030 x 1.000</div>
       <div style={{ fontWeight: 600, marginTop: 2 }}>Billed = <span style={{ color: '#C60C30' }}>$665.89</span></div>
     </div>
   ),
   'Bucket Definitions': (
-    <div style={{ padding: '6px 8px', background: '#FFF5F5', borderRadius: 6, fontFamily: 'monospace', fontSize: 10, color: '#C60C30', lineHeight: 1.8 }}>
+    <div style={{ padding: '6px 8px', background: '#FFF5F5', borderRadius: 6, fontFamily: 'monospace', fontSize: 'var(--type-body-sm)', color: '#C60C30', lineHeight: 1.8 }}>
       <div>BCBSTX Bucket A: 0.950</div>
       <div>BCBSTX Bucket B: 1.000</div>
       <div>BCBSTX Bucket C: 1.050</div>
@@ -231,7 +231,7 @@ const expandedDetails: Record<string, React.ReactNode> = {
     </div>
   ),
   'Admin Factor Tables': (
-    <div style={{ padding: '6px 8px', background: '#F0F7FF', borderRadius: 6, fontFamily: 'monospace', fontSize: 10, color: '#0074B8', lineHeight: 1.8 }}>
+    <div style={{ padding: '6px 8px', background: '#F0F7FF', borderRadius: 6, fontFamily: 'monospace', fontSize: 'var(--type-body-sm)', color: '#0074B8', lineHeight: 1.8 }}>
       <div>Standard: 1.015 (eff 01/01/2026)</div>
       <div>Preferred: 1.010 (eff 01/01/2026)</div>
       <div>Premium: 1.005 (eff 01/01/2026)</div>
@@ -239,7 +239,7 @@ const expandedDetails: Record<string, React.ReactNode> = {
     </div>
   ),
   'Commission Schedules': (
-    <div style={{ padding: '6px 8px', background: '#F0FFF5', borderRadius: 6, fontFamily: 'monospace', fontSize: 10, color: '#1A7A4A', lineHeight: 1.8 }}>
+    <div style={{ padding: '6px 8px', background: '#F0FFF5', borderRadius: 6, fontFamily: 'monospace', fontSize: 'var(--type-body-sm)', color: '#1A7A4A', lineHeight: 1.8 }}>
       <div>GAB: 0.020 (2.0%)</div>
       <div>OB-Friendly: 0.030 (3.0%)</div>
       <div>OB: 0.040 (4.0%)</div>
@@ -249,76 +249,76 @@ const expandedDetails: Record<string, React.ReactNode> = {
   /* Templates */
   'ER Confirmation': (
     <div>
-      <div style={{ fontSize: 9, fontWeight: 600, color: '#64707A', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Merge Fields</div>
+      <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Merge Fields</div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
         {['{{client.name}}','{{plan.name}}','{{tierRates.eo}}','{{erContrib.pct}}','{{effDate}}','{{broker.name}}'].map(f=>(
-          <span key={f} style={{ fontSize: 9, fontFamily: 'monospace', background: '#FFF5F5', color: '#C60C30', padding: '2px 6px', borderRadius: 4 }}>{f}</span>
+          <span key={f} style={{ fontSize: 'var(--type-body-sm)', fontFamily: 'monospace', background: '#FFF5F5', color: '#C60C30', padding: '2px 6px', borderRadius: 4 }}>{f}</span>
         ))}
       </div>
     </div>
   ),
   'EE SRA (English)': (
     <div>
-      <div style={{ fontSize: 9, fontWeight: 600, color: '#64707A', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Merge Fields</div>
+      <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Merge Fields</div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
         {['{{ee.name}}','{{plan.options[]}}','{{deduction.ppd}}','{{coverage.tier}}','{{effDate}}'].map(f=>(
-          <span key={f} style={{ fontSize: 9, fontFamily: 'monospace', background: '#F0F7FF', color: '#0074B8', padding: '2px 6px', borderRadius: 4 }}>{f}</span>
+          <span key={f} style={{ fontSize: 'var(--type-body-sm)', fontFamily: 'monospace', background: '#F0F7FF', color: '#0074B8', padding: '2px 6px', borderRadius: 4 }}>{f}</span>
         ))}
       </div>
     </div>
   ),
   'EE SRA (Spanish)': (
     <div>
-      <div style={{ fontSize: 9, fontWeight: 600, color: '#64707A', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Merge Fields</div>
+      <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Merge Fields</div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
         {['{{ee.nombre}}','{{plan.opciones[]}}','{{deduccion.ppd}}','{{cobertura.nivel}}','{{fechaEfectiva}}'].map(f=>(
-          <span key={f} style={{ fontSize: 9, fontFamily: 'monospace', background: '#F0F7FF', color: '#0074B8', padding: '2px 6px', borderRadius: 4 }}>{f}</span>
+          <span key={f} style={{ fontSize: 'var(--type-body-sm)', fontFamily: 'monospace', background: '#F0F7FF', color: '#0074B8', padding: '2px 6px', borderRadius: 4 }}>{f}</span>
         ))}
       </div>
     </div>
   ),
   'Benefits Booklet': (
     <div>
-      <div style={{ fontSize: 9, fontWeight: 600, color: '#64707A', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Merge Fields</div>
+      <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Merge Fields</div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
         {['{{client.name}}','{{plans[]}}','{{rates[]}}','{{contrib.strategy}}','{{booklet.sections[]}}','{{signature.block}}'].map(f=>(
-          <span key={f} style={{ fontSize: 9, fontFamily: 'monospace', background: '#F0FFF5', color: '#1A7A4A', padding: '2px 6px', borderRadius: 4 }}>{f}</span>
+          <span key={f} style={{ fontSize: 'var(--type-body-sm)', fontFamily: 'monospace', background: '#F0FFF5', color: '#1A7A4A', padding: '2px 6px', borderRadius: 4 }}>{f}</span>
         ))}
       </div>
     </div>
   ),
   'Prism Handoff Payload': (
     <div>
-      <div style={{ fontSize: 9, fontWeight: 600, color: '#64707A', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Merge Fields</div>
+      <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>Merge Fields</div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
         {['{{prism.clientId}}','{{prism.plans[]}}','{{prism.rates[]}}','{{prism.classes[]}}','{{prism.deductions}}'].map(f=>(
-          <span key={f} style={{ fontSize: 9, fontFamily: 'monospace', background: '#F8F4FF', color: '#5A45C7', padding: '2px 6px', borderRadius: 4 }}>{f}</span>
+          <span key={f} style={{ fontSize: 'var(--type-body-sm)', fontFamily: 'monospace', background: '#F8F4FF', color: '#5A45C7', padding: '2px 6px', borderRadius: 4 }}>{f}</span>
         ))}
       </div>
     </div>
   ),
   /* Validation */
   'Completeness Rules': (
-    <div style={{ padding: '6px 8px', background: '#FFF5F5', borderRadius: 6, fontFamily: 'monospace', fontSize: 9, color: '#64707A', lineHeight: 2 }}>
+    <div style={{ padding: '6px 8px', background: '#FFF5F5', borderRadius: 6, fontFamily: 'monospace', fontSize: 'var(--type-body-sm)', color: '#374151', lineHeight: 2 }}>
       <div>{`{ "rule": "REQ_MEDICAL", "severity": "error", "check": "plans.medical.length >= 1" }`}</div>
       <div>{`{ "rule": "REQ_CONTACT", "severity": "error", "check": "client.contact != null" }`}</div>
       <div>{`{ "rule": "REQ_UW", "severity": "error", "check": "uw.bucket && uw.af && uw.comm" }`}</div>
     </div>
   ),
   'Source-Data Validation': (
-    <div style={{ padding: '6px 8px', background: '#F0F7FF', borderRadius: 6, fontFamily: 'monospace', fontSize: 9, color: '#64707A', lineHeight: 2 }}>
+    <div style={{ padding: '6px 8px', background: '#F0F7FF', borderRadius: 6, fontFamily: 'monospace', fontSize: 'var(--type-body-sm)', color: '#374151', lineHeight: 2 }}>
       <div>{`{ "rule": "RATE_MATCH", "check": "plan.rate == master.rate * uw.bucket * uw.af" }`}</div>
       <div>{`{ "rule": "TIER_COMPLETE", "check": "plan.tiers == ['EO','ES','EC','EF']" }`}</div>
     </div>
   ),
   'Cross-Field Consistency': (
-    <div style={{ padding: '6px 8px', background: '#F0FFF5', borderRadius: 6, fontFamily: 'monospace', fontSize: 9, color: '#64707A', lineHeight: 2 }}>
+    <div style={{ padding: '6px 8px', background: '#F0FFF5', borderRadius: 6, fontFamily: 'monospace', fontSize: 'var(--type-body-sm)', color: '#374151', lineHeight: 2 }}>
       <div>{`{ "rule": "ER_EE_TOTAL", "check": "er.amount + ee.amount == total.premium" }`}</div>
       <div>{`{ "rule": "ACA_AFFORD", "check": "ee.eo.rate <= params.acaThreshold" }`}</div>
     </div>
   ),
   'Audit Gates': (
-    <div style={{ padding: '6px 8px', background: '#FFF8F0', borderRadius: 6, fontFamily: 'monospace', fontSize: 9, color: '#64707A', lineHeight: 2 }}>
+    <div style={{ padding: '6px 8px', background: '#FFF8F0', borderRadius: 6, fontFamily: 'monospace', fontSize: 'var(--type-body-sm)', color: '#374151', lineHeight: 2 }}>
       <div>{`{ "gate": "HANDOFF_BLOCK", "condition": "errors.length == 0" }`}</div>
       <div>{`{ "gate": "DRIFT_BLOCK", "condition": "drift.unresolved == 0" }`}</div>
     </div>
@@ -504,15 +504,15 @@ function AdminPageInner() {
                 background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, padding: 10, textAlign: 'center',
                 borderTopWidth: 3, borderTopStyle: 'solid', borderTopColor: metric.color,
                 cursor: 'pointer', position: 'relative', transition: 'box-shadow .15s',
-                boxShadow: metricTooltip === metric.label ? '0 2px 8px rgba(0,0,0,.12)' : 'none',
+                boxShadow: metricTooltip === metric.label ? 'var(--shadow-md)' : 'none',
               }}
             >
-              <div style={{ fontSize: 15, fontWeight: 600, color: '#1B2D3D' }}>{metric.value}</div>
-              <div style={{ fontSize: 8, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#98A1A8', fontWeight: 600 }}>{metric.label}</div>
+              <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, color: '#1B2D3D' }}>{metric.value}</div>
+              <div style={{ fontSize: 8, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#374151', fontWeight: 600 }}>{metric.label}</div>
               {metricTooltip === metric.label && (
                 <div style={{
                   position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)',
-                  marginTop: 6, background: '#1B2D3D', color: '#fff', fontSize: 9, padding: '6px 10px',
+                  marginTop: 6, background: '#1B2D3D', color: '#fff', fontSize: 'var(--type-body-sm)', padding: '6px 10px',
                   borderRadius: 6, whiteSpace: 'nowrap', zIndex: 10,
                 }}>
                   {metric.label}: {metric.value} (updated live)
@@ -526,14 +526,14 @@ function AdminPageInner() {
       {/* User Personas Table */}
       <div style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, overflow: 'hidden', marginBottom: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderBottom: '1px solid #E4E8ED' }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2D3D' }}>User Personas</div>
+          <div style={{ fontSize: 'var(--type-section-title)', fontWeight: 700, color: '#1B2D3D' }}>User Personas</div>
           <button
             onClick={() => {
               setAddUserToast(true);
               setTimeout(() => setAddUserToast(false), 3000);
             }}
             style={{
-              height: 28, padding: '0 12px', borderRadius: 6, fontSize: 10, fontWeight: 600,
+              height: 28, padding: '0 12px', borderRadius: 6, fontSize: 'var(--type-body-sm)', fontWeight: 600,
               cursor: 'pointer', background: '#1A7A4A', color: '#fff', border: 'none',
               transition: 'background .15s',
             }}
@@ -544,14 +544,14 @@ function AdminPageInner() {
           </button>
         </div>
 
-        <table style={{ width: '100%', fontSize: 11, borderCollapse: 'collapse' }}>
+        <table style={{ width: '100%', fontSize: 'var(--type-body-sm)', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ background: '#F8F9FA', borderBottom: '1px solid #E4E8ED' }}>
-              <th style={{ textAlign: 'left', padding: '8px 14px', color: '#64707A', fontWeight: 600, fontSize: 9, textTransform: 'uppercase', letterSpacing: '.04em' }}>Name</th>
-              <th style={{ textAlign: 'left', padding: '8px 14px', color: '#64707A', fontWeight: 600, fontSize: 9, textTransform: 'uppercase', letterSpacing: '.04em' }}>Email</th>
-              <th style={{ textAlign: 'left', padding: '8px 10px', color: '#64707A', fontWeight: 600, fontSize: 9, textTransform: 'uppercase', letterSpacing: '.04em' }}>Role</th>
-              <th style={{ textAlign: 'left', padding: '8px 10px', color: '#64707A', fontWeight: 600, fontSize: 9, textTransform: 'uppercase', letterSpacing: '.04em' }}>Permissions</th>
-              <th style={{ textAlign: 'right', padding: '8px 14px', color: '#64707A', fontWeight: 600, fontSize: 9, textTransform: 'uppercase', letterSpacing: '.04em' }}>Actions</th>
+              <th style={{ textAlign: 'left', padding: '8px 14px', color: '#374151', fontWeight: 600, fontSize: 'var(--type-table-header)', textTransform: 'uppercase', letterSpacing: '.04em' }}>Name</th>
+              <th style={{ textAlign: 'left', padding: '8px 14px', color: '#374151', fontWeight: 600, fontSize: 'var(--type-table-header)', textTransform: 'uppercase', letterSpacing: '.04em' }}>Email</th>
+              <th style={{ textAlign: 'left', padding: '8px 10px', color: '#374151', fontWeight: 600, fontSize: 'var(--type-table-header)', textTransform: 'uppercase', letterSpacing: '.04em' }}>Role</th>
+              <th style={{ textAlign: 'left', padding: '8px 10px', color: '#374151', fontWeight: 600, fontSize: 'var(--type-table-header)', textTransform: 'uppercase', letterSpacing: '.04em' }}>Permissions</th>
+              <th style={{ textAlign: 'right', padding: '8px 14px', color: '#374151', fontWeight: 600, fontSize: 'var(--type-table-header)', textTransform: 'uppercase', letterSpacing: '.04em' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -570,11 +570,11 @@ function AdminPageInner() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <div style={{
                         width: 26, height: 26, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: 9, fontWeight: 700, color: '#fff', background: info.color, flexShrink: 0,
+                        fontSize: 'var(--type-body-sm)', fontWeight: 700, color: '#fff', background: info.color, flexShrink: 0,
                       }}>
                         {info.short}
                       </div>
-                      <span style={{ fontSize: 11 }}>
+                      <span style={{ fontSize: 'var(--type-body-sm)' }}>
                         {info.name}
                         {isCurrentRole && (
                           <span style={{ fontSize: 8, color: '#0074B8', fontWeight: 600, marginLeft: 6, background: '#E7F1FA', padding: '1px 5px', borderRadius: 4 }}>
@@ -584,10 +584,10 @@ function AdminPageInner() {
                       </span>
                     </div>
                   </td>
-                  <td style={{ padding: '10px 14px', fontSize: 10, fontFamily: 'monospace', color: '#64707A' }}>{info.email}</td>
+                  <td style={{ padding: '10px 14px', fontSize: 'var(--type-body-sm)', fontFamily: 'monospace', color: '#374151' }}>{info.email}</td>
                   <td style={{ padding: '10px 10px' }}>
                     <span style={{
-                      fontSize: 9, fontWeight: 600, padding: '3px 8px', borderRadius: 9999,
+                      fontSize: 'var(--type-badge)', fontWeight: 600, padding: '3px 8px', borderRadius: 9999,
                       color: info.color, background: info.color + '14',
                     }}>
                       {info.label}
@@ -612,7 +612,7 @@ function AdminPageInner() {
                       <button
                         onClick={() => setViewingRole(viewingRole === roleKey ? null : roleKey)}
                         style={{
-                          height: 24, padding: '0 10px', borderRadius: 5, fontSize: 9, fontWeight: 600,
+                          height: 24, padding: '0 10px', borderRadius: 5, fontSize: 'var(--type-body-sm)', fontWeight: 600,
                           cursor: 'pointer', background: viewingRole === roleKey ? '#13212C' : '#F4F6F8',
                           color: viewingRole === roleKey ? '#fff' : '#1B2D3D',
                           border: viewingRole === roleKey ? 'none' : '1px solid #E4E8ED',
@@ -630,9 +630,9 @@ function AdminPageInner() {
 
         {/* Permissions legend */}
         <div style={{ padding: '8px 14px', borderTop: '1px solid #E4E8ED', display: 'flex', gap: 12, alignItems: 'center' }}>
-          <span style={{ fontSize: 9, color: '#98A1A8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.04em' }}>Permissions:</span>
+          <span style={{ fontSize: 'var(--type-table-header)', color: '#374151', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.04em' }}>Permissions:</span>
           {ALL_PERMISSIONS.map((p) => (
-            <span key={p} style={{ fontSize: 9, color: '#64707A' }}>{p}</span>
+            <span key={p} style={{ fontSize: 'var(--type-body-sm)', color: '#374151' }}>{p}</span>
           ))}
         </div>
       </div>
@@ -649,21 +649,21 @@ function AdminPageInner() {
               <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
                 <div style={{
                   width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 14, fontWeight: 700, color: '#fff', background: info.color,
+                  fontSize: 'var(--type-section-title)', fontWeight: 700, color: '#fff', background: info.color,
                 }}>
                   {info.short}
                 </div>
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2D3D' }}>{info.name}</div>
-                  <div style={{ fontSize: 11, color: '#64707A' }}>{info.label}</div>
-                  <div style={{ fontSize: 10, fontFamily: 'monospace', color: '#98A1A8', marginTop: 2 }}>{info.email}</div>
+                  <div style={{ fontSize: 'var(--type-section-title)', fontWeight: 700, color: '#1B2D3D' }}>{info.name}</div>
+                  <div style={{ fontSize: 'var(--type-body)', color: '#374151' }}>{info.label}</div>
+                  <div style={{ fontSize: 'var(--type-body-sm)', fontFamily: 'monospace', color: '#374151', marginTop: 2 }}>{info.email}</div>
                 </div>
               </div>
               <button
                 onClick={() => setViewingRole(null)}
                 style={{
                   width: 24, height: 24, borderRadius: 6, border: '1px solid #E4E8ED',
-                  background: '#F4F6F8', cursor: 'pointer', fontSize: 12, color: '#64707A',
+                  background: '#F4F6F8', cursor: 'pointer', fontSize: 'var(--type-body-sm)', color: '#374151',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}
               >
@@ -671,7 +671,7 @@ function AdminPageInner() {
               </button>
             </div>
 
-            <div style={{ fontSize: 10, fontWeight: 600, color: '#64707A', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '.04em' }}>Permissions</div>
+            <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '.04em' }}>Permissions</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 14 }}>
               {ALL_PERMISSIONS.map((perm) => {
                 const has = info.permissions.includes(perm);
@@ -687,12 +687,12 @@ function AdminPageInner() {
                       width: 14, height: 14, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
                       fontSize: 8, fontWeight: 700,
                       background: has ? info.color : '#E4E8ED',
-                      color: has ? '#fff' : '#98A1A8',
+                      color: has ? '#fff' : '#374151',
                     }}>
                       {has ? '✓' : '−'}
                     </span>
-                    <span style={{ fontSize: 11, fontWeight: 600, color: has ? '#1B2D3D' : '#98A1A8', minWidth: 60 }}>{perm}</span>
-                    <span style={{ fontSize: 10, color: '#64707A' }}>{permDescriptions[perm]}</span>
+                    <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: has ? '#1B2D3D' : '#374151', minWidth: 60 }}>{perm}</span>
+                    <span style={{ fontSize: 'var(--type-body-sm)', color: '#374151' }}>{permDescriptions[perm]}</span>
                   </div>
                 );
               })}
@@ -701,7 +701,7 @@ function AdminPageInner() {
             {roleSwitchFeedback === viewingRole ? (
               <div style={{
                 display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px',
-                background: '#E8F5E9', borderRadius: 6, fontSize: 11, color: '#1A7A4A', fontWeight: 600,
+                background: '#E8F5E9', borderRadius: 6, fontSize: 'var(--type-body-sm)', color: '#1A7A4A', fontWeight: 600,
               }}>
                 Switched to {info.name} ({info.label})
               </div>
@@ -714,10 +714,10 @@ function AdminPageInner() {
                 }}
                 disabled={currentRole === viewingRole}
                 style={{
-                  height: 32, padding: '0 18px', borderRadius: 7, fontSize: 11, fontWeight: 600,
+                  height: 32, padding: '0 18px', borderRadius: 7, fontSize: 'var(--type-body-sm)', fontWeight: 600,
                   cursor: currentRole === viewingRole ? 'not-allowed' : 'pointer',
                   background: currentRole === viewingRole ? '#E4E8ED' : info.color,
-                  color: currentRole === viewingRole ? '#98A1A8' : '#fff',
+                  color: currentRole === viewingRole ? '#374151' : '#fff',
                   border: 'none',
                 }}
               >
@@ -739,18 +739,18 @@ function AdminPageInner() {
           background: 'rgba(19,33,44,.85)', display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <div style={{ background: '#fff', borderRadius: 14, padding: '28px 36px', width: 420, textAlign: 'center' }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2D3D', marginBottom: 16 }}>PrismHR Sync</div>
+            <div style={{ fontSize: 'var(--type-section-title)', fontWeight: 700, color: '#1B2D3D', marginBottom: 16 }}>PrismHR Sync</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, textAlign: 'left', marginBottom: 16 }}>
               {syncSteps.map((s, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11 }}>
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 'var(--type-body-sm)' }}>
                   <span style={{
-                    width: 16, height: 16, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, flexShrink: 0,
+                    width: 16, height: 16, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--type-body-sm)', flexShrink: 0,
                     background: i < syncStep ? '#E8F5E9' : i === syncStep ? '#E7F1FA' : '#F4F6F8',
-                    color: i < syncStep ? '#1A7A4A' : i === syncStep ? '#0074B8' : '#98A1A8',
+                    color: i < syncStep ? '#1A7A4A' : i === syncStep ? '#0074B8' : '#374151',
                   }}>
                     {i < syncStep ? '✓' : i === syncStep ? '●' : '○'}
                   </span>
-                  <span style={{ color: i <= syncStep ? '#1B2D3D' : '#98A1A8', fontWeight: i === syncStep ? 600 : 400 }}>
+                  <span style={{ color: i <= syncStep ? '#1B2D3D' : '#374151', fontWeight: i === syncStep ? 600 : 400 }}>
                     {s.label}
                   </span>
                 </div>
@@ -780,12 +780,12 @@ function AdminPageInner() {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2D3D' }}>Preview: {previewTemplate}</div>
+              <div style={{ fontSize: 'var(--type-section-title)', fontWeight: 700, color: '#1B2D3D' }}>Preview: {previewTemplate}</div>
               <button
                 onClick={() => setPreviewTemplate(null)}
                 style={{
                   width: 28, height: 28, borderRadius: 7, border: '1px solid #E4E8ED',
-                  background: '#F4F6F8', cursor: 'pointer', fontSize: 14, color: '#64707A',
+                  background: '#F4F6F8', cursor: 'pointer', fontSize: 'var(--type-body-sm)', color: '#374151',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}
               >
@@ -794,7 +794,7 @@ function AdminPageInner() {
             </div>
             <pre style={{
               background: '#F8F9FA', border: '1px solid #E4E8ED', borderRadius: 8,
-              padding: 16, fontSize: 11, color: '#1B2D3D', whiteSpace: 'pre-wrap',
+              padding: 16, fontSize: 'var(--type-body-sm)', color: '#1B2D3D', whiteSpace: 'pre-wrap',
               fontFamily: 'monospace', lineHeight: 1.7,
             }}>
               {templatePreviews[previewTemplate] || 'No preview available for this template.'}
@@ -803,8 +803,8 @@ function AdminPageInner() {
               <button
                 onClick={() => setPreviewTemplate(null)}
                 style={{
-                  height: 30, padding: '0 16px', borderRadius: 7, fontSize: 10, fontWeight: 600,
-                  cursor: 'pointer', background: '#F4F6F8', color: '#64707A', border: '1px solid #E4E8ED',
+                  height: 30, padding: '0 16px', borderRadius: 7, fontSize: 'var(--type-body-sm)', fontWeight: 600,
+                  cursor: 'pointer', background: '#F4F6F8', color: '#374151', border: '1px solid #E4E8ED',
                 }}
               >
                 Close
@@ -816,7 +816,7 @@ function AdminPageInner() {
                   setTimeout(() => setDownloadToast(false), 3000);
                 }}
                 style={{
-                  height: 30, padding: '0 16px', borderRadius: 7, fontSize: 10, fontWeight: 600,
+                  height: 30, padding: '0 16px', borderRadius: 7, fontSize: 'var(--type-body-sm)', fontWeight: 600,
                   cursor: 'pointer', background: '#0074B8', color: '#fff', border: 'none',
                   transition: 'background .15s',
                 }}
@@ -849,22 +849,22 @@ function AdminPageInner() {
             <div style={{
               width: 48, height: 48, borderRadius: '50%', background: '#FBF0DD',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              margin: '0 auto 16px', fontSize: 20,
+              margin: '0 auto 16px', fontSize: 'var(--type-section-title)',
             }}>
               &#x26A0;
             </div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2D3D', marginBottom: 8 }}>
+            <div style={{ fontSize: 'var(--type-section-title)', fontWeight: 700, color: '#1B2D3D', marginBottom: 8 }}>
               Second Approver Required
             </div>
-            <p style={{ fontSize: 11, color: '#64707A', lineHeight: 1.6, marginBottom: 20 }}>
+            <p style={{ fontSize: 'var(--type-body)', color: '#374151', lineHeight: 1.6, marginBottom: 20 }}>
               This change affects pricing on all active deals. A second approver is required before it can take effect.
             </p>
             <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
               <button
                 onClick={() => setShowApprovalModal(false)}
                 style={{
-                  height: 34, padding: '0 20px', borderRadius: 7, fontSize: 11, fontWeight: 600,
-                  cursor: 'pointer', background: '#F4F6F8', color: '#64707A',
+                  height: 34, padding: '0 20px', borderRadius: 7, fontSize: 'var(--type-body-sm)', fontWeight: 600,
+                  cursor: 'pointer', background: '#F4F6F8', color: '#374151',
                   border: '1px solid #E4E8ED',
                 }}
               >
@@ -878,7 +878,7 @@ function AdminPageInner() {
                   setTimeout(() => setApprovalToast(false), 4000);
                 }}
                 style={{
-                  height: 34, padding: '0 20px', borderRadius: 7, fontSize: 11, fontWeight: 600,
+                  height: 34, padding: '0 20px', borderRadius: 7, fontSize: 'var(--type-body-sm)', fontWeight: 600,
                   cursor: 'pointer', background: '#C60C30', color: '#fff', border: 'none',
                 }}
               >
@@ -894,11 +894,11 @@ function AdminPageInner() {
         <div style={{
           position: 'fixed', bottom: 24, right: 24, zIndex: 10000,
           background: '#1B2D3D', color: '#fff', padding: '12px 20px',
-          borderRadius: 10, fontSize: 11, fontWeight: 600,
-          boxShadow: '0 4px 16px rgba(0,0,0,.2)',
+          borderRadius: 10, fontSize: 'var(--type-body-sm)', fontWeight: 600,
+          boxShadow: 'var(--shadow-md)',
           display: 'flex', alignItems: 'center', gap: 8,
         }}>
-          <span style={{ color: '#1A7A4A', fontSize: 14 }}>&#x2713;</span>
+          <span style={{ color: '#1A7A4A', fontSize: 'var(--type-body-sm)' }}>&#x2713;</span>
           Approval requested from GAB Manager
         </div>
       )}
@@ -908,11 +908,11 @@ function AdminPageInner() {
         <div style={{
           position: 'fixed', bottom: 24, right: 24, zIndex: 10000,
           background: '#1B2D3D', color: '#fff', padding: '12px 20px',
-          borderRadius: 10, fontSize: 11, fontWeight: 600,
-          boxShadow: '0 4px 16px rgba(0,0,0,.2)',
+          borderRadius: 10, fontSize: 'var(--type-body-sm)', fontWeight: 600,
+          boxShadow: 'var(--shadow-md)',
           display: 'flex', alignItems: 'center', gap: 8,
         }}>
-          <span style={{ color: '#1A7A4A', fontSize: 14 }}>&#x2713;</span>
+          <span style={{ color: '#1A7A4A', fontSize: 'var(--type-body-sm)' }}>&#x2713;</span>
           Template downloaded
         </div>
       )}
@@ -922,16 +922,16 @@ function AdminPageInner() {
         <div style={{
           position: 'fixed', bottom: 24, right: 24, zIndex: 10000,
           background: '#1B2D3D', color: '#fff', padding: '12px 20px',
-          borderRadius: 10, fontSize: 11, fontWeight: 600,
-          boxShadow: '0 4px 16px rgba(0,0,0,.2)',
+          borderRadius: 10, fontSize: 'var(--type-body-sm)', fontWeight: 600,
+          boxShadow: 'var(--shadow-md)',
           display: 'flex', alignItems: 'center', gap: 8,
         }}>
-          <span style={{ color: '#0074B8', fontSize: 14 }}>&#x2139;</span>
+          <span style={{ color: '#0074B8', fontSize: 'var(--type-body-sm)' }}>&#x2139;</span>
           User provisioning is managed via SSO in production
         </div>
       )}
 
-      <p style={{ fontSize: 11, color: '#64707A', marginBottom: 16 }}>
+      <p style={{ fontSize: 'var(--type-body)', color: '#374151', marginBottom: 16 }}>
         The Admin Console manages three classes of foundation data: Synced (from
         PrismHR, read-only), G&amp;A-managed (editable, versioned), and Connected
         (external system configurations).
@@ -947,7 +947,7 @@ function AdminPageInner() {
               height: 30,
               padding: '0 12px',
               borderRadius: 7,
-              fontSize: 10,
+              fontSize: 'var(--type-body-sm)',
               fontWeight: 600,
               cursor: 'pointer',
               background: activeTab === tab.key ? '#13212C' : '#fff',
@@ -962,7 +962,7 @@ function AdminPageInner() {
 
       {/* Search input */}
       <div style={{ position: 'relative', marginBottom: 14 }}>
-        <span style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', fontSize: 12, color: '#98A1A8', pointerEvents: 'none' }}>&#x1F50D;</span>
+        <span style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', fontSize: 'var(--type-body-sm)', color: '#374151', pointerEvents: 'none' }}>&#x1F50D;</span>
         <input
           value={adminSearch}
           onChange={(e) => setAdminSearch(e.target.value)}
@@ -974,7 +974,7 @@ function AdminPageInner() {
             paddingRight: 10,
             border: '1px solid #E4E8ED',
             borderRadius: 7,
-            fontSize: 11,
+            fontSize: 'var(--type-body-sm)',
             outline: 'none',
             background: '#fff',
             boxSizing: 'border-box',
@@ -998,19 +998,19 @@ function AdminPageInner() {
                     background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, padding: 10, textAlign: 'center',
                     borderTopWidth: 3, borderTopStyle: 'solid', borderTopColor: metric.color,
                     cursor: 'pointer', position: 'relative', transition: 'box-shadow .15s',
-                    boxShadow: metricTooltip === metric.label ? '0 2px 8px rgba(0,0,0,.12)' : 'none',
+                    boxShadow: metricTooltip === metric.label ? 'var(--shadow-md)' : 'none',
                   }}
                 >
-                  <div style={{ fontSize: 15, fontWeight: 600, color: '#1B2D3D' }}>
+                  <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, color: '#1B2D3D' }}>
                     {metric.value}
                   </div>
-                  <div style={{ fontSize: 8, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#98A1A8', fontWeight: 600 }}>
+                  <div style={{ fontSize: 8, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#374151', fontWeight: 600 }}>
                     {metric.label}
                   </div>
                   {metricTooltip === metric.label && (
                     <div style={{
                       position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)',
-                      marginTop: 6, background: '#1B2D3D', color: '#fff', fontSize: 9, padding: '6px 10px',
+                      marginTop: 6, background: '#1B2D3D', color: '#fff', fontSize: 'var(--type-body-sm)', padding: '6px 10px',
                       borderRadius: 6, whiteSpace: 'nowrap', zIndex: 10,
                     }}>
                       {metric.label}: {metric.value} (updated live)
@@ -1028,7 +1028,7 @@ function AdminPageInner() {
                 <button
                   onClick={() => setShowAddRule(true)}
                   style={{
-                    height: 30, padding: '0 14px', borderRadius: 7, fontSize: 10, fontWeight: 600,
+                    height: 30, padding: '0 14px', borderRadius: 7, fontSize: 'var(--type-body-sm)', fontWeight: 600,
                     cursor: 'pointer', background: '#1A7A4A', color: '#fff', border: 'none',
                   }}
                 >
@@ -1045,7 +1045,7 @@ function AdminPageInner() {
                     placeholder="Rule name (e.g. REQ_BROKER_NPN)"
                     style={{
                       flex: 1, height: 28, padding: '0 10px', borderRadius: 6,
-                      border: '1px solid #E4E8ED', fontSize: 10, outline: 'none',
+                      border: '1px solid #E4E8ED', fontSize: 'var(--type-body-sm)', outline: 'none',
                     }}
                   />
                   <button
@@ -1059,9 +1059,9 @@ function AdminPageInner() {
                       setNewRuleName('');
                     }}
                     style={{
-                      height: 28, padding: '0 12px', borderRadius: 6, fontSize: 10, fontWeight: 600,
+                      height: 28, padding: '0 12px', borderRadius: 6, fontSize: 'var(--type-body-sm)', fontWeight: 600,
                       cursor: newRuleName.trim() ? 'pointer' : 'not-allowed',
-                      background: newRuleName.trim() ? '#1A7A4A' : '#98A1A8',
+                      background: newRuleName.trim() ? '#1A7A4A' : '#374151',
                       color: '#fff', border: 'none',
                       transition: 'background .15s',
                     }}
@@ -1071,8 +1071,8 @@ function AdminPageInner() {
                   <button
                     onClick={() => { setShowAddRule(false); setNewRuleName(''); }}
                     style={{
-                      height: 28, padding: '0 12px', borderRadius: 6, fontSize: 10, fontWeight: 600,
-                      cursor: 'pointer', background: '#F4F6F8', color: '#64707A', border: '1px solid #E4E8ED',
+                      height: 28, padding: '0 12px', borderRadius: 6, fontSize: 'var(--type-body-sm)', fontWeight: 600,
+                      cursor: 'pointer', background: '#F4F6F8', color: '#374151', border: '1px solid #E4E8ED',
                     }}
                   >
                     Cancel
@@ -1087,11 +1087,11 @@ function AdminPageInner() {
             <div style={{
               position: 'fixed', bottom: 24, right: 24, zIndex: 10000,
               background: '#1B2D3D', color: '#fff', padding: '12px 20px',
-              borderRadius: 10, fontSize: 11, fontWeight: 600,
-              boxShadow: '0 4px 16px rgba(0,0,0,.2)',
+              borderRadius: 10, fontSize: 'var(--type-body-sm)', fontWeight: 600,
+              boxShadow: 'var(--shadow-md)',
               display: 'flex', alignItems: 'center', gap: 8,
             }}>
-              <span style={{ color: '#1A7A4A', fontSize: 14 }}>&#x2713;</span>
+              <span style={{ color: '#1A7A4A', fontSize: 'var(--type-body-sm)' }}>&#x2713;</span>
               Rule &ldquo;{ruleSavedToast}&rdquo; added
             </div>
           )}
@@ -1106,15 +1106,15 @@ function AdminPageInner() {
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ fontSize: 10, color: '#1A7A4A', fontWeight: 600 }}>&#x2713;</span>
-                    <span style={{ fontSize: 11, fontWeight: 600, color: '#1B2D3D' }}>{rule}</span>
+                    <span style={{ fontSize: 'var(--type-body-sm)', color: '#1A7A4A', fontWeight: 600 }}>&#x2713;</span>
+                    <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#1B2D3D' }}>{rule}</span>
                     <span style={{ fontSize: 8, fontWeight: 600, padding: '2px 6px', borderRadius: 9999, color: '#1A7A4A', background: '#E4F2EA' }}>Custom</span>
                   </div>
                   <button
                     onClick={() => setAddedRules((prev) => prev.filter((_, idx) => idx !== i))}
                     style={{
                       width: 20, height: 20, borderRadius: 4, border: '1px solid #E4E8ED',
-                      background: '#fff', cursor: 'pointer', fontSize: 10, color: '#C60C30',
+                      background: '#fff', cursor: 'pointer', fontSize: 'var(--type-body-sm)', color: '#C60C30',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}
                   >
@@ -1132,21 +1132,21 @@ function AdminPageInner() {
               padding: '14px 18px', marginBottom: 12,
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                <span style={{ color: '#1A7A4A', fontSize: 14 }}>{'●'}</span>
-                <span style={{ fontSize: 13, fontWeight: 700, color: '#1A7A4A' }}>All Systems Operational</span>
+                <span style={{ color: '#1A7A4A', fontSize: 'var(--type-body-sm)' }}>{'●'}</span>
+                <span style={{ fontSize: 'var(--type-card-title)', fontWeight: 700, color: '#1A7A4A' }}>All Systems Operational</span>
               </div>
-              <div style={{ fontSize: 10, color: '#64707A', marginBottom: 8 }}>
+              <div style={{ fontSize: 'var(--type-body-sm)', color: '#374151', marginBottom: 8 }}>
                 5 connections active {'·'} Last sync 2 min ago
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
                 {['PrismHR', 'ClientSpace', 'WorkSight', 'DocuSign', 'Carrier UW'].map((name) => (
-                  <span key={name} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 10, fontWeight: 600, color: '#1B2D3D' }}>
-                    <span style={{ color: '#1A7A4A', fontSize: 10 }}>{'●'}</span>
+                  <span key={name} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#1B2D3D' }}>
+                    <span style={{ color: '#1A7A4A', fontSize: 'var(--type-body-sm)' }}>{'●'}</span>
                     {name}
                   </span>
                 ))}
               </div>
-              <div style={{ fontSize: 9, color: '#98A1A8', marginTop: 8, fontStyle: 'italic' }}>
+              <div style={{ fontSize: 'var(--type-body-sm)', color: '#374151', marginTop: 8, fontStyle: 'italic' }}>
                 Detailed connection management is available on the Integrations page.
               </div>
             </div>
@@ -1158,7 +1158,7 @@ function AdminPageInner() {
               <button
                 onClick={() => setShowBrowsePlans(!showBrowsePlans)}
                 style={{
-                  height: 30, padding: '0 14px', borderRadius: 7, fontSize: 10, fontWeight: 600,
+                  height: 30, padding: '0 14px', borderRadius: 7, fontSize: 'var(--type-body-sm)', fontWeight: 600,
                   cursor: 'pointer', background: showBrowsePlans ? '#13212C' : '#0074B8',
                   color: '#fff', border: 'none', marginBottom: showBrowsePlans ? 8 : 0,
                 }}
@@ -1167,11 +1167,11 @@ function AdminPageInner() {
               </button>
               {showBrowsePlans && (
                 <div style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, overflow: 'hidden' }}>
-                  <table style={{ width: '100%', fontSize: 10, borderCollapse: 'collapse' }}>
+                  <table style={{ width: '100%', fontSize: 'var(--type-body-sm)', borderCollapse: 'collapse' }}>
                     <thead>
                       <tr style={{ background: '#F8F9FA', borderBottom: '1px solid #E4E8ED' }}>
                         {['ID', 'Carrier', 'Plan', 'Type', 'EO Rate', 'Status'].map((h) => (
-                          <th key={h} style={{ textAlign: 'left', padding: '7px 12px', color: '#64707A', fontWeight: 600, fontSize: 8, textTransform: 'uppercase', letterSpacing: '.04em' }}>{h}</th>
+                          <th key={h} style={{ textAlign: 'left', padding: '7px 12px', color: '#374151', fontWeight: 600, fontSize: 8, textTransform: 'uppercase', letterSpacing: '.04em' }}>{h}</th>
                         ))}
                       </tr>
                     </thead>
@@ -1207,8 +1207,8 @@ function AdminPageInner() {
               background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10,
               padding: 16, marginBottom: 12,
             }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: '#1B2D3D', marginBottom: 10 }}>Rate Calculator</div>
-              <div style={{ fontSize: 9, color: '#64707A', marginBottom: 10 }}>
+              <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 700, color: '#1B2D3D', marginBottom: 10 }}>Rate Calculator</div>
+              <div style={{ fontSize: 'var(--type-body)', color: '#374151', marginBottom: 10 }}>
                 Billed = Base x Bucket x AF x (1 + Comm) x RF
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8, marginBottom: 10 }}>
@@ -1220,13 +1220,13 @@ function AdminPageInner() {
                   { label: 'Risk Factor', value: pricingRF, set: setPricingRF },
                 ].map((f) => (
                   <div key={f.label}>
-                    <div style={{ fontSize: 8, fontWeight: 600, color: '#64707A', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>{f.label}</div>
+                    <div style={{ fontSize: 8, fontWeight: 600, color: '#374151', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '.04em' }}>{f.label}</div>
                     <input
                       value={f.value}
                       onChange={(e) => f.set(e.target.value)}
                       style={{
                         width: '100%', height: 30, padding: '0 8px', borderRadius: 6,
-                        border: '1px solid #E4E8ED', fontSize: 11, fontFamily: 'monospace',
+                        border: '1px solid #E4E8ED', fontSize: 'var(--type-body-sm)', fontFamily: 'monospace',
                         outline: 'none', boxSizing: 'border-box',
                       }}
                     />
@@ -1237,7 +1237,7 @@ function AdminPageInner() {
                 <button
                   onClick={calculatePricing}
                   style={{
-                    height: 30, padding: '0 18px', borderRadius: 7, fontSize: 10, fontWeight: 600,
+                    height: 30, padding: '0 18px', borderRadius: 7, fontSize: 'var(--type-body-sm)', fontWeight: 600,
                     cursor: 'pointer', background: '#5A45C7', color: '#fff', border: 'none',
                   }}
                 >
@@ -1246,7 +1246,7 @@ function AdminPageInner() {
                 <button
                   onClick={() => setShowApprovalModal(true)}
                   style={{
-                    height: 30, padding: '0 18px', borderRadius: 7, fontSize: 10, fontWeight: 600,
+                    height: 30, padding: '0 18px', borderRadius: 7, fontSize: 'var(--type-body-sm)', fontWeight: 600,
                     cursor: 'pointer', background: '#C60C30', color: '#fff', border: 'none',
                   }}
                 >
@@ -1254,8 +1254,8 @@ function AdminPageInner() {
                 </button>
                 {pricingResult && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <span style={{ fontSize: 10, color: '#64707A' }}>Billed Rate:</span>
-                    <span style={{ fontSize: 14, fontWeight: 700, fontFamily: 'monospace', color: '#C60C30' }}>${pricingResult}</span>
+                    <span style={{ fontSize: 'var(--type-body-sm)', color: '#374151' }}>Billed Rate:</span>
+                    <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 700, fontFamily: 'monospace', color: '#C60C30' }}>${pricingResult}</span>
                   </div>
                 )}
               </div>
@@ -1269,34 +1269,34 @@ function AdminPageInner() {
               padding: 16, marginBottom: 12,
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: '#1B2D3D' }}>ACA Affordability Threshold</span>
+                <span style={{ fontSize: 'var(--type-card-title)', fontWeight: 700, color: '#1B2D3D' }}>ACA Affordability Threshold</span>
                 <span style={{ fontSize: 8, fontWeight: 600, padding: '2px 6px', borderRadius: 9999, color: '#C60C30', background: '#FFF5F5' }}>2026</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: 11, color: '#64707A' }}>$/month:</span>
+                <span style={{ fontSize: 'var(--type-body)', color: '#374151' }}>$/month:</span>
                 <input
                   value={acaThreshold}
                   onChange={(e) => { setAcaThreshold(e.target.value); setAcaSaved(false); }}
                   style={{
                     width: 100, height: 30, padding: '0 8px', borderRadius: 6,
-                    border: '1px solid #E4E8ED', fontSize: 12, fontFamily: 'monospace',
+                    border: '1px solid #E4E8ED', fontSize: 'var(--type-body-sm)', fontFamily: 'monospace',
                     outline: 'none',
                   }}
                 />
                 <button
                   onClick={() => setShowApprovalModal(true)}
                   style={{
-                    height: 30, padding: '0 14px', borderRadius: 7, fontSize: 10, fontWeight: 600,
+                    height: 30, padding: '0 14px', borderRadius: 7, fontSize: 'var(--type-body-sm)', fontWeight: 600,
                     cursor: 'pointer', background: '#1A7A4A', color: '#fff', border: 'none',
                   }}
                 >
                   Save
                 </button>
                 {acaSaved && (
-                  <span style={{ fontSize: 10, color: '#1A7A4A', fontWeight: 600 }}>Saved</span>
+                  <span style={{ fontSize: 'var(--type-body-sm)', color: '#1A7A4A', fontWeight: 600 }}>Saved</span>
                 )}
               </div>
-              <div style={{ fontSize: 9, color: '#98A1A8', marginTop: 6 }}>
+              <div style={{ fontSize: 'var(--type-body)', color: '#374151', marginTop: 6 }}>
                 Used in validation: min EE-only contribution must be {'<'} ${acaThreshold}/month
               </div>
             </div>
@@ -1309,11 +1309,11 @@ function AdminPageInner() {
               padding: 16, marginBottom: 12,
             }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: '#1B2D3D' }}>Class Types Vocabulary</div>
+                <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 700, color: '#1B2D3D' }}>Class Types Vocabulary</div>
                 <button
                   onClick={() => setVocabDropdownOpen(!vocabDropdownOpen)}
                   style={{
-                    height: 28, padding: '0 12px', borderRadius: 6, fontSize: 10, fontWeight: 600,
+                    height: 28, padding: '0 12px', borderRadius: 6, fontSize: 'var(--type-body-sm)', fontWeight: 600,
                     cursor: 'pointer', background: vocabDropdownOpen ? '#13212C' : '#F4F6F8',
                     color: vocabDropdownOpen ? '#fff' : '#1B2D3D',
                     border: vocabDropdownOpen ? 'none' : '1px solid #E4E8ED',
@@ -1333,12 +1333,12 @@ function AdminPageInner() {
                           padding: '6px 10px', background: '#F8F9FA', borderRadius: 6,
                         }}
                       >
-                        <span style={{ fontSize: 11, color: '#1B2D3D' }}>{item}</span>
+                        <span style={{ fontSize: 'var(--type-body-sm)', color: '#1B2D3D' }}>{item}</span>
                         <button
                           onClick={() => setClassTypes((prev) => prev.filter((i) => i !== item))}
                           style={{
                             width: 20, height: 20, borderRadius: 4, border: '1px solid #E4E8ED',
-                            background: '#fff', cursor: 'pointer', fontSize: 10, color: '#C60C30',
+                            background: '#fff', cursor: 'pointer', fontSize: 'var(--type-body-sm)', color: '#C60C30',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                           }}
                         >
@@ -1360,7 +1360,7 @@ function AdminPageInner() {
                       }}
                       style={{
                         flex: 1, height: 28, padding: '0 10px', borderRadius: 6,
-                        border: '1px solid #E4E8ED', fontSize: 10, outline: 'none',
+                        border: '1px solid #E4E8ED', fontSize: 'var(--type-body-sm)', outline: 'none',
                       }}
                     />
                     <button
@@ -1371,7 +1371,7 @@ function AdminPageInner() {
                         }
                       }}
                       style={{
-                        height: 28, padding: '0 12px', borderRadius: 6, fontSize: 10, fontWeight: 600,
+                        height: 28, padding: '0 12px', borderRadius: 6, fontSize: 'var(--type-body-sm)', fontWeight: 600,
                         cursor: 'pointer', background: '#0074B8', color: '#fff', border: 'none',
                       }}
                     >
@@ -1389,7 +1389,7 @@ function AdminPageInner() {
               background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10,
               padding: 16, marginBottom: 12,
             }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: '#1B2D3D', marginBottom: 10 }}>Upload Documents</div>
+              <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 700, color: '#1B2D3D', marginBottom: 10 }}>Upload Documents</div>
               <div
                 onDragOver={(e) => { e.preventDefault(); setUwDragOver(true); }}
                 onDragLeave={() => setUwDragOver(false)}
@@ -1420,17 +1420,17 @@ function AdminPageInner() {
                     }
                   }}
                 />
-                <div style={{ fontSize: 22, color: '#98A1A8', marginBottom: 6 }}>{'⇧'}</div>
-                <div style={{ fontSize: 11, fontWeight: 600, color: '#1B2D3D' }}>
+                <div style={{ fontSize: 22, color: '#374151', marginBottom: 6 }}>{'⇧'}</div>
+                <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#1B2D3D' }}>
                   Drop SBCs, carrier invoices, or UW output here
                 </div>
-                <div style={{ fontSize: 9, color: '#98A1A8', marginTop: 4 }}>
+                <div style={{ fontSize: 'var(--type-body-sm)', color: '#374151', marginTop: 4 }}>
                   Supports PDF, Excel, CSV, PNG, JPG
                 </div>
               </div>
               {uwFiles.length > 0 && (
                 <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 4 }}>
-                  <div style={{ fontSize: 9, fontWeight: 600, color: '#64707A', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 2 }}>
+                  <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#374151', textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: 2 }}>
                     Uploaded Files ({uwFiles.length})
                   </div>
                   {uwFiles.map((file, i) => (
@@ -1442,14 +1442,14 @@ function AdminPageInner() {
                       }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ fontSize: 12, color: '#0074B8' }}>{'⬤'}</span>
-                        <span style={{ fontSize: 10, color: '#1B2D3D' }}>{file}</span>
+                        <span style={{ fontSize: 'var(--type-body-sm)', color: '#0074B8' }}>{'⬤'}</span>
+                        <span style={{ fontSize: 'var(--type-body-sm)', color: '#1B2D3D' }}>{file}</span>
                       </div>
                       <button
                         onClick={() => setUwFiles((prev) => prev.filter((_, idx) => idx !== i))}
                         style={{
                           width: 20, height: 20, borderRadius: 4, border: '1px solid #E4E8ED',
-                          background: '#fff', cursor: 'pointer', fontSize: 10, color: '#C60C30',
+                          background: '#fff', cursor: 'pointer', fontSize: 'var(--type-body-sm)', color: '#C60C30',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                         }}
                       >
@@ -1475,7 +1475,7 @@ function AdminPageInner() {
               return (
                 <div
                   key={card.title}
-                  onMouseEnter={(e) => { if (hasDetail) (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 8px rgba(0,0,0,.08)'; }}
+                  onMouseEnter={(e) => { if (hasDetail) (e.currentTarget as HTMLDivElement).style.boxShadow = 'var(--shadow-sm)'; }}
                   onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = 'none'; }}
                   style={{
                     background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10,
@@ -1488,11 +1488,11 @@ function AdminPageInner() {
                     style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: hasDetail ? 'pointer' : 'default' }}
                   >
                     {hasDetail && (
-                      <span style={{ fontSize: 10, color: '#98A1A8', width: 12, flexShrink: 0 }}>
+                      <span style={{ fontSize: 'var(--type-body-sm)', color: '#374151', width: 12, flexShrink: 0 }}>
                         {isExpanded ? '▾' : '▸'}
                       </span>
                     )}
-                    <span style={{ fontSize: 12, fontWeight: 600, color: '#1B2D3D' }}>
+                    <span style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, color: '#1B2D3D' }}>
                       {card.title}
                     </span>
                     {card.badge && (
@@ -1511,7 +1511,7 @@ function AdminPageInner() {
                           <span key={v} style={{
                             fontSize: 7, fontWeight: 600, padding: '1px 4px', borderRadius: 3,
                             background: v === versions[versions.length - 1] ? card.accentColor + '1A' : '#F4F6F8',
-                            color: v === versions[versions.length - 1] ? card.accentColor : '#98A1A8',
+                            color: v === versions[versions.length - 1] ? card.accentColor : '#374151',
                           }}>
                             {v}
                           </span>
@@ -1524,7 +1524,7 @@ function AdminPageInner() {
                         onClick={(e) => { e.stopPropagation(); runSync(); }}
                         style={{
                           marginLeft: 'auto', height: 22, padding: '0 10px', borderRadius: 5,
-                          fontSize: 9, fontWeight: 600, cursor: 'pointer',
+                          fontSize: 'var(--type-body-sm)', fontWeight: 600, cursor: 'pointer',
                           background: '#C60C30', color: '#fff', border: 'none',
                         }}
                       >
@@ -1537,7 +1537,7 @@ function AdminPageInner() {
                         onClick={(e) => { e.stopPropagation(); setPreviewTemplate(card.title); }}
                         style={{
                           marginLeft: 'auto', height: 22, padding: '0 10px', borderRadius: 5,
-                          fontSize: 9, fontWeight: 600, cursor: 'pointer',
+                          fontSize: 'var(--type-body-sm)', fontWeight: 600, cursor: 'pointer',
                           background: '#0074B8', color: '#fff', border: 'none',
                         }}
                       >
@@ -1545,13 +1545,13 @@ function AdminPageInner() {
                       </button>
                     )}
                   </div>
-                  <p style={{ fontSize: 10.5, color: '#64707A', lineHeight: 1.6, marginTop: 4 }}>
+                  <p style={{ fontSize: 'var(--type-body-lg)', color: '#374151', lineHeight: 1.6, marginTop: 4 }}>
                     {card.body}
                   </p>
 
                   {/* Last synced for connection cards */}
                   {activeTab === 'connections' && lastSynced[card.title] && (
-                    <div style={{ fontSize: 9, color: '#98A1A8', marginTop: 4 }}>
+                    <div style={{ fontSize: 'var(--type-caption)', color: '#374151', marginTop: 4 }}>
                       Last synced: {lastSynced[card.title]}
                     </div>
                   )}

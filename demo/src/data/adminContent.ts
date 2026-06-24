@@ -103,13 +103,4 @@ export const adminTabs: AdminTab[] = [
       { label: 'PHI Fields', value: '14', color: '#B0690A' },
     ],
   },
-  {
-    key: 'uwIntake', label: 'F10 · UW Intake',
-    cards: [
-      { title: 'Document Upload', body: 'Accepts SBCs, carrier invoices, underwriting output PDFs. Supports PDF, Excel, CSV, image formats.', accentColor: '#C60C30' },
-      { title: 'AI Extraction', body: 'Extracts plan data, rates, and factors from uploaded documents. Each field carries a confidence score.', accentColor: '#5A45C7', badge: 'AI-powered' },
-      { title: 'Human Confirmation', body: 'Extracted values require human confirmation before populating CAP. Low-confidence items flagged for review.', accentColor: '#B0690A' },
-      { title: 'Completeness Check', body: 'Flags missing required fields (bucket, admin factor, commission) before case can proceed.', accentColor: '#0074B8' },
-    ],
-  },
 ];
