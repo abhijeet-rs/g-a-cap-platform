@@ -8,16 +8,12 @@ import { useUIStore } from '@/stores/uiStore';
 import { syncSequences } from '@/data/syncSequences';
 import { CardSkeleton } from '@/components/shared/Skeleton';
 import { EsignState } from '@/lib/types';
+import BookletPreview from '@/components/documents/BookletPreview';
+import { bookletEnvelopeContents } from '@/data/booklet';
 
 /* ------------------------------------------------------------------ */
 /*  Static data                                                       */
 /* ------------------------------------------------------------------ */
-
-const envelopeContents = [
-  { name: 'CAP Summary.pdf', color: '#C60C30' },
-  { name: 'Benefits Booklet.pdf', color: '#0074B8' },
-  { name: 'ER Confirmation.pdf', color: '#1A7A4A' },
-];
 
 interface QueueItem {
   id: string;
@@ -232,6 +228,7 @@ function getWestlakeAuditTrail(esignState: EsignState): { time: string; text: st
 export default function EsignPage() {
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState('westlake');
+  const [bookletOpen, setBookletOpen] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 400);
@@ -305,11 +302,11 @@ export default function EsignPage() {
       <div style={{ marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
-            <div style={{ fontSize: 'var(--type-section-title)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700, color: '#C60C30' }}>
-              E-Signature Routing &middot; NB8/R8
+            <div style={{ fontSize: 'var(--type-section-title)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700, color: '#B0690A' }}>
+              Booklet &amp; Sign-off &middot; Signatures
             </div>
             <div style={{ fontSize: 'var(--type-body-lg)', color: '#374151', marginTop: 2 }}>
-              {resolvedQueue.length} envelopes &middot; {awaitingCount} awaiting signature
+              Continuation of the booklet flow &middot; {resolvedQueue.length} envelopes &middot; {awaitingCount} awaiting signature
             </div>
           </div>
           <span style={{ display: 'inline-flex', alignItems: 'center', height: 22, background: '#E7F1FA', color: '#0074B8', fontSize: 'var(--type-badge)', fontWeight: 600, borderRadius: 4, padding: '0 10px' }}>
@@ -444,7 +441,7 @@ export default function EsignPage() {
             <div style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, padding: 16 }}>
               <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, marginBottom: 4 }}>Envelope Contents</h2>
 
-              {envelopeContents.map((doc, i) => (
+              {bookletEnvelopeContents.map((doc, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderTop: '1px solid #E4E8ED' }}>
                   <div
                     style={{ width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 'var(--type-body-lg)', fontWeight: 700, flexShrink: 0, background: doc.color }}
@@ -454,6 +451,22 @@ export default function EsignPage() {
                   <span style={{ fontSize: 'var(--type-body)', fontWeight: 500 }}>{doc.name}</span>
                 </div>
               ))}
+
+              {isWestlake && (
+                <button
+                  onClick={() => setBookletOpen(true)}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = '#F8F9FA'; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = '#fff'; }}
+                  style={{
+                    marginTop: 12, width: '100%', height: 34, borderRadius: 8,
+                    border: '1px solid #B0690A', background: '#fff', color: '#B0690A',
+                    fontSize: 'var(--type-body-sm)', fontWeight: 600, cursor: 'pointer',
+                    transition: 'background .12s',
+                  }}
+                >
+                  Preview Booklet
+                </button>
+              )}
             </div>
           </div>
 
@@ -649,6 +662,14 @@ export default function EsignPage() {
 
         </div>
       </div>
+
+      {/* Rich Booklet PDF replica — signed when the envelope is complete */}
+      {bookletOpen && (
+        <BookletPreview
+          onClose={() => setBookletOpen(false)}
+          signed={effectiveStatus === 'complete'}
+        />
+      )}
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { useAdminStore } from '@/stores/adminStore';
 import { useAuthStore } from '@/stores/authStore';
 import { adminTabs } from '@/data/adminContent';
 import { roles } from '@/data/roles';
+import { clients } from '@/data/clients';
 import { PageSkeleton } from '@/components/shared/Skeleton';
 import type { Role, Permission } from '@/lib/types';
 
@@ -51,7 +52,7 @@ const expandedDetails: Record<string, React.ReactNode> = {
           <th style={{ textAlign: 'left', padding: '3px 6px', color: '#374151', fontWeight: 600, fontSize: 8 }}>Platform Field</th>
         </tr></thead>
         <tbody>
-          {[['caseId','workflow.caseId'],['status','lifecycle.stage'],['auditLog','audit.entries'],['commTrack','commission.schedule']].map(([a,b])=>(
+          {[['census','census.employees[]'],['csaDoc','intake.csa'],['signedCAP','documents.cap'],['contract','contract.details'],['auditLog','audit.entries']].map(([a,b])=>(
             <tr key={a} style={{ borderBottom: '1px solid #F4F6F8' }}>
               <td style={{ padding: '3px 6px', fontFamily: 'monospace', color: '#5A45C7' }}>{a}</td>
               <td style={{ padding: '3px 6px', fontFamily: 'monospace', color: '#1A7A4A' }}>{b}</td>
@@ -359,6 +360,16 @@ const samplePlans = [
 
 /* ---- Vocabulary items ---- */
 const defaultClassTypes = ['All Eligible', 'Hourly', 'Salaried', 'Management', 'Owners Only', 'Part-Time Eligible'];
+
+/* ---- Client Data helpers ---- */
+const clientStatusMeta: Record<string, [string, string, string]> = {
+  draft: ['#5B6770', '#F4F6F8', 'Draft'],
+  in_review: ['#0074B8', '#F0F7FF', 'In Review'],
+  approved: ['#5A45C7', '#F8F6FE', 'Approved'],
+  published: ['#1A7A4A', '#E8F5E9', 'Published'],
+  signed: ['#B0690A', '#FBF0DD', 'Signed'],
+};
+const renewalUrgencyColor = (days: number) => (days < 20 ? '#C60C30' : days < 40 ? '#B0690A' : '#1A7A4A');
 
 /* ---- Template preview content ---- */
 const templatePreviews: Record<string, string> = {
@@ -931,11 +942,50 @@ function AdminPageInner() {
         </div>
       )}
 
-      <p style={{ fontSize: 'var(--type-body)', color: '#374151', marginBottom: 16 }}>
-        The Admin Console manages three classes of foundation data: Synced (from
-        PrismHR, read-only), G&amp;A-managed (editable, versioned), and Connected
-        (external system configurations).
+      <p style={{ fontSize: 'var(--type-body)', color: '#374151', marginBottom: 12 }}>
+        The Data Repository is the single, central home for everything a CAP draws on — the
+        <strong> foundational data</strong> shared across every client, and the
+        <strong> client-specific data</strong> synced per client. No more copy-pasting from a template.
       </p>
+
+      {/* Foundational vs Client-specific framing */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
+        {[
+          {
+            accent: '#5A45C7',
+            label: 'Foundational data',
+            sub: 'Shared across all CAPs · synced or G&A-managed',
+            items: ['Master Plans', 'Carrier Rates', 'Pricing Stack', 'Parameters', 'Vocabularies', 'Templates', 'Validation'],
+          },
+          {
+            accent: '#0074B8',
+            label: 'Client-specific data',
+            sub: 'Synced per client · from Prism & ClientSpace',
+            items: ['Client Profiles', 'Renewal Radar', 'Prior-Year CAPs', 'Census & Eligibility', 'Documents & Contracts'],
+          },
+        ].map((group) => (
+          <div
+            key={group.label}
+            style={{
+              background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10,
+              borderTop: `3px solid ${group.accent}`, padding: '12px 14px',
+            }}
+          >
+            <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 700, color: '#1B2D3D' }}>{group.label}</div>
+            <div style={{ fontSize: 'var(--type-body)', color: '#374151', marginBottom: 8 }}>{group.sub}</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+              {group.items.map((item) => (
+                <span key={item} style={{
+                  fontSize: 'var(--type-body-sm)', fontWeight: 600, padding: '2px 8px', borderRadius: 9999,
+                  color: group.accent, background: group.accent + '12',
+                }}>
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
 
       {/* Tab bar */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 16 }}>
@@ -1122,6 +1172,58 @@ function AdminPageInner() {
                   </button>
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* Client Data: central per-client record table */}
+          {activeTab === 'clientData' && (
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ background: '#fff', border: '1px solid #E4E8ED', borderRadius: 10, overflow: 'hidden' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderBottom: '1px solid #E4E8ED' }}>
+                  <div>
+                    <div style={{ fontSize: 'var(--type-section-title)', fontWeight: 700, color: '#1B2D3D' }}>Client-Specific Data</div>
+                    <div style={{ fontSize: 'var(--type-body)', color: '#374151' }}>
+                      Per-client records synced into the repository · {clients.length} clients
+                    </div>
+                  </div>
+                  <span style={{
+                    display: 'flex', alignItems: 'center', gap: 6, fontSize: 'var(--type-body-sm)', fontWeight: 600,
+                    color: '#1A7A4A', background: '#E8F5E9', padding: '4px 10px', borderRadius: 9999,
+                  }}>
+                    <span style={{ color: '#1A7A4A' }}>●</span> Prism + ClientSpace · synced 2 min ago
+                  </span>
+                </div>
+                <table style={{ width: '100%', fontSize: 'var(--type-body-sm)', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr style={{ background: '#F8F9FA', borderBottom: '1px solid #E4E8ED' }}>
+                      {['Client', 'Prism ID', 'Tier', 'WSEs', 'Renewal', 'Owner', 'CAP Status'].map((h) => (
+                        <th key={h} style={{ textAlign: h === 'WSEs' ? 'right' : 'left', padding: '8px 14px', color: '#374151', fontWeight: 600, fontSize: 8, textTransform: 'uppercase', letterSpacing: '.04em' }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[...clients].sort((a, b) => a.urgDays - b.urgDays).map((c) => {
+                      const [fg, bg, label] = clientStatusMeta[c.status] ?? ['#5B6770', '#F4F6F8', c.status];
+                      return (
+                        <tr key={c.id} style={{ borderBottom: '1px solid #F4F6F8' }}>
+                          <td style={{ padding: '9px 14px', color: '#1B2D3D', fontWeight: 600 }}>{c.name}</td>
+                          <td style={{ padding: '9px 14px', fontFamily: 'monospace', color: '#5A45C7' }}>{c.prism}</td>
+                          <td style={{ padding: '9px 14px', color: '#374151' }}>{c.tier}</td>
+                          <td style={{ padding: '9px 14px', textAlign: 'right', fontFamily: 'monospace', color: '#1B2D3D' }}>{c.wse}</td>
+                          <td style={{ padding: '9px 14px' }}>
+                            <span style={{ color: '#1B2D3D', fontWeight: 600 }}>{c.renewMon} {c.renewDay}</span>
+                            <span style={{ color: renewalUrgencyColor(c.urgDays), marginLeft: 6 }}>· {c.urgDays}d</span>
+                          </td>
+                          <td style={{ padding: '9px 14px', color: '#374151' }}>{c.owner}</td>
+                          <td style={{ padding: '9px 14px' }}>
+                            <span style={{ fontSize: 8, fontWeight: 600, padding: '2px 8px', borderRadius: 9999, color: fg, background: bg }}>{label}</span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
 

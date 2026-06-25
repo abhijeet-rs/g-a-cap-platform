@@ -99,23 +99,33 @@ export default function Sidebar() {
       display: 'flex', flexDirection: 'column', height: '100%',
       borderRight: '1px solid var(--border-primary)',
     }}>
-      {/* Logo */}
-      <div style={{
-        height: 'var(--topbar-height)', padding: '0 16px',
-        display: 'flex', alignItems: 'center', gap: 10,
-        borderBottom: '1px solid var(--border-primary)', flexShrink: 0,
-      }}>
+      {/* Logo — doubles as the workspace switcher (back to the OS launcher) */}
+      <Link
+        href="/workspace"
+        title="Switch workspace"
+        onMouseEnter={() => setHoveredLink('__brand')}
+        onMouseLeave={() => setHoveredLink(null)}
+        style={{
+          height: 'var(--topbar-height)', padding: '0 16px',
+          display: 'flex', alignItems: 'center', gap: 10,
+          borderBottom: '1px solid var(--border-primary)', flexShrink: 0,
+          textDecoration: 'none',
+          background: hoveredLink === '__brand' ? 'var(--bg-secondary)' : 'transparent',
+          transition: 'background 0.1s ease',
+        }}
+      >
         <div style={{
           width: 30, height: 30, borderRadius: 8,
           background: 'var(--text-primary)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontWeight: 800, fontSize: 'var(--type-nav-section)', color: '#fff', letterSpacing: -0.3,
         }}>G&A</div>
-        <div style={{ minWidth: 0 }}>
+        <div style={{ minWidth: 0, flex: 1 }}>
           <div style={{ color: 'var(--text-primary)', fontSize: 'var(--type-nav)', fontWeight: 700, letterSpacing: -0.3, lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>G&A Compass</div>
-          <div style={{ color: 'var(--text-tertiary)', fontSize: 'var(--type-nav-section)', letterSpacing: 0.3, lineHeight: 1.2 }}>Benefits Sales Platform</div>
+          <div style={{ color: 'var(--text-tertiary)', fontSize: 'var(--type-nav-section)', letterSpacing: 0.3, lineHeight: 1.2 }}>Benefits Operations</div>
         </div>
-      </div>
+        <i className="fa-solid fa-grip" style={{ fontSize: 'var(--type-nav-section)', color: 'var(--text-tertiary)', opacity: hoveredLink === '__brand' ? 1 : 0.5, transition: 'opacity 0.1s ease' }} />
+      </Link>
 
       {/* Nav */}
       <div style={{ padding: '4px 8px', flex: 1, overflowY: 'auto' }}>
@@ -183,7 +193,7 @@ export default function Sidebar() {
               <Link href="/new-business" style={subLink('/new-business')}
                 onMouseEnter={() => setHoveredLink('/new-business')} onMouseLeave={() => setHoveredLink(null)}>
                 <span style={{ width: 5, height: 5, borderRadius: '50%', background: isActive('/new-business') ? 'var(--text-primary)' : 'var(--color-slate-300)', flexShrink: 0, transition: 'background 0.1s' }} />
-                New Business
+                CAP Builder
               </Link>
             )}
             <Link href="/renewal" style={subLink('/renewal')}
@@ -217,11 +227,11 @@ export default function Sidebar() {
           </div>
         )}
 
-        <div style={sectionHeader}>Administration</div>
+        <div style={sectionHeader}>Data &amp; Foundation</div>
         <Link href="/admin" style={link('/admin')}
           onMouseEnter={() => setHoveredLink('/admin')} onMouseLeave={() => setHoveredLink(null)}>
-          <span style={iconCol}><i className="fa-solid fa-gear" style={{ fontSize: 'var(--type-nav)' }} /></span>
-          Admin Console
+          <span style={iconCol}><i className="fa-solid fa-database" style={{ fontSize: 'var(--type-nav)' }} /></span>
+          Data Repository
         </Link>
         <Link href="/integrations" style={link('/integrations')}
           onMouseEnter={() => setHoveredLink('/integrations')} onMouseLeave={() => setHoveredLink(null)}>

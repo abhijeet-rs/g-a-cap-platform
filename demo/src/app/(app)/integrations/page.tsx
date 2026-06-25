@@ -81,26 +81,23 @@ const connectionsData: Connection[] = [
     status: 'connected',
     syncs: 234,
     lastSync: '14 min ago',
-    description: 'Workflow/case/audit engine. CAP lifecycle events create and advance cases.',
+    description: 'System of record for client documentation and contract details. Source for client census and CSA input; on sign-off the approved CAP, booklet, and contract sync back here.',
     color: '#0074B8',
     fieldMappings: [
+      { from: 'GET /api/census/{clientId}', to: 'census.employees[] → Source for CAP (no manual upload)' },
+      { from: 'GET /api/clients/{clientId}/csa', to: 'csa.document → New-business intake' },
+      { from: 'GET /api/clients/{clientId}', to: 'client.profile{contacts,locations} → Lookup' },
+      { from: 'PUT /api/documents/{clientId}', to: 'signedCAP + booklet → System of record (post sign-off)' },
+      { from: 'PUT /api/contracts/{clientId}', to: 'contract.details → Approved terms write-back' },
+      { from: 'GET /api/commissions/{clientId}', to: 'commission.schedule → Broker tracking' },
       { from: 'POST /api/cases', to: 'workflow.case → Auto-create on CAP intake (NB1)' },
       { from: 'PUT /api/cases/{id}/status', to: 'lifecycle.stage → Advance on submit/approve/sign' },
-      { from: 'GET /api/cases/{id}', to: 'case.details → Copilot CP3 retrieval' },
-      { from: 'POST /api/cases/{id}/notes', to: 'audit.note → Comment from AM/Coordinator' },
-      { from: 'PUT /api/benefits-page/{clientId}', to: 'benefits.page → Structured CAP data export' },
-      { from: 'GET /api/commissions/{clientId}', to: 'commission.schedule → Broker tracking' },
-      { from: 'WEBHOOK /events/case-update', to: 'platform.notification → Status change alerts' },
-      { from: 'WEBHOOK /events/approval', to: 'platform.approval → Coordinator QC trigger' },
       { from: 'GET /api/audit/{caseId}', to: 'audit.trail → SOX-compliant event log' },
-      { from: 'PUT /api/cases/{id}/assign', to: 'workflow.assignee → Role-based routing' },
-      { from: 'POST /api/cases/{id}/handoff', to: 'handoff.trigger → GAB→BenAdmin boundary' },
-      { from: 'GET /api/cases/queue', to: 'queue.pending → Ben Admin write-back queue' },
     ],
     syncLog: [
-      { date: 'Jun 21, 2:16 PM', records: 18, status: 'success', message: '18 cases updated, 0 errors' },
-      { date: 'Jun 20, 11:45 AM', records: 22, status: 'success', message: '22 cases updated, 0 errors' },
-      { date: 'Jun 19, 3:10 PM', records: 19, status: 'success', message: '19 cases updated, 0 errors' },
+      { date: 'Jun 21, 2:16 PM', records: 18, status: 'success', message: '18 client documents & contracts synced, 0 errors' },
+      { date: 'Jun 20, 11:45 AM', records: 22, status: 'success', message: '22 census pulls + case updates, 0 errors' },
+      { date: 'Jun 19, 3:10 PM', records: 19, status: 'success', message: '19 documents updated, 0 errors' },
     ],
   },
   {
@@ -161,6 +158,19 @@ const connectionsData: Connection[] = [
     ],
   },
 ];
+
+/* ------------------------------------------------------------------ */
+/*  Core syncs — the 3 live system syncs that keep the platform in     */
+/*  lockstep. Foregrounded in the hero band above the full list.       */
+/* ------------------------------------------------------------------ */
+
+const coreSyncNames = ['PrismHR', 'ClientSpace', 'DocuSign'];
+
+const coreSyncMeta: Record<string, { role: string; direction: string; flow: string }> = {
+  PrismHR: { role: 'Plans · rates · enrollments', direction: 'Bi-directional', flow: 'System of record ⇄ CAP' },
+  ClientSpace: { role: 'Documents · contracts · census', direction: 'Bi-directional', flow: 'Census in · signed CAP & contract out' },
+  DocuSign: { role: 'Booklet e-signature', direction: 'Outbound', flow: 'CAP → Client sign-off' },
+};
 
 /* ------------------------------------------------------------------ */
 /*  PrismHR re-sync steps (used with useSyncStore)                     */
@@ -248,8 +258,66 @@ export default function IntegrationsPage() {
           Integrations Hub
         </h1>
         <p style={{ fontSize: 'var(--type-body-lg)', color: '#374151', marginTop: 4, marginBottom: 0 }}>
-          Manage connections to PrismHR, ClientSpace, WorkSight, and DocuSign.
+          Three live syncs keep the CAP platform in lockstep with PrismHR, ClientSpace, and DocuSign — plus supporting connections.
         </p>
+      </div>
+
+      {/* Core Syncs hero — the 3 live system syncs */}
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 10 }}>
+          <span style={{ fontSize: 'var(--type-table-header)', fontWeight: 700, color: '#374151', textTransform: 'uppercase', letterSpacing: '.05em' }}>
+            Active Syncs
+          </span>
+          <span style={{ fontSize: 'var(--type-body)', color: '#374151' }}>
+            3 live system syncs keeping the platform in lockstep
+          </span>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+          {coreSyncNames.map((name) => {
+            const conn = connectionsData.find((c) => c.name === name)!;
+            const meta = coreSyncMeta[name];
+            const currentLastSync = lastSynced[name] || conn.lastSync;
+            return (
+              <div
+                key={name}
+                style={{
+                  background: '#fff',
+                  border: '1px solid #E4E8ED',
+                  borderRadius: 12,
+                  borderTop: `3px solid ${conn.color}`,
+                  padding: '14px 16px',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                  <span style={{
+                    width: 9, height: 9, borderRadius: '50%', background: conn.color,
+                    boxShadow: `0 0 0 0 ${conn.color}`, animation: 'syncPulse 1.6s ease-out infinite', flexShrink: 0,
+                  }} />
+                  <span style={{ fontSize: 'var(--type-section-title)', fontWeight: 700, color: '#1B2D3D' }}>{conn.name}</span>
+                  <span style={{
+                    marginLeft: 'auto', fontSize: 'var(--type-badge)', fontWeight: 600, padding: '2px 8px',
+                    borderRadius: 9999, color: conn.color, background: conn.color + '14',
+                  }}>
+                    Syncing
+                  </span>
+                </div>
+                <div style={{ fontSize: 'var(--type-body-lg)', fontWeight: 600, color: '#1B2D3D', marginBottom: 2 }}>
+                  {meta.role}
+                </div>
+                <div style={{ fontSize: 'var(--type-body)', color: '#374151', marginBottom: 10 }}>
+                  {meta.flow}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #F0F2F5', paddingTop: 8 }}>
+                  <span style={{ fontSize: 'var(--type-body)', color: '#374151' }}>
+                    <span style={{ fontWeight: 700, color: '#1B2D3D' }}>{conn.syncs.toLocaleString()}</span> syncs
+                  </span>
+                  <span style={{ fontSize: 'var(--type-body)', color: '#374151' }}>{meta.direction}</span>
+                  <span style={{ fontSize: 'var(--type-body)', color: '#1A7A4A', fontWeight: 600 }}>{currentLastSync}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Status Banner */}
@@ -266,7 +334,7 @@ export default function IntegrationsPage() {
             <span style={{ fontSize: 'var(--type-section-title)', fontWeight: 700, color: '#1A7A4A' }}>All Systems Operational</span>
           </div>
           <div style={{ fontSize: 'var(--type-body)', color: '#374151' }}>
-            5 active &middot; {totalSyncs.toLocaleString()} total syncs &middot; Last sync {lastSynced['PrismHR'] || '2 min ago'}
+            3 core syncs &middot; 2 supporting connections &middot; {totalSyncs.toLocaleString()} total syncs &middot; Last sync {lastSynced['PrismHR'] || '2 min ago'}
           </div>
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginTop: 10 }}>
@@ -877,6 +945,11 @@ export default function IntegrationsPage() {
       <style>{`
         @keyframes spin {
           to { transform: rotate(360deg); }
+        }
+        @keyframes syncPulse {
+          0%   { box-shadow: 0 0 0 0 rgba(26,122,74,0.45); }
+          70%  { box-shadow: 0 0 0 6px rgba(26,122,74,0); }
+          100% { box-shadow: 0 0 0 0 rgba(26,122,74,0); }
         }
       `}</style>
     </div>

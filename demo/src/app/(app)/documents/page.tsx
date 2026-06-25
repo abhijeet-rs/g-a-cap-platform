@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { CardSkeleton } from '@/components/shared/Skeleton';
+import BookletPreview from '@/components/documents/BookletPreview';
 
 type DocStatus = 'approved' | 'signed' | 'draft' | 'ready';
 
@@ -222,6 +224,15 @@ const infoFields = [
   { label: 'CARRIER', value: 'BCBS Texas' },
 ];
 
+type BookletPhase = 'idle' | 'generating' | 'ready';
+
+const bookletSteps: { key: 'generate' | 'preview' | 'send' | 'track'; label: string }[] = [
+  { key: 'generate', label: 'Generate' },
+  { key: 'preview', label: 'Preview' },
+  { key: 'send', label: 'Send' },
+  { key: 'track', label: 'Track Signatures' },
+];
+
 export default function DocumentsPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<DocStatus | 'all'>('all');
@@ -230,10 +241,30 @@ export default function DocumentsPage() {
   const [toast, setToast] = useState<string | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [hoveredBtn, setHoveredBtn] = useState<string | null>(null);
+  const [bookletPhase, setBookletPhase] = useState<BookletPhase>('ready');
+  const [bookletPreviewOpen, setBookletPreviewOpen] = useState(false);
+  const [bookletViewed, setBookletViewed] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 400);
     return () => clearTimeout(t);
+  }, []);
+
+  const handleGenerateBooklet = useCallback(() => {
+    setBookletPhase('generating');
+    setBookletViewed(false);
+    setTimeout(() => {
+      setBookletPhase('ready');
+      setToast('Benefits Booklet generated from approved CAP');
+      setTimeout(() => setToast(null), 2500);
+    }, 1600);
+  }, []);
+
+  const openBookletPreview = useCallback(() => {
+    setBookletViewed(true);
+    setBookletPreviewOpen(true);
   }, []);
 
   const showToast = useCallback((msg: string) => {
@@ -242,6 +273,12 @@ export default function DocumentsPage() {
   }, []);
 
   const openDrawer = useCallback((doc: DocItem) => {
+    // The booklet gets the rich, paginated PDF replica — not the plain <pre>.
+    if (doc.docType === 'booklet') {
+      setBookletViewed(true);
+      setBookletPreviewOpen(true);
+      return;
+    }
     setDrawerDoc(doc);
     requestAnimationFrame(() => setDrawerVisible(true));
   }, []);
@@ -299,6 +336,123 @@ export default function DocumentsPage() {
           </select>
         </div>
       </div>
+
+      {/* ── Booklet & Sign-off flow strip ── */}
+      {(() => {
+        const currentStep: 'generate' | 'preview' | 'send' | 'track' =
+          bookletPhase !== 'ready'
+            ? 'generate'
+            : !bookletViewed
+            ? 'preview'
+            : 'send';
+        const stepIndex = bookletSteps.findIndex((s) => s.key === currentStep);
+        const AMBER = '#B0690A';
+
+        return (
+          <div
+            style={{
+              background: '#fff',
+              border: '1px solid #E4E8ED',
+              borderRadius: 12,
+              padding: 16,
+              marginBottom: 16,
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, gap: 12, flexWrap: 'wrap' }}>
+              <div>
+                <div style={{ fontSize: 'var(--type-section-title)', fontWeight: 700, color: AMBER, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Booklet &amp; Sign-off
+                </div>
+                <div style={{ fontSize: 'var(--type-body)', color: '#374151', marginTop: 2 }}>
+                  Generate the Benefits Booklet, preview the confirmation, then route for signatures.
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <button
+                  onClick={handleGenerateBooklet}
+                  disabled={bookletPhase === 'generating'}
+                  onMouseEnter={(e) => { if (bookletPhase !== 'generating') (e.currentTarget as HTMLButtonElement).style.background = '#8E5408'; }}
+                  onMouseLeave={(e) => { if (bookletPhase !== 'generating') (e.currentTarget as HTMLButtonElement).style.background = AMBER; }}
+                  style={{
+                    height: 34, padding: '0 16px', borderRadius: 8, border: 'none',
+                    background: bookletPhase === 'generating' ? '#C79A5E' : AMBER, color: '#fff',
+                    fontSize: 'var(--type-body-sm)', fontWeight: 600,
+                    cursor: bookletPhase === 'generating' ? 'default' : 'pointer',
+                    display: 'inline-flex', alignItems: 'center', gap: 8,
+                    boxShadow: '0 2px 8px rgba(176,105,10,.25)', transition: 'background .12s',
+                  }}
+                >
+                  {bookletPhase === 'generating' && (
+                    <span
+                      style={{
+                        width: 13, height: 13, borderRadius: '50%',
+                        border: '2px solid rgba(255,255,255,.4)', borderTopColor: '#fff',
+                        display: 'inline-block', animation: 'spin 0.7s linear infinite',
+                      }}
+                    />
+                  )}
+                  {bookletPhase === 'generating' ? 'Generating…' : 'Generate Benefits Booklet'}
+                </button>
+                {bookletPhase === 'ready' && (
+                  <button
+                    onClick={openBookletPreview}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = '#F8F9FA'; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = '#fff'; }}
+                    style={{
+                      height: 34, padding: '0 16px', borderRadius: 8,
+                      border: `1px solid ${AMBER}`, background: '#fff', color: AMBER,
+                      fontSize: 'var(--type-body-sm)', fontWeight: 600, cursor: 'pointer',
+                      transition: 'background .12s',
+                    }}
+                  >
+                    Preview Booklet
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* progress steps */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+              {bookletSteps.map((step, i) => {
+                const done = i < stepIndex;
+                const active = i === stepIndex;
+                const dotBg = done ? '#1A7A4A' : active ? AMBER : '#EDF0F3';
+                const dotFg = done || active ? '#fff' : '#98A1A8';
+                return (
+                  <div key={step.key} style={{ display: 'flex', alignItems: 'center', flex: i < bookletSteps.length - 1 ? 1 : '0 0 auto' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <div
+                        style={{
+                          width: 22, height: 22, borderRadius: '50%',
+                          background: dotBg, color: dotFg,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: 'var(--type-badge)', fontWeight: 700, flexShrink: 0,
+                          border: active ? `2px solid #FBF0DD` : 'none',
+                        }}
+                      >
+                        {done ? '✓' : i + 1}
+                      </div>
+                      <span
+                        style={{
+                          fontSize: 'var(--type-body)',
+                          fontWeight: active ? 700 : 600,
+                          color: done ? '#1A7A4A' : active ? AMBER : '#98A1A8',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {step.label}
+                      </span>
+                    </div>
+                    {i < bookletSteps.length - 1 && (
+                      <div style={{ flex: 1, height: 2, margin: '0 12px', background: done ? '#1A7A4A' : '#EDF0F3', borderRadius: 1 }} />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
@@ -719,6 +873,21 @@ export default function DocumentsPage() {
           </>
         );
       })()}
+
+      {/* Rich Booklet PDF replica (full-screen modal) */}
+      {bookletPreviewOpen && (
+        <BookletPreview
+          onClose={() => setBookletPreviewOpen(false)}
+          signed={false}
+          primaryAction={{
+            label: 'Send to Client via DocuSign →',
+            onClick: () => {
+              setBookletPreviewOpen(false);
+              router.push('/esign');
+            },
+          }}
+        />
+      )}
 
       {/* Toast */}
       {toast && (

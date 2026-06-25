@@ -91,6 +91,68 @@ const apiSteps: ApiStep[] = [
   },
 ];
 
+/* ── ClientSpace track (system of record for docs/contracts) ── */
+
+interface CsStep {
+  step: number;
+  label: string;
+  mode: 'read' | 'write';
+  description: string;
+  endpoints: string[];
+}
+
+const clientSpaceSteps: CsStep[] = [
+  {
+    step: 1,
+    label: 'DOCUMENTS',
+    mode: 'write',
+    description: 'Attach signed Benefits Booklet + approved CAP document to the client case',
+    endpoints: [
+      'PUT /api/documents/{clientId}/benefits-booklet',
+      'PUT /api/documents/{clientId}/cap-document',
+    ],
+  },
+  {
+    step: 2,
+    label: 'CONTRACT TERMS',
+    mode: 'write',
+    description: 'Write plan-year contract details incl. renewal credit terms & effective dates',
+    endpoints: [
+      'PUT /api/contracts/{clientId}',
+      'PUT /api/contracts/{clientId}/renewal-credit',
+    ],
+  },
+  {
+    step: 3,
+    label: 'COMMISSION SCHEDULE',
+    mode: 'write',
+    description: 'Sync commission schedule back to ClientSpace; mirror to broker of record',
+    endpoints: [
+      'PUT /api/contracts/{clientId}/commission-schedule',
+    ],
+  },
+  {
+    step: 4,
+    label: 'AUDIT TRAIL',
+    mode: 'write',
+    description: 'Log approval audit note + Prism confirmation #s to the case timeline',
+    endpoints: [
+      'POST /api/cases/{id}/notes',
+      'GET  /api/audit/{caseId}',
+    ],
+  },
+];
+
+const clientSpacePayload = [
+  { label: 'Case ID', value: 'CS-2026-0847 (Itafos Conda · GA-2908)' },
+  { label: 'Benefits Booklet', value: 'WSE_Booklet_2026.pdf · DocuSign envelope 9f3a1c' },
+  { label: 'CAP Document', value: 'CAP_Westlake_2026_APPROVED.pdf · v4 (locked)' },
+  { label: 'Contract Terms', value: 'Plan Year 2026-07-01 → 2027-06-30' },
+  { label: 'Renewal Credit', value: '2-month rate hold · $48,200 credit applied' },
+  { label: 'Commission Schedule', value: 'BOR Marsh · 4.0% PEPM · synced' },
+  { label: 'Approval Audit', value: 'Client-approved Jun 22 · Sam Cho (BA) · 0 blockers' },
+];
+
 interface Comment {
   author: string;
   role: string;
@@ -117,6 +179,87 @@ const existingComments: Comment[] = [
 /*  Sync Overlay Component (inline)                                    */
 /* ------------------------------------------------------------------ */
 
+interface TrackRow {
+  step: number;
+  label: string;
+  mode: 'read' | 'write';
+  count: number;
+}
+
+function SyncTrack({
+  title,
+  subtitle,
+  accent,
+  accentSoftBg,
+  rows,
+  currentStep,
+  done,
+}: {
+  title: string;
+  subtitle: string;
+  accent: string;
+  accentSoftBg: string;
+  rows: TrackRow[];
+  currentStep: number;
+  done: boolean;
+}) {
+  return (
+    <div style={{ flex: 1, minWidth: 0 }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10,
+        paddingBottom: 8, borderBottom: `2px solid ${accent}`,
+      }}>
+        <span style={{
+          width: 10, height: 10, borderRadius: '50%', background: accent, flexShrink: 0,
+        }} />
+        <div>
+          <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 700, color: accent }}>{title}</div>
+          <div style={{ fontSize: 'var(--type-caption)', color: '#374151' }}>{subtitle}</div>
+        </div>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {rows.map((s, i) => {
+          const isDone = i < currentStep || done;
+          const isActive = i === currentStep && !done;
+          return (
+            <div key={i} style={{
+              display: 'flex', alignItems: 'center', gap: 10,
+              padding: '8px 12px', borderRadius: 8,
+              background: isDone ? '#F0FFF5' : isActive ? accentSoftBg : '#FAFBFC',
+              border: `1px solid ${isDone ? '#C6F0D4' : isActive ? accent : '#EEF1F4'}`,
+              transition: 'all 0.2s',
+            }}>
+              <div style={{
+                width: 22, height: 22, borderRadius: '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 'var(--type-badge)', fontWeight: 700, flexShrink: 0,
+                background: isDone ? '#1A7A4A' : isActive ? accent : '#EDF0F3',
+                color: isDone || isActive ? '#fff' : '#374151',
+              }}>
+                {isDone ? '✓' : s.step}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 'var(--type-body)', fontWeight: 600, color: '#1B2D3D' }}>
+                  {s.label}
+                </div>
+                <div style={{
+                  fontSize: 'var(--type-caption)',
+                  color: isDone ? '#1A7A4A' : isActive ? accent : '#98A1A8',
+                  marginTop: 1,
+                }}>
+                  {isDone ? `${s.count} ${s.mode === 'read' ? 'reads' : 'writes'} complete`
+                    : isActive ? `Processing ${s.count} call${s.count > 1 ? 's' : ''}...`
+                    : `${s.count} call${s.count > 1 ? 's' : ''} queued`}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function PrismSyncOverlay({ onClose }: { onClose: () => void }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [done, setDone] = useState(false);
@@ -136,86 +279,86 @@ function PrismSyncOverlay({ onClose }: { onClose: () => void }) {
     setTimeout(advance, 1500);
   });
 
+  const prismRows: TrackRow[] = apiSteps.map((s) => ({
+    step: s.step, label: s.label, mode: s.mode, count: s.methods.length,
+  }));
+  const csRows: TrackRow[] = clientSpaceSteps.map((s) => ({
+    step: s.step, label: s.label, mode: s.mode, count: s.endpoints.length,
+  }));
+
   return (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 1000,
       background: 'rgba(19,33,44,0.85)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
+      padding: 24,
     }}>
       <div style={{
-        background: '#fff', borderRadius: 12, padding: 32,
-        width: 480, boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+        background: '#fff', borderRadius: 12, padding: 28,
+        width: 760, maxWidth: '100%', boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
       }}>
-        <div style={{ textAlign: 'center', marginBottom: 24 }}>
+        <div style={{ textAlign: 'center', marginBottom: 22 }}>
           <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 700, color: '#1B2D3D' }}>
-            Pushing to Prism
+            Running System Sync
           </div>
           <div style={{ fontSize: 'var(--type-body)', color: '#374151', marginTop: 4 }}>
-            PrismHR Services API &middot; BenefitService + EmployeeService
+            Two parallel write-backs &middot; closing the loop on client approval
           </div>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {apiSteps.map((s, i) => {
-            const isDone = i < currentStep;
-            const isActive = i === currentStep && !done;
-            return (
-              <div key={i} style={{
-                display: 'flex', alignItems: 'center', gap: 10,
-                padding: '10px 14px', borderRadius: 8,
-                background: isDone ? '#F0FFF5' : isActive ? '#F0F7FF' : '#FAFBFC',
-                border: `1px solid ${isDone ? '#C6F0D4' : isActive ? '#BDD9F0' : '#EEF1F4'}`,
-              }}>
-                <div style={{
-                  width: 24, height: 24, borderRadius: '50%',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 'var(--type-badge)', fontWeight: 700, flexShrink: 0,
-                  background: isDone ? '#1A7A4A' : isActive ? '#0074B8' : '#EDF0F3',
-                  color: isDone || isActive ? '#fff' : '#374151',
-                }}>
-                  {isDone ? '✓' : s.step}
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, color: '#1B2D3D' }}>
-                    Step {s.step} &middot; {s.label}
-                    <span style={{
-                      fontSize: 'var(--type-badge)', fontWeight: 600, marginLeft: 6,
-                      padding: '1px 5px', borderRadius: 3,
-                      background: s.mode === 'read' ? '#E7F1FA' : '#FEF2F2',
-                      color: s.mode === 'read' ? '#0074B8' : '#C60C30',
-                    }}>{s.mode}</span>
-                  </div>
-                  {isActive && (
-                    <div style={{ fontSize: 'var(--type-body-lg)', color: '#0074B8', marginTop: 2 }}>
-                      Processing {s.methods.length} API calls...
-                    </div>
-                  )}
-                  {isDone && (
-                    <div style={{ fontSize: 'var(--type-body-lg)', color: '#1A7A4A', marginTop: 2 }}>
-                      {s.methods.length} calls completed
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+
+        <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+          <SyncTrack
+            title="Prism"
+            subtitle="System of record · plans / rates / enrollments"
+            accent="#5A45C7"
+            accentSoftBg="#F0EDFA"
+            rows={prismRows}
+            currentStep={currentStep}
+            done={done}
+          />
+          <div style={{ width: 1, alignSelf: 'stretch', background: '#EEF1F4' }} />
+          <SyncTrack
+            title="ClientSpace"
+            subtitle="System of record · documents / contracts"
+            accent="#0074B8"
+            accentSoftBg="#E7F1FA"
+            rows={csRows}
+            currentStep={currentStep}
+            done={done}
+          />
         </div>
+
         {done && (
-          <div style={{ textAlign: 'center', marginTop: 20 }}>
+          <div style={{
+            textAlign: 'center', marginTop: 22, paddingTop: 20,
+            borderTop: '1px solid #E4E8ED',
+          }}>
             <div style={{
               width: 40, height: 40, borderRadius: '50%', background: '#1A7A4A',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               margin: '0 auto 10px', color: '#fff', fontSize: 'var(--type-display)', fontWeight: 700,
             }}>{'✓'}</div>
-            <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, color: '#1A7A4A' }}>
-              Push Complete
+            <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 700, color: '#1A7A4A' }}>
+              Loop closed — Prism configured + ClientSpace updated as system of record
             </div>
-            <div style={{ fontSize: 'var(--type-body)', color: '#374151', marginTop: 4 }}>
-              18 API calls &middot; 298 WSE enrolled &middot; Confirmation #PRH-2026-84721
+            <div style={{
+              display: 'flex', justifyContent: 'center', gap: 10, marginTop: 12, flexWrap: 'wrap',
+            }}>
+              <span style={{
+                ...overlayPill('#F0EDFA', '#5A45C7'),
+              }}>
+                Prism &middot; 18 calls &middot; 298 WSE &middot; #PRH-2026-84721
+              </span>
+              <span style={{
+                ...overlayPill('#E7F1FA', '#0074B8'),
+              }}>
+                ClientSpace &middot; 7 writes &middot; Case CS-2026-0847
+              </span>
             </div>
             <button
               onClick={onClose}
               style={{
-                marginTop: 16, height: 36, padding: '0 24px',
+                marginTop: 18, height: 36, padding: '0 24px',
                 background: '#1A7A4A', color: '#fff', borderRadius: 8,
                 fontSize: 'var(--type-body-sm)', fontWeight: 600, border: 'none', cursor: 'pointer',
               }}
@@ -227,6 +370,16 @@ function PrismSyncOverlay({ onClose }: { onClose: () => void }) {
       </div>
     </div>
   );
+}
+
+function overlayPill(bg: string, fg: string): React.CSSProperties {
+  return {
+    display: 'inline-flex', alignItems: 'center',
+    fontSize: 'var(--type-badge)', fontWeight: 600,
+    padding: '4px 10px', borderRadius: 9999,
+    background: bg, color: fg,
+    fontFamily: "'IBM Plex Mono', monospace",
+  };
 }
 
 /* ------------------------------------------------------------------ */
@@ -257,15 +410,6 @@ export default function WritebackPage() {
     padding: 16,
   };
 
-  const sectionLabel: React.CSSProperties = {
-    fontSize: 'var(--type-table-header)',
-    fontWeight: 600,
-    color: '#374151',
-    textTransform: 'uppercase',
-    letterSpacing: '0.04em',
-    marginBottom: 10,
-  };
-
   const mono: React.CSSProperties = {
     fontFamily: "'IBM Plex Mono', monospace",
     fontSize: 'var(--type-caption)',
@@ -279,10 +423,13 @@ export default function WritebackPage() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
             <div style={{ fontSize: 'var(--type-section-title)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700, color: '#5A45C7' }}>
-              Ben Admin Console &middot; Prism Write-Back
+              Ben Admin Console
             </div>
-            <div style={{ fontSize: 'var(--type-body-lg)', color: '#374151', marginTop: 2 }}>
-              {queue.length} CAPs approved and ready for Prism setup
+            <div style={{ fontSize: 'var(--type-card-title)', fontWeight: 700, color: '#1B2D3D', marginTop: 2 }}>
+              Write-Back &amp; System Sync — Closing the Loop
+            </div>
+            <div style={{ fontSize: 'var(--type-body-lg)', color: '#374151', marginTop: 4, maxWidth: 540 }}>
+              On client approval, two parallel syncs run: <strong style={{ color: '#5A45C7' }}>Prism</strong> (plans / rates / enrollments) and <strong style={{ color: '#0074B8' }}>ClientSpace</strong> (documents / contracts, system of record).
             </div>
           </div>
           {/* Cross-cutting notes */}
@@ -364,7 +511,11 @@ export default function WritebackPage() {
               <span style={{
                 fontSize: 'var(--type-badge)', fontWeight: 600, padding: '3px 8px', borderRadius: 4,
                 background: '#F0EDFA', color: '#5A45C7',
-              }}>PrismHR Target</span>
+              }}>Prism Target</span>
+              <span style={{
+                fontSize: 'var(--type-badge)', fontWeight: 600, padding: '3px 8px', borderRadius: 4,
+                background: '#E7F1FA', color: '#0074B8',
+              }}>ClientSpace SoR</span>
               <span style={{
                 fontSize: 'var(--type-badge)', fontWeight: 600, padding: '3px 8px', borderRadius: 4,
                 background: selected.status === 'validated' ? '#E4F2EA' : '#FBF0DD',
@@ -440,16 +591,37 @@ export default function WritebackPage() {
             </div>
           </div>
 
-          {/* ════════ Section 3: API Call Sequence ════════ */}
-          <div style={cardStyle}>
+          {/* ════════ Section 3: Two Parallel Sync Tracks ════════ */}
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            padding: '2px 0 2px',
+          }}>
+            <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 700, margin: 0, color: '#1B2D3D' }}>
+              Two Parallel Sync Tracks
+            </h2>
+            <span style={{
+              fontSize: 'var(--type-badge)', fontWeight: 600, padding: '2px 8px', borderRadius: 9999,
+              background: '#F5F7FA', color: '#374151',
+            }}>run together on approval</span>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, alignItems: 'start' }}>
+
+          {/* ── Track A: PRISM ── */}
+          <div style={{ ...cardStyle, borderTop: '3px solid #5A45C7' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-              <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, margin: 0 }}>Prism Write-Back Orchestration</h2>
-              <span style={{ fontSize: 'var(--type-body-lg)', color: '#374151' }}>
-                PrismHR Services API &middot; BenefitService + EmployeeService
-              </span>
+              <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, margin: 0, color: '#5A45C7' }}>Prism Orchestration</h2>
+              <span style={{
+                fontSize: 'var(--type-badge)', fontWeight: 600, padding: '2px 8px', borderRadius: 4,
+                background: '#F0EDFA', color: '#5A45C7',
+              }}>System of record · plans/rates/enrollments</span>
             </div>
-            <div style={{ fontSize: 'var(--type-body-lg)', color: '#374151', marginBottom: 14 }}>
-              {apiSteps.reduce((sum, s) => sum + s.methods.length, 0)} total API calls across {apiSteps.length} orchestration steps
+            <div style={{ fontSize: 'var(--type-body)', color: '#374151', marginBottom: 4 }}>
+              PrismHR Services API &middot; BenefitService + EmployeeService
+            </div>
+            <div style={{ fontSize: 'var(--type-body)', color: '#374151', marginBottom: 12, fontStyle: 'italic' }}>
+              The tool becomes the interface for Prism setup, replacing manual UI field entry —
+              {' '}{apiSteps.reduce((sum, s) => sum + s.methods.length, 0)} API calls across {apiSteps.length} steps.
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {apiSteps.map((step) => {
@@ -500,6 +672,97 @@ export default function WritebackPage() {
                   </div>
                 );
               })}
+            </div>
+          </div>
+
+          {/* ── Track B: CLIENTSPACE ── */}
+          <div style={{ ...cardStyle, borderTop: '3px solid #0074B8' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+              <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, margin: 0, color: '#0074B8' }}>ClientSpace Sync</h2>
+              <span style={{
+                fontSize: 'var(--type-badge)', fontWeight: 600, padding: '2px 8px', borderRadius: 4,
+                background: '#E7F1FA', color: '#0074B8',
+              }}>System of record · documents/contracts</span>
+            </div>
+            <div style={{ fontSize: 'var(--type-body)', color: '#374151', marginBottom: 4 }}>
+              ClientSpace REST API &middot; Documents + Contracts + Cases
+            </div>
+            <div style={{ fontSize: 'var(--type-body)', color: '#374151', marginBottom: 12, fontStyle: 'italic' }}>
+              Writes the signed booklet, CAP document, contract & renewal-credit terms,
+              commission schedule, and approval audit trail back as the source of truth —
+              {' '}confirmed as case <strong style={{ color: '#0074B8' }}>CS-2026-0847</strong>.
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {clientSpaceSteps.map((step) => (
+                <div key={step.step} style={{
+                  border: '1px solid #BDD9F0',
+                  borderRadius: 8,
+                  background: '#F0F7FF',
+                  padding: 14,
+                  borderLeft: '3px solid #0074B8',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                    <span style={{
+                      fontSize: 'var(--type-badge)', fontWeight: 700,
+                      padding: '2px 8px', borderRadius: 4,
+                      background: '#E7F1FA', color: '#0074B8',
+                    }}>
+                      Step {step.step} &middot; {step.label}
+                    </span>
+                    <span style={{
+                      fontSize: 'var(--type-badge)', fontWeight: 600, padding: '1px 5px',
+                      borderRadius: 3, background: '#E7F1FA', color: '#0074B8',
+                    }}>{step.mode}</span>
+                  </div>
+                  <div style={{
+                    display: 'flex', flexDirection: 'column', gap: 3,
+                    padding: '8px 10px',
+                    background: 'rgba(255,255,255,0.7)',
+                    borderRadius: 6,
+                  }}>
+                    {step.endpoints.map((endpoint) => (
+                      <div key={endpoint} style={{
+                        fontFamily: "'IBM Plex Mono', monospace",
+                        fontSize: 'var(--type-caption)', color: '#1B2D3D', fontWeight: 500,
+                        whiteSpace: 'pre',
+                      }}>
+                        {endpoint}
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ fontSize: 'var(--type-body-lg)', color: '#374151', marginTop: 6, fontStyle: 'italic' }}>
+                    &rarr; {step.description}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          </div>{/* end two-track grid */}
+
+          {/* ════════ Section 3b: ClientSpace Payload / Record Summary ════════ */}
+          <div style={cardStyle}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+              <h2 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, margin: 0, color: '#0074B8' }}>ClientSpace Record &mdash; What Syncs</h2>
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', height: 20,
+                background: '#E7F1FA', color: '#0074B8',
+                fontSize: 'var(--type-badge)', fontWeight: 600, borderRadius: 4, padding: '0 8px',
+              }}>System of Record</span>
+            </div>
+            <div style={{ background: '#F0F7FF', borderRadius: 8, border: '1px solid #DCEAF6', overflow: 'hidden' }}>
+              {clientSpacePayload.map((row, i, arr) => (
+                <div key={i} style={{
+                  display: 'grid', gridTemplateColumns: '170px 1fr',
+                  padding: '8px 14px', alignItems: 'center',
+                  borderBottom: i < arr.length - 1 ? '1px solid #DCEAF6' : 'none',
+                }}>
+                  <div style={{ fontSize: 'var(--type-table-header)', fontWeight: 600, color: '#0074B8', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+                    {row.label}
+                  </div>
+                  <div style={{ ...mono, fontWeight: 500, color: '#1B2D3D' }}>{row.value}</div>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -572,8 +835,11 @@ export default function WritebackPage() {
                 fontFamily: "'IBM Plex Sans', sans-serif",
               }}
             >
-              Push to Prism &rarr;
+              Run System Sync &rarr;
             </button>
+            <span style={{ fontSize: 'var(--type-caption)', color: '#98A1A8', marginRight: 4 }}>
+              Prism + ClientSpace in parallel
+            </span>
             <button style={{
               height: 40, padding: '0 20px',
               background: '#fff', color: '#C60C30',
@@ -591,6 +857,15 @@ export default function WritebackPage() {
               fontFamily: "'IBM Plex Sans', sans-serif",
             }}>
               Download Payload
+            </button>
+            <button style={{
+              height: 40, padding: '0 20px',
+              background: '#fff', color: '#0074B8',
+              borderRadius: 8, fontSize: 'var(--type-body-sm)', fontWeight: 600,
+              border: '1px solid #0074B8', cursor: 'pointer',
+              fontFamily: "'IBM Plex Sans', sans-serif",
+            }}>
+              Download ClientSpace Record
             </button>
           </div>
 

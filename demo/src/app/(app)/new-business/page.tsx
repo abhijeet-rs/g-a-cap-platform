@@ -9,17 +9,19 @@ import StepAssembly from '@/components/new-business/StepAssembly';
 import StepRates from '@/components/new-business/StepRates';
 import StepValidation from '@/components/new-business/StepValidation';
 import StepPreview from '@/components/new-business/StepPreview';
+import StepPrefill from '@/components/new-business/StepPrefill';
+import StepRenewalDiff from '@/components/new-business/StepRenewalDiff';
+import CapBuilderLanding from '@/components/new-business/CapBuilderLanding';
 import WizardFooter from '@/components/new-business/WizardFooter';
 import { WizardSkeleton } from '@/components/shared/Skeleton';
 
-const steps = [
-  { num: 1, label: 'Intake & Upload' },
-  { num: 2, label: 'AI Extraction' },
-  { num: 3, label: 'Assembly' },
-  { num: 4, label: 'Plan Design & Rates' },
-  { num: 5, label: 'Readiness' },
-  { num: 6, label: 'Preview & Submit' },
-];
+const newStepLabels = ['Intake & Upload', 'AI Extraction', 'Assembly', 'Plan Design & Rates', 'Readiness', 'Preview & Submit'];
+const renewalStepLabels = ['Prefill', 'YoY Diff', 'Assembly', 'Plan Design & Rates', 'Readiness', 'Preview & Submit'];
+
+function buildSteps(mode: 'new' | 'renewal') {
+  const labels = mode === 'renewal' ? renewalStepLabels : newStepLabels;
+  return labels.map((label, i) => ({ num: i + 1, label }));
+}
 
 const versionHistory = [
   { version: 'v4', date: 'Jun 22', author: 'Dana Whitfield', note: 'Updated contribution strategy' },
@@ -28,8 +30,9 @@ const versionHistory = [
   { version: 'v1', date: 'Jun 18', author: 'Dana Whitfield', note: 'Initial creation' },
 ];
 
-function CAPInfoBar() {
+function CAPInfoBar({ mode, clientName, onChange }: { mode: 'new' | 'renewal'; clientName: string; onChange: () => void }) {
   const [showVersions, setShowVersions] = useState(false);
+  const displayName = mode === 'renewal' && clientName ? clientName : 'Itafos Conda';
 
   return (
     <div style={{
@@ -54,7 +57,29 @@ function CAPInfoBar() {
           color: '#1B2D3D',
         }}>CAP-2026-0847</span>
         <span style={{ color: '#374151' }}>&middot;</span>
-        <span style={{ fontWeight: 500, color: '#374151' }}>Itafos Conda</span>
+        <span style={{ fontWeight: 500, color: '#374151' }}>{displayName}</span>
+      </div>
+
+      {/* Mode badge + Change link */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <span style={{
+          fontSize: 'var(--type-badge)', fontWeight: 600, padding: '2px 8px', borderRadius: 9999,
+          background: mode === 'renewal' ? '#F8F6FE' : '#FDECEF',
+          color: mode === 'renewal' ? '#5A45C7' : '#C60C30',
+          textTransform: 'uppercase', letterSpacing: '0.04em',
+        }}>
+          {mode === 'renewal' ? 'Renewal' : 'New Business'}
+        </span>
+        <button
+          onClick={onChange}
+          style={{
+            background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+            fontSize: 'var(--type-caption)', fontWeight: 600, color: '#0074B8',
+            fontFamily: "'IBM Plex Sans', sans-serif",
+          }}
+        >
+          Change
+        </button>
       </div>
 
       {/* Version Badge */}
@@ -150,6 +175,10 @@ function CAPInfoBar() {
 
 export default function NewBusinessPage() {
   const step = useNewBusinessStore((s) => s.step);
+  const mode = useNewBusinessStore((s) => s.mode);
+  const started = useNewBusinessStore((s) => s.started);
+  const clientName = useNewBusinessStore((s) => s.clientName);
+  const backToLanding = useNewBusinessStore((s) => s.backToLanding);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -165,16 +194,28 @@ export default function NewBusinessPage() {
     );
   }
 
+  // Client-first landing — choose new vs renewal before entering the wizard.
+  if (!started) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto' }}>
+        <CapBuilderLanding />
+      </div>
+    );
+  }
+
+  const steps = buildSteps(mode);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <StepIndicator steps={steps} current={step} />
-      <div style={{ maxWidth: 1080, margin: '0 auto', padding: '8px 24px 0' }}>
-        <CAPInfoBar />
+      <div style={{ maxWidth: 1080, margin: '0 auto', padding: '8px 24px 0', width: '100%' }}>
+        <CAPInfoBar mode={mode} clientName={clientName} onChange={backToLanding} />
       </div>
       <div style={{ flex: 1, overflowY: 'auto' }}>
         <div style={{ maxWidth: 1080, margin: '0 auto', padding: '10px 24px 16px' }}>
-          {step === 1 && <StepIntake />}
-          {step === 2 && <StepExtraction />}
+          {/* Step 1/2 are mode-specific; steps 3–6 are shared. */}
+          {step === 1 && (mode === 'renewal' ? <StepPrefill /> : <StepIntake />)}
+          {step === 2 && (mode === 'renewal' ? <StepRenewalDiff /> : <StepExtraction />)}
           {step === 3 && <StepAssembly />}
           {step === 4 && <StepRates />}
           {step === 5 && <StepValidation />}

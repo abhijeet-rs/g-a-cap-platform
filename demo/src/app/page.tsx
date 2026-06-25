@@ -32,7 +32,7 @@ export default function LoginPage() {
   const [hoveredPersona, setHoveredPersona] = useState<string | null>(null);
 
   useEffect(() => {
-    if (screen === 'app') router.push('/dashboard');
+    if (screen === 'app') router.push('/workspace');
   }, [screen, router]);
 
   return (

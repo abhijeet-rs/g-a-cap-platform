@@ -4,8 +4,15 @@ import { useRef, useState } from 'react';
 import { useNewBusinessStore } from '@/stores/newBusinessStore';
 import { validateField, seedFieldRules, monthOptions, carrierOptions } from '@/lib/fieldValidation';
 
-const documentChecklist = [
-  { name: 'Census', unlocks: 'Unlocks: Employee demographics', status: 'done' as const },
+interface ChecklistDoc {
+  name: string;
+  unlocks: string;
+  status: 'done' | 'pending';
+  source?: 'clientspace';
+}
+
+const documentChecklist: ChecklistDoc[] = [
+  { name: 'Census', unlocks: 'Unlocks: Employee demographics', status: 'done' as const, source: 'clientspace' as const },
   { name: 'Carrier Invoice', unlocks: 'Unlocks: Incumbent plan costs', status: 'done' as const },
   { name: 'SBC / Plan Summary', unlocks: 'Unlocks: Current plan designs', status: 'done' as const },
   { name: 'Prior Booklet', unlocks: 'Unlocks: Contribution setup', status: 'pending' as const },
@@ -58,8 +65,27 @@ export default function StepIntake() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const capFileInputRef = useRef<HTMLInputElement>(null);
+  const csaFileInputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  /* ── CSA (Client Service Agreement) upload state ── */
+  const [csaDragging, setCsaDragging] = useState(false);
+  const [csaParsing, setCsaParsing] = useState(false);
+  const [csaParsed, setCsaParsed] = useState(false);
+  const [csaFileName, setCsaFileName] = useState<string | null>(null);
+
+  const handleCsaFile = (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    setCsaFileName(file.name);
+    setCsaParsing(true);
+    setCsaParsed(false);
+    setTimeout(() => {
+      setCsaParsing(false);
+      setCsaParsed(true);
+    }, 1500);
+  };
 
   const [uploadFeedback, setUploadFeedback] = useState<string | null>(null);
 
@@ -344,6 +370,126 @@ export default function StepIntake() {
 
       {/* Two-column grid — "Start from scratch" mode */}
       {intakeMode === 'new' && (<div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+      {/* ── ClientSpace-pulled data callout ── */}
+      <div style={{
+        background: '#F0F7FF', border: '1px solid #0074B8', borderRadius: 10, padding: 16,
+        display: 'flex', gap: 12, alignItems: 'flex-start',
+      }}>
+        <div style={{
+          width: 28, height: 28, borderRadius: '50%', background: '#0074B8', flexShrink: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 14, fontWeight: 700,
+        }}>&#x21BB;</div>
+        <div style={{ flex: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+            <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#0074B8' }}>Client data synced from ClientSpace</span>
+            <span style={{
+              fontSize: 'var(--type-badge)', fontWeight: 600, padding: '1px 7px', borderRadius: 4,
+              background: '#E7F1FA', color: '#0074B8', textTransform: 'uppercase', letterSpacing: '0.04em',
+            }}>Auto-pulled</span>
+          </div>
+          <p style={{ fontSize: 'var(--type-body-sm)', color: '#374151', margin: 0, lineHeight: 1.5 }}>
+            Census, client contacts and prior documents are pulled automatically from ClientSpace &mdash; you never upload census manually. Provide the CSA below and any incumbent carrier documents not on file.
+          </p>
+        </div>
+      </div>
+
+      {/* ── CSA upload card ── */}
+      <div style={{ background: '#fff', borderRadius: 10, border: '1px solid #E4E8ED', padding: 20 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+          <h3 style={{ fontSize: 'var(--type-card-title)', fontWeight: 600, color: '#1B2D3D', margin: 0 }}>
+            Upload CSA (Client Service Agreement)
+          </h3>
+          <span style={{
+            fontSize: 'var(--type-badge)', fontWeight: 600, padding: '2px 8px', borderRadius: 4,
+            background: '#FDECEF', color: '#C60C30', textTransform: 'uppercase', letterSpacing: '0.04em',
+          }}>Required</span>
+        </div>
+
+        {!csaParsing && !csaParsed && (
+          <div
+            onDragOver={(e) => { e.preventDefault(); setCsaDragging(true); }}
+            onDragLeave={() => setCsaDragging(false)}
+            onDrop={(e) => { e.preventDefault(); setCsaDragging(false); handleCsaFile(e.dataTransfer.files); }}
+            onClick={() => csaFileInputRef.current?.click()}
+            style={{
+              border: `2px dashed ${csaDragging ? '#0074B8' : '#DCE2E8'}`,
+              background: csaDragging ? '#F0F7FF' : '#FAFBFC',
+              borderRadius: 10, padding: 28, textAlign: 'center', cursor: 'pointer',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            <input
+              ref={csaFileInputRef}
+              type="file"
+              accept=".pdf,.docx,.doc"
+              onChange={(e) => { handleCsaFile(e.target.files); e.target.value = ''; }}
+              style={{ display: 'none' }}
+            />
+            <div style={{ fontSize: 28, color: csaDragging ? '#0074B8' : '#C60C30', marginBottom: 6 }}>&#x1F4C4;</div>
+            <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: csaDragging ? '#0074B8' : '#374151' }}>
+              Drop the signed CSA to parse broker &amp; commission terms
+            </div>
+            <div style={{ fontSize: 'var(--type-body-sm)', color: '#374151', marginTop: 4 }}>
+              PDF or Word &mdash; broker, commission handling and effective dates are extracted automatically
+            </div>
+          </div>
+        )}
+
+        {csaParsing && (
+          <div style={{ textAlign: 'center', padding: '28px 0' }}>
+            <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#0074B8', marginBottom: 12 }}>Parsing CSA…</div>
+            <div style={{ width: 200, height: 4, background: '#EDF0F3', borderRadius: 2, margin: '0 auto', overflow: 'hidden' }}>
+              <div style={{ width: '60%', height: '100%', background: '#0074B8', borderRadius: 2, animation: 'capImportPulse 1.5s ease-in-out infinite' }} />
+            </div>
+            <style>{`@keyframes capImportPulse { 0% { width: 10%; } 50% { width: 80%; } 100% { width: 100%; } }`}</style>
+            <div style={{ fontSize: 'var(--type-body-sm)', color: '#374151', marginTop: 8 }}>Reading {csaFileName}…</div>
+          </div>
+        )}
+
+        {csaParsed && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <div style={{ background: '#F0FFF5', border: '1px solid #C6F0D4', borderRadius: 8, padding: '14px 16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                <div style={{
+                  width: 22, height: 22, borderRadius: '50%', background: '#1A7A4A',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: '#fff', fontSize: 'var(--type-badge)', fontWeight: 700, flexShrink: 0,
+                }}>&#x2713;</div>
+                <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#1A7A4A' }}>
+                  CSA parsed &mdash; broker, commission handling, effective dates extracted
+                </span>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginLeft: 30 }}>
+                {[
+                  { label: 'Broker', value: 'Lockton Companies' },
+                  { label: 'Commission', value: '3.0% of premium' },
+                  { label: 'Effective', value: '07/01/2026' },
+                ].map((item) => (
+                  <div key={item.label}>
+                    <div style={{ fontSize: 'var(--type-caption)', color: '#374151' }}>{item.label}</div>
+                    <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: '#1B2D3D' }}>{item.value}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ fontSize: 'var(--type-caption)', color: '#374151', marginLeft: 30, marginTop: 8 }}>Source: {csaFileName}</div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => { setCsaParsed(false); setCsaFileName(null); }}
+                style={{
+                  height: 32, padding: '0 14px', background: '#fff', color: '#0074B8',
+                  border: '1px solid #0074B8', borderRadius: 6, fontSize: 'var(--type-body-sm)', fontWeight: 600,
+                  cursor: 'pointer', fontFamily: "'IBM Plex Sans', sans-serif",
+                }}
+              >
+                Replace CSA
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
         {/* Left card: Seed Information */}
         <div
@@ -544,9 +690,21 @@ export default function StepIntake() {
                   {doc.status === 'done' ? '✓' : '·'}
                 </div>
                 {/* Text */}
-                <div>
-                  <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 500, color: '#1B2D3D' }}>{doc.name}</div>
-                  <div style={{ fontSize: 'var(--type-body-sm)', color: '#374151' }}>{doc.unlocks}</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 500, color: '#1B2D3D' }}>{doc.name}</div>
+                    {doc.source === 'clientspace' && (
+                      <span style={{
+                        fontSize: 'var(--type-badge)', fontWeight: 600, padding: '1px 7px', borderRadius: 4,
+                        background: '#E7F1FA', color: '#0074B8', whiteSpace: 'nowrap',
+                      }}>
+                        Synced from ClientSpace
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ fontSize: 'var(--type-body-sm)', color: '#374151' }}>
+                    {doc.source === 'clientspace' ? 'Pulled automatically — no manual upload' : doc.unlocks}
+                  </div>
                 </div>
               </div>
             ))}

@@ -8,6 +8,10 @@ export interface UploadedFile {
 }
 
 interface NewBusinessState {
+  mode: 'new' | 'renewal';
+  clientId: string | null;
+  clientName: string;
+  started: boolean;
   step: number;
   company: string;
   planYear: string;
@@ -22,6 +26,9 @@ interface NewBusinessState {
   confirmedFields: Record<string, boolean>;
   dentalRateAccepted: boolean;
   dismissedWarnings: string[];
+  startNew: () => void;
+  startRenewal: (clientId: string, clientName: string) => void;
+  backToLanding: () => void;
   next: () => void;
   prev: () => void;
   goStep: (s: number) => void;
@@ -43,6 +50,10 @@ interface NewBusinessState {
 }
 
 export const useNewBusinessStore = create<NewBusinessState>((set, get) => ({
+  mode: 'new',
+  clientId: null,
+  clientName: '',
+  started: false,
   step: 1,
   company: 'Itafos Conda',
   planYear: '2026',
@@ -77,6 +88,25 @@ export const useNewBusinessStore = create<NewBusinessState>((set, get) => ({
   confirmedFields: {},
   dentalRateAccepted: false,
   dismissedWarnings: [],
+  startNew: () => {
+    set({ mode: 'new', started: true, step: 1, clientId: null, clientName: '' });
+    useDataStore.getState().addAudit({
+      actor: 'Dana Whitfield', actorType: 'user',
+      action: 'started a new client CAP',
+      entity: 'cap', entityId: 'cap-itafos-2026',
+    });
+  },
+  startRenewal: (clientId, clientName) => {
+    set({ mode: 'renewal', started: true, step: 1, clientId, clientName, company: clientName });
+    useDataStore.getState().addAudit({
+      actor: 'Dana Whitfield', actorType: 'user',
+      action: `started renewal CAP for "${clientName}"`,
+      entity: 'cap', entityId: `cap-${clientId}-2026`,
+    });
+  },
+  backToLanding: () => {
+    set({ started: false });
+  },
   next: () => {
     const prev = get().step;
     set(s => ({ step: Math.min(s.step + 1, 6) }));
@@ -219,6 +249,7 @@ export const useNewBusinessStore = create<NewBusinessState>((set, get) => ({
     set(s => ({ dismissedWarnings: [...s.dismissedWarnings, label] }));
   },
   reset: () => set({
+    mode: 'new', clientId: null, clientName: '', started: false,
     step: 1, company: 'Itafos Conda', planYear: '2026', eeCount: '298',
     effMonth: 'July', carrier: 'BCBS Texas',
     uploadedFiles: [

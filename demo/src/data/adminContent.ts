@@ -9,10 +9,26 @@ interface AdminTab {
 
 export const adminTabs: AdminTab[] = [
   {
+    key: 'clientData', label: 'Client Data',
+    cards: [
+      { title: 'Client Profiles', body: 'Client master synced from PrismHR — Prism ID, tier, WSE count, owner, and effective date. The anchor record every CAP attaches to.', accentColor: '#C60C30', badge: 'Prism · synced' },
+      { title: 'Renewal Radar', body: 'Upcoming renewals surfaced from Prism plan effective dates. Drives the prior-year pre-fill and YoY drift detection for renewal CAPs.', accentColor: '#0074B8', badge: 'Prism · synced' },
+      { title: 'Prior-Year CAPs', body: 'Last cycle’s approved Client Approved Plans, versioned per client. The basis for renewal auto-population instead of manual rebuild.', accentColor: '#5A45C7', badge: 'Versioned' },
+      { title: 'Census & Eligibility', body: 'Employee and dependent census pulled from ClientSpace — the source of record, not a manual upload. Feeds enrollment, rating tiers, and validation.', accentColor: '#1A7A4A', badge: 'ClientSpace · synced' },
+      { title: 'Documents & Contracts', body: 'Client documentation and contract details live in ClientSpace as the system of record. On sign-off, the approved CAP, booklet, and contract sync back here for a single audit trail.', accentColor: '#0074B8', badge: 'ClientSpace · system of record' },
+    ],
+    metrics: [
+      { label: 'Active Clients', value: '11', color: '#C60C30' },
+      { label: 'WSEs', value: '2,074', color: '#0074B8' },
+      { label: 'Renewals ≤90d', value: '8', color: '#B0690A' },
+      { label: 'Prior-Year CAPs', value: '11', color: '#1A7A4A' },
+    ],
+  },
+  {
     key: 'connections', label: 'F2 · Connections',
     cards: [
       { title: 'PrismHR', body: 'System of record for plan configurations, carrier rates, enrollments. Continuous sync with delta detection and versioned rate tables.', accentColor: '#C60C30', badge: 'Connected · 847 syncs' },
-      { title: 'ClientSpace', body: 'Workflow/case/audit engine. CAP lifecycle events create and advance cases. Benefits page export and commission tracking.', accentColor: '#0074B8', badge: 'Connected' },
+      { title: 'ClientSpace', body: 'System of record for client documentation and contract details. Source for census and CSA input; on sign-off the approved CAP, booklet, and contract sync back here. Case/audit tracking across the lifecycle.', accentColor: '#0074B8', badge: 'Connected' },
       { title: 'WorkSight', body: 'Client-facing enrollment portal. Receives plan/rate data from approved CAPs for portal configuration.', accentColor: '#1A7A4A', badge: 'Connected' },
       { title: 'DocuSign', body: 'E-signature routing for benefits booklet and CAP confirmation. Envelope status callbacks.', accentColor: '#B0690A', badge: 'Connected' },
       { title: 'Carrier Underwriting', body: 'Document upload + AI extraction path (Hero/Gradient output). No direct API integration — factors enter via upload.', accentColor: '#5A45C7', badge: 'Upload-based' },

@@ -10,11 +10,11 @@ import { Role } from '@/lib/types';
 
 const pageTitles: Record<string, string> = {
   '/dashboard': 'Dashboard',
-  '/new-business': 'New Client Approved Plan',
+  '/new-business': 'CAP Builder',
   '/renewal': 'Renewals',
   '/esign': 'E-Signature',
   '/documents': 'Documents',
-  '/admin': 'Admin Console',
+  '/admin': 'Data Repository',
   '/integrations': 'Integrations',
   '/architecture': 'Architecture',
   '/writeback': 'Ben Admin Console',
@@ -26,8 +26,8 @@ const crumbs: Record<string, string> = {
   '/renewal': 'Workspace',
   '/esign': 'Workspace',
   '/documents': 'Workspace',
-  '/admin': 'Administration',
-  '/integrations': 'Administration',
+  '/admin': 'Data & Foundation',
+  '/integrations': 'Data & Foundation',
   '/architecture': 'Reference',
   '/writeback': 'Workspace',
 };
