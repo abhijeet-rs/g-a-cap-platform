@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G&A Partners | CSA Extraction & Cross-Validation — Written Deliverables</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--red:#C60C30;--navy:#23394A;--grey:#6B6F70;--lgrey:#A8ACAE;--fog:#F5F7F9;--rule:#E2E8ED;--white:#FFFFFF;--pos:#2A8F60;--c2:#0088CE;--amber:#FF9E1B;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;color:var(--navy);background:var(--fog);font-size:13px;line-height:1.6;}
+
+/* HEADER */
+.hdr{background:var(--navy);padding:0 48px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;}
+.logo-area{padding:14px 0;display:flex;align-items:center;gap:14px;}
+.logo-text{color:#fff;font-size:16px;font-weight:800;letter-spacing:-.3px;}
+.logo-text span{color:var(--red);font-weight:900;}
+.hdr-right{display:flex;align-items:center;gap:10px;}
+.hdr-badge{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:3px;background:rgba(198,12,48,.3);color:rgba(255,255,255,.8);border:1px solid rgba(198,12,48,.4);}
+.hdr-badge.blue{background:rgba(0,136,206,.25);border-color:rgba(0,136,206,.4);color:rgba(255,255,255,.85);}
+
+/* TAB NAV */
+.tab-nav{background:var(--navy);display:flex;padding:0 48px;border-bottom:1px solid rgba(255,255,255,.08);overflow-x:auto;}
+.tab-nav::-webkit-scrollbar{height:0;}
+.tab-btn{padding:11px 16px;font-size:9.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.4);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color .15s;flex-shrink:0;font-family:inherit;}
+.tab-btn:hover{color:rgba(255,255,255,.75);}
+.tab-btn.active{color:#fff;border-bottom-color:var(--red);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* PAGE */
+.page{max-width:1100px;margin:0 auto;padding:36px 48px 60px;}
+.pg-eye{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:5px;}
+.pg-h1{font-size:22px;font-weight:800;color:var(--navy);letter-spacing:-.4px;margin-bottom:8px;line-height:1.25;}
+.pg-sub{font-size:12px;color:var(--grey);margin-bottom:28px;max-width:750px;line-height:1.7;}
+.section-title{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--rule);margin-top:32px;}
+.section-title:first-of-type{margin-top:0;}
+
+/* CARDS */
+.card{background:var(--white);border:1px solid var(--rule);border-radius:8px;padding:18px 22px;margin-bottom:12px;box-shadow:0 1px 4px rgba(35,57,74,.05);}
+.card-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.card-sub{font-size:11px;color:var(--grey);line-height:1.7;}
+.card.accent-red{border-left:4px solid var(--red);border-radius:0 8px 8px 0;}
+.card.accent-blue{border-left:4px solid var(--c2);border-radius:0 8px 8px 0;}
+.card.accent-green{border-left:4px solid var(--pos);border-radius:0 8px 8px 0;}
+.card.accent-amber{border-left:4px solid var(--amber);border-radius:0 8px 8px 0;}
+.card.accent-navy{border-left:4px solid var(--navy);border-radius:0 8px 8px 0;}
+
+/* CALLOUTS */
+.callout{border-radius:0 6px 6px 0;padding:14px 18px;font-size:11px;line-height:1.7;margin-bottom:16px;}
+.callout.info{border-left:4px solid var(--c2);background:#EBF4FB;color:#1a4f72;}
+.callout.warn{border-left:4px solid var(--amber);background:#FEF9EE;color:#5c3c00;}
+.callout.success{border-left:4px solid var(--pos);background:#E9F5EF;color:#1a4a2e;}
+.callout.danger{border-left:4px solid var(--red);background:#FDECEA;color:#6a0010;}
+.callout strong{font-weight:700;}
+
+/* TABLES */
+.tbl{width:100%;border-collapse:collapse;background:var(--white);border:1px solid var(--rule);border-radius:8px;overflow:hidden;margin-bottom:18px;box-shadow:0 1px 5px rgba(35,57,74,.06);}
+.tbl thead th{background:var(--navy);color:rgba(255,255,255,.92);padding:9px 12px;font-size:9.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;text-align:left;border-right:1px solid rgba(255,255,255,.08);}
+.tbl thead th:last-child{border-right:none;}
+.tbl tbody td{padding:9px 12px;border-bottom:1px solid var(--rule);font-size:11px;color:var(--navy);vertical-align:top;}
+.tbl tbody tr:last-child td{border-bottom:none;}
+.tbl tbody tr:nth-child(even) td{background:#F8FAFB;}
+.tbl .subhead td{background:#EDF1F5;font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#3a5068;}
+
+/* METRIC TILES */
+.metric-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px;}
+.metric-row.cols-3{grid-template-columns:repeat(3,1fr);}
+.metric-row.cols-5{grid-template-columns:repeat(5,1fr);}
+.metric-tile{background:var(--white);border:1px solid var(--rule);border-radius:6px;padding:14px 16px;border-top:3px solid var(--navy);}
+.metric-tile.c2{border-top-color:var(--c2);}
+.metric-tile.cr{border-top-color:var(--red);}
+.metric-tile.cg{border-top-color:var(--pos);}
+.metric-tile.ca{border-top-color:var(--amber);}
+.metric-val{font-size:22px;font-weight:800;color:var(--navy);letter-spacing:-.5px;line-height:1;margin-bottom:4px;}
+.metric-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--lgrey);}
+
+/* BADGES */
+.badge{display:inline-block;padding:2px 9px;border-radius:99px;font-size:10px;font-weight:700;}
+.badge-high{background:#FDECEA;color:#8a000a;border:1px solid #C60C3044;}
+.badge-med{background:#EBF4FB;color:#1a4f72;border:1px solid #0088CE44;}
+.badge-low{background:#E6F4EC;color:#1a5c38;border:1px solid #2A8F6044;}
+.badge-amber{background:#FEF3E2;color:#7a4800;border:1px solid #FF9E1B44;}
+.tag{font-size:9px;font-weight:700;padding:2px 8px;border-radius:3px;display:inline-block;margin-right:4px;margin-bottom:3px;}
+.tag-ai{background:#EBF4FB;color:#1a4f72;border:1px solid #0088CE44;}
+.tag-auto{background:#E6F4EC;color:#1a5c38;border:1px solid #2A8F6044;}
+.tag-priority{background:#C60C30;color:#ffffff;}
+.tag-navy{background:#EDF1F5;color:var(--navy);border:1px solid rgba(35,57,74,.2);}
+
+/* FLOW COMPARISON */
+.flow-compare{display:grid;grid-template-columns:1fr 60px 1fr;gap:0;margin-bottom:22px;}
+.flow-col{background:var(--white);border:1px solid var(--rule);border-radius:8px;padding:20px 22px;}
+.flow-col.current{border-top:3px solid var(--red);}
+.flow-col.future{border-top:3px solid var(--pos);}
+.flow-arrow{display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--c2);font-weight:800;}
+.flow-step{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--rule);align-items:flex-start;}
+.flow-step:last-child{border-bottom:none;}
+.flow-num{width:24px;height:24px;border-radius:50%;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.flow-num.red{background:var(--red);color:#fff;}
+.flow-num.green{background:var(--pos);color:#fff;}
+.flow-text{font-size:11px;color:var(--navy);line-height:1.6;}
+
+/* CODE */
+.code-block{background:var(--navy);color:rgba(255,255,255,.85);border-radius:6px;padding:16px 20px;font-family:'SF Mono','Fira Code',monospace;font-size:11px;line-height:1.7;overflow-x:auto;margin-bottom:16px;white-space:pre;}
+.code-comment{color:rgba(255,255,255,.35);}
+.code-key{color:#7ec8e3;}
+.code-str{color:#98c379;}
+.code-type{color:#e5c07b;}
+
+/* LIFECYCLE */
+.lifecycle{display:flex;gap:0;margin-bottom:22px;overflow-x:auto;}
+.lifecycle-step{flex:1;min-width:120px;text-align:center;padding:14px 10px;background:var(--white);border:1px solid var(--rule);position:relative;}
+.lifecycle-step:first-child{border-radius:8px 0 0 8px;}
+.lifecycle-step:last-child{border-radius:0 8px 8px 0;}
+.lifecycle-step .step-label{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--lgrey);margin-bottom:4px;}
+.lifecycle-step .step-name{font-size:11px;font-weight:700;color:var(--navy);}
+.lifecycle-step.active{background:var(--c2);border-color:var(--c2);}
+.lifecycle-step.active .step-label,.lifecycle-step.active .step-name{color:#fff;}
+
+/* TWO-COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;}
+
+/* FOOTER */
+.foot{border-top:1px solid var(--rule);padding-top:14px;display:flex;justify-content:space-between;font-size:10px;color:var(--lgrey);margin-top:36px;}
+
+/* ARCHITECTURE LAYER */
+.arch-layer{background:var(--white);border:1px solid var(--rule);border-radius:8px;padding:16px 20px;margin-bottom:10px;border-left:4px solid var(--c2);}
+.arch-layer-num{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--c2);margin-bottom:4px;}
+.arch-layer-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.arch-layer-desc{font-size:11px;color:var(--grey);line-height:1.7;}
+
+/* OPTION CARD */
+.opt-card{background:var(--white);border:1px solid var(--rule);border-radius:8px;padding:16px 20px;margin-bottom:12px;}
+.opt-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.opt-card-title{font-size:13px;font-weight:700;color:var(--navy);}
+.opt-card-desc{font-size:11px;color:var(--grey);line-height:1.7;}
+
+/* PRINT */
+@media print{
+  .hdr,.tab-nav{position:static;}
+  .tab-panel{display:block!important;page-break-before:always;}
+  .tab-panel:first-of-type{page-break-before:auto;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="logo-area">
+    <div class="logo-text"><span>G&A</span> Partners</div>
+  </div>
+  <div class="hdr-right">
+    <span class="hdr-badge blue">Initiative D - CSA Extraction</span>
+    <span class="hdr-badge">Confidential - Partners Only</span>
+  </div>
+</div>
+
+<!-- TAB NAV -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('business')">01 - Business Understanding</button>
+  <button class="tab-btn" onclick="showTab('architecture')">02 - Solution Architecture</button>
+  <button class="tab-btn" onclick="showTab('eval')">03 - Evaluation Strategy</button>
+  <button class="tab-btn" onclick="showTab('security')">04 - Guardrails & Security</button>
+  <button class="tab-btn" onclick="showTab('clientspace')">05 - ClientSpace Integration</button>
+  <button class="tab-btn" onclick="showTab('roadmap')">06 - Implementation Roadmap</button>
+</div>
+
+
+<!-- ================================================================== -->
+<!-- TAB 1: BUSINESS UNDERSTANDING                                      -->
+<!-- ================================================================== -->
+<div id="tab-business" class="tab-panel active">
+<div class="page">
+  <div class="pg-eye">Section A, B, G - Business Understanding</div>
+  <div class="pg-h1">AI-Assisted CSA Extraction & Cross-Validation<br>Business Understanding</div>
+  <div class="pg-sub">A comprehensive analysis of G&A Partners' onboarding operations, current-state pain points, and the business case for AI-assisted CSA extraction -- covering the operational context, process flows, and expected impact of replacing four independent manual reviews with a single AI-powered validation step.</div>
+
+  <!-- SECTION A -->
+  <div class="section-title">A. Business Understanding Summary</div>
+
+  <div class="metric-row">
+    <div class="metric-tile cr"><div class="metric-val">704</div><div class="metric-lbl">Clients Onboarded / Year</div></div>
+    <div class="metric-tile c2"><div class="metric-val">35</div><div class="metric-lbl">Onboarding FTEs</div></div>
+    <div class="metric-tile ca"><div class="metric-val">40-60 days</div><div class="metric-lbl">Current Onboarding Cycle</div></div>
+    <div class="metric-tile cg"><div class="metric-val">~3 weeks</div><div class="metric-lbl">Industry Standard</div></div>
+  </div>
+
+  <div class="two-col">
+    <div class="card accent-red">
+      <div class="card-title">The CSA Problem</div>
+      <div class="card-sub">The Customer Service Agreement (CSA) is the foundational document for every client onboarding. It defines the entire contractual relationship -- fee structures, services, SUTA coverage, billing exceptions, WC codes, tax classifications, and term details. Today, <strong>4 independent manual reviews</strong> of the same CSA PDF are performed by separate team members (PM Manager, PM, PA Manager, PA), each spending 30-40 minutes manually sifting through a multi-page legal document. No structured output is shared between reviewers.</div>
+    </div>
+    <div class="card accent-navy">
+      <div class="card-title">The Integration Gap</div>
+      <div class="card-sub">There is <strong>no Salesforce-to-ClientSpace integration</strong>. Business Analysts manually re-enter deal data from Salesforce into ClientSpace, frequently entering placeholder data in required fields to satisfy system requirements. These placeholders create discrepancies that are only discovered during downstream onboarding meetings, causing delays, rework, and repeated manual cross-referencing across systems.</div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <strong>Key Insight:</strong> The CSA review process alone accounts for approximately 2% of PM time and 1% of PA time across the entire team. When combined with Sales Handoff (which depends on validated CSA data), the total impact reaches 7% PM and 3% PA time allocation -- representing 1.6 FTEs of capacity that could be reclaimed through automation.
+  </div>
+
+  <div class="card">
+    <div class="card-title">Operational Context</div>
+    <div class="card-sub">
+      <strong>Volume:</strong> G&A Partners onboards approximately 704 clients per year with a team of 35 FTEs (15 Project Managers, 16 Payroll Analysts, 4 Leadership/Management). Total onboarding FLC is $4.5M.<br><br>
+      <strong>Cycle Time:</strong> Current onboarding takes 40-60 days from CSA signing to first payroll -- nearly double the industry standard of approximately 3 weeks. Compressing this cycle by 10-14 calendar days would directly accelerate gross margin recognition.<br><br>
+      <strong>The CSA's Role:</strong> Every downstream activity -- system configuration in PrismHR, billing rule setup, WC code assignment, SUTA rate configuration, document collection -- depends on accurate extraction and validation of CSA data. Errors introduced at this stage cascade through the entire onboarding lifecycle.<br><br>
+      <strong>Revenue Impact:</strong> Each day of onboarding delay means one fewer day of billable payroll cycles for G&A. With 704 clients per year and an average cycle compression target of 10-14 days, the gross margin capture opportunity is significant.
+    </div>
+  </div>
+
+  <!-- SECTION B -->
+  <div class="section-title">B. Current-State vs Future-State Flow</div>
+
+  <div class="flow-compare">
+    <div class="flow-col current">
+      <div style="font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:14px;">Current State - Manual Process</div>
+      <div class="flow-step"><div class="flow-num red">1</div><div class="flow-text"><strong>Sales closes deal</strong> -- CSA PDF generated as the contractual agreement</div></div>
+      <div class="flow-step"><div class="flow-num red">2</div><div class="flow-text"><strong>BA enters deal data into Salesforce</strong> -- initial record creation</div></div>
+      <div class="flow-step"><div class="flow-num red">3</div><div class="flow-text"><strong>BA manually re-enters data into ClientSpace</strong> -- no SF-CS integration; placeholder data in required fields</div></div>
+      <div class="flow-step"><div class="flow-num red">4</div><div class="flow-text"><strong>PM Manager reviews CSA</strong> -- 30-40 min manual review of entire PDF</div></div>
+      <div class="flow-step"><div class="flow-num red">5</div><div class="flow-text"><strong>PM reviews CSA during Sales Handoff</strong> -- second independent manual review</div></div>
+      <div class="flow-step"><div class="flow-num red">6</div><div class="flow-text"><strong>PA Manager reviews CSA</strong> -- third independent manual review</div></div>
+      <div class="flow-step"><div class="flow-num red">7</div><div class="flow-text"><strong>PA reviews CSA</strong> -- fourth independent manual review</div></div>
+      <div class="flow-step"><div class="flow-num red">8</div><div class="flow-text"><strong>Discrepancies discovered ad hoc</strong> -- delays, rework, meetings to resolve</div></div>
+      <div class="flow-step"><div class="flow-num red">9</div><div class="flow-text"><strong>Data manually cross-referenced</strong> across Salesforce, ClientSpace, and CSA</div></div>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-col future">
+      <div style="font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--pos);margin-bottom:14px;">Future State - AI-Assisted Process</div>
+      <div class="flow-step"><div class="flow-num green">1</div><div class="flow-text"><strong>Sales closes deal</strong> -- CSA PDF uploaded to extraction system</div></div>
+      <div class="flow-step"><div class="flow-num green">2</div><div class="flow-text"><strong>AI extracts structured fields automatically</strong> -- 2-3 minutes, 20+ fields with confidence scores</div></div>
+      <div class="flow-step"><div class="flow-num green">3</div><div class="flow-text"><strong>Cross-validation engine</strong> compares CSA vs Salesforce vs ClientSpace data</div></div>
+      <div class="flow-step"><div class="flow-num green">4</div><div class="flow-text"><strong>Mismatches auto-flagged</strong> with confidence scores and source attribution</div></div>
+      <div class="flow-step"><div class="flow-num green">5</div><div class="flow-text"><strong>Single human review</strong> of pre-populated, validated data -- approve or override</div></div>
+      <div class="flow-step"><div class="flow-num green">6</div><div class="flow-text"><strong>Approved data auto-synced</strong> to ClientSpace -- case created, fields populated</div></div>
+      <div class="flow-step"><div class="flow-num green">7</div><div class="flow-text"><strong>Automated document collection triggers</strong> fire immediately based on extracted service types</div></div>
+    </div>
+  </div>
+
+  <div class="metric-row cols-3">
+    <div class="metric-tile cg"><div class="metric-val">4 &rarr; 1</div><div class="metric-lbl">Reviews Reduced</div></div>
+    <div class="metric-tile c2"><div class="metric-val">85%</div><div class="metric-lbl">CSA Review Time Reduction</div></div>
+    <div class="metric-tile ca"><div class="metric-val">2-3 min</div><div class="metric-lbl">AI Extraction Time</div></div>
+  </div>
+
+  <!-- SECTION G -->
+  <div class="section-title">G. Business Flow Understanding</div>
+
+  <div class="card accent-blue">
+    <div class="card-title">Current Business Process -- Detailed Explanation</div>
+    <div class="card-sub">
+      When a sale closes at G&A Partners, the Business Analyst creates a Client Service Agreement (CSA) PDF that documents every aspect of the client relationship. This document flows through the onboarding division where it undergoes four sequential manual reviews:<br><br>
+      <strong>1. PM Manager CSA Review (30-40 min):</strong> The PM Manager manually reads the entire CSA to understand fee structure, services included/excluded, billing exceptions, effective dates, and term. They cross-reference this against the ClientSpace handoff page fields entered by the BA.<br><br>
+      <strong>2. PM Sales Handoff Review:</strong> During the structured sales handoff meeting, the PM conducts their own independent review of the same CSA, validating scope, services, and client expectations against what was entered in ClientSpace.<br><br>
+      <strong>3. PA Manager CSA Review:</strong> The PA Manager performs a third independent review focused on payroll-specific terms -- SUTA coverage type, WC codes, pay frequency, tax classifications, and billing rules.<br><br>
+      <strong>4. PA CSA Review:</strong> The assigned Payroll Analyst performs the fourth review, again extracting the same payroll-relevant fields to configure PrismHR.
+    </div>
+  </div>
+
+  <div class="section-title" style="margin-top:24px;">Pain Points Analysis</div>
+
+  <table class="tbl">
+    <thead><tr><th>Pain Point</th><th>Impact</th><th>Frequency</th><th>Root Cause</th></tr></thead>
+    <tbody>
+      <tr><td><strong>4x Redundant CSA Reviews</strong></td><td>120-160 min wasted per deal across 4 reviewers</td><td>Every deal (704/yr)</td><td>No shared structured extraction output</td></tr>
+      <tr><td><strong>Manual BA Re-Entry</strong></td><td>Errors propagate to all downstream systems</td><td>Every deal</td><td>No Salesforce-to-ClientSpace integration</td></tr>
+      <tr><td><strong>Placeholder Data</strong></td><td>Discrepancies surface during meetings, not at intake</td><td>Frequent (estimated 30%+ of deals)</td><td>Required fields with no validation at source</td></tr>
+      <tr><td><strong>No SF-CS Integration</strong></td><td>BA must dual-enter; no automated cross-validation</td><td>Every deal</td><td>Legacy system architecture</td></tr>
+      <tr><td><strong>Ad Hoc Discrepancy Discovery</strong></td><td>Delays onboarding 2-5 days per incident</td><td>Multiple times per deal</td><td>No proactive validation at deal close</td></tr>
+      <tr><td><strong>No Structured CSA Output</strong></td><td>Each reviewer starts from scratch with raw PDF</td><td>Every deal</td><td>No extraction or parsing tooling</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title" style="margin-top:24px;">How AI-Assisted Extraction Solves Each Problem</div>
+
+  <div class="two-col">
+    <div class="card accent-green">
+      <div class="card-title">What Gets Automated</div>
+      <div class="card-sub">
+        <strong>PDF Field Extraction:</strong> AI reads the CSA PDF and extracts 20+ structured fields -- company name, FEIN, effective date, admin fee, services, SUTA coverage, WC codes, term, billing exceptions, tax classification, ownership structure, cyber policy status.<br><br>
+        <strong>Cross-Validation:</strong> Extracted fields are automatically compared against Salesforce deal data and ClientSpace handoff page fields. Every mismatch is flagged with source attribution (which system has which value) and confidence scores.<br><br>
+        <strong>Discrepancy Flagging:</strong> Placeholder values, missing required fields, and data inconsistencies are surfaced immediately at deal close -- not days later during onboarding meetings.<br><br>
+        <strong>Initial Data Population:</strong> Validated, high-confidence fields are pre-populated into the ClientSpace onboarding record, eliminating manual data entry for the majority of fields.
+      </div>
+    </div>
+    <div class="card accent-amber">
+      <div class="card-title">Where Humans Remain in the Loop</div>
+      <div class="card-sub">
+        <strong>Approval Gate:</strong> No data flows to ClientSpace without explicit human approval. A reviewer must sign off on the extraction results before any system updates occur.<br><br>
+        <strong>Edge Cases:</strong> Non-standard CSA formats, handwritten amendments, complex multi-entity agreements, and unusual clause structures are routed to senior reviewers with partial extraction results as a starting point.<br><br>
+        <strong>Low-Confidence Fields:</strong> Fields extracted with confidence below 0.80 are flagged for manual verification rather than auto-populated. Fields below 0.60 are flagged as potential hallucinations.<br><br>
+        <strong>Mismatch Resolution:</strong> When the cross-validation engine flags a genuine discrepancy between CSA, Salesforce, and ClientSpace, a human must determine which source is authoritative and resolve the conflict.
+      </div>
+    </div>
+  </div>
+
+  <div class="callout success">
+    <strong>Expected Business Impact:</strong> 85% reduction in CSA review time across the onboarding team. Four independent 30-40 minute reviews replaced by a single 5-10 minute validation step reviewing pre-populated, AI-extracted data with flagged mismatches. Faster onboarding cycle through immediate discrepancy resolution at deal close rather than discovery during downstream meetings.
+  </div>
+
+  <div class="foot">
+    <span>G&A Partners - CSA Extraction Deliverables - Confidential</span>
+    <span>June 2026 - R Systems</span>
+  </div>
+</div>
+</div>
+
+
+<!-- ================================================================== -->
+<!-- TAB 2: SOLUTION ARCHITECTURE                                       -->
+<!-- ================================================================== -->
+<div id="tab-architecture" class="tab-panel">
+<div class="page">
+  <div class="pg-eye">Section C - Solution Architecture</div>
+  <div class="pg-h1">Solution Architecture<br>AI-Assisted CSA Extraction & Cross-Validation</div>
+  <div class="pg-sub">A seven-layer architecture designed for enterprise-grade document extraction, multi-system cross-validation, human-in-the-loop approval, and secure integration with ClientSpace. Each layer is independently scalable and testable.</div>
+
+  <div class="section-title">Architecture Overview</div>
+
+  <div class="code-block"><span class="code-comment">/* CSA Extraction & Cross-Validation -- System Architecture */</span>
+
+  <span class="code-key">Layer 7</span>  <span class="code-str">Audit & Monitoring</span>          Immutable logs, performance dashboards, model drift alerts
+  <span class="code-key">Layer 6</span>  <span class="code-str">Security & Masking</span>          PII redaction, customer name aliasing, access control
+  <span class="code-key">Layer 5</span>  <span class="code-str">ClientSpace Integration</span>     API adapter, DTO mapping, sync lifecycle, retry logic
+  <span class="code-key">Layer 4</span>  <span class="code-str">Human Review & Approval</span>     Dashboard, side drawer, PDF viewer, lock/unlock, re-run
+  <span class="code-key">Layer 3</span>  <span class="code-str">Cross-Validation Engine</span>     Multi-system comparison, mismatch detection, scoring
+  <span class="code-key">Layer 2</span>  <span class="code-str">AI Extraction Pipeline</span>      LlamaParse + Claude Haiku + Tesseract OCR, 3-tier bbox cascade, confidence
+  <span class="code-key">Layer 1</span>  <span class="code-str">Ingestion Layer</span>             Upload, file validation, type detection, queuing</div>
+
+  <div class="section-title">Layer Details</div>
+
+  <div class="arch-layer" style="border-left-color:var(--navy);">
+    <div class="arch-layer-num">Layer 1</div>
+    <div class="arch-layer-title">Ingestion Layer</div>
+    <div class="arch-layer-desc">
+      <strong>Purpose:</strong> Accept CSA PDF uploads, validate file integrity, detect document type, and queue for processing.<br><br>
+      <strong>Components:</strong> File upload endpoint (multipart/form-data), file type validation (PDF, scanned PDF detection), file size limits (50MB max), virus scanning, duplicate detection (SHA-256 hash), document type classification (CSA vs. amendment vs. addendum), processing queue (async job creation).<br><br>
+      <strong>Technology:</strong> FastAPI upload endpoint, Redis/Celery task queue, S3-compatible object storage for document persistence. File metadata stored in PostgreSQL with upload timestamp, uploader identity, and processing status.
+    </div>
+  </div>
+
+  <div class="arch-layer">
+    <div class="arch-layer-num">Layer 2</div>
+    <div class="arch-layer-title">AI Extraction Pipeline</div>
+    <div class="arch-layer-desc">
+      <strong>Purpose:</strong> Convert unstructured CSA PDF content into structured, typed fields with per-field confidence scores.<br><br>
+      <strong>Pipeline Stages:</strong><br>
+      1. <strong>PDF Parsing (LlamaParse):</strong> LlamaParse converts CSA PDFs into per-page structured Markdown with OCR items including bounding box coordinates. Handles native and scanned PDFs with high fidelity. API-key-based integration for fast setup.<br>
+      2. <strong>Intelligent Field Extraction (Claude Haiku):</strong> Claude Haiku via the Anthropic API performs LLM-based intelligent extraction of 42+ fields from the parsed Markdown. Each field is returned with its page number, source citation, and confidence score. Domain-specific extraction prompts tuned for PEO/HRO terminology.<br>
+      3. <strong>Word-Level OCR (Tesseract):</strong> Tesseract OCR processes each PDF page to produce word-level bounding boxes (7000+ words per page), enabling precise in-document highlighting of extracted field locations.<br>
+      4. <strong>3-Tier Bounding Box Cascade:</strong> A three-pass matching algorithm resolves extracted field text to precise document positions: LINE pass (exact line match from LlamaParse OCR items), WORD-run pass (consecutive word sequence matching from Tesseract output), and Loose-line pass (relaxed matching for partial or reformatted text).<br>
+      5. <strong>Confidence Scoring:</strong> Each extracted field receives a confidence score (0.0-1.0) based on extraction clarity, format compliance, and cross-field consistency.<br><br>
+      <strong>Technology:</strong> Primary: LlamaParse (PDF &rarr; per-page Markdown with OCR items) + Claude Haiku via Anthropic API (intelligent field extraction) + Tesseract OCR (word-level bounding box resolution). Production: Azure AI Document Intelligence for OCR + Claude for semantic extraction.
+    </div>
+  </div>
+
+  <div class="arch-layer" style="border-left-color:var(--pos);">
+    <div class="arch-layer-num">Layer 3</div>
+    <div class="arch-layer-title">Cross-Validation Engine</div>
+    <div class="arch-layer-desc">
+      <strong>Purpose:</strong> Compare extracted CSA fields against Salesforce deal data and ClientSpace handoff page fields to detect mismatches, placeholder values, and missing required data.<br><br>
+      <strong>Validation Types:</strong><br>
+      - <strong>Exact Match:</strong> FEIN, effective date, term length -- must match exactly across systems<br>
+      - <strong>Semantic Match:</strong> Fee descriptions, service names -- normalize before comparison ("$45 per employee per month" = "$45/ee/mo")<br>
+      - <strong>Range Validation:</strong> Admin fees within expected ranges for service tier, SUTA rates within state-specific bounds<br>
+      - <strong>Completeness Check:</strong> All required fields populated with non-placeholder values<br>
+      - <strong>Consistency Check:</strong> Cross-field logic (e.g., if SUTA coverage = "client-responsible", SUTA rates should not be populated in billing)<br><br>
+      <strong>Output:</strong> Validation report with per-field status (match/mismatch/missing), source values from each system, confidence assessment, and recommended resolution.
+    </div>
+  </div>
+
+  <div class="arch-layer" style="border-left-color:var(--amber);">
+    <div class="arch-layer-num">Layer 4</div>
+    <div class="arch-layer-title">Human Review & Approval Workflow</div>
+    <div class="arch-layer-desc">
+      <strong>Purpose:</strong> Document-centric review experience for validation, correction, and approval of extracted CSA data.<br><br>
+      <strong>CSA Dashboard:</strong> Every uploaded CSA appears as a row with real-time status tracking following a clear upload &rarr; processing spinner &rarr; eye icon flow. Processing CSAs show a spinner; completed extractions enable an Eye icon to open the review drawer. Auto-refreshes every 5 seconds.<br><br>
+      <strong>Side Drawer:</strong> Full-height right-side drawer with two-panel split — left panel (45%) shows editable extracted fields grouped by section with confidence scores, validation badges, notes, and change tracking. Right panel (55%) shows the CSA PDF rendered via PDF.js with viewer controls (zoom, rotate, search, page navigation). In-document yellow highlights mark extracted field locations using percentage-positioned div overlays with mixBlendMode: multiply. Deep-linkable via URL parameters.<br><br>
+      <strong>Approval Modal:</strong> Approval triggers a cross-validation summary modal showing Salesforce mismatches and ClientSpace sync actions before final confirmation. This Salesforce&rarr;ClientSpace bridge means approval replaces manual BA re-entry. Approved CSAs are locked — re-editing requires an explicit unlock with a downstream impact warning ("Changes will modify ClientSpace entries"). Field-level audit trail tracks every edit by persona.<br><br>
+      <strong>Approval Gates:</strong> No data flows to ClientSpace without explicit approval. Low-confidence fields require individual sign-off. Mismatch resolutions require the reviewer to select the authoritative source.
+    </div>
+  </div>
+
+  <div class="arch-layer" style="border-left-color:var(--red);">
+    <div class="arch-layer-num">Layer 5</div>
+    <div class="arch-layer-title">ClientSpace Integration Adapter</div>
+    <div class="arch-layer-desc">
+      <strong>Purpose:</strong> Translate approved extraction results into ClientSpace API calls, managing the full sync lifecycle from payload construction through confirmation.<br><br>
+      <strong>Components:</strong> API client with OAuth token management, DTO mapper (extraction schema to ClientSpace field schema), payload builder, response normalizer, retry handler (exponential backoff with jitter, max 3 retries), error classifier (transient vs. permanent vs. validation), idempotency key generator, and audit logger.<br><br>
+      <strong>Technology:</strong> Python httpx async client, Pydantic models for DTO validation, circuit breaker pattern for API resilience. Detailed in Tab 6.
+    </div>
+  </div>
+
+  <div class="arch-layer" style="border-left-color:#7B4FD6;">
+    <div class="arch-layer-num">Layer 6</div>
+    <div class="arch-layer-title">Security & Masking Layer</div>
+    <div class="arch-layer-desc">
+      <strong>Purpose:</strong> Protect PII and sensitive client data throughout the extraction and review pipeline.<br><br>
+      <strong>Capabilities:</strong> Customer name aliasing (real names replaced with codenames in demo/review UIs), SSN masking (XXX-XX-1234), FEIN partial masking, bank account full masking, address reduction (city/state only), role-based access control for unmasked data access. All masking is applied at the presentation layer; raw data is stored encrypted at rest with field-level encryption for PII fields.<br><br>
+      <strong>Technology:</strong> AES-256 field-level encryption, AWS KMS or Azure Key Vault for key management, middleware-based masking in the API layer. Detailed in Tab 5.
+    </div>
+  </div>
+
+  <div class="arch-layer" style="border-left-color:var(--lgrey);">
+    <div class="arch-layer-num">Layer 7</div>
+    <div class="arch-layer-title">Audit & Monitoring Layer</div>
+    <div class="arch-layer-desc">
+      <strong>Purpose:</strong> Maintain an immutable audit trail of all system activities and monitor extraction quality over time.<br><br>
+      <strong>Audit Events:</strong> Every extraction logged (who uploaded, when, what was extracted, confidence scores). Every human override logged (original value, new value, reason, reviewer identity). Every approval/rejection logged. Every ClientSpace sync attempt logged with request/response. All events are append-only (immutable log).<br><br>
+      <strong>Monitoring:</strong> Real-time dashboards for extraction volume, average confidence, human correction rate, sync success rate, and processing latency. Alerting for confidence drift (model degradation), sync failure spikes, and queue depth anomalies.
+    </div>
+  </div>
+
+  <div class="section-title">Technology Recommendations</div>
+
+  <table class="tbl">
+    <thead><tr><th>Component</th><th>Demo/POC</th><th>Production</th><th>Justification</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Extraction Engine</strong></td><td>LlamaParse + Claude Haiku + Tesseract OCR + PDF.js</td><td>Azure DI + Claude (hybrid)</td><td>LlamaParse for PDF &rarr; per-page Markdown with OCR items, Claude Haiku for intelligent field extraction, Tesseract OCR for word-level bounding boxes, PDF.js for in-document rendering and highlights; Azure DI adds enterprise OCR in production</td></tr>
+      <tr><td><strong>Backend Framework</strong></td><td>Python FastAPI</td><td>Python FastAPI</td><td>Async-native, OpenAPI auto-docs, excellent for ML pipeline integration</td></tr>
+      <tr><td><strong>Task Queue</strong></td><td>In-process async</td><td>Celery + Redis</td><td>Production needs distributed processing, retry logic, dead letter queues</td></tr>
+      <tr><td><strong>Database</strong></td><td>SQLite / PostgreSQL</td><td>PostgreSQL + TimescaleDB</td><td>Relational for structured data; TimescaleDB for time-series audit logs</td></tr>
+      <tr><td><strong>Object Storage</strong></td><td>Local filesystem</td><td>S3 / Azure Blob</td><td>Durable, encrypted document storage with lifecycle policies</td></tr>
+      <tr><td><strong>Frontend</strong></td><td>Next.js (React)</td><td>Next.js (React)</td><td>SSR for performance, rich component ecosystem for review UI</td></tr>
+      <tr><td><strong>Auth</strong></td><td>Basic JWT</td><td>Azure AD / OAuth 2.0</td><td>Enterprise SSO integration for production access control</td></tr>
+      <tr><td><strong>Monitoring</strong></td><td>Console logging</td><td>Datadog / Grafana</td><td>Production observability with alerting and dashboards</td></tr>
+    </tbody>
+  </table>
+
+  <div class="foot">
+    <span>G&A Partners - CSA Extraction Deliverables - Confidential</span>
+    <span>June 2026 - R Systems</span>
+  </div>
+</div>
+</div>
+
+
+
+<!-- ================================================================== -->
+<!-- TAB 3: EVALUATION STRATEGY                                         -->
+<!-- ================================================================== -->
+<div id="tab-eval" class="tab-panel">
+<div class="page">
+  <div class="pg-eye">Section J - Evaluation Strategy</div>
+  <div class="pg-h1">Comprehensive Evaluation Strategy<br>Extraction Quality & Cross-Validation Accuracy</div>
+  <div class="pg-sub">A multi-dimensional evaluation framework covering field-level accuracy, table extraction quality, entity recognition, cross-validation precision, and a golden dataset strategy for continuous model improvement. Every metric has a defined target and measurement methodology.</div>
+
+  <div class="section-title">Field-Level Accuracy Evals</div>
+
+  <div class="two-col">
+    <div class="card accent-blue">
+      <div class="card-title">Exact Match Rate</div>
+      <div class="card-sub">Measures whether the extracted value is character-for-character identical to the ground truth annotation. Applied to structured fields: FEIN, effective dates, admin fee amounts, term length. This is the strictest accuracy measure and the primary metric for fields that must be precisely correct (e.g., FEIN must be exactly 9 digits, no partial credit).</div>
+    </div>
+    <div class="card accent-green">
+      <div class="card-title">Semantic Match Rate</div>
+      <div class="card-sub">Measures whether the extracted value conveys the same meaning as the ground truth after normalization. Examples: "$45 per employee per month" matches "$45/ee/mo". "Workers' Compensation" matches "WC". "Thirty-six months" matches "36 months". Applied to descriptive fields where format variation is expected but meaning must be preserved.</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card accent-amber">
+      <div class="card-title">Confidence Calibration</div>
+      <div class="card-sub">Measures the correlation between predicted confidence and actual accuracy. A well-calibrated model should be correct 95% of the time on fields where it predicts 0.95 confidence. Evaluated using reliability diagrams (calibration curves) plotting predicted probability vs. observed accuracy across confidence bins. Target: Pearson correlation > 0.85 between predicted confidence and actual accuracy.</div>
+    </div>
+    <div class="card accent-red">
+      <div class="card-title">Per-Field Error Analysis</div>
+      <div class="card-sub">Breakdown of extraction errors by field type to identify systematic weaknesses. Tracks error rates for each of the 20+ CSA fields independently, enabling targeted improvement. Fields with consistently low accuracy are flagged for additional training data, prompt engineering, or fallback to manual entry. Error distribution reveals whether failures are random or field-specific.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Table Extraction Evals</div>
+
+  <table class="tbl">
+    <thead><tr><th>Metric</th><th>Definition</th><th>Target</th><th>Measurement Method</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Cell-Level Accuracy</strong></td><td>Correctly extracted table cells / total cells in ground truth</td><td>&gt;90%</td><td>Cell-by-cell comparison against annotated fee schedule tables</td></tr>
+      <tr><td><strong>Header Detection Accuracy</strong></td><td>Correctly identified column/row headers / total headers</td><td>&gt;95%</td><td>Annotated header positions vs. detected header positions</td></tr>
+      <tr><td><strong>Row/Column Alignment</strong></td><td>Cells assigned to correct row and column / total cells</td><td>&gt;92%</td><td>Structural alignment check -- correct data in correct position</td></tr>
+      <tr><td><strong>Multi-Page Table Handling</strong></td><td>Tables spanning pages correctly merged / total multi-page tables</td><td>&gt;85%</td><td>Test with CSAs containing fee schedules spanning 2-3 pages</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">Entity Extraction Evals</div>
+
+  <table class="tbl">
+    <thead><tr><th>Entity Type</th><th>Precision Target</th><th>Recall Target</th><th>Examples</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Named Entities</strong> (Company, Person)</td><td>&gt;96%</td><td>&gt;94%</td><td>Client company name, signatories, authorized contacts</td></tr>
+      <tr><td><strong>Financial Values</strong></td><td>&gt;98%</td><td>&gt;96%</td><td>Admin fees, per-employee costs, markup percentages, deposit amounts</td></tr>
+      <tr><td><strong>Dates</strong></td><td>&gt;97%</td><td>&gt;97%</td><td>Effective date, renewal date, term end date</td></tr>
+      <tr><td><strong>Service/Coverage Classification</strong></td><td>&gt;93%</td><td>&gt;91%</td><td>Included services, optional services, SUTA coverage type, WC classification</td></tr>
+      <tr><td><strong>Legal/Tax Identifiers</strong></td><td>&gt;99%</td><td>&gt;98%</td><td>FEIN, state tax IDs, entity type, jurisdiction</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">Cross-Validation Evals</div>
+
+  <div class="three-col">
+    <div class="card accent-green">
+      <div class="card-title">True Positive Mismatch Rate</div>
+      <div class="card-sub">Percentage of flagged mismatches that are genuine discrepancies requiring resolution. Target: &gt;88%. Higher is better -- indicates the system is not wasting reviewer time on false alarms.</div>
+    </div>
+    <div class="card accent-amber">
+      <div class="card-title">False Positive Mismatch Rate</div>
+      <div class="card-sub">Percentage of flagged mismatches that are actually correct (format differences, acceptable synonyms, etc.). Target: &lt;12%. Lower is better -- excessive false positives erode reviewer trust and increase review time.</div>
+    </div>
+    <div class="card accent-red">
+      <div class="card-title">False Negative Mismatch Rate</div>
+      <div class="card-sub">Percentage of real mismatches that the system failed to flag. Target: &lt;5%. This is the most critical metric -- missed mismatches flow to ClientSpace uncorrected. Current manual baseline is estimated at ~30%.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Comprehensive Metrics Table</div>
+
+  <table class="tbl">
+    <thead><tr><th>Metric</th><th>Definition</th><th>Target</th><th>Current Baseline</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Field Precision</strong></td><td>Correct extractions / total extractions</td><td>&gt;95%</td><td>N/A (manual)</td></tr>
+      <tr><td><strong>Field Recall</strong></td><td>Extracted required fields / total required fields</td><td>&gt;98%</td><td>N/A</td></tr>
+      <tr><td><strong>Exact Match</strong></td><td>Fields matching ground truth exactly</td><td>&gt;85%</td><td>N/A</td></tr>
+      <tr><td><strong>Semantic Match</strong></td><td>Fields matching after normalization</td><td>&gt;92%</td><td>N/A</td></tr>
+      <tr><td><strong>Table Cell Accuracy</strong></td><td>Correctly extracted table cells / total cells</td><td>&gt;90%</td><td>N/A</td></tr>
+      <tr><td><strong>Required Field Completeness</strong></td><td>Required fields with values / total required</td><td>&gt;99%</td><td>~85% (manual)</td></tr>
+      <tr><td><strong>Validation Mismatch Accuracy</strong></td><td>True mismatches / flagged mismatches</td><td>&gt;88%</td><td>N/A</td></tr>
+      <tr><td><strong>False Positive Mismatch Rate</strong></td><td>Incorrectly flagged / total flagged</td><td>&lt;12%</td><td>N/A</td></tr>
+      <tr><td><strong>False Negative Mismatch Rate</strong></td><td>Missed mismatches / total real mismatches</td><td>&lt;5%</td><td>~30% (manual)</td></tr>
+      <tr><td><strong>Human Correction Rate</strong></td><td>Fields requiring human correction / total</td><td>&lt;8%</td><td>100% (all manual)</td></tr>
+      <tr><td><strong>Confidence Reliability</strong></td><td>Correlation(predicted confidence, actual accuracy)</td><td>&gt;0.85</td><td>N/A</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">Golden Dataset Strategy</div>
+
+  <div class="card accent-blue">
+    <div class="card-title">Dataset Construction</div>
+    <div class="card-sub">
+      <strong>Size:</strong> Collect 50 representative CSAs across different complexity levels. This provides sufficient statistical power for per-field accuracy measurement while being feasible for expert annotation.<br><br>
+      <strong>Ground Truth Creation:</strong> Two expert BAs independently annotate each CSA with structured field values. Disagreements are resolved by a senior reviewer (adjudication). Final annotations become the ground truth labels.<br><br>
+      <strong>Stratification:</strong> The dataset is stratified into three complexity tiers:<br>
+      - <strong>Simple (40%):</strong> Standard services, single state, standard fee schedule (20 CSAs)<br>
+      - <strong>Moderate (35%):</strong> Custom fees, multi-state operations, some billing exceptions (17-18 CSAs)<br>
+      - <strong>Complex (25%):</strong> Multi-entity, extensive exceptions, custom clauses, multi-state SUTA variations (12-13 CSAs)<br><br>
+      <strong>Versioning:</strong> The dataset is version-controlled with each annotation revision tracked. Model performance is evaluated against each dataset version to measure improvement over time.
+    </div>
+  </div>
+
+  <div class="section-title">Error Taxonomy</div>
+
+  <table class="tbl">
+    <thead><tr><th>Error Type</th><th>Description</th><th>Severity</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Missing Field</strong></td><td>Extraction missed a field entirely -- no value returned</td><td><span class="badge badge-high">High</span></td><td>Admin fee present in CSA but not extracted</td></tr>
+      <tr><td><strong>Wrong Value</strong></td><td>Extracted an incorrect value from the document</td><td><span class="badge badge-high">High</span></td><td>Extracted "$45/ee" when CSA says "$55/ee"</td></tr>
+      <tr><td><strong>Wrong Field Mapping</strong></td><td>Correct value assigned to the wrong field</td><td><span class="badge badge-high">High</span></td><td>Effective date placed in termination date field</td></tr>
+      <tr><td><strong>Partial Extraction</strong></td><td>Value is incomplete -- truncated or missing components</td><td><span class="badge badge-med">Medium</span></td><td>"$45 per employee" missing "per month"</td></tr>
+      <tr><td><strong>Hallucinated Value</strong></td><td>Value not present in the document at all</td><td><span class="badge badge-high">Critical</span></td><td>WC code "8742" returned but not in CSA</td></tr>
+      <tr><td><strong>Formatting Error</strong></td><td>Correct value but wrong format</td><td><span class="badge badge-low">Low</span></td><td>"01/15/2026" instead of "2026-01-15"</td></tr>
+      <tr><td><strong>Table Misalignment</strong></td><td>Correct data placed in wrong table cell</td><td><span class="badge badge-med">Medium</span></td><td>Service A fee assigned to Service B row</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <strong>Critical Note on Hallucinations:</strong> Hallucinated values are the highest-severity error class because they introduce fabricated data that may appear plausible. The confidence thresholding system (see Tab 5) is specifically designed to catch these by flagging extractions where the model's internal confidence does not match the expected pattern for the field type. Any field flagged as a potential hallucination must require explicit human verification before approval.
+  </div>
+
+  <div class="foot">
+    <span>G&A Partners - CSA Extraction Deliverables - Confidential</span>
+    <span>June 2026 - R Systems</span>
+  </div>
+</div>
+</div>
+
+
+<!-- ================================================================== -->
+<!-- TAB 4: GUARDRAILS & SECURITY                                       -->
+<!-- ================================================================== -->
+<div id="tab-security" class="tab-panel">
+<div class="page">
+  <div class="pg-eye">Section K - Guardrails & Masking</div>
+  <div class="pg-h1">Guardrails & Masking Strategy</div>
+  <div class="pg-sub">Upload guardrails, customer name masking, PII protection, confidence thresholding, human approval gates, and audit trail for the CSA extraction workflow.</div>
+
+  <div class="section-title">Upload Guardrails</div>
+
+  <div class="card accent-red">
+    <div class="card-title">PDF Validation at Upload</div>
+    <div class="card-sub">
+      Before any file reaches the server, the upload page performs client-side validation:<br>
+      &bull; <strong>PDF header check</strong> — reads the first bytes to verify the %PDF magic header<br>
+      &bull; <strong>File size limit</strong> — rejects files over 25 MB<br>
+      &bull; <strong>Minimum size check</strong> — rejects files under 1 KB (empty/corrupt)<br>
+      &bull; <strong>Encrypted PDF detection</strong> — scans for /Encrypt marker and rejects password-protected files<br>
+      &bull; <strong>File type enforcement</strong> — only accepts .pdf files, rejects all other formats<br><br>
+      Invalid files are rejected with a clear error banner — no upload is initiated.
+    </div>
+  </div>
+
+  <div class="section-title">Customer Name Masking</div>
+
+  <div class="card accent-navy">
+    <div class="card-title">Demo-Safe Aliasing</div>
+    <div class="card-sub">
+      All customer names extracted from CSA PDFs are replaced with aliases (e.g., "Acme Corp", "TechStart LLC") before reaching the UI. The alias mapping is server-side only. No raw customer name from a CSA is ever displayed in the demo interface.
+    </div>
+  </div>
+
+  <div class="section-title">PII Masking Rules</div>
+
+  <table class="tbl">
+    <thead><tr><th>Data Type</th><th>Masking Rule</th><th>Example</th><th>Masked Output</th></tr></thead>
+    <tbody>
+      <tr><td><strong>SSN</strong></td><td>Show last 4 only</td><td>123-45-6789</td><td>XXX-XX-6789</td></tr>
+      <tr><td><strong>FEIN</strong></td><td>Show last 4 only</td><td>12-3456789</td><td>XX-XXX6789</td></tr>
+      <tr><td><strong>Bank Accounts</strong></td><td>Fully redacted</td><td>1234567890</td><td>[REDACTED]</td></tr>
+      <tr><td><strong>Contact Names</strong></td><td>Replaced with [MASKED]</td><td>John Smith</td><td>[MASKED]</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">Confidence Thresholding</div>
+
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px;">
+    <div class="metric-tile cg" style="border-top-width:4px;">
+      <div class="metric-val" style="font-size:18px;">&gt; 0.95</div>
+      <div class="metric-lbl" style="color:var(--pos);">Auto-Populated</div>
+      <div style="font-size:10px;color:var(--grey);margin-top:6px;line-height:1.5;">No review required. Included in batch approval.</div>
+    </div>
+    <div class="metric-tile c2" style="border-top-width:4px;">
+      <div class="metric-val" style="font-size:18px;">0.80 - 0.95</div>
+      <div class="metric-lbl" style="color:var(--c2);">Flagged for Review</div>
+      <div style="font-size:10px;color:var(--grey);margin-top:6px;line-height:1.5;">Populated but highlighted. Reviewer must acknowledge or override.</div>
+    </div>
+    <div class="metric-tile ca" style="border-top-width:4px;">
+      <div class="metric-val" style="font-size:18px;">0.60 - 0.80</div>
+      <div class="metric-lbl" style="color:#7a4800;">Manual Entry</div>
+      <div style="font-size:10px;color:var(--grey);margin-top:6px;line-height:1.5;">Suggestion shown as reference. Reviewer enters value manually.</div>
+    </div>
+    <div class="metric-tile cr" style="border-top-width:4px;">
+      <div class="metric-val" style="font-size:18px;">&lt; 0.60</div>
+      <div class="metric-lbl" style="color:var(--red);">Potential Hallucination</div>
+      <div style="font-size:10px;color:var(--grey);margin-top:6px;line-height:1.5;">Flagged as unreliable. Requires manual verification against PDF.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Human Approval Gates</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+    <div class="card accent-red">
+      <div class="card-title">No Auto-Sync</div>
+      <div class="card-sub">No extracted data flows to ClientSpace without explicit human approval via the review drawer.</div>
+    </div>
+    <div class="card accent-amber">
+      <div class="card-title">Mismatch Sign-Off</div>
+      <div class="card-sub">Every cross-validation mismatch requires reviewer resolution with notes before downstream sync.</div>
+    </div>
+    <div class="card accent-blue">
+      <div class="card-title">Low-Confidence Review</div>
+      <div class="card-sub">Fields below 0.80 confidence require individual verification against the source PDF in the side drawer viewer.</div>
+    </div>
+    <div class="card accent-navy">
+      <div class="card-title">Approved Lock / Unlock</div>
+      <div class="card-sub">Approved and synced CSAs are locked. Re-editing requires explicit unlock with a warning that changes will modify downstream ClientSpace entries. Unlock confirmation required before action buttons appear.</div>
+    </div>
+  </div>
+
+  <div class="section-title">In-Document Citation Highlights</div>
+
+  <div class="card accent-blue">
+    <div class="card-title">Source-Grounded Extraction with Visual Highlights</div>
+    <div class="card-sub">
+      Every extracted field is linked to its precise location in the original CSA PDF via a multi-stage resolution pipeline:<br>
+      &bull; <strong>Tesseract OCR</strong> processes each page to produce word-level bounding boxes (7000+ words per page)<br>
+      &bull; <strong>3-tier cascade matching</strong> resolves extracted text to positions: LINE pass (LlamaParse OCR items), WORD-run pass (consecutive Tesseract words), Loose-line pass (relaxed matching)<br>
+      &bull; <strong>Percentage-based div overlays</strong> render yellow highlights over the PDF.js-rendered pages using mixBlendMode: multiply<br>
+      &bull; Clicking any extracted field in the side drawer scrolls the PDF viewer to the relevant page and highlights the source text
+    </div>
+  </div>
+
+  <div class="section-title">Audit Trail</div>
+
+  <div class="card">
+    <div class="card-sub">
+      Every extraction, override, approval, rejection, and sync action is logged with actor, timestamp, and details. The audit log is append-only and visible from the Onboarding Ops Audit Trail screen.
+    </div>
+  </div>
+
+  <div class="section-title">Failure Handling</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+    <div class="card accent-red">
+      <div class="card-title">Extraction Failure</div>
+      <div class="card-sub">Fall back to manual review with any partial results. Mock data used as fallback when LlamaParse is unavailable.</div>
+    </div>
+    <div class="card accent-amber">
+      <div class="card-title">Low Overall Confidence</div>
+      <div class="card-sub">Route to senior reviewer. All fields shown with extraction suggestions as reference.</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>G&A Partners - CSA Extraction Deliverables - Confidential</span>
+    <span>June 2026 - R Systems</span>
+  </div>
+</div>
+</div>
+
+
+<!-- ================================================================== -->
+<!-- TAB 5: CLIENTSPACE INTEGRATION                                     -->
+<!-- ================================================================== -->
+<div id="tab-clientspace" class="tab-panel">
+<div class="page">
+  <div class="pg-eye">Section 10 - ClientSpace Integration</div>
+  <div class="pg-h1">ClientSpace Integration Architecture<br>API Adapter Design & Data Mapping</div>
+  <div class="pg-sub">Detailed integration architecture for syncing AI-extracted and human-approved CSA data into ClientSpace, including API capability matrix, adapter design patterns, sync lifecycle management, field-level data mapping, and the Salesforce-ClientSpace bridge strategy.</div>
+
+  <div class="section-title">API Capability Matrix</div>
+
+  <table class="tbl">
+    <thead><tr><th>API</th><th>Purpose</th><th>Payload Source</th><th>Validation Required</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Auth / Token</strong></td><td>Authenticate to ClientSpace</td><td>Config / secrets vault</td><td>Token validity, expiry check</td></tr>
+      <tr><td><strong>Client Creation</strong></td><td>Create new client record</td><td>CSA extracted company info</td><td>FEIN uniqueness, required fields populated</td></tr>
+      <tr><td><strong>Case Creation</strong></td><td>Create onboarding case</td><td>Extraction results + approval metadata</td><td>Linked client exists, case type valid</td></tr>
+      <tr><td><strong>Task Creation</strong></td><td>Create BA review tasks for mismatches</td><td>Validation mismatch details</td><td>Case exists, assignee valid in directory</td></tr>
+      <tr><td><strong>Document Upload</strong></td><td>Upload original/redacted CSA PDF</td><td>Original or PII-redacted document</td><td>File size limit, type validation, virus scan</td></tr>
+      <tr><td><strong>Activity Log</strong></td><td>Record extraction and sync activities</td><td>All extraction events and outcomes</td><td>Case exists, activity type valid</td></tr>
+      <tr><td><strong>Status Update</strong></td><td>Update case status on workflow transitions</td><td>Workflow state machine events</td><td>Valid state transition (no skip-ahead)</td></tr>
+      <tr><td><strong>Custom Fields</strong></td><td>Update onboarding-specific fields</td><td>Extracted and approved CSA fields</td><td>Field-level type validation, range checks</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">Integration Layer Architecture</div>
+
+  <div class="code-block"><span class="code-comment">/* Integration Data Flow */</span>
+
+  <span class="code-type">CSA Extraction Engine</span>
+    <span class="code-key">-></span> <span class="code-str">Normalized Onboarding Data Model</span>     <span class="code-comment">// Canonical schema</span>
+      <span class="code-key">-></span> <span class="code-str">Cross-Validation Engine</span>            <span class="code-comment">// CSA vs SF vs CS</span>
+        <span class="code-key">-></span> <span class="code-str">Dashboard Drawer Review</span>           <span class="code-comment">// Approve / re-run / reject / lock-unlock</span>
+          <span class="code-key">-></span> <span class="code-str">ClientSpace Integration Adapter</span>  <span class="code-comment">// DTO mapping, payload build</span>
+            <span class="code-key">-></span> <span class="code-str">ClientSpace API Gateway</span>         <span class="code-comment">// HTTP calls with retry</span>
+              <span class="code-key">-></span> <span class="code-type">Case / Client / Task / Doc Updates</span></div>
+
+  <div class="section-title">Adapter Component Design</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px;">
+    <div class="card accent-blue">
+      <div class="card-title">API Client</div>
+      <div class="card-sub">HTTP client with automatic OAuth token refresh, connection pooling, request/response logging, configurable timeouts (30s default), and circuit breaker pattern (open after 5 consecutive failures, half-open retry after 60s).</div>
+    </div>
+    <div class="card accent-green">
+      <div class="card-title">DTO Mapper</div>
+      <div class="card-sub">Maps the internal extraction schema to ClientSpace field names and types. Handles type coercion (string to date, string to decimal), enum mapping (service codes to CS-specific codes), and null handling (required vs. optional field rules).</div>
+    </div>
+    <div class="card accent-amber">
+      <div class="card-title">Payload Builder</div>
+      <div class="card-sub">Constructs valid ClientSpace API request payloads from mapped DTOs. Handles nested object construction, array serialization, multipart form data for document uploads, and request signing where required.</div>
+    </div>
+    <div class="card accent-navy">
+      <div class="card-title">Response Normalizer</div>
+      <div class="card-sub">Standardizes ClientSpace API responses into a consistent internal format regardless of endpoint-specific response structures. Extracts created entity IDs, error messages, validation failures, and rate limit headers.</div>
+    </div>
+    <div class="card accent-red">
+      <div class="card-title">Retry Handler & Error Classifier</div>
+      <div class="card-sub"><strong>Retry:</strong> Exponential backoff with jitter (base: 1s, max: 30s, max retries: 3). <strong>Error Classification:</strong> Transient errors (5xx, timeout, network) trigger retry. Permanent errors (4xx auth, 404) are logged and routed to human. Validation errors (400 with field details) trigger fix-and-retry.</div>
+    </div>
+    <div class="card" style="border-left:4px solid #7B4FD6;border-radius:0 8px 8px 0;">
+      <div class="card-title">Idempotency & Audit</div>
+      <div class="card-sub"><strong>Idempotency Key:</strong> SHA256(document_id + field_set + timestamp_bucket) ensures duplicate API calls are safe. <strong>Audit Logger:</strong> Every API call attempt, response, and outcome is logged with correlation ID linking back to the source extraction and approval event.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Sync Lifecycle States</div>
+
+  <div class="lifecycle">
+    <div class="lifecycle-step"><div class="step-label">Step 1</div><div class="step-name">Pending</div></div>
+    <div class="lifecycle-step"><div class="step-label">Step 2</div><div class="step-name">Ready</div></div>
+    <div class="lifecycle-step active"><div class="step-label">Step 3</div><div class="step-name">Syncing</div></div>
+    <div class="lifecycle-step"><div class="step-label">Step 4</div><div class="step-name">Synced</div></div>
+    <div class="lifecycle-step" style="background:#FDECEA;"><div class="step-label">Alt</div><div class="step-name">Failed</div></div>
+    <div class="lifecycle-step" style="background:#FEF3E2;"><div class="step-label">Alt</div><div class="step-name">Needs Review</div></div>
+  </div>
+
+  <div class="callout info">
+    <strong>State Transitions:</strong> Pending (extraction complete, awaiting approval) -> Ready (human approved, queued for sync) -> Syncing (API calls in progress) -> Synced (all API calls successful, confirmation received). Failed state triggers after max retries exhausted. Needs Review state set when error requires human investigation.
+  </div>
+
+  <div class="section-title">Data Mapping Table</div>
+
+  <table class="tbl">
+    <thead><tr><th>CSA Field</th><th>ClientSpace Field</th><th>Transformation</th><th>Validation</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Company Name</strong></td><td>client_name</td><td>Direct map (trim whitespace)</td><td>Required, non-empty, max 200 chars</td></tr>
+      <tr><td><strong>FEIN</strong></td><td>federal_ein</td><td>Remove dashes, normalize to 9 digits</td><td>9 digits, valid IRS format, unique in system</td></tr>
+      <tr><td><strong>Effective Date</strong></td><td>contract_start_date</td><td>Parse to ISO 8601 (YYYY-MM-DD)</td><td>Valid date, not in past (unless backdated override)</td></tr>
+      <tr><td><strong>Admin Fee</strong></td><td>admin_fee_amount</td><td>Parse currency (strip $, commas), convert to decimal</td><td>Positive number, within expected range for tier</td></tr>
+      <tr><td><strong>Services</strong></td><td>service_codes[]</td><td>Map service descriptions to CS service code enum</td><td>All codes exist in CS service catalog</td></tr>
+      <tr><td><strong>SUTA Coverage</strong></td><td>suta_coverage_type</td><td>Map to CS enum (CLIENT_RESPONSIBLE, PEO_MANAGED, SPLIT)</td><td>Valid enum value</td></tr>
+      <tr><td><strong>WC Codes</strong></td><td>wc_code_list[]</td><td>Parse list, validate NCCI format</td><td>Valid NCCI codes, match client industry</td></tr>
+      <tr><td><strong>Term</strong></td><td>contract_term_months</td><td>Parse to months (e.g., "3 years" -> 36)</td><td>Integer, 12-60 range</td></tr>
+      <tr><td><strong>Billing Frequency</strong></td><td>billing_cycle</td><td>Map to CS enum (WEEKLY, BIWEEKLY, SEMIMONTHLY, MONTHLY)</td><td>Valid enum value</td></tr>
+      <tr><td><strong>Entity Type</strong></td><td>business_entity_type</td><td>Map to CS enum (LLC, CORP, PARTNERSHIP, SOLE_PROP)</td><td>Valid enum value</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">Salesforce-ClientSpace Bridge</div>
+
+  <div class="card accent-navy">
+    <div class="card-title">Bridging the Integration Gap</div>
+    <div class="card-sub">
+      Since there is no direct Salesforce-to-ClientSpace integration, the CSA extraction system serves as the de facto bridge. The data flow is:<br><br>
+      <strong>Salesforce (read-only)</strong> -- Pull deal data via Salesforce REST API (opportunity fields, account details, BA-entered values)<br>
+      <strong>CSA Extracted Fields</strong> -- AI extracts the contractual source of truth from the PDF<br>
+      <strong>Cross-Validation Engine</strong> -- Compares SF values vs. CSA values vs. existing CS values<br>
+      <strong>Normalized Profile</strong> -- Creates a single validated record with provenance tracking (which system each value came from)<br>
+      <strong>ClientSpace Sync</strong> -- Approved profile synced to CS via integration adapter<br><br>
+      This effectively creates a unidirectional SF-to-CS pipeline mediated by the CSA as the authoritative document, with AI extraction eliminating the manual re-entry that currently introduces errors.
+    </div>
+  </div>
+
+  <div class="callout info">
+    <strong>Approval Modal as the Bridge:</strong> The Approval Modal presents a cross-validation summary showing Salesforce mismatches alongside ClientSpace sync actions before the reviewer confirms. This single approval step replaces the manual BA re-entry workflow, serving as the Salesforce&rarr;ClientSpace bridge with full field-level provenance tracking.
+  </div>
+
+  <div class="foot">
+    <span>G&A Partners - CSA Extraction Deliverables - Confidential</span>
+    <span>June 2026 - R Systems</span>
+  </div>
+</div>
+</div>
+
+
+<!-- ================================================================== -->
+<!-- TAB 6: IMPLEMENTATION ROADMAP                                      -->
+<!-- ================================================================== -->
+<div id="tab-roadmap" class="tab-panel">
+<div class="page">
+  <div class="pg-eye">Section L, M, N - Roadmap, Risks & Demo</div>
+  <div class="pg-h1">Implementation Roadmap<br>Risks, Mitigations & Demo Storyline</div>
+  <div class="pg-sub">A three-phase implementation plan from demo through production, comprehensive risk register with mitigations, and a seven-act demo storyline designed to showcase the full CSA extraction and cross-validation workflow to G&A Partners leadership.</div>
+
+  <div class="section-title">M. Risks & Mitigations</div>
+
+  <table class="tbl">
+    <thead><tr><th>Risk</th><th>Impact</th><th>Likelihood</th><th>Mitigation Strategy</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>CSA Format Variability</strong><br><span style="font-size:10px;color:var(--grey);">Different templates, amendments, handwritten notes</span></td>
+        <td><span class="badge badge-high">High</span></td>
+        <td><span class="badge badge-high">High</span></td>
+        <td>Train on diverse CSA samples across all format variations. Use layout-aware models (Azure DI) that handle structural differences. Implement document classification to route unusual formats to manual review. Build golden dataset with format stratification. Note: scanned/image-based PDFs require Tesseract OCR for word-level bounding boxes since the PDF.js text layer is unavailable for rasterized content.</td>
+      </tr>
+      <tr>
+        <td><strong>Low Confidence on Complex Clauses</strong><br><span style="font-size:10px;color:var(--grey);">Multi-state SUTA, custom billing exceptions</span></td>
+        <td><span class="badge badge-med">Medium</span></td>
+        <td><span class="badge badge-med">Medium</span></td>
+        <td>Clause-specific prompt engineering with examples from training CSAs. Fallback to structured templates for known clause patterns. Confidence thresholding routes low-confidence extractions to senior reviewers. Track clause-level accuracy for targeted improvement.</td>
+      </tr>
+      <tr>
+        <td><strong>ClientSpace API Limitations</strong><br><span style="font-size:10px;color:var(--grey);">Rate limits, missing endpoints, schema changes</span></td>
+        <td><span class="badge badge-med">Medium</span></td>
+        <td><span class="badge badge-med">Medium</span></td>
+        <td>Abstract all CS interactions via adapter pattern -- changes require only adapter updates. Mock CS APIs during development. Maintain API contract tests. Establish relationship with CS vendor for API roadmap visibility.</td>
+      </tr>
+      <tr>
+        <td><strong>PII Leakage in Demo</strong><br><span style="font-size:10px;color:var(--grey);">Real client data visible in demo environment</span></td>
+        <td><span class="badge badge-high">High</span></td>
+        <td><span class="badge badge-low">Low</span></td>
+        <td>Multiple masking layers: customer name aliasing, PII field masking, demo-mode middleware that intercepts all responses. Synthetic data generation for demo scenarios. No real client data in demo environment -- only anonymized copies.</td>
+      </tr>
+      <tr>
+        <td><strong>Model Hallucination</strong><br><span style="font-size:10px;color:var(--grey);">AI generates values not in the CSA document</span></td>
+        <td><span class="badge badge-high">High</span></td>
+        <td><span class="badge badge-med">Medium</span></td>
+        <td>Confidence thresholding with hallucination detection (fields below 0.60 flagged). Mandatory human review for all new client extractions during initial deployment. Source-grounding prompts that require the model to cite page/section references. Cross-validation catches hallucinated values that contradict system data.</td>
+      </tr>
+      <tr>
+        <td><strong>Scale During Peak Onboarding</strong><br><span style="font-size:10px;color:var(--grey);">January/Q1 seasonal volume spike</span></td>
+        <td><span class="badge badge-med">Medium</span></td>
+        <td><span class="badge badge-low">Low</span></td>
+        <td>Queue-based architecture handles burst capacity naturally. Horizontal scaling of extraction workers. Pre-warm API rate limits with providers before peak season. Graceful degradation -- prioritize by client tier during overload.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">N. Demo Storyline -- Seven-Act Narrative</div>
+
+  <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:22px;">
+    <div class="card" style="border-left:5px solid var(--red);border-radius:0 8px 8px 0;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--red);color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+        <div>
+          <div class="card-title" style="margin-bottom:2px;">Act 1: "Meet the Problem"</div>
+          <div class="card-sub">Show the current state: 4 people independently reviewing the same CSA PDF, each spending 30-40 minutes. BA manually re-entering data from Salesforce to ClientSpace. Placeholder values in required fields. Discrepancies discovered days later during onboarding meetings. Total elapsed time before onboarding can begin: 4-6 days.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--c2);border-radius:0 8px 8px 0;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--c2);color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+        <div>
+          <div class="card-title" style="margin-bottom:2px;">Act 2: "Upload & Extract"</div>
+          <div class="card-sub">Drag a CSA PDF into the system. Watch the AI extract 20+ structured fields in real-time -- company name, FEIN, effective date, admin fee, services included, SUTA coverage type, WC codes, term, billing exceptions. Each field displays with a confidence score. Total extraction time: 2-3 minutes vs. 30-40 minutes manual.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--pos);border-radius:0 8px 8px 0;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--pos);color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+        <div>
+          <div class="card-title" style="margin-bottom:2px;">Act 3: "Instant Validation"</div>
+          <div class="card-sub">Show mismatches auto-flagged between CSA extracted data, Salesforce deal data, and ClientSpace handoff fields. Example: CSA says admin fee is "$55/ee/mo" but ClientSpace has "$45/ee/mo" (BA entered placeholder). Example: SUTA coverage type in CSA is "client-responsible" but Salesforce shows "PEO-managed". Each mismatch shows source values with clear attribution.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--amber);border-radius:0 8px 8px 0;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--amber);color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div>
+        <div>
+          <div class="card-title" style="margin-bottom:2px;">Act 4: "Smart Review"</div>
+          <div class="card-sub">Reviewer sees pre-populated fields with color-coded confidence indicators (green >0.95, blue 0.80-0.95, amber 0.60-0.80, red <0.60). Side-by-side view: original PDF on left with highlighted extraction regions, structured data on right. Reviewer resolves each mismatch by selecting the authoritative source. Low-confidence fields require manual verification.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--pos);border-radius:0 8px 8px 0;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--pos);color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">5</div>
+        <div>
+          <div class="card-title" style="margin-bottom:2px;">Act 5: "One-Click Approve"</div>
+          <div class="card-sub">Reviewer approves the validated extraction. System automatically syncs approved data to ClientSpace -- creates the client record, populates onboarding case fields, creates a task for any unresolved items, uploads the CSA document, and triggers automated document collection workflows based on the extracted service types.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--navy);border-radius:0 8px 8px 0;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">6</div>
+        <div>
+          <div class="card-title" style="margin-bottom:2px;">Act 6: "Complete Audit Trail"</div>
+          <div class="card-sub">Show the immutable audit log: every extraction event, every field-level confidence score, every human override with justification, every approval decision, and every ClientSpace sync attempt with status. Full compliance trail from PDF upload through system integration.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="border-left:5px solid var(--red);border-radius:0 8px 8px 0;background:#FAFBFC;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--red);color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">7</div>
+        <div>
+          <div class="card-title" style="margin-bottom:2px;">Act 7: "Business Impact"</div>
+          <div class="card-sub">Close with the numbers: <strong>4 reviews reduced to 1 validation step</strong>. <strong>85% reduction in CSA review time</strong>. <strong>Discrepancies caught at deal close, not during onboarding meetings</strong>. <strong>Faster onboarding cycle through immediate document collection triggers</strong>. <strong>1.6 FTEs of capacity reclaimed</strong> from manual CSA review and data entry.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>G&A Partners - CSA Extraction Deliverables - Confidential</span>
+    <span>June 2026 - R Systems</span>
+  </div>
+</div>
+</div>
+
+
+
+<!-- ================================================================== -->
+<!-- JAVASCRIPT                                                         -->
+<!-- ================================================================== -->
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    if (b.getAttribute('onclick') === "showTab('" + id + "')") b.classList.add('active');
+  });
+  window.scrollTo(0, 0);
+}
+</script>
+
+</body>
+</html>

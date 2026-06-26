@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G&A Compass — Platform Administration</title>
+
+<!--
+  ============================================================================
+  FONT STRATEGY & RATIONALE
+  ----------------------------------------------------------------------------
+  This is a data-dense enterprise B2B admin console (HR / benefits operations,
+  AI agents, compliance, audit logs). The brand tone is PROFESSIONAL +
+  TRUSTWORTHY + MODERN. The interface needs fonts that stay crisp at small
+  sizes, render numbers cleanly in tables/metrics, and feel like serious
+  operational software.
+
+  PAIRING CHOSEN:
+    • Inter  — UI + body text. A neutral, highly-legible humanist sans-serif
+               designed specifically for screens/UI. Excellent number forms,
+               wide language support, and superb readability across devices.
+    • JetBrains Mono — code, API method names, IDs and field mappings. A
+               monospace built for legibility of technical tokens.
+
+  PERFORMANCE:
+    • preconnect to Google Fonts hosts + preload the main stylesheet so text
+      paints fast. font-display:swap (default in the Google CSS) avoids FOIT.
+    • Robust system-font fallback stacks so the UI is readable even offline.
+  ============================================================================
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+/* ============================================================================
+   1. DESIGN TOKENS (CSS custom properties)
+   All colors, spacing (8px-based scale), type sizes, fonts and radii live
+   here so the whole UI stays consistent and is trivial to re-theme.
+   ============================================================================ */
+:root{
+  /* ---- Font families (with full fallback stacks) ---- */
+  --font-ui:  'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:'JetBrains Mono', ui-monospace, 'SFMono-Regular', 'Cascadia Code', Consolas, monospace;
+
+  /* ---- Type scale (base = 16px). Body text never drops below 16px. ---- */
+  --fs-label: 0.875rem;  /* 14px — uppercase micro-labels only */
+  --fs-sm:    1rem;      /* 16px — minimum body text */
+  --fs-body:  1.0625rem; /* 17px — default reading size */
+  --fs-md:    1.125rem;  /* 18px — emphasized body / small headings */
+  --fs-lg:    1.375rem;  /* 22px — h3 / card titles */
+  --fs-xl:    1.625rem;  /* 26px — section / page titles */
+  --fs-2xl:   2rem;      /* 32px — large headings */
+  --fs-metric:2.75rem;   /* 44px — big metric numbers */
+
+  --lh-tight: 1.2;
+  --lh-base:  1.55;
+
+  /* ---- Font weights ---- */
+  --fw-normal:400; --fw-medium:500; --fw-semi:600; --fw-bold:700; --fw-black:800;
+
+  /* ---- Spacing scale (8px rhythm, 4px half-steps) ---- */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px; --sp-12: 48px;
+
+  /* ---- Border radius ---- */
+  --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-pill: 999px;
+
+  /* ---- Color palette ---- */
+  --c-ink:        #16181d;  /* primary text / dark surfaces */
+  --c-text:       #1f2430;  /* body text */
+  --c-muted:      #5b6472;  /* secondary text (darkened from original for contrast) */
+  --c-border:     #E2E5EA;
+  --c-border-soft:#EEF0F3;
+  --c-bg:         #F6F7F9;  /* app canvas */
+  --c-surface:    #ffffff;  /* cards */
+  --c-surface-alt:#F7F8FA;  /* table head / subtle fills */
+
+  --brand-blue:   #0074B8;
+  --brand-red:    #C60C30;
+  --brand-green:  #1A7A4A;
+  --brand-purple: #5A45C7;
+  --brand-amber:  #B0690A;
+
+  /* badge / tint backgrounds */
+  --tint-green:#E4F2EA; --tint-blue:#E7F1FA; --tint-grey:#EEF0F3;
+  --tint-amber:#FEF6E7; --tint-red:#FDECEF; --tint-purple:#F2EEFD;
+
+  /* ---- Elevation ---- */
+  --shadow-sm: 0 1px 2px rgba(16,24,40,.04), 0 1px 3px rgba(16,24,40,.06);
+  --shadow-md: 0 4px 12px rgba(16,24,40,.08);
+
+  /* ---- Layout ---- */
+  --sidebar-w: 248px;
+  --content-max: 1240px;
+  --topbar-h: 60px;
+}
+
+/* ============================================================================
+   2. BASE / RESET
+   ============================================================================ */
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--font-ui);
+  font-size:var(--fs-body);
+  line-height:var(--lh-base);
+  color:var(--c-text);
+  background:var(--c-bg);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+.mono{font-family:var(--font-mono);font-size:var(--fs-sm);color:var(--c-muted)}
+a{color:inherit}
+img{max-width:100%}
+
+/* ============================================================================
+   3. APP SHELL  (mobile-first: single column; sidebar overlays on small screens)
+   ============================================================================ */
+.shell{min-height:100vh;display:flex;flex-direction:column}
+
+/* ---- Mobile top bar with menu toggle ---- */
+.mobile-bar{
+  display:flex;align-items:center;gap:var(--sp-3);
+  height:var(--topbar-h);padding:0 var(--sp-4);
+  background:var(--c-surface);border-bottom:1px solid var(--c-border);
+  position:sticky;top:0;z-index:50;
+}
+.menu-toggle{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:44px;height:44px;border:1px solid var(--c-border);background:var(--c-surface);
+  border-radius:var(--r-sm);font-size:var(--fs-md);color:var(--c-ink);cursor:pointer;
+}
+.menu-toggle:hover{background:var(--c-surface-alt)}
+.mobile-bar .logo{width:36px;height:36px}
+.mobile-bar h1{font-size:var(--fs-md);font-weight:var(--fw-bold)}
+
+/* ============================================================================
+   4. SIDEBAR
+   ============================================================================ */
+.side{
+  position:fixed;top:0;left:0;z-index:60;
+  width:min(86vw,320px);height:100vh;
+  background:var(--c-surface);border-right:1px solid var(--c-border);
+  display:flex;flex-direction:column;
+  transform:translateX(-100%);transition:transform .25s ease;
+}
+.side.open{transform:translateX(0);box-shadow:var(--shadow-md)}
+.side-hdr{
+  padding:var(--sp-5) var(--sp-5);border-bottom:1px solid var(--c-border-soft);
+  display:flex;align-items:center;gap:var(--sp-3);
+}
+.logo{
+  width:40px;height:40px;border-radius:var(--r-md);
+  background:var(--c-ink);color:#fff;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:var(--fs-sm);font-weight:var(--fw-black);letter-spacing:-.5px;
+}
+.side-hdr h1{font-size:var(--fs-lg);font-weight:var(--fw-bold);letter-spacing:-.4px;line-height:1.1}
+.side-hdr small{display:block;font-size:var(--fs-sm);color:var(--c-muted);font-weight:var(--fw-medium)}
+.side-nav{padding:var(--sp-3);flex:1;overflow-y:auto}
+.nav-sec{
+  font-size:var(--fs-label);font-weight:var(--fw-semi);color:var(--c-muted);
+  text-transform:uppercase;letter-spacing:.7px;padding:var(--sp-4) var(--sp-3) var(--sp-2);
+}
+.nav-btn{
+  display:flex;align-items:center;gap:var(--sp-3);width:100%;
+  padding:var(--sp-3) var(--sp-3);border:none;background:transparent;
+  color:var(--c-muted);font-family:var(--font-ui);font-size:var(--fs-sm);
+  font-weight:var(--fw-medium);text-align:left;cursor:pointer;
+  border-radius:var(--r-sm);margin-bottom:2px;transition:background .15s,color .15s;
+}
+.nav-btn:hover{background:var(--c-surface-alt);color:var(--c-ink)}
+.nav-btn.on{background:var(--tint-grey);color:var(--c-ink);font-weight:var(--fw-semi)}
+.nav-btn .ico{font-size:var(--fs-sm);width:22px;text-align:center;flex-shrink:0}
+.side-foot{padding:var(--sp-4) var(--sp-5);border-top:1px solid var(--c-border-soft);font-size:var(--fs-sm);color:var(--c-muted)}
+
+/* Backdrop shown behind the open mobile sidebar */
+.backdrop{
+  display:none;position:fixed;inset:0;z-index:55;
+  background:rgba(16,24,40,.45);
+}
+.backdrop.show{display:block}
+
+/* ============================================================================
+   5. MAIN AREA
+   ============================================================================ */
+.main{flex:1;min-width:0;background:var(--c-bg)}
+.topbar{
+  display:none; /* hidden on mobile (mobile-bar replaces it); shown on desktop */
+  height:var(--topbar-h);background:var(--c-surface);
+  border-bottom:1px solid var(--c-border);
+  align-items:center;padding:0 var(--sp-6);justify-content:space-between;
+  position:sticky;top:0;z-index:40;
+}
+.topbar h2{font-size:var(--fs-xl);font-weight:var(--fw-bold);letter-spacing:-.3px}
+.topbar .user{display:flex;align-items:center;gap:var(--sp-3);font-size:var(--fs-sm);color:var(--c-muted)}
+.topbar .avatar{
+  width:36px;height:36px;border-radius:var(--r-sm);background:var(--brand-purple);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:var(--fs-sm);font-weight:var(--fw-bold);
+}
+.content{
+  width:100%;max-width:var(--content-max);margin:0 auto;
+  padding:var(--sp-5) var(--sp-4) var(--sp-12);
+}
+.pnl{display:none}.pnl.on{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ============================================================================
+   6. GRIDS  (mobile-first: 1 column, then expand at breakpoints)
+   ============================================================================ */
+.grid4,.grid3,.grid2{display:grid;grid-template-columns:1fr;gap:var(--sp-4);margin-bottom:var(--sp-6)}
+
+/* ============================================================================
+   7. CARDS
+   ============================================================================ */
+.card{
+  background:var(--c-surface);border:1px solid var(--c-border);
+  border-radius:var(--r-md);padding:var(--sp-5);box-shadow:var(--shadow-sm);
+}
+.card h3{font-size:var(--fs-lg);font-weight:var(--fw-bold);margin-bottom:var(--sp-2);letter-spacing:-.2px}
+.card p{font-size:var(--fs-sm);color:var(--c-muted);line-height:var(--lh-base)}
+
+.metric{text-align:center;padding:var(--sp-6) var(--sp-4)}
+.metric .val{font-size:var(--fs-metric);font-weight:var(--fw-black);letter-spacing:-1.5px;line-height:1;color:var(--c-ink)}
+.metric .lbl{
+  font-size:var(--fs-label);color:var(--c-muted);margin-top:var(--sp-3);
+  text-transform:uppercase;letter-spacing:.6px;font-weight:var(--fw-semi);
+}
+.metric.blue{border-top:4px solid var(--brand-blue)}
+.metric.red{border-top:4px solid var(--brand-red)}
+.metric.green{border-top:4px solid var(--brand-green)}
+.metric.purple{border-top:4px solid var(--brand-purple)}
+
+/* ============================================================================
+   8. BADGES (consistent pill styling)
+   ============================================================================ */
+.badge{
+  display:inline-flex;align-items:center;gap:var(--sp-1);
+  font-size:var(--fs-sm);font-weight:var(--fw-semi);
+  padding:var(--sp-1) var(--sp-3);border-radius:var(--r-pill);line-height:1.3;
+}
+.badge.ok{background:var(--tint-green);color:var(--brand-green)}
+.badge.plan{background:var(--tint-grey);color:var(--c-muted)}
+.badge.warn{background:var(--tint-amber);color:var(--brand-amber)}
+.badge.blue{background:var(--tint-blue);color:var(--brand-blue)}
+
+/* ============================================================================
+   9. SECTION TITLE
+   ============================================================================ */
+.sec{
+  font-size:var(--fs-label);font-weight:var(--fw-bold);color:var(--c-muted);
+  text-transform:uppercase;letter-spacing:1px;
+  margin:var(--sp-8) 0 var(--sp-4);padding-bottom:var(--sp-2);
+  border-bottom:1px solid var(--c-border);
+}
+.pnl > .sec:first-child{margin-top:0}
+
+/* ============================================================================
+   10. TABLES (responsive: horizontal scroll wrapper on small screens)
+   ============================================================================ */
+.tbl-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:var(--sp-5);border-radius:var(--r-md)}
+.tbl{
+  width:100%;min-width:560px;border-collapse:collapse;background:var(--c-surface);
+  border:1px solid var(--c-border);border-radius:var(--r-md);overflow:hidden;
+}
+.tbl th{
+  background:var(--c-surface-alt);padding:var(--sp-3) var(--sp-4);
+  font-size:var(--fs-label);font-weight:var(--fw-semi);color:var(--c-muted);
+  text-transform:uppercase;letter-spacing:.5px;text-align:left;
+  border-bottom:1px solid var(--c-border);white-space:nowrap;
+}
+.tbl td{padding:var(--sp-3) var(--sp-4);font-size:var(--fs-sm);border-bottom:1px solid var(--c-border-soft);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr:hover td,.tbl tr:hover td{background:var(--c-surface-alt)}
+
+/* ============================================================================
+   11. CONNECTION ROWS
+   ============================================================================ */
+.conn{
+  background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);
+  padding:var(--sp-4);margin-bottom:var(--sp-3);box-shadow:var(--shadow-sm);
+  display:flex;align-items:center;gap:var(--sp-4);flex-wrap:wrap;
+}
+.conn .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.conn .dot.on{background:var(--brand-green)}
+.conn .dot.off{background:#C7CCD4}
+.conn .dot.plan{background:var(--brand-amber)}
+.conn .info{flex:1;min-width:180px}
+.conn .info h4{font-size:var(--fs-md);font-weight:var(--fw-semi);margin-bottom:2px}
+.conn .info p{font-size:var(--fs-sm);color:var(--c-muted)}
+.conn .meta{text-align:right;font-size:var(--fs-sm);color:var(--c-muted);min-width:110px}
+.conn .meta strong{display:block;color:var(--c-ink);font-size:var(--fs-sm);font-weight:var(--fw-semi)}
+
+/* ============================================================================
+   12. BUTTONS (one consistent system: size + radius + hover)
+   ============================================================================ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2);
+  min-height:40px;padding:0 var(--sp-4);
+  font-family:var(--font-ui);font-size:var(--fs-sm);font-weight:var(--fw-semi);
+  border:1px solid var(--c-border);background:var(--c-surface);color:var(--c-ink);
+  border-radius:var(--r-sm);cursor:pointer;text-decoration:none;
+  transition:background .15s,border-color .15s,transform .05s;
+}
+.btn:hover{background:var(--c-surface-alt);border-color:#cfd4db}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn-dark{background:var(--c-ink);color:#fff;border-color:var(--c-ink)}
+.btn-dark:hover{background:#2a2e36;border-color:#2a2e36}
+
+/* Legacy alias so existing markup keeps a consistent look */
+.btn-sm{
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2);
+  min-height:40px;padding:0 var(--sp-4);
+  font-family:var(--font-ui);font-size:var(--fs-sm);font-weight:var(--fw-semi);
+  border:1px solid var(--c-border);background:var(--c-surface);color:var(--c-ink);
+  border-radius:var(--r-sm);cursor:pointer;text-decoration:none;
+  transition:background .15s,border-color .15s,transform .05s;
+}
+.btn-sm:hover{background:var(--c-surface-alt);border-color:#cfd4db}
+.btn-sm:active{transform:translateY(1px)}
+.btn-sm:disabled{opacity:.55;cursor:not-allowed}
+
+/* ============================================================================
+   13. FORM ELEMENTS (consistent height & styling)
+   ============================================================================ */
+select,input,textarea{
+  font-family:var(--font-ui);font-size:var(--fs-sm);color:var(--c-text);
+  min-height:44px;padding:0 var(--sp-3);
+  border:1px solid var(--c-border);border-radius:var(--r-sm);background:var(--c-surface);
+}
+select:focus,input:focus,textarea:focus{outline:2px solid var(--brand-blue);outline-offset:1px;border-color:var(--brand-blue)}
+
+/* ============================================================================
+   14. BAR CHART
+   ============================================================================ */
+.bar-row{display:flex;align-items:center;gap:var(--sp-3);margin-bottom:var(--sp-2)}
+.bar-lbl{width:96px;font-size:var(--fs-sm);color:var(--c-muted);text-align:right;flex-shrink:0}
+.bar-track{flex:1;height:26px;background:var(--tint-grey);border-radius:var(--r-sm);overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:var(--r-sm);display:flex;align-items:center;padding-left:var(--sp-3);font-size:var(--fs-sm);font-weight:var(--fw-bold);color:#fff}
+
+/* ============================================================================
+   15. AGENT CARD
+   ============================================================================ */
+.agent{
+  background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-md);
+  padding:var(--sp-4);box-shadow:var(--shadow-sm);
+  display:flex;align-items:flex-start;gap:var(--sp-3);
+}
+.agent .aic{
+  width:44px;height:44px;border-radius:var(--r-md);
+  display:flex;align-items:center;justify-content:center;font-size:var(--fs-md);flex-shrink:0;
+}
+.agent h4{font-size:var(--fs-md);font-weight:var(--fw-semi);margin-bottom:2px}
+.agent p{font-size:var(--fs-sm);color:var(--c-muted);line-height:1.4}
+
+/* ============================================================================
+   16. API SERVICE (expandable) + chips
+   ============================================================================ */
+.api-card{margin-bottom:var(--sp-2);cursor:pointer}
+.api-head{display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap}
+.api-head strong{flex:1;font-size:var(--fs-md);min-width:140px}
+.api-used{font-size:var(--fs-sm);color:var(--c-muted);margin-top:var(--sp-1);padding-left:30px}
+.chev{font-size:var(--fs-sm);color:var(--c-muted);transition:transform .2s}
+.api-methods{display:none;margin-top:var(--sp-3);padding:var(--sp-3);background:var(--c-surface-alt);border-radius:var(--r-sm);border:1px solid var(--c-border-soft)}
+.method-head{font-size:var(--fs-label);font-weight:var(--fw-semi);color:var(--c-muted);text-transform:uppercase;margin-bottom:var(--sp-2)}
+.chips{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-bottom:var(--sp-3)}
+.chips:last-child{margin-bottom:0}
+.chip{font-family:var(--font-mono);font-size:var(--fs-sm);padding:var(--sp-1) var(--sp-3);border-radius:var(--r-sm);background:var(--tint-blue);color:var(--brand-blue)}
+.chip.write{background:var(--tint-red);color:var(--brand-red)}
+
+/* Helpers used by inline panels */
+.kv{font-size:var(--fs-label);color:var(--c-muted);font-weight:var(--fw-semi);text-transform:uppercase;margin-bottom:var(--sp-1)}
+.kv-val{font-size:var(--fs-sm);font-weight:var(--fw-semi)}
+.row-gap{display:grid;grid-template-columns:1fr;gap:var(--sp-4)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2);font-size:var(--fs-sm);margin-top:var(--sp-3)}
+.toolbar{display:flex;gap:var(--sp-2);margin-bottom:var(--sp-4);flex-wrap:wrap;align-items:center}
+.toolbar .spacer{flex:1;min-width:8px}
+
+/* ============================================================================
+   17. RESPONSIVE BREAKPOINTS
+   • Base styles above = mobile (<768px): single column, off-canvas sidebar.
+   • 768px (tablet): 2-column grids, multi-column inner panels.
+   • 1024px (desktop): persistent sidebar, hidden mobile bar, 3/4-col grids.
+   ============================================================================ */
+@media (min-width:768px){
+  .grid2{grid-template-columns:repeat(2,1fr)}
+  .grid3{grid-template-columns:repeat(2,1fr)}
+  .grid4{grid-template-columns:repeat(2,1fr)}
+  .row-gap{grid-template-columns:repeat(3,1fr)}
+  .content{padding:var(--sp-6) var(--sp-6) var(--sp-12)}
+}
+
+@media (min-width:1024px){
+  .shell{flex-direction:row}
+  .mobile-bar{display:none}            /* swap mobile bar for desktop topbar */
+  .topbar{display:flex}
+  .backdrop{display:none !important}
+  .side{
+    position:sticky;top:0;transform:none;box-shadow:none;
+    width:var(--sidebar-w);height:100vh;flex-shrink:0;
+  }
+  .main{height:100vh;overflow-y:auto}
+  .grid3{grid-template-columns:repeat(3,1fr)}
+  .grid4{grid-template-columns:repeat(4,1fr)}
+  .span2{grid-column:span 2}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ═══ MOBILE TOP BAR (hidden ≥1024px) ═══ -->
+  <div class="mobile-bar">
+    <button class="menu-toggle" id="menuBtn" aria-label="Open menu" aria-expanded="false">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+    <div class="logo">G&A</div>
+    <h1 id="mobileTitle">Platform Overview</h1>
+  </div>
+
+  <!-- Backdrop for mobile sidebar -->
+  <div class="backdrop" id="backdrop"></div>
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="side" id="sidebar">
+    <div class="side-hdr">
+      <div class="logo">G&A</div>
+      <div><h1>G&A Compass</h1><small>Platform Administration</small></div>
+    </div>
+    <nav class="side-nav">
+      <div class="nav-sec">Platform</div>
+      <button class="nav-btn on" onclick="sw('overview',this)"><span class="ico"><i class="fa-solid fa-chart-pie"></i></span>Overview</button>
+      <button class="nav-btn" onclick="sw('connectors',this)"><span class="ico"><i class="fa-solid fa-plug"></i></span>Connector Ecosystem</button>
+      <button class="nav-btn" onclick="sw('prism',this)"><span class="ico"><i class="fa-solid fa-gear"></i></span>PrismHR Config</button>
+      <button class="nav-btn" onclick="sw('ai',this)"><span class="ico"><i class="fa-solid fa-microchip"></i></span>AI Configuration</button>
+      <div class="nav-sec">Access</div>
+      <button class="nav-btn" onclick="sw('portals',this)"><span class="ico"><i class="fa-solid fa-rocket"></i></span>Agent Portals</button>
+      <div class="nav-sec">Observability</div>
+      <button class="nav-btn" onclick="sw('audit',this)"><span class="ico"><i class="fa-solid fa-clipboard-list"></i></span>Audit &amp; Logging</button>
+      <button class="nav-btn" onclick="sw('evals',this)"><span class="ico"><i class="fa-solid fa-chart-line"></i></span>Evals Dashboard</button>
+    </nav>
+    <div class="side-foot">G&A Compass v1.0 · R Systems</div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <div class="main">
+    <div class="topbar">
+      <h2 id="pageTitle">Platform Overview</h2>
+      <div class="user"><span>System Admin</span><div class="avatar">SA</div></div>
+    </div>
+    <div class="content">
+
+      <!-- ═══ TAB 1: OVERVIEW ═══ -->
+      <div class="pnl on" id="p-overview">
+        <div class="grid4">
+          <div class="card metric blue"><div class="val">5</div><div class="lbl">Ops Divisions</div></div>
+          <div class="card metric red"><div class="val">12</div><div class="lbl">AI Agents</div></div>
+          <div class="card metric green"><div class="val">847</div><div class="lbl">Integrations Synced</div></div>
+          <div class="card metric purple"><div class="val">99.97%</div><div class="lbl">Platform Uptime</div></div>
+        </div>
+
+        <div class="sec">Agent Status</div>
+        <div class="grid3">
+          <div class="agent"><div class="aic" style="background:var(--tint-red);color:var(--brand-red)"><i class="fa-solid fa-magnifying-glass-chart"></i></div><div><h4>Sales Prospecting</h4><p>Lead qualification · ZoomInfo enrichment</p><div style="margin-top:var(--sp-2)"><span class="badge ok">Active</span></div></div></div>
+          <div class="agent"><div class="aic" style="background:var(--tint-grey);color:var(--c-muted)"><i class="fa-solid fa-file-lines"></i></div><div><h4>Sales Proposal</h4><p>Proposal assembly · PandaDoc generation</p><div style="margin-top:var(--sp-2)"><span class="badge ok">Active</span></div></div></div>
+          <div class="agent"><div class="aic" style="background:var(--tint-green);color:var(--brand-green)"><i class="fa-solid fa-table-columns"></i></div><div><h4>CAP Builder</h4><p>New business CAP · NB1-NB9</p><div style="margin-top:var(--sp-2)"><span class="badge ok">Active · 34 today</span></div></div></div>
+          <div class="agent"><div class="aic" style="background:var(--tint-amber);color:var(--brand-amber)"><i class="fa-solid fa-arrows-rotate"></i></div><div><h4>Renewal Manager</h4><p>Renewal diff · R1-R9</p><div style="margin-top:var(--sp-2)"><span class="badge ok">Active · 12 today</span></div></div></div>
+          <div class="agent"><div class="aic" style="background:var(--tint-purple);color:var(--brand-purple)"><i class="fa-solid fa-wand-magic-sparkles"></i></div><div><h4>CAP Copilot</h4><p>Natural language · CP1-CP7</p><div style="margin-top:var(--sp-2)"><span class="badge ok">Active · 89 conversations</span></div></div></div>
+          <div class="agent"><div class="aic" style="background:var(--tint-green);color:var(--brand-green)"><i class="fa-solid fa-bolt"></i></div><div><h4>Ben Admin Writer</h4><p>Prism write-back · NB9/R9</p><div style="margin-top:var(--sp-2)"><span class="badge ok">Active · 6 today</span></div></div></div>
+          <div class="agent"><div class="aic" style="background:var(--tint-red);color:var(--brand-red)"><i class="fa-solid fa-hospital"></i></div><div><h4>Carrier Enrollment</h4><p>Portal API/RPA · Init C</p><div style="margin-top:var(--sp-2)"><span class="badge ok">Active</span></div></div></div>
+          <div class="agent"><div class="aic" style="background:var(--tint-blue);color:var(--brand-blue)"><i class="fa-solid fa-user-plus"></i></div><div><h4>Onboarding PM</h4><p>Project workflow automation</p><div style="margin-top:var(--sp-2)"><span class="badge ok">Active</span></div></div></div>
+          <div class="agent"><div class="aic" style="background:var(--tint-grey);color:var(--c-muted)"><i class="fa-solid fa-money-check-dollar"></i></div><div><h4>Payroll Processing</h4><p>Run automation · compliance</p><div style="margin-top:var(--sp-2)"><span class="badge ok">Active</span></div></div></div>
+          <div class="agent"><div class="aic" style="background:var(--tint-amber);color:var(--brand-amber)"><i class="fa-solid fa-scale-balanced"></i></div><div><h4>Benefits Recon</h4><p>Invoice reconciliation · Beacon</p><div style="margin-top:var(--sp-2)"><span class="badge ok">Active</span></div></div></div>
+          <div class="agent"><div class="aic" style="background:var(--tint-blue);color:var(--brand-blue)"><i class="fa-solid fa-handshake"></i></div><div><h4>Client Success</h4><p>Retention · issue resolution</p><div style="margin-top:var(--sp-2)"><span class="badge ok">Active</span></div></div></div>
+          <div class="agent"><div class="aic" style="background:var(--tint-grey);color:var(--c-muted)"><i class="fa-solid fa-shield-halved"></i></div><div><h4>Compliance Agent</h4><p>ACA filing · EDI · COBRA</p><div style="margin-top:var(--sp-2)"><span class="badge ok">Active</span></div></div></div>
+        </div>
+
+        <div class="sec">Recent Platform Activity</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <tr><th>Time</th><th>Agent</th><th>Actor</th><th>Action</th><th>Status</th></tr>
+            <tr><td class="mono">2 min ago</td><td>CAP Copilot</td><td>Dana Whitfield</td><td>Asked: "What's blocking handoff?"</td><td><span class="badge ok">Responded</span></td></tr>
+            <tr><td class="mono">8 min ago</td><td>Ben Admin</td><td>Sam Cho</td><td>Pushed Itafos Conda to PrismHR</td><td><span class="badge ok">Success</span></td></tr>
+            <tr><td class="mono">14 min ago</td><td>Renewal Mgr</td><td>Priya Nair</td><td>Approved Brightline Staffing renewal</td><td><span class="badge ok">Approved</span></td></tr>
+            <tr><td class="mono">22 min ago</td><td>System</td><td>PrismHR Sync</td><td>Stream 1: 42 master plan rates synced</td><td><span class="badge blue">Synced</span></td></tr>
+            <tr><td class="mono">35 min ago</td><td>CAP Builder</td><td>Marcus Reyes</td><td>Submitted Vanguard Tech CAP for review</td><td><span class="badge warn">In Review</span></td></tr>
+            <tr><td class="mono">1 hr ago</td><td>System</td><td>DocuSign</td><td>Envelope signed: Harbor Point Benefits Booklet</td><td><span class="badge ok">Signed</span></td></tr>
+            <tr><td class="mono">2 hr ago</td><td>CAP Copilot</td><td>Dana Whitfield</td><td>Applied AI change: contribution strategy → Flat Dollar</td><td><span class="badge blue">AI-assisted</span></td></tr>
+            <tr><td class="mono">3 hr ago</td><td>System</td><td>ClientSpace</td><td>Case CS-2026-1847 advanced to Coordinator QC</td><td><span class="badge ok">Updated</span></td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══ TAB 2: CONNECTOR ECOSYSTEM ═══ -->
+      <div class="pnl" id="p-connectors">
+        <div class="sec">Sales Operations</div>
+        <div class="conn"><div class="dot on"></div><div class="info"><h4>Salesforce CRM</h4><p>Bidirectional · Account, Contact, Opportunity sync</p></div><div class="meta"><strong>1,245 syncs</strong>Last: 3 min ago</div><button class="btn-sm">Configure</button></div>
+        <div class="conn"><div class="dot on"></div><div class="info"><h4>ZoomInfo</h4><p>Intent data enrichment · Firmographic lookup</p></div><div class="meta"><strong>892 lookups</strong>Last: 12 min ago</div><button class="btn-sm">Configure</button></div>
+        <div class="conn"><div class="dot on"></div><div class="info"><h4>PandaDoc</h4><p>Proposal generation + e-signature routing</p></div><div class="meta"><strong>156 docs</strong>Last: 1 hr ago</div><button class="btn-sm">Configure</button></div>
+        <div class="conn"><div class="dot on"></div><div class="info"><h4>LinkedIn Sales Navigator</h4><p>Prospect research · social selling insights</p></div><div class="meta"><strong>312 lookups</strong>Last: 45 min ago</div><button class="btn-sm">Configure</button></div>
+
+        <div class="sec">Benefits Operations</div>
+        <div class="conn"><div class="dot on"></div><div class="info"><h4>PrismHR</h4><p>System of Record · Plans, rates, enrollments, payroll</p></div><div class="meta"><strong>847 syncs</strong>Last: 2 min ago</div><button class="btn-sm btn-dark" onclick="sw('prism',document.querySelector('[onclick*=prism]'))">Deep Config →</button></div>
+        <div class="conn"><div class="dot on"></div><div class="info"><h4>ClientSpace PRO</h4><p>Case management · Workflow · Audit trail</p></div><div class="meta"><strong>234 syncs</strong>Last: 14 min ago</div><button class="btn-sm">Configure</button></div>
+        <div class="conn"><div class="dot on"></div><div class="info"><h4>WorkSight / NextGen</h4><p>Enrollment portal · Plan/rate data push</p></div><div class="meta"><strong>156 syncs</strong>Last: 1 hr ago</div><button class="btn-sm">Configure</button></div>
+        <div class="conn"><div class="dot on"></div><div class="info"><h4>DocuSign</h4><p>E-signature · Envelope routing · Status callbacks</p></div><div class="meta"><strong>89 envelopes</strong>Last: 3 hr ago</div><button class="btn-sm">Configure</button></div>
+
+        <div class="sec">Onboarding Operations</div>
+        <div class="conn"><div class="dot on"></div><div class="info"><h4>PrismHR</h4><p>Shared connection · Client setup + employee import</p></div><div class="meta"><strong>Shared</strong>Via Benefits</div><button class="btn-sm" disabled>Shared</button></div>
+        <div class="conn"><div class="dot on"></div><div class="info"><h4>ClientSpace PRO</h4><p>Shared connection · Onboarding workflow cases</p></div><div class="meta"><strong>Shared</strong>Via Benefits</div><button class="btn-sm" disabled>Shared</button></div>
+
+        <div class="sec">Payroll &amp; Client Success</div>
+        <div class="conn"><div class="dot on"></div><div class="info"><h4>PrismHR (Payroll)</h4><p>Shared · Payroll processing, tax filing, deduction management</p></div><div class="meta"><strong>Shared</strong>Via Benefits</div><button class="btn-sm" disabled>Shared</button></div>
+        <div class="conn"><div class="dot on"></div><div class="info"><h4>ClientSpace (CS)</h4><p>Shared · Client health scoring, case escalation</p></div><div class="meta"><strong>Shared</strong>Via Benefits</div><button class="btn-sm" disabled>Shared</button></div>
+      </div>
+
+      <!-- ═══ TAB 3: PRISMHR DEEP CONFIG ═══ -->
+      <div class="pnl" id="p-prism">
+        <div class="grid4">
+          <div class="card metric green"><div class="val">Active</div><div class="lbl">Connection Status</div></div>
+          <div class="card metric blue"><div class="val">847</div><div class="lbl">Total Syncs</div></div>
+          <div class="card metric"><div class="val">99.97%</div><div class="lbl">Success Rate</div></div>
+          <div class="card metric purple"><div class="val">2 min</div><div class="lbl">Last Sync</div></div>
+        </div>
+
+        <div class="sec">Authentication</div>
+        <div class="card" style="margin-bottom:var(--sp-4)">
+          <div class="row-gap">
+            <div><div class="kv">Auth Method</div><div class="kv-val">Scoped web-service user</div><div class="mono" style="margin-top:2px">Allowed Methods + company access + IP allowlist</div></div>
+            <div><div class="kv">Session Token</div><div class="kv-val">peoId + credentials</div><div class="mono" style="margin-top:2px">30-min sliding TTL · auto-refresh</div></div>
+            <div><div class="kv">Protocol</div><div class="kv-val">REST · JSON</div><div class="mono" style="margin-top:2px">Least-privilege · method-level permissions</div></div>
+          </div>
+        </div>
+
+        <div class="sec">API Services Mapped</div>
+        <div id="api-services">
+
+          <div class="card api-card" onclick="toggleApi(this)">
+            <div class="api-head">
+              <i class="fa-solid fa-heart-pulse" style="color:var(--brand-red);width:18px"></i>
+              <strong>BenefitService</strong>
+              <span class="mono">40+ methods</span>
+              <span class="badge blue">Bi-directional</span>
+              <span class="chev">▶</span>
+            </div>
+            <div class="api-used">Used by: CAP Tool, Ben Admin, Carrier Enrollment</div>
+            <div class="api-methods">
+              <div class="method-head">Read Methods</div>
+              <div class="chips">
+                <span class="chip">getClientBenefitPlans</span>
+                <span class="chip">getClientBenefitPlanSetupDetails</span>
+                <span class="chip">getBenefitPlanList</span>
+                <span class="chip">getActiveBenefitPlans</span>
+                <span class="chip">getEmployeePremium</span>
+                <span class="chip">getFlexPlans</span>
+                <span class="chip">getBenefitRule</span>
+                <span class="chip">getGroupBenefitTypes</span>
+                <span class="chip">getGroupBenefitRates</span>
+                <span class="chip">getEnrollInputList</span>
+                <span class="chip">getBenefitConfirmationList</span>
+                <span class="chip">getBenefitsEnrollmentTrace</span>
+              </div>
+              <div class="method-head">Write Methods</div>
+              <div class="chips">
+                <span class="chip write">setClientBenefitPlanSetupDetails</span>
+                <span class="chip write">setGroupBenefitBillingRates</span>
+                <span class="chip write">setGroupBenefitPremiumRates</span>
+                <span class="chip write">setBenefitRule</span>
+                <span class="chip write">enrollBenefit</span>
+                <span class="chip write">setFlexPlan</span>
+                <span class="chip write">setDependent</span>
+                <span class="chip write">setEnrollmentPlanDocuments</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card api-card" onclick="toggleApi(this)">
+            <div class="api-head">
+              <i class="fa-solid fa-building" style="color:var(--brand-blue);width:18px"></i>
+              <strong>ClientMasterService</strong>
+              <span class="mono">15+ methods</span>
+              <span class="badge blue">Bi-directional</span>
+              <span class="chev">▶</span>
+            </div>
+            <div class="api-used">Used by: Onboarding, Client Success</div>
+            <div class="api-methods">
+              <div class="chips">
+                <span class="chip">getClientInfo</span>
+                <span class="chip">getClientLocations</span>
+                <span class="chip">getClientContacts</span>
+                <span class="chip write">addBillPending</span>
+                <span class="chip write">updateClientConfig</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card api-card" onclick="toggleApi(this)">
+            <div class="api-head">
+              <i class="fa-solid fa-users" style="color:var(--brand-green);width:18px"></i>
+              <strong>EmployeeService</strong>
+              <span class="mono">25+ methods</span>
+              <span class="badge blue">Bi-directional</span>
+              <span class="chev">▶</span>
+            </div>
+            <div class="api-used">Used by: Benefits, Payroll, Onboarding</div>
+            <div class="api-methods">
+              <div class="chips">
+                <span class="chip">getEmployeeInfo</span>
+                <span class="chip">getDependents</span>
+                <span class="chip">getEmployeeStatus</span>
+                <span class="chip write">benefitPlanSetWaive</span>
+                <span class="chip write">setHSA</span>
+                <span class="chip write">addEmployeeEvents</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card api-card" onclick="toggleApi(this)">
+            <div class="api-head">
+              <i class="fa-solid fa-money-bill-wave" style="color:var(--c-muted);width:18px"></i>
+              <strong>PayrollService</strong>
+              <span class="mono">20+ methods</span>
+              <span class="badge ok">Read-heavy</span>
+              <span class="chev">▶</span>
+            </div>
+            <div class="api-used">Used by: Payroll Processing, Deduction Audit</div>
+            <div class="api-methods">
+              <div class="chips">
+                <span class="chip">getPayrollRegister</span>
+                <span class="chip">getDeductionRegister</span>
+                <span class="chip">calculateManualCheck</span>
+                <span class="chip">getPayPeriodData</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card api-card" onclick="toggleApi(this)">
+            <div class="api-head">
+              <i class="fa-solid fa-receipt" style="color:var(--c-muted);width:18px"></i>
+              <strong>DeductionService</strong>
+              <span class="mono">10+ methods</span>
+              <span class="badge ok">Read-heavy</span>
+              <span class="chev">▶</span>
+            </div>
+            <div class="api-used">Used by: Benefits Reconciliation</div>
+            <div class="api-methods">
+              <div class="chips">
+                <span class="chip">getDeductionSchema</span>
+                <span class="chip">getDeductionCodes</span>
+                <span class="chip write">mapCAPtoDeduction</span>
+                <span class="chip write">setSection125Deduction</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="sec">Sync Streams</div>
+        <div class="grid2">
+          <div class="card">
+            <h3>Stream 1 · Master Data (Continuous)</h3>
+            <p>Carrier rates, master plan catalog, plan-code crosswalks</p>
+            <div class="stat-grid">
+              <div><span style="color:var(--c-muted)">Schedule:</span> <strong>Nightly + on-demand</strong></div>
+              <div><span style="color:var(--c-muted)">Delta detection:</span> <strong>Enabled</strong></div>
+              <div><span style="color:var(--c-muted)">Last run:</span> <strong>42 plans synced, 0 errors</strong></div>
+              <div><span style="color:var(--c-muted)">Version history:</span> <strong>Effective-dated</strong></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Stream 2 · Client Records (Mirror + Refresh)</h3>
+            <p>Effective dates, prior/current factors, WSE counts, classes</p>
+            <div class="stat-grid">
+              <div><span style="color:var(--c-muted)">Schedule:</span> <strong>Continuous mirror</strong></div>
+              <div><span style="color:var(--c-muted)">On-demand:</span> <strong>Per-client refresh</strong></div>
+              <div><span style="color:var(--c-muted)">Change capture:</span> <strong>Delta/change feeds</strong></div>
+              <div><span style="color:var(--c-muted)">Drift detection:</span> <strong>Active</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec">Field Mapping (BenefitService)</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <tr><th>Prism Field</th><th>Platform Field</th><th>Direction</th></tr>
+            <tr><td class="mono">prism.plan_name</td><td class="mono">plan.name</td><td>← Read</td></tr>
+            <tr><td class="mono">prism.carrier_id</td><td class="mono">plan.carrierId</td><td>← Read</td></tr>
+            <tr><td class="mono">prism.rate_eo / es / ec / ef</td><td class="mono">tierRate.eo / es / ec / ef</td><td>← Read</td></tr>
+            <tr><td class="mono">prism.eff_date</td><td class="mono">plan.effectiveDate</td><td>← Read</td></tr>
+            <tr><td class="mono">prism.client_id</td><td class="mono">client.prismId</td><td>↔ Both</td></tr>
+            <tr><td class="mono">platform.planSetup</td><td class="mono">prism.benefitPlanSetup</td><td>→ Write</td></tr>
+            <tr><td class="mono">platform.premiumRates</td><td class="mono">prism.groupBenefitRates</td><td>→ Write</td></tr>
+            <tr><td class="mono">platform.enrollment</td><td class="mono">prism.enrollBenefit</td><td>→ Write</td></tr>
+          </table>
+        </div>
+
+        <div class="sec">API Call Volume (Last 7 Days)</div>
+        <div class="card" style="margin-bottom:var(--sp-4)">
+          <div class="bar-row"><div class="bar-lbl">Mon</div><div class="bar-track"><div class="bar-fill" style="width:65%;background:var(--c-ink)">124</div></div></div>
+          <div class="bar-row"><div class="bar-lbl">Tue</div><div class="bar-track"><div class="bar-fill" style="width:82%;background:var(--c-ink)">156</div></div></div>
+          <div class="bar-row"><div class="bar-lbl">Wed</div><div class="bar-track"><div class="bar-fill" style="width:91%;background:var(--c-ink)">173</div></div></div>
+          <div class="bar-row"><div class="bar-lbl">Thu</div><div class="bar-track"><div class="bar-fill" style="width:75%;background:var(--c-ink)">142</div></div></div>
+          <div class="bar-row"><div class="bar-lbl">Fri</div><div class="bar-track"><div class="bar-fill" style="width:58%;background:var(--c-ink)">110</div></div></div>
+          <div class="bar-row"><div class="bar-lbl">Sat</div><div class="bar-track"><div class="bar-fill" style="width:14%;background:#9CA3AF">23</div></div></div>
+          <div class="bar-row"><div class="bar-lbl">Sun</div><div class="bar-track"><div class="bar-fill" style="width:7%;background:#9CA3AF">9</div></div></div>
+        </div>
+      </div>
+
+      <!-- ═══ TAB 4: AI CONFIG ═══ -->
+      <div class="pnl" id="p-ai">
+        <div class="sec">Active Models</div>
+        <div class="grid2">
+          <div class="card">
+            <div style="display:flex;align-items:center;gap:var(--sp-3);margin-bottom:var(--sp-3);flex-wrap:wrap">
+              <div style="width:44px;height:44px;border-radius:var(--r-md);background:var(--c-ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--fs-md)">✦</div>
+              <div><h3 style="margin:0">Claude Sonnet 4</h3><p style="margin:0">Primary reasoning model</p></div>
+              <span class="badge ok" style="margin-left:auto">Active</span>
+            </div>
+            <div class="stat-grid">
+              <div>Use: <strong>Copilot, extraction, analysis</strong></div>
+              <div>Temperature: <strong>0.3</strong></div>
+              <div>Max tokens: <strong>4,096</strong></div>
+              <div>Context: <strong>200K window</strong></div>
+            </div>
+          </div>
+          <div class="card">
+            <div style="display:flex;align-items:center;gap:var(--sp-3);margin-bottom:var(--sp-3);flex-wrap:wrap">
+              <div style="width:44px;height:44px;border-radius:var(--r-md);background:var(--c-muted);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--fs-md)">⚡</div>
+              <div><h3 style="margin:0">Claude Haiku 4</h3><p style="margin:0">Fast classification model</p></div>
+              <span class="badge ok" style="margin-left:auto">Active</span>
+            </div>
+            <div class="stat-grid">
+              <div>Use: <strong>Routing, triage, summarization</strong></div>
+              <div>Temperature: <strong>0.1</strong></div>
+              <div>Max tokens: <strong>1,024</strong></div>
+              <div>Context: <strong>200K window</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec">MCP Servers</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <tr><th>Server</th><th>Tools</th><th>Resources</th><th>Status</th><th>Used By</th></tr>
+            <tr><td><strong>cap-data-mcp</strong></td><td>8</td><td>6</td><td><span class="badge ok">Running</span></td><td>Copilot, Validation, Dashboard</td></tr>
+            <tr><td><strong>prismhr-mcp</strong></td><td>12</td><td>4</td><td><span class="badge ok">Running</span></td><td>Ben Admin, Renewal, Sync Engine</td></tr>
+            <tr><td><strong>clientspace-mcp</strong></td><td>6</td><td>2</td><td><span class="badge ok">Running</span></td><td>Workflow, Case Management</td></tr>
+            <tr><td><strong>docusign-mcp</strong></td><td>5</td><td>2</td><td><span class="badge ok">Running</span></td><td>E-Signature Routing</td></tr>
+            <tr><td><strong>worksight-mcp</strong></td><td>4</td><td>1</td><td><span class="badge ok">Running</span></td><td>Enrollment Portal Push</td></tr>
+            <tr><td><strong>carrier-uw-mcp</strong></td><td>3</td><td>1</td><td><span class="badge warn">Standby</span></td><td>Document Extraction</td></tr>
+          </table>
+        </div>
+
+        <div class="sec">Guardrails &amp; Compliance</div>
+        <div class="grid3">
+          <div class="card"><h3>PII/PHI Redaction</h3><p>SSN, DOB, dependent data auto-redacted before LLM. Census returns counts only.</p><div style="margin-top:var(--sp-2)"><span class="badge ok">23 redactions this week</span></div></div>
+          <div class="card"><h3>Rate Limiting</h3><p>100 tool calls/min per session. Backoff on breach. Budget: 50K tokens/session.</p><div style="margin-top:var(--sp-2)"><span class="badge blue">No breaches</span></div></div>
+          <div class="card"><h3>SOX Compliance</h3><p>Signed CAPs reject all write tools. Snapshot immutability enforced at MCP layer.</p><div style="margin-top:var(--sp-2)"><span class="badge ok">Enforced</span></div></div>
+        </div>
+
+        <div class="sec">Token Usage</div>
+        <div class="grid4">
+          <div class="card metric"><div class="val">45K</div><div class="lbl">Today</div></div>
+          <div class="card metric"><div class="val">312K</div><div class="lbl">This Week</div></div>
+          <div class="card metric"><div class="val">1.2M</div><div class="lbl">This Month</div></div>
+          <div class="card metric"><div class="val">67%</div><div class="lbl">Cache Hit Rate</div></div>
+        </div>
+      </div>
+
+      <!-- ═══ TAB 5: AGENT PORTALS ═══ -->
+      <div class="pnl" id="p-portals">
+        <div class="sec">Operational Divisions</div>
+        <div class="grid2">
+          <div class="card" style="border-left:4px solid var(--brand-red)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);margin-bottom:var(--sp-3);flex-wrap:wrap"><h3>Sales</h3><span class="badge ok">2 Agents · Active</span></div>
+            <p style="font-size:var(--fs-md);color:var(--c-text)">Prospecting Agent · Proposal Agent</p>
+            <p style="margin-top:var(--sp-1)">Lead qualification via ZoomInfo, proposal assembly via PandaDoc, CRM integration with Salesforce.</p>
+            <div style="margin-top:var(--sp-4)"><a href="http://localhost:3000/dashboard" target="_blank" class="btn btn-dark">Launch Sales Portal →</a></div>
+          </div>
+          <div class="card" style="border-left:4px solid var(--brand-green)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);margin-bottom:var(--sp-3);flex-wrap:wrap"><h3>Benefits</h3><span class="badge ok">4 Agents · Active</span></div>
+            <p style="font-size:var(--fs-md);color:var(--c-text)">CAP Builder · Renewal Manager · Ben Admin Writer · Copilot</p>
+            <p style="margin-top:var(--sp-1)">Full CAP lifecycle: new business, renewals, e-signature, Prism write-back, AI copilot.</p>
+            <div style="margin-top:var(--sp-4)"><a href="http://localhost:3000/dashboard" target="_blank" class="btn btn-dark">Launch Benefits Portal →</a></div>
+          </div>
+          <div class="card" style="border-left:4px solid var(--brand-blue)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);margin-bottom:var(--sp-3);flex-wrap:wrap"><h3>Onboarding</h3><span class="badge ok">2 Agents · Active</span></div>
+            <p style="font-size:var(--fs-md);color:var(--c-text)">PM Workflow Agent · Payroll Setup Agent</p>
+            <p style="margin-top:var(--sp-1)">Automated onboarding: kickoff scheduling, document collection, payroll configuration, portal build.</p>
+            <div style="margin-top:var(--sp-4)"><a href="http://localhost:3000/dashboard" target="_blank" class="btn btn-dark">Launch Onboarding Portal →</a></div>
+          </div>
+          <div class="card" style="border-left:4px solid var(--brand-amber)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);margin-bottom:var(--sp-3);flex-wrap:wrap"><h3>Payroll</h3><span class="badge ok">2 Agents · Active</span></div>
+            <p style="font-size:var(--fs-md);color:var(--c-text)">Processing Agent · Compliance Agent</p>
+            <p style="margin-top:var(--sp-1)">Payroll run automation, tax filing, deduction management, ACA compliance.</p>
+            <div style="margin-top:var(--sp-4)"><a href="http://localhost:3000/dashboard" target="_blank" class="btn btn-dark">Launch Payroll Portal →</a></div>
+          </div>
+          <div class="card span2" style="border-left:4px solid var(--brand-purple)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);margin-bottom:var(--sp-3);flex-wrap:wrap"><h3>Client Success</h3><span class="badge ok">2 Agents · Active</span></div>
+            <p style="font-size:var(--fs-md);color:var(--c-text)">Retention Agent · Issue Resolver</p>
+            <p style="margin-top:var(--sp-1)">Client health monitoring, proactive retention triggers, issue resolution via ClientSpace case automation. Covers 98 FTEs across Benefits Admin operations.</p>
+            <div style="margin-top:var(--sp-4)"><a href="http://localhost:3000/dashboard" target="_blank" class="btn btn-dark">Launch Client Success Portal →</a></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ TAB 6: AUDIT & LOGGING ═══ -->
+      <div class="pnl" id="p-audit">
+        <div class="grid3">
+          <div class="card metric green"><div class="val">1,247</div><div class="lbl">Audit Events (24h)</div></div>
+          <div class="card metric blue"><div class="val">42</div><div class="lbl">SOX Snapshots</div></div>
+          <div class="card metric purple"><div class="val">0</div><div class="lbl">HIPAA Violations</div></div>
+        </div>
+
+        <div class="toolbar">
+          <select aria-label="Filter by agent"><option>All Agents</option><option>CAP Builder</option><option>Renewal Mgr</option><option>Ben Admin</option><option>Copilot</option><option>System</option></select>
+          <select aria-label="Filter by date range"><option>Last 24 hours</option><option>Last 7 days</option><option>Last 30 days</option></select>
+          <div class="spacer"></div>
+          <button class="btn-sm">Export CSV</button>
+          <button class="btn-sm">Export JSON</button>
+        </div>
+
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <tr><th>Timestamp</th><th>Agent</th><th>Actor</th><th>Action</th><th>Entity</th><th>Status</th></tr>
+            <tr><td class="mono">Jun 24 2:30 PM</td><td>CAP Copilot</td><td>Dana Whitfield</td><td>Query: "What's blocking handoff?"</td><td>cap-itafos-2026</td><td><span class="badge ok">OK</span></td></tr>
+            <tr><td class="mono">Jun 24 2:28 PM</td><td>Ben Admin</td><td>Sam Cho</td><td>Prism write-back: createBenefitPlanSetup</td><td>cap-itafos-2026</td><td><span class="badge ok">Success</span></td></tr>
+            <tr><td class="mono">Jun 24 2:25 PM</td><td>System</td><td>PrismHR</td><td>Pre-write validation: 6/6 passed</td><td>cap-itafos-2026</td><td><span class="badge ok">Validated</span></td></tr>
+            <tr><td class="mono">Jun 24 2:14 PM</td><td>Renewal Mgr</td><td>Priya Nair</td><td>Approved renewal: all 8 gates passed</td><td>cap-brightline-2026</td><td><span class="badge ok">Approved</span></td></tr>
+            <tr><td class="mono">Jun 24 2:10 PM</td><td>System</td><td>DocuSign</td><td>Envelope signed by Robert Hale (Client)</td><td>env-harbor-2026</td><td><span class="badge ok">Signed</span></td></tr>
+            <tr><td class="mono">Jun 24 1:55 PM</td><td>CAP Copilot</td><td>Dana Whitfield</td><td>AI-assisted change: contribution → Flat Dollar $500</td><td>cap-itafos-2026</td><td><span class="badge blue">Applied</span></td></tr>
+            <tr><td class="mono">Jun 24 1:45 PM</td><td>CAP Copilot</td><td>System</td><td>Refused edit: "carrier rate is synced from Prism (read-only)"</td><td>cap-itafos-2026</td><td><span class="badge warn">Blocked</span></td></tr>
+            <tr><td class="mono">Jun 24 1:30 PM</td><td>CAP Builder</td><td>Marcus Reyes</td><td>Submitted Vanguard Tech for coordinator review</td><td>cap-vanguard-2026</td><td><span class="badge ok">Submitted</span></td></tr>
+            <tr><td class="mono">Jun 24 1:22 PM</td><td>System</td><td>PrismHR Sync</td><td>Stream 1: 42 master plan rates synced (0 errors)</td><td>sync-stream-1</td><td><span class="badge blue">Synced</span></td></tr>
+            <tr><td class="mono">Jun 24 12:45 PM</td><td>System</td><td>ClientSpace</td><td>Case CS-2026-1847 → Coordinator QC stage</td><td>cs-2026-1847</td><td><span class="badge ok">Updated</span></td></tr>
+          </table>
+        </div>
+
+        <div class="sec">Compliance Status</div>
+        <div class="grid3">
+          <div class="card"><h3>SOX Snapshot Integrity</h3><p>42 signed CAPs with immutable snapshots. All version hashes verified. No tampering detected.</p><div style="margin-top:var(--sp-2)"><span class="badge ok">✓ All verified</span></div></div>
+          <div class="card"><h3>HIPAA Access Log</h3><p>PHI access events logged with actor, timestamp, data scope. 0 unauthorized access attempts.</p><div style="margin-top:var(--sp-2)"><span class="badge ok">✓ Compliant</span></div></div>
+          <div class="card"><h3>Data Retention</h3><p>Audit logs: 7yr WORM. Signed CAPs: indefinite. Session data: 90-day rolling.</p><div style="margin-top:var(--sp-2)"><span class="badge ok">✓ Policy enforced</span></div></div>
+        </div>
+      </div>
+
+      <!-- ═══ TAB 7: EVALS DASHBOARD ═══ -->
+      <div class="pnl" id="p-evals">
+        <div class="sec">Agent Accuracy</div>
+        <div class="card" style="margin-bottom:var(--sp-4)">
+          <div class="bar-row"><div class="bar-lbl">CAP Copilot</div><div class="bar-track"><div class="bar-fill" style="width:94%;background:var(--brand-green)">94%</div></div></div>
+          <div class="bar-row"><div class="bar-lbl">Extraction</div><div class="bar-track"><div class="bar-fill" style="width:91%;background:var(--brand-green)">91%</div></div></div>
+          <div class="bar-row"><div class="bar-lbl">Validation</div><div class="bar-track"><div class="bar-fill" style="width:97%;background:var(--brand-green)">97%</div></div></div>
+          <div class="bar-row"><div class="bar-lbl">Rate Calc</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--brand-green)">100%</div></div></div>
+          <div class="bar-row"><div class="bar-lbl">Proposal</div><div class="bar-track"><div class="bar-fill" style="width:88%;background:var(--brand-amber)">88%</div></div></div>
+          <div class="bar-row"><div class="bar-lbl">Prospecting</div><div class="bar-track"><div class="bar-fill" style="width:82%;background:var(--brand-amber)">82%</div></div></div>
+        </div>
+
+        <div class="grid4">
+          <div class="card metric green"><div class="val">4.2/5</div><div class="lbl">User Satisfaction</div></div>
+          <div class="card metric blue"><div class="val">2,400</div><div class="lbl">Avg Tokens/Conv</div></div>
+          <div class="card metric purple"><div class="val">67%</div><div class="lbl">Cache Hit Rate</div></div>
+          <div class="card metric"><div class="val">1.8s</div><div class="lbl">Avg Response Time</div></div>
+        </div>
+
+        <div class="sec">Guardrail Effectiveness (This Week)</div>
+        <div class="grid3">
+          <div class="card"><h3>PII Blocked</h3><div style="font-size:var(--fs-2xl);font-weight:var(--fw-black);margin:var(--sp-2) 0;color:var(--c-ink)">23</div><p>SSN, DOB, dependent data auto-redacted before reaching LLM context</p></div>
+          <div class="card"><h3>Synced-Field Refusals</h3><div style="font-size:var(--fs-2xl);font-weight:var(--fw-black);margin:var(--sp-2) 0;color:var(--c-ink)">8</div><p>Copilot correctly refused to edit Prism-synced read-only fields</p></div>
+          <div class="card"><h3>Hallucination Prevented</h3><div style="font-size:var(--fs-2xl);font-weight:var(--fw-black);margin:var(--sp-2) 0;color:var(--c-ink)">3</div><p>Grounding check caught unverified rate claims; returned "not found" instead</p></div>
+        </div>
+
+        <div class="sec">Model Comparison</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <tr><th>Metric</th><th>Claude Sonnet 4</th><th>Claude Haiku 4</th></tr>
+            <tr><td>Avg latency</td><td><strong>2.1s</strong></td><td><strong>0.4s</strong></td></tr>
+            <tr><td>Accuracy</td><td><strong>94%</strong></td><td><strong>87%</strong></td></tr>
+            <tr><td>Cost / 1K tokens</td><td><strong>$0.003</strong></td><td><strong>$0.00025</strong></td></tr>
+            <tr><td>Use case</td><td>Complex reasoning, write actions, explanations</td><td>Classification, routing, summarization</td></tr>
+            <tr><td>Context window</td><td>200K tokens</td><td>200K tokens</td></tr>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- end content -->
+  </div><!-- end main -->
+</div><!-- end shell -->
+
+<script>
+const titles={overview:'Platform Overview',connectors:'Connector Ecosystem',prism:'PrismHR Deep Configuration',ai:'AI Configuration',portals:'Agent Portals',audit:'Audit & Logging',evals:'Evals Dashboard'};
+
+/* Switch panel + sync titles + close mobile sidebar after navigation */
+function sw(id,btn){
+  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  if(btn)btn.classList.add('on');
+  const t=titles[id]||'Platform';
+  document.getElementById('pageTitle').textContent=t;
+  document.getElementById('mobileTitle').textContent=t;
+  closeMenu();
+  document.querySelector('.main').scrollTo&&document.querySelector('.main').scrollTo(0,0);
+}
+
+/* Expand / collapse an API service card */
+function toggleApi(card){
+  const m=card.querySelector('.api-methods');
+  const chev=card.querySelector('.chev');
+  const open=m.style.display==='block';
+  m.style.display=open?'none':'block';
+  chev.style.transform=open?'none':'rotate(90deg)';
+}
+
+/* Mobile sidebar toggle */
+const sidebar=document.getElementById('sidebar');
+const backdrop=document.getElementById('backdrop');
+const menuBtn=document.getElementById('menuBtn');
+function openMenu(){sidebar.classList.add('open');backdrop.classList.add('show');menuBtn.setAttribute('aria-expanded','true');}
+function closeMenu(){sidebar.classList.remove('open');backdrop.classList.remove('show');menuBtn.setAttribute('aria-expanded','false');}
+menuBtn.addEventListener('click',()=>sidebar.classList.contains('open')?closeMenu():openMenu());
+backdrop.addEventListener('click',closeMenu);
+</script>
+</body>
+</html>

@@ -21,7 +21,7 @@ interface WorkspaceApp {
 }
 
 interface Workspace {
-  key: 'operations' | 'sales';
+  key: 'operations' | 'sales' | 'onboarding';
   name: string;
   tagline: string;
   description: string;
@@ -59,6 +59,20 @@ const workspaces: Workspace[] = [
       { name: 'Benefits Administration', desc: 'Payroll deduction audits, carrier enrollment, and WSE issue resolution.', icon: 'fa-headset', status: 'soon' },
       { name: 'Reconciliation · Beacon', desc: 'Monthly payroll-to-carrier invoice reconciliation.', icon: 'fa-scale-balanced', status: 'soon' },
       { name: 'Compliance & Filings', desc: 'ACA, COBRA, 5500, and annual regulatory filings.', icon: 'fa-shield-halved', status: 'soon' },
+    ],
+  },
+  {
+    key: 'onboarding',
+    name: 'Onboarding',
+    tagline: 'Onboarding Operations',
+    description: 'Manage client onboarding end to end — CSA extraction, cross-validation, system configuration, and first payroll readiness.',
+    icon: 'fa-user-plus',
+    accent: '#2A8F60',
+    accentBg: '#E4F2EA',
+    apps: [
+      { name: 'CSA Extraction', desc: 'AI-assisted CSA document extraction, cross-validation, and onboarding data preparation.', icon: 'fa-file-invoice', status: 'active', href: '/onboarding/clients' },
+      { name: 'Onboarding Tracker', desc: 'Client onboarding pipeline, milestones, and team workload.', icon: 'fa-list-check', status: 'soon' },
+      { name: 'Pre-Flight Validator', desc: 'Mock payroll pre-flight checks for PrismHR configuration.', icon: 'fa-plane-departure', status: 'soon' },
     ],
   },
 ];
@@ -183,7 +197,7 @@ export default function WorkspaceLauncher() {
 
           {/* ── DOMAIN VIEW: choose Sales or Operations ── */}
           {!activeWorkspace && (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
               {workspaces.map((w) => {
                 const isHover = hovered === w.key;
                 return (

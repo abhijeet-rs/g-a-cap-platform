@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G&A Partners — AI-Assisted CSA Extraction & Cross-Validation Architecture</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --red: #C60C30;
+  --red-light: #FDECEA;
+  --red-soft: #ff8095;
+  --navy: #23394A;
+  --navy2: #2c465c;
+  --grey: #6B6F70;
+  --fog: #F5F7F9;
+  --rule: #E2E8ED;
+  --white: #FFFFFF;
+  --pos: #2A8F60;
+  --pos-light: #E9F5EF;
+  --c2: #0088CE;
+  --c2-light: #EBF4FB;
+  --amber: #FF9E1B;
+  --amber-light: #FEF9EE;
+  --blue-soft: #EBF4FB;
+  --text-secondary: #37526a;
+
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.125rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2rem;
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 28px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 99px;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--font-body);
+  color: var(--navy);
+  background: var(--white);
+  overflow: auto;
+  font-size: var(--text-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   STAGE / SLIDE SHELL
+   ============================================================ */
+#app { padding: 0; }
+#stage { width: 100%; margin: 0 auto; position: relative; }
+.slide { background: var(--fog); overflow: visible; display: none; flex-direction: column; min-height: 100vh; }
+.slide.active { display: flex; }
+
+/* ============================================================
+   TAB BAR
+   ============================================================ */
+.tab-bar {
+  display: flex;
+  background: var(--navy);
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+.slide-tab {
+  padding: var(--sp-3) var(--sp-5);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: rgba(255,255,255,.4);
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+  transition: color .15s;
+}
+.slide-tab:hover { color: rgba(255,255,255,.7); }
+.slide-tab.active { color: #fff; border-bottom-color: var(--red); }
+
+/* ============================================================
+   SLIDE HEADER
+   ============================================================ */
+.s-hdr {
+  background: var(--navy);
+  padding: var(--sp-4) var(--sp-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  border-bottom: 4px solid var(--red);
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+.s-hdr .eye {
+  font-size: var(--text-sm);
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--red-soft);
+  font-weight: 800;
+  margin-bottom: var(--sp-1);
+}
+.s-hdr h1 {
+  font-size: clamp(var(--text-lg), 2.2vw, var(--text-2xl));
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.3px;
+  line-height: 1.25;
+}
+.s-hdr h1 .accent { color: var(--red-soft); }
+.ga-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.ga-logo .gw { font-size: var(--text-xl); font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+.ga-logo .gw b { color: var(--red-soft); font-weight: 800; }
+.ga-logo .gs {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #8aa0b2;
+  text-transform: uppercase;
+  margin-top: var(--sp-1);
+}
+
+/* ============================================================
+   SLIDE BODY
+   ============================================================ */
+.s-body {
+  flex: 1;
+  padding: var(--sp-4) var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: auto;
+  gap: var(--sp-4);
+}
+
+/* ============================================================
+   ZONE LABELS
+   ============================================================ */
+.zone-label {
+  font-size: var(--text-sm);
+  margin-top: var(--sp-3);
+  margin-bottom: var(--sp-3);
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.zone-label::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+.zone-label .muted { color: var(--grey); font-weight: 700; letter-spacing: 1px; font-size: var(--text-xs); }
+
+/* ============================================================
+   SLIDE FOOTER
+   ============================================================ */
+.s-foot {
+  padding: var(--sp-3) var(--sp-6);
+  flex-shrink: 0;
+  background: var(--navy);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.s-foot .l { font-size: var(--text-sm); color: #8aa0b2; letter-spacing: 0.5px; }
+.s-foot .r { font-size: var(--text-sm); color: var(--red-soft); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+
+/* ============================================================
+   CHIPS
+   ============================================================ */
+.chips { display: flex; flex-wrap: wrap; gap: var(--sp-1); }
+.chip {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  padding: 3px var(--sp-2);
+  border-radius: var(--radius-sm);
+  background: #EDF1F5;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.chip.hub { background: var(--navy); color: #fff; }
+.chip.key { background: var(--red-light); color: #8a000a; }
+.chip.blue { background: var(--c2-light); color: #1a4f72; }
+.chip.green { background: var(--pos-light); color: #1a5c38; }
+.chip.amber { background: var(--amber-light); color: #5c3c00; }
+
+/* ============================================================
+   METRIC TILES
+   ============================================================ */
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--sp-3);
+}
+.metric-tile {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: var(--sp-4);
+  text-align: center;
+  border-top: 4px solid var(--red);
+}
+.metric-tile .metric-val {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--red);
+  line-height: 1;
+  margin-bottom: var(--sp-1);
+}
+.metric-tile .metric-lbl {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.metric-tile .metric-sub {
+  font-size: var(--text-xs);
+  color: var(--grey);
+  margin-top: var(--sp-1);
+}
+
+/* ============================================================
+   REDUNDANT REVIEW FLOW
+   ============================================================ */
+.review-flow {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  overflow-x: auto;
+}
+.review-step {
+  flex: 1;
+  min-width: 160px;
+  display: flex;
+}
+.review-card {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: var(--sp-3) var(--sp-4);
+  flex: 1;
+  border-top: 4px solid var(--amber);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.review-card .r-icon {
+  font-size: var(--text-xl);
+  color: var(--amber);
+  margin-bottom: var(--sp-2);
+}
+.review-card .r-role {
+  font-size: var(--text-sm);
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: var(--sp-1);
+}
+.review-card .r-action {
+  font-size: var(--text-xs);
+  color: var(--grey);
+  line-height: 1.4;
+}
+.review-card .r-badge {
+  margin-top: var(--sp-2);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  background: var(--red-light);
+  color: #8a000a;
+  padding: 3px var(--sp-2);
+  border-radius: var(--radius-sm);
+}
+.flow-arrow {
+  flex: 0 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--grey);
+  font-size: var(--text-xl);
+  font-weight: 800;
+}
+.csa-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-2) var(--sp-4);
+}
+.csa-doc {
+  background: var(--navy);
+  color: #fff;
+  border-radius: var(--radius-md);
+  padding: var(--sp-3) var(--sp-4);
+  font-size: var(--text-sm);
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: var(--sp-2);
+}
+.csa-doc i { margin-right: var(--sp-1); color: var(--red-soft); }
+
+/* ============================================================
+   PAIN POINT CARDS
+   ============================================================ */
+.pain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--sp-3);
+}
+.pain-card {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--red);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: var(--sp-3) var(--sp-4);
+}
+.pain-card .pain-icon {
+  font-size: var(--text-base);
+  color: var(--red);
+  margin-bottom: var(--sp-1);
+}
+.pain-card .pain-title {
+  font-size: var(--text-sm);
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: var(--sp-1);
+}
+.pain-card .pain-desc {
+  font-size: var(--text-sm);
+  color: var(--grey);
+  line-height: 1.5;
+}
+
+/* ============================================================
+   ARCHITECTURE LAYER CARDS
+   ============================================================ */
+.arch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--sp-3);
+}
+.arch-layer {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-4) var(--sp-5);
+  display: flex;
+  flex-direction: column;
+}
+.arch-layer.l-navy { border-top: 4px solid var(--navy); }
+.arch-layer.l-red { border-top: 4px solid var(--red); }
+.arch-layer.l-c2 { border-top: 4px solid var(--c2); }
+.arch-layer.l-amber { border-top: 4px solid var(--amber); }
+.arch-layer.l-pos { border-top: 4px solid var(--pos); }
+.arch-layer.l-grey { border-top: 4px solid var(--grey); }
+
+.arch-layer-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-2);
+}
+.arch-layer-badge {
+  width: 32px; height: 32px; border-radius: 50%;
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  font-size: var(--text-xs); font-weight: 800; flex-shrink: 0;
+}
+.badge-navy { background: var(--navy); }
+.badge-red { background: var(--red); }
+.badge-c2 { background: var(--c2); }
+.badge-amber { background: var(--amber); }
+.badge-pos { background: var(--pos); }
+.badge-grey { background: var(--grey); }
+
+.arch-layer-title {
+  font-size: var(--text-md);
+  font-weight: 800;
+  color: var(--navy);
+}
+.arch-layer-tag {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  padding: 3px var(--sp-3);
+  border-radius: 10px;
+  display: inline-block;
+  width: fit-content;
+  margin-bottom: var(--sp-3);
+}
+.arch-layer-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  flex: 1;
+}
+.arch-item {
+  background: #FBFCFD;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: var(--sp-2) var(--sp-3);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.arch-item i { font-size: var(--text-sm); }
+.arch-item.navy i { color: var(--navy); }
+.arch-item.red i { color: var(--red); }
+.arch-item.c2 i { color: var(--c2); }
+.arch-item.amber i { color: var(--amber); }
+.arch-item.pos i { color: var(--pos); }
+.arch-item.grey i { color: var(--grey); }
+
+/* ============================================================
+   INTEGRATION HUB
+   ============================================================ */
+.int-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-4);
+}
+@media (min-width: 1024px) {
+  .int-layout { grid-template-columns: 1fr 1.2fr 1fr; }
+}
+.int-left, .int-right { display: flex; flex-direction: column; gap: var(--sp-3); }
+
+.hub-panel {
+  background: linear-gradient(180deg, var(--navy), var(--navy2));
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5) var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 22px rgba(35,57,74,.3);
+  min-height: 280px;
+}
+.hub-panel .hub-icon {
+  font-size: var(--text-3xl);
+  color: var(--red-soft);
+  margin-bottom: var(--sp-3);
+}
+.hub-panel .hub-title {
+  font-size: var(--text-lg);
+  font-weight: 800;
+  color: #fff;
+  text-align: center;
+  margin-bottom: var(--sp-1);
+}
+.hub-panel .hub-sub {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--red-soft);
+  text-align: center;
+  margin-bottom: var(--sp-4);
+}
+.hub-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  justify-content: center;
+}
+.hub-feat {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: #c4d2dd;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: var(--radius-sm);
+  padding: var(--sp-1) var(--sp-3);
+}
+
+.int-card {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: var(--sp-4);
+  flex: 1;
+}
+.int-card.sf { border-left: 4px solid var(--c2); }
+.int-card.cs { border-left: 4px solid var(--pos); }
+.int-card.prism { border-left: 4px solid var(--red); }
+.int-card.ws { border-left: 4px solid var(--amber); }
+.int-card .int-name {
+  font-size: var(--text-base);
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 2px;
+}
+.int-card .int-dir {
+  font-size: var(--text-xs);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px var(--sp-2);
+  border-radius: var(--radius-pill);
+  display: inline-block;
+  margin-bottom: var(--sp-2);
+}
+.int-dir.read { background: var(--c2-light); color: #1a4f72; }
+.int-dir.rw { background: var(--pos-light); color: #1a5c38; }
+.int-card .int-desc { font-size: var(--text-sm); color: var(--grey); line-height: 1.5; margin-bottom: var(--sp-2); }
+.int-card ul { list-style: none; display: flex; flex-direction: column; gap: var(--sp-1); }
+.int-card li {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  padding-left: var(--sp-4);
+  position: relative;
+  line-height: 1.4;
+}
+.int-card li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 7px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.int-card.sf li::before { background: var(--c2); }
+.int-card.cs li::before { background: var(--pos); }
+.int-card.prism li::before { background: var(--red); }
+.int-card.ws li::before { background: var(--amber); }
+
+.flow-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  padding: var(--sp-2) 0;
+}
+.flow-indicator .fi-arrow {
+  font-size: var(--text-lg);
+  font-weight: 800;
+}
+.flow-indicator.to-hub .fi-arrow { color: var(--c2); }
+.flow-indicator.from-hub .fi-arrow { color: var(--pos); }
+.flow-indicator .fi-label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--grey);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   DATA FLOW PIPELINE
+   ============================================================ */
+.pipeline {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  overflow-x: auto;
+  padding-bottom: var(--sp-2);
+}
+.pipe-step {
+  flex: 1;
+  min-width: 130px;
+  display: flex;
+}
+.pipe-card {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: var(--sp-3) var(--sp-4);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.pipe-card.navy { border-top: 4px solid var(--navy); }
+.pipe-card.red { border-top: 4px solid var(--red); }
+.pipe-card.c2 { border-top: 4px solid var(--c2); }
+.pipe-card.amber { border-top: 4px solid var(--amber); }
+.pipe-card.pos { border-top: 4px solid var(--pos); }
+.pipe-card.grey { border-top: 4px solid var(--grey); }
+
+.pipe-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  color: #fff; font-size: var(--text-xs); font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: var(--sp-2);
+}
+.pipe-card .pipe-title {
+  font-size: var(--text-sm);
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: var(--sp-1);
+}
+.pipe-card .pipe-desc {
+  font-size: var(--text-xs);
+  color: var(--grey);
+  line-height: 1.4;
+  flex: 1;
+}
+.pipe-card .pipe-time {
+  margin-top: var(--sp-2);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: #FBFCFD;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 2px var(--sp-2);
+  text-align: center;
+}
+.pipe-arrow {
+  flex: 0 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--grey);
+  font-size: var(--text-lg);
+  font-weight: 800;
+}
+
+/* Sample extraction JSON block */
+.extraction-sample {
+  background: #0f1922;
+  border-radius: var(--radius-md);
+  padding: var(--sp-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.65;
+  color: #cbd6df;
+}
+.extraction-sample .k { color: #7fb2cf; }
+.extraction-sample .v { color: #fff; }
+.extraction-sample .c { color: #5d7385; }
+.extraction-sample .conf-hi { color: #7be0a8; font-weight: 800; }
+.extraction-sample .conf-med { color: #FFD79A; font-weight: 800; }
+
+/* ============================================================
+   GUARDRAIL CARDS
+   ============================================================ */
+.guard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--sp-3);
+}
+.guard-card {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-4) var(--sp-5);
+  display: flex;
+  flex-direction: column;
+}
+.guard-card .guard-icon {
+  font-size: var(--text-xl);
+  margin-bottom: var(--sp-2);
+}
+.guard-card .guard-title {
+  font-size: var(--text-md);
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: var(--sp-2);
+}
+.guard-card .guard-desc {
+  font-size: var(--text-sm);
+  color: var(--grey);
+  line-height: 1.5;
+  flex: 1;
+}
+.guard-card.navy { border-top: 4px solid var(--navy); }
+.guard-card.red { border-top: 4px solid var(--red); }
+.guard-card.c2 { border-top: 4px solid var(--c2); }
+.guard-card.amber { border-top: 4px solid var(--amber); }
+.guard-card.pos { border-top: 4px solid var(--pos); }
+.guard-card.grey { border-top: 4px solid var(--grey); }
+.guard-card.navy .guard-icon { color: var(--navy); }
+.guard-card.red .guard-icon { color: var(--red); }
+.guard-card.c2 .guard-icon { color: var(--c2); }
+.guard-card.amber .guard-icon { color: var(--amber); }
+.guard-card.pos .guard-icon { color: var(--pos); }
+.guard-card.grey .guard-icon { color: var(--grey); }
+
+/* Confidence tiers */
+.conf-tiers { display: flex; flex-direction: column; gap: var(--sp-2); margin-top: var(--sp-3); }
+.conf-tier {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+.conf-tier.auto {
+  background: var(--pos-light);
+  color: #1a5c38;
+  border: 1px solid #b3dfc8;
+}
+.conf-tier.review {
+  background: var(--amber-light);
+  color: #5c3c00;
+  border: 1px solid #f0d9a8;
+}
+.conf-tier.manual {
+  background: var(--red-light);
+  color: #8a000a;
+  border: 1px solid #f5c0c7;
+}
+.conf-tier .tier-range {
+  font-weight: 800;
+  min-width: 80px;
+}
+.conf-tier .tier-label {
+  flex: 1;
+}
+.conf-tier .tier-icon {
+  font-size: var(--text-base);
+}
+
+/* ============================================================
+   CALLOUT BAR (bottom stats)
+   ============================================================ */
+.callout-bar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-4);
+  background: var(--navy);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5) var(--sp-6);
+  flex-shrink: 0;
+}
+@media (min-width: 768px) { .callout-bar { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1024px) { .callout-bar { grid-template-columns: 1fr 1fr 1fr 1fr; } }
+.callout-item .co-h {
+  font-size: var(--text-base);
+  font-weight: 800;
+  color: var(--red-soft);
+  margin-bottom: var(--sp-1);
+}
+.callout-item .co-d {
+  font-size: var(--text-sm);
+  color: #c4d2dd;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 767px) {
+  .s-hdr { padding: var(--sp-3) var(--sp-4); }
+  .s-hdr h1 { font-size: var(--text-md); }
+  .s-body { padding: var(--sp-3) var(--sp-4); }
+  .s-foot { padding: var(--sp-2) var(--sp-4); }
+  .ga-logo { display: none; }
+  .review-flow { flex-direction: column; }
+  .flow-arrow { transform: rotate(90deg); flex: 0 0 24px; }
+  .pipeline { flex-direction: column; }
+  .pipe-arrow { transform: rotate(90deg); flex: 0 0 24px; }
+  .arch-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+
+<body>
+<div id="app">
+  <div id="stage">
+
+    <div class="tab-bar">
+      <button class="slide-tab active" onclick="goTab(0,this)"><i class="fa-solid fa-circle-exclamation" style="margin-right:4px;"></i> Current State</button>
+      <button class="slide-tab" onclick="goTab(1,this)"><i class="fa-solid fa-layer-group" style="margin-right:4px;"></i> Solution Architecture</button>
+    </div>
+
+
+    <!-- ============ TAB 1: CURRENT STATE ============ -->
+    <section class="slide active" id="slide1">
+      <div class="s-hdr">
+        <div>
+          <div class="eye">Current State &middot; The Problem</div>
+          <h1>CSA Review &amp; <span class="accent">Onboarding Data Entry</span> — Today</h1>
+        </div>
+        <div class="ga-logo"><span class="gw">G&amp;A <b>PARTNERS</b></span><span class="gs">CSA Extraction</span></div>
+      </div>
+
+      <div class="s-body">
+        <div class="zone-label">Key Metrics <span class="muted">&mdash; the scale of the problem</span></div>
+
+        <div class="metric-grid" style="margin-bottom:var(--sp-4);">
+          <div class="metric-tile" style="border-top-color:var(--red);"><div class="metric-val" style="color:var(--red);">4&times;</div><div class="metric-lbl">Redundant CSA Reviews</div></div>
+          <div class="metric-tile" style="border-top-color:var(--amber);"><div class="metric-val" style="color:var(--amber);">30-40 min</div><div class="metric-lbl">Per Review Per Deal</div></div>
+          <div class="metric-tile" style="border-top-color:var(--grey);"><div class="metric-val" style="color:var(--grey);">None</div><div class="metric-lbl">SF &rarr; CS Integration</div></div>
+          <div class="metric-tile" style="border-top-color:var(--red);"><div class="metric-val" style="color:var(--red);">~40%</div><div class="metric-lbl">Rework from Placeholder Data</div></div>
+        </div>
+
+        <div class="zone-label">Current Review Flow <span class="muted">&mdash; 4 people review the same CSA PDF independently</span></div>
+
+        <div class="review-flow">
+          <div class="review-step">
+            <div class="review-card">
+              <div class="r-icon" style="background:var(--red-light);color:var(--red);"><i class="fa-solid fa-user-tie"></i></div>
+              <div class="r-role">PM Manager</div>
+              <div class="r-action">CSA Review — scope, services, billing (30-40 min)</div>
+              <div class="r-badge" style="background:var(--red-light);color:var(--red);">Manual</div>
+            </div>
+          </div>
+          <div class="review-step">
+            <div class="review-card">
+              <div class="r-icon" style="background:var(--c2-light);color:var(--c2);"><i class="fa-solid fa-user"></i></div>
+              <div class="r-role">Project Manager</div>
+              <div class="r-action">Sales Handoff review — cross-validate against ClientSpace handoff page</div>
+              <div class="r-badge" style="background:var(--c2-light);color:#1a4f72;">Manual</div>
+            </div>
+          </div>
+          <div class="review-step">
+            <div class="review-card">
+              <div class="r-icon" style="background:var(--amber-light);color:#7a4800;"><i class="fa-solid fa-user-tie"></i></div>
+              <div class="r-role">PA Manager</div>
+              <div class="r-action">CSA Review — fee structure, SUTA rates, WC codes, tax classification</div>
+              <div class="r-badge" style="background:var(--amber-light);color:#7a4800;">Manual</div>
+            </div>
+          </div>
+          <div class="review-step">
+            <div class="review-card">
+              <div class="r-icon" style="background:var(--pos-light);color:var(--pos);"><i class="fa-solid fa-user"></i></div>
+              <div class="r-role">Payroll Analyst</div>
+              <div class="r-action">Final review, manual data entry into ClientSpace, billing config in PrismHR</div>
+              <div class="r-badge" style="background:var(--pos-light);color:var(--pos);">Manual</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="zone-label" style="margin-top:var(--sp-4);">Pain Points</div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:var(--sp-3);">
+          <div class="pain-card">
+            <div class="pain-icon"><i class="fa-solid fa-copy" style="color:var(--red);"></i></div>
+            <div class="pain-title">Redundant Reviews</div>
+            <div class="pain-desc">4 people independently sift through the same multi-page legal document, repeating the same comparison logic.</div>
+          </div>
+          <div class="pain-card">
+            <div class="pain-icon"><i class="fa-solid fa-link-slash" style="color:var(--amber);"></i></div>
+            <div class="pain-title">No Integration</div>
+            <div class="pain-desc">No Salesforce-to-ClientSpace sync. BAs manually re-enter deal data, creating error risk on every new client.</div>
+          </div>
+          <div class="pain-card">
+            <div class="pain-icon"><i class="fa-solid fa-ghost" style="color:var(--grey);"></i></div>
+            <div class="pain-title">Placeholder Data</div>
+            <div class="pain-desc">Required ClientSpace fields are filled with defaults that go unnoticed, surfacing as discrepancies during onboarding.</div>
+          </div>
+          <div class="pain-card">
+            <div class="pain-icon"><i class="fa-solid fa-clock-rotate-left" style="color:var(--c2);"></i></div>
+            <div class="pain-title">Delayed Discovery</div>
+            <div class="pain-desc">Mismatches between CSA and system data are discovered during meetings — not pre-empted at deal close.</div>
+          </div>
+        </div>
+      </div>
+      <div class="s-foot"><span class="l">G&amp;A Partners &middot; CSA Extraction Architecture &middot; Current State</span><span class="r">4 reviews &middot; ~2.5 hrs total &middot; ~40% rework</span></div>
+    </section>
+
+
+    <!-- ============ TAB 2: SOLUTION — 4 BLOCKS ============ -->
+    <section class="slide" id="slide2">
+      <div class="s-hdr">
+        <div>
+          <div class="eye">Solution Architecture &middot; End-to-End</div>
+          <h1>AI-Assisted CSA Extraction &amp; <span class="accent">Cross-Validation</span></h1>
+        </div>
+        <div class="ga-logo"><span class="gw">G&amp;A <b>PARTNERS</b></span><span class="gs">CSA Extraction</span></div>
+      </div>
+
+      <div class="s-body" style="gap:var(--sp-3);">
+
+        <!-- 4-BLOCK GRID -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);flex:1;">
+
+          <!-- BLOCK 1: AI EXTRACTION -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);border-top:4px solid var(--red);display:flex;flex-direction:column;">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:800;">1</div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">AI Extraction on CSA Upload</div>
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;margin-bottom:var(--sp-3);">
+              <strong style="color:var(--navy);">LlamaParse</strong> converts uploaded PDF to per-page markdown with OCR. <strong style="color:var(--navy);">Claude Haiku</strong> extracts structured fields following a defined schema:
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:var(--sp-3);">
+              <span class="chip key">Fee Structure</span>
+              <span class="chip key">Included / Optional Services</span>
+              <span class="chip key">SUTA State Coverage</span>
+              <span class="chip key">Billing Exceptions</span>
+              <span class="chip key">IRS Classification</span>
+              <span class="chip key">WC Codes</span>
+              <span class="chip key">Contract Term &amp; Dates</span>
+              <span class="chip key">Employee Count</span>
+              <span class="chip key">Benefits &amp; 401k</span>
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;">
+              <strong style="color:var(--navy);">Confidence scoring</strong> per field: <span style="color:var(--pos);font-weight:700;">&gt;90%</span> auto-populated &middot; <span style="color:#7a4800;font-weight:700;">80-90%</span> flagged for review &middot; <span style="color:var(--red);font-weight:700;">&lt;80%</span> manual entry required
+            </div>
+          </div>
+
+          <!-- BLOCK 2: CROSS-VALIDATION -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);border-top:4px solid var(--c2);display:flex;flex-direction:column;">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--c2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:800;">2</div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">Cross-Validation vs ClientSpace</div>
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;margin-bottom:var(--sp-3);">
+              LLM-driven field-to-field discrepancy check against ClientSpace handoff page data. Semantic matching understands equivalence.
+            </div>
+            <div style="font-size:var(--text-xs);font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--grey);margin-bottom:var(--sp-2);">Field Mapping Examples</div>
+            <table style="width:100%;border-collapse:collapse;font-size:var(--text-xs);">
+              <tr style="border-bottom:1px solid var(--rule);background:var(--red-light);"><td style="padding:4px 8px;font-weight:700;">csa.admin_fee</td><td style="padding:4px;color:var(--red);text-align:center;">&ne;</td><td style="padding:4px 8px;font-weight:700;">cs.fee_structure</td><td style="padding:4px 8px;color:var(--red);">$125 vs $120</td></tr>
+              <tr style="border-bottom:1px solid var(--rule);background:var(--red-light);"><td style="padding:4px 8px;font-weight:700;">csa.suta_coverage</td><td style="padding:4px;color:var(--red);text-align:center;">&ne;</td><td style="padding:4px 8px;font-weight:700;">cs.suta_type</td><td style="padding:4px 8px;color:var(--red);">CR% vs Standard</td></tr>
+              <tr style="border-bottom:1px solid var(--rule);background:var(--red-light);"><td style="padding:4px 8px;font-weight:700;">csa.effective_date</td><td style="padding:4px;color:var(--red);text-align:center;">&ne;</td><td style="padding:4px 8px;font-weight:700;">cs.start_date</td><td style="padding:4px 8px;color:var(--red);">07/01 vs 08/01</td></tr>
+              <tr style="border-bottom:1px solid var(--rule);background:var(--red-light);"><td style="padding:4px 8px;font-weight:700;">csa.billing_frequency</td><td style="padding:4px;color:var(--red);text-align:center;">&ne;</td><td style="padding:4px 8px;font-weight:700;">cs.pay_frequency</td><td style="padding:4px 8px;color:var(--red);">Monthly vs Bi-weekly</td></tr>
+              <tr style="background:var(--pos-light);"><td style="padding:4px 8px;font-weight:700;">csa.contract_term</td><td style="padding:4px;color:var(--pos);text-align:center;">=</td><td style="padding:4px 8px;font-weight:700;">cs.initial_term</td><td style="padding:4px 8px;color:var(--pos);">1 Year = 1 Year</td></tr>
+            </table>
+          </div>
+
+          <!-- BLOCK 3: HUMAN REVIEW -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);border-top:4px solid var(--amber);display:flex;flex-direction:column;">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--amber);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:800;">3</div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">Human Review &amp; Approval</div>
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;">
+              <strong style="color:var(--navy);">Side drawer</strong> with two-panel split: editable extracted fields (45%) + PDF viewer with <strong style="color:#D4A017;">in-document yellow highlights</strong> (55%).<br><br>
+              <i class="fa-solid fa-file-lines" style="color:#5A45C7;margin-right:4px;"></i> <strong>Page pointer (Pg N)</strong> on each field &mdash; click to jump to source section in PDF<br>
+              <i class="fa-solid fa-flag" style="color:var(--red);margin-right:4px;"></i> <strong>Red flag</strong> on mismatched fields &mdash; shows ClientSpace value vs CSA value inline<br>
+              <i class="fa-solid fa-note-sticky" style="color:var(--amber);margin-right:4px;"></i> <strong>Global review notes</strong> &amp; approval gates (Save Draft / Approve / Re-run / Reject)<br>
+              <i class="fa-solid fa-lock" style="color:var(--navy);margin-right:4px;"></i> <strong>Lock/unlock</strong> for approved CSAs with downstream impact warning
+            </div>
+          </div>
+
+          <!-- BLOCK 4: DOWNSTREAM SYNC -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);border-top:4px solid var(--pos);display:flex;flex-direction:column;">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--pos);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:800;">4</div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">Downstream ClientSpace Sync</div>
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;">
+              On approval, automated actions replace manual BA re-entry:<br><br>
+              <i class="fa-solid fa-building" style="color:var(--c2);margin-right:4px;"></i> <strong>Create/update client record</strong> &mdash; FEIN, address, ownership<br>
+              <i class="fa-solid fa-folder-plus" style="color:var(--pos);margin-right:4px;"></i> <strong>Create onboarding case</strong> &mdash; auto-assign PM + PA<br>
+              <i class="fa-solid fa-list-check" style="color:var(--amber);margin-right:4px;"></i> <strong>Create mismatch resolution tasks</strong> for BA review<br>
+              <i class="fa-solid fa-file-arrow-up" style="color:#5A45C7;margin-right:4px;"></i> <strong>Attach CSA document</strong> + extraction summary<br>
+              <i class="fa-solid fa-bell" style="color:var(--red);margin-right:4px;"></i> <strong>Trigger document collection</strong> requests to client<br>
+              <i class="fa-solid fa-shield-check" style="color:var(--pos);margin-right:4px;"></i> <strong>Audit trail</strong> &mdash; every action logged with actor + timestamp
+            </div>
+          </div>
+
+        </div><!-- /4-block grid -->
+
+      </div>
+      <div class="s-foot"><span class="l">G&amp;A Partners &middot; CSA Extraction Architecture</span><span class="r">Extract &rarr; Validate &rarr; Review &rarr; Sync</span></div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+const slides = [...document.querySelectorAll('.slide')];
+const tabs = [...document.querySelectorAll('.slide-tab')];
+function goTab(n, btn) {
+  slides.forEach((s, i) => s.classList.toggle('active', i === n));
+  tabs.forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+document.addEventListener('keydown', e => {
+  const curr = slides.findIndex(s => s.classList.contains('active'));
+  if (e.key === 'ArrowRight') goTab(Math.min(curr + 1, slides.length - 1), tabs[Math.min(curr + 1, slides.length - 1)]);
+  else if (e.key === 'ArrowLeft') goTab(Math.max(curr - 1, 0), tabs[Math.max(curr - 1, 0)]);
+});
+goTab(0, tabs[0]);
+</script>
+</body>
+</html>

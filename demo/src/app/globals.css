@@ -86,6 +86,22 @@
   }
 }
 
+/* PDF.js text layer — required for text selection and highlighting */
+.pdf-text-layer {
+  opacity: 0.3;
+  line-height: 1;
+}
+.pdf-text-layer span {
+  position: absolute;
+  white-space: pre;
+  color: transparent;
+  pointer-events: all;
+  cursor: text;
+}
+.pdf-text-layer span::selection {
+  background: rgba(0, 100, 200, 0.3);
+}
+
 /* ══════════════════════════════════════════════════
    ENTERPRISE DESIGN SYSTEM — G&A Compass
    ══════════════════════════════════════════════════ */
