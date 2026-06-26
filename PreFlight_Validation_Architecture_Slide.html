@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G&A Partners — Payroll Pre-Flight Validation Engine Architecture</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --red: #C60C30;
+  --red-light: #FDECEA;
+  --red-soft: #ff8095;
+  --navy: #23394A;
+  --navy2: #2c465c;
+  --grey: #6B6F70;
+  --fog: #F5F7F9;
+  --rule: #E2E8ED;
+  --white: #FFFFFF;
+  --pos: #2A8F60;
+  --pos-light: #E9F5EF;
+  --c2: #0088CE;
+  --c2-light: #EBF4FB;
+  --amber: #FF9E1B;
+  --amber-light: #FEF9EE;
+  --blue-soft: #EBF4FB;
+  --text-secondary: #37526a;
+
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.125rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2rem;
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 28px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 99px;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--font-body);
+  color: var(--navy);
+  background: var(--white);
+  overflow: auto;
+  font-size: var(--text-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   STAGE / SLIDE SHELL
+   ============================================================ */
+#app { padding: 0; }
+#stage { width: 100%; margin: 0 auto; position: relative; }
+.slide { background: var(--fog); overflow: visible; display: none; flex-direction: column; min-height: 100vh; }
+.slide.active { display: flex; }
+
+/* ============================================================
+   TAB BAR
+   ============================================================ */
+.tab-bar {
+  display: flex;
+  background: var(--navy);
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+.slide-tab {
+  padding: var(--sp-3) var(--sp-5);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: rgba(255,255,255,.4);
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+  transition: color .15s;
+}
+.slide-tab:hover { color: rgba(255,255,255,.7); }
+.slide-tab.active { color: #fff; border-bottom-color: var(--red); }
+
+/* ============================================================
+   SLIDE HEADER
+   ============================================================ */
+.s-hdr {
+  background: var(--navy);
+  padding: var(--sp-4) var(--sp-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  border-bottom: 4px solid var(--red);
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+.s-hdr .eye {
+  font-size: var(--text-sm);
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--red-soft);
+  font-weight: 800;
+  margin-bottom: var(--sp-1);
+}
+.s-hdr h1 {
+  font-size: clamp(var(--text-lg), 2.2vw, var(--text-2xl));
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.3px;
+  line-height: 1.25;
+}
+.s-hdr h1 .accent { color: var(--red-soft); }
+.ga-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.ga-logo .gw { font-size: var(--text-xl); font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+.ga-logo .gw b { color: var(--red-soft); font-weight: 800; }
+.ga-logo .gs {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #8aa0b2;
+  text-transform: uppercase;
+  margin-top: var(--sp-1);
+}
+
+/* ============================================================
+   SLIDE BODY
+   ============================================================ */
+.s-body {
+  flex: 1;
+  padding: var(--sp-4) var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: auto;
+  gap: var(--sp-4);
+}
+
+/* ============================================================
+   ZONE LABELS
+   ============================================================ */
+.zone-label {
+  font-size: var(--text-sm);
+  margin-top: var(--sp-3);
+  margin-bottom: var(--sp-3);
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.zone-label::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+.zone-label .muted { color: var(--grey); font-weight: 700; letter-spacing: 1px; font-size: var(--text-xs); }
+
+/* ============================================================
+   SLIDE FOOTER
+   ============================================================ */
+.s-foot {
+  padding: var(--sp-3) var(--sp-6);
+  flex-shrink: 0;
+  background: var(--navy);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.s-foot .l { font-size: var(--text-sm); color: #8aa0b2; letter-spacing: 0.5px; }
+.s-foot .r { font-size: var(--text-sm); color: var(--red-soft); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+
+/* ============================================================
+   CHIPS
+   ============================================================ */
+.chips { display: flex; flex-wrap: wrap; gap: var(--sp-1); }
+.chip {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  padding: 3px var(--sp-2);
+  border-radius: var(--radius-sm);
+  background: #EDF1F5;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.chip.hub { background: var(--navy); color: #fff; }
+.chip.key { background: var(--red-light); color: #8a000a; }
+.chip.blue { background: var(--c2-light); color: #1a4f72; }
+.chip.green { background: var(--pos-light); color: #1a5c38; }
+.chip.amber { background: var(--amber-light); color: #5c3c00; }
+
+/* ============================================================
+   METRIC TILES
+   ============================================================ */
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--sp-3);
+}
+.metric-tile {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: var(--sp-4);
+  text-align: center;
+  border-top: 4px solid var(--red);
+}
+.metric-tile .metric-val {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--red);
+  line-height: 1;
+  margin-bottom: var(--sp-1);
+}
+.metric-tile .metric-lbl {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.metric-tile .metric-sub {
+  font-size: var(--text-xs);
+  color: var(--grey);
+  margin-top: var(--sp-1);
+}
+
+/* ============================================================
+   PAIN POINT CARDS
+   ============================================================ */
+.pain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--sp-3);
+}
+.pain-card {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--red);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: var(--sp-3) var(--sp-4);
+}
+.pain-card .pain-icon {
+  font-size: var(--text-base);
+  color: var(--red);
+  margin-bottom: var(--sp-1);
+}
+.pain-card .pain-title {
+  font-size: var(--text-sm);
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: var(--sp-1);
+}
+.pain-card .pain-desc {
+  font-size: var(--text-sm);
+  color: var(--grey);
+  line-height: 1.5;
+}
+
+/* ============================================================
+   FLOW ARROW CONNECTOR (vertical)
+   ============================================================ */
+.v-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-2) 0;
+  color: var(--grey);
+}
+.v-connector i { font-size: var(--text-xl); }
+.v-connector .conn-label {
+  font-size: var(--text-xs);
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-left: var(--sp-2);
+  color: var(--grey);
+}
+
+/* ============================================================
+   CHECK CARD (solution tab)
+   ============================================================ */
+.check-card {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: var(--sp-3) var(--sp-4);
+  flex: 1;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+}
+.check-card .cc-name {
+  font-size: var(--text-sm);
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: var(--sp-1);
+}
+.check-card .cc-rule {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: var(--sp-2);
+}
+.check-card .cc-src {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--grey);
+  margin-bottom: var(--sp-2);
+}
+.check-card .cc-example {
+  font-size: var(--text-xs);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  line-height: 1.5;
+  margin-top: auto;
+}
+.cc-example.fail { background: var(--red-light); color: #8a000a; border: 1px solid #f5c0c7; }
+.cc-example.pass { background: var(--pos-light); color: #1a5c38; border: 1px solid #b3dfc8; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 767px) {
+  .s-hdr { padding: var(--sp-3) var(--sp-4); }
+  .s-hdr h1 { font-size: var(--text-md); }
+  .s-body { padding: var(--sp-3) var(--sp-4); }
+  .s-foot { padding: var(--sp-2) var(--sp-4); }
+  .ga-logo { display: none; }
+}
+</style>
+</head>
+
+<body>
+<div id="app">
+  <div id="stage">
+
+    <div class="tab-bar">
+      <button class="slide-tab active" onclick="goTab(0,this)"><i class="fa-solid fa-circle-exclamation" style="margin-right:4px;"></i> Current State</button>
+      <button class="slide-tab" onclick="goTab(1,this)"><i class="fa-solid fa-layer-group" style="margin-right:4px;"></i> Solution Architecture</button>
+      <button class="slide-tab" onclick="goTab(2,this)"><i class="fa-solid fa-wrench" style="margin-right:4px;"></i> Inline Fix &amp; Batch Push</button>
+    </div>
+
+
+    <!-- ============ TAB 1: CURRENT STATE — "The Calculate-Fail-Fix Cycle" ============ -->
+    <section class="slide active" id="slide1">
+      <div class="s-hdr">
+        <div>
+          <div class="eye">Current State &middot; The Problem</div>
+          <h1>Payroll Testing &amp; Training &mdash; <span class="accent">The Calculate-Fail-Fix Cycle</span></h1>
+        </div>
+        <div class="ga-logo"><span class="gw">G&amp;A <b>PARTNERS</b></span><span class="gs">Pre-Flight Validation</span></div>
+      </div>
+
+      <div class="s-body">
+
+        <!-- METRICS -->
+        <div class="zone-label">Key Metrics <span class="muted">&mdash; the scale of the problem</span></div>
+
+        <div class="metric-grid" style="margin-bottom:var(--sp-4);">
+          <div class="metric-tile" style="border-top-color:var(--red);">
+            <div class="metric-val" style="color:var(--red);">25%</div>
+            <div class="metric-lbl">PA Time</div>
+            <div class="metric-sub">Payroll Consultation (11%) + Processing (14%)</div>
+          </div>
+          <div class="metric-tile" style="border-top-color:var(--amber);">
+            <div class="metric-val" style="color:var(--amber);">5-7 Days</div>
+            <div class="metric-lbl">Payroll Testing Phase</div>
+            <div class="metric-sub">Duration of the testing cycle</div>
+          </div>
+          <div class="metric-tile" style="border-top-color:var(--grey);">
+            <div class="metric-val" style="color:var(--grey);font-size:var(--text-lg);letter-spacing:1px;">DELAYS OCCUR HERE</div>
+            <div class="metric-lbl">SOP Warning</div>
+            <div class="metric-sub">Documented in standard operating procedure</div>
+          </div>
+          <div class="metric-tile" style="border-top-color:var(--red);">
+            <div class="metric-val" style="color:var(--red);font-size:var(--text-xl);">Unpredictable</div>
+            <div class="metric-lbl">First-Payroll Date</div>
+            <div class="metric-sub">Cannot commit first-payroll date to client</div>
+          </div>
+        </div>
+
+        <!-- VISUAL FLOW — 4-step arrow with loop-back -->
+        <div class="zone-label">The Calculate-Fail-Fix-Recalculate Loop</div>
+
+        <div style="display:flex;align-items:stretch;gap:0;overflow-x:auto;margin-bottom:var(--sp-3);">
+          <!-- Step 1 -->
+          <div style="flex:1;min-width:160px;display:flex;">
+            <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-3) var(--sp-4);flex:1;border-top:4px solid var(--navy);display:flex;flex-direction:column;align-items:center;text-align:center;">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;font-size:var(--text-xs);font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:var(--sp-2);">1</div>
+              <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);margin-bottom:var(--sp-1);">PA Runs Mock Payroll</div>
+              <div style="font-size:var(--text-xs);color:var(--grey);line-height:1.4;">Initialize payroll calculation in PrismHR</div>
+            </div>
+          </div>
+          <div style="flex:0 0 24px;display:flex;align-items:center;justify-content:center;color:var(--grey);font-size:var(--text-lg);font-weight:800;">&rarr;</div>
+          <!-- Step 2 -->
+          <div style="flex:1;min-width:160px;display:flex;">
+            <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-3) var(--sp-4);flex:1;border-top:4px solid var(--red);display:flex;flex-direction:column;align-items:center;text-align:center;">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--red);color:#fff;font-size:var(--text-xs);font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:var(--sp-2);">2</div>
+              <div style="font-size:var(--text-sm);font-weight:800;color:var(--red);margin-bottom:var(--sp-1);">System Errors</div>
+              <div style="font-size:var(--text-xs);color:var(--grey);line-height:1.4;">WC codes, SUTA rates, pay group misalignment</div>
+            </div>
+          </div>
+          <div style="flex:0 0 24px;display:flex;align-items:center;justify-content:center;color:var(--grey);font-size:var(--text-lg);font-weight:800;">&rarr;</div>
+          <!-- Step 3 -->
+          <div style="flex:1;min-width:160px;display:flex;">
+            <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-3) var(--sp-4);flex:1;border-top:4px solid var(--amber);display:flex;flex-direction:column;align-items:center;text-align:center;">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--amber);color:#fff;font-size:var(--text-xs);font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:var(--sp-2);">3</div>
+              <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);margin-bottom:var(--sp-1);">PA Manually Fixes Each Error</div>
+              <div style="font-size:var(--text-xs);color:var(--grey);line-height:1.4;">Investigate, correct data, wait for approvals</div>
+            </div>
+          </div>
+          <div style="flex:0 0 24px;display:flex;align-items:center;justify-content:center;color:var(--grey);font-size:var(--text-lg);font-weight:800;">&rarr;</div>
+          <!-- Step 4 -->
+          <div style="flex:1;min-width:160px;display:flex;">
+            <div style="background:var(--red-light);border:1px solid #f5c0c7;border-radius:var(--radius-md);padding:var(--sp-3) var(--sp-4);flex:1;border-top:4px solid var(--red);display:flex;flex-direction:column;align-items:center;text-align:center;">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--red);color:#fff;font-size:var(--text-xs);font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:var(--sp-2);"><i class="fa-solid fa-rotate-left" style="font-size:9px;"></i></div>
+              <div style="font-size:var(--text-sm);font-weight:800;color:#8a000a;margin-bottom:var(--sp-1);">Re-initialize &amp; Repeat</div>
+              <div style="font-size:var(--text-xs);color:#8a000a;line-height:1.4;">Arrow loops back to step 1</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cycle label -->
+        <div style="text-align:center;padding:var(--sp-2) var(--sp-4);background:var(--red-light);border:1px solid #f5c0c7;border-radius:var(--radius-md);margin-bottom:var(--sp-4);">
+          <span style="font-size:var(--text-sm);font-weight:800;color:#8a000a;">
+            <i class="fa-solid fa-repeat" style="margin-right:6px;"></i>
+            This cycle repeats 3&ndash;5 times per client
+          </span>
+        </div>
+
+        <!-- 3 PAIN CARDS -->
+        <div class="zone-label">Pain Points</div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-3);">
+          <div class="pain-card" style="border-left-color:var(--amber);">
+            <div class="pain-icon"><i class="fa-solid fa-lock" style="color:var(--amber);"></i></div>
+            <div class="pain-title">SUTA Executive Approval Bottleneck</div>
+            <div class="pain-desc">Requires executive approval 1 week before first payroll. Delays in the approval queue cascade directly into payroll processing delays.</div>
+          </div>
+          <div class="pain-card" style="border-left-color:var(--red);">
+            <div class="pain-icon"><i class="fa-solid fa-rotate" style="color:var(--red);"></i></div>
+            <div class="pain-title">Errors Resurface in Live Payroll</div>
+            <div class="pain-desc">Incomplete mock payroll fixes create a second error cycle when the first live payroll runs &mdash; compounding delays and rework.</div>
+          </div>
+          <div class="pain-card" style="border-left-color:var(--grey);">
+            <div class="pain-icon"><i class="fa-solid fa-eye-slash" style="color:var(--grey);"></i></div>
+            <div class="pain-title">No Pre-Validation Exists</div>
+            <div class="pain-desc">Errors are only discovered when payroll calculation fails &mdash; blind trial and error. No mechanism to check configuration before attempting payroll.</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="s-foot"><span class="l">G&amp;A Partners &middot; Pre-Flight Validation Architecture &middot; Current State</span><span class="r">25% PA time &middot; 5-7 day testing &middot; Unpredictable go-live</span></div>
+    </section>
+
+
+    <!-- ============ TAB 2: SOLUTION — "Pre-Flight Validation Engine" ============ -->
+    <section class="slide" id="slide2">
+      <div class="s-hdr">
+        <div>
+          <div class="eye">Solution Architecture &middot; Pre-Flight Engine</div>
+          <h1>Payroll <span class="accent">Pre-Flight Validation</span> Engine</h1>
+        </div>
+        <div class="ga-logo"><span class="gw">G&amp;A <b>PARTNERS</b></span><span class="gs">Pre-Flight Validation</span></div>
+      </div>
+
+      <div class="s-body" style="gap:var(--sp-3);">
+
+        <!-- ========== SOURCE CONNECTORS (top bar) ========== -->
+        <div class="zone-label">Source Connectors <span class="muted">&mdash; data inputs to the validation engine</span></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-3);">
+          <!-- PrismHR -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--red);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-2);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-server"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">PrismHR</div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;">
+              <span class="chip key">Employee Roster</span>
+              <span class="chip key">WC Codes</span>
+              <span class="chip key">SUTA Rates</span>
+              <span class="chip key">Billing Rules</span>
+              <span class="chip key">Pay Groups</span>
+              <span class="chip key">Deduction Codes</span>
+            </div>
+          </div>
+          <!-- CSA Schedule 2 -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--c2);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-2);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--c2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-file-contract"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">CSA Schedule 2</div>
+              <span style="font-size:var(--text-xs);font-weight:700;color:#1a4f72;background:var(--c2-light);padding:2px 8px;border-radius:var(--radius-pill);">from CSA Extraction</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;">
+              <span class="chip blue">Expected WC Codes</span>
+              <span class="chip blue">Fee Structure</span>
+              <span class="chip blue">SUTA Coverage Type</span>
+              <span class="chip blue">Billing Frequency</span>
+            </div>
+          </div>
+          <!-- ClientSpace -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--pos);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-2);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--pos);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-building"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">ClientSpace</div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;">
+              <span class="chip green">State Registrations</span>
+              <span class="chip green">Employee Locations</span>
+              <span class="chip green">Contract Terms</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- VERTICAL ARROW DOWN -->
+        <div class="v-connector">
+          <i class="fa-solid fa-arrow-down" style="color:var(--navy);font-size:var(--text-xl);"></i>
+          <span class="conn-label" style="color:var(--navy);">Data feeds into validation engine</span>
+        </div>
+
+        <!-- ========== VALIDATION ENGINE (5 check cards in a row) ========== -->
+        <div class="zone-label">Validation Engine <span class="muted">&mdash; 5 automated checks run before payroll initialization</span></div>
+
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:var(--sp-3);">
+
+          <!-- Check 1: WC Code Match -->
+          <div class="check-card" style="border-top:4px solid var(--red);">
+            <div style="display:flex;align-items:center;gap:var(--sp-1);margin-bottom:var(--sp-2);">
+              <div style="width:20px;height:20px;border-radius:50%;background:var(--red);color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;">1</div>
+              <span class="cc-name" style="margin-bottom:0;">WC Code Match</span>
+            </div>
+            <div class="cc-rule"><strong>Rule:</strong> Every employee's WC code must exist in CSA Schedule 2</div>
+            <div class="cc-src"><i class="fa-solid fa-link" style="margin-right:3px;font-size:9px;"></i>PrismHR employees &times; CSA Schedule 2 WC codes</div>
+            <div class="cc-example fail"><i class="fa-solid fa-xmark" style="margin-right:3px;"></i>"J. Martinez" has 8810 &mdash; CSA specifies CT 5606/9012/9083</div>
+          </div>
+
+          <!-- Check 2: SUTA Rate Coverage -->
+          <div class="check-card" style="border-top:4px solid var(--amber);">
+            <div style="display:flex;align-items:center;gap:var(--sp-1);margin-bottom:var(--sp-2);">
+              <div style="width:20px;height:20px;border-radius:50%;background:var(--amber);color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;">2</div>
+              <span class="cc-name" style="margin-bottom:0;">SUTA Rate Coverage</span>
+            </div>
+            <div class="cc-rule"><strong>Rule:</strong> SUTA rate must be entered for every state with active employees</div>
+            <div class="cc-src"><i class="fa-solid fa-link" style="margin-right:3px;font-size:9px;"></i>PrismHR employee states &times; PrismHR SUTA rate table</div>
+            <div class="cc-example fail"><i class="fa-solid fa-xmark" style="margin-right:3px;"></i>12 employees in CT but no SUTA rate set</div>
+          </div>
+
+          <!-- Check 3: Billing Rules vs CSA -->
+          <div class="check-card" style="border-top:4px solid var(--c2);">
+            <div style="display:flex;align-items:center;gap:var(--sp-1);margin-bottom:var(--sp-2);">
+              <div style="width:20px;height:20px;border-radius:50%;background:var(--c2);color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;">3</div>
+              <span class="cc-name" style="margin-bottom:0;">Billing Rules vs CSA</span>
+            </div>
+            <div class="cc-rule"><strong>Rule:</strong> PrismHR billing rules must match CSA fee structure</div>
+            <div class="cc-src"><i class="fa-solid fa-link" style="margin-right:3px;font-size:9px;"></i>PrismHR billing config &times; CSA admin fee / PEPM fee</div>
+            <div class="cc-example pass"><i class="fa-solid fa-check" style="margin-right:3px;"></i>$125.00 PEPM matches CSA Schedule 2</div>
+          </div>
+
+          <!-- Check 4: Pay Group-Schedule Alignment -->
+          <div class="check-card" style="border-top:4px solid var(--pos);">
+            <div style="display:flex;align-items:center;gap:var(--sp-1);margin-bottom:var(--sp-2);">
+              <div style="width:20px;height:20px;border-radius:50%;background:var(--pos);color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;">4</div>
+              <span class="cc-name" style="margin-bottom:0;">Pay Group Alignment</span>
+            </div>
+            <div class="cc-rule"><strong>Rule:</strong> Pay group frequency must align with CSA billing frequency</div>
+            <div class="cc-src"><i class="fa-solid fa-link" style="margin-right:3px;font-size:9px;"></i>PrismHR pay groups &times; CSA billing terms</div>
+            <div class="cc-example pass"><i class="fa-solid fa-check" style="margin-right:3px;"></i>Semi-Monthly Salaried aligns with CSA</div>
+          </div>
+
+          <!-- Check 5: Deduction Code Validation -->
+          <div class="check-card" style="border-top:4px solid var(--amber);">
+            <div style="display:flex;align-items:center;gap:var(--sp-1);margin-bottom:var(--sp-2);">
+              <div style="width:20px;height:20px;border-radius:50%;background:var(--amber);color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;">5</div>
+              <span class="cc-name" style="margin-bottom:0;">Deduction Codes</span>
+            </div>
+            <div class="cc-rule"><strong>Rule:</strong> All deduction codes must reference valid, configured accounts</div>
+            <div class="cc-src"><i class="fa-solid fa-link" style="margin-right:3px;font-size:9px;"></i>PrismHR deduction codes &times; PrismHR chart of accounts</div>
+            <div class="cc-example fail"><i class="fa-solid fa-xmark" style="margin-right:3px;"></i>401K-EE references unconfigured account</div>
+          </div>
+        </div>
+
+        <!-- VERTICAL ARROW DOWN -->
+        <div class="v-connector">
+          <i class="fa-solid fa-arrow-down" style="color:var(--navy);font-size:var(--text-xl);"></i>
+          <span class="conn-label" style="color:var(--navy);">Generates actionable output</span>
+        </div>
+
+        <!-- ========== OUTPUT & SUTA PRE-APPROVAL (side by side) ========== -->
+        <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:var(--sp-3);">
+
+          <!-- Pass/Fail Report -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--navy);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-clipboard-check"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">Pass/Fail Report</div>
+            </div>
+
+            <!-- Summary line -->
+            <div style="background:var(--fog);border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-3);margin-bottom:var(--sp-3);">
+              <div style="font-size:var(--text-sm);font-weight:700;color:var(--navy);margin-bottom:var(--sp-1);">
+                <i class="fa-solid fa-chart-pie" style="color:var(--red);margin-right:4px;"></i>
+                Summary: <strong>X/5</strong> checks passed &middot; <strong>Y</strong> critical blockers &middot; <strong>Z</strong> warnings
+              </div>
+            </div>
+
+            <!-- Per-check status -->
+            <div style="font-family:var(--font-mono);font-size:var(--text-xs);line-height:2;margin-bottom:var(--sp-3);">
+              <div><span style="color:var(--red);font-weight:800;">FAIL</span> <span style="background:var(--red-light);color:#8a000a;padding:1px 6px;border-radius:2px;font-weight:700;">CRITICAL</span> WC Code Match</div>
+              <div><span style="color:var(--amber);font-weight:800;">FAIL</span> <span style="background:var(--amber-light);color:#5c3c00;padding:1px 6px;border-radius:2px;font-weight:700;">WARNING</span> SUTA Rate Coverage</div>
+              <div><span style="color:var(--pos);font-weight:800;">PASS</span> &nbsp;Billing Rules vs CSA</div>
+              <div><span style="color:var(--pos);font-weight:800;">PASS</span> &nbsp;Pay Group Alignment</div>
+              <div><span style="color:var(--amber);font-weight:800;">FAIL</span> <span style="background:var(--amber-light);color:#5c3c00;padding:1px 6px;border-radius:2px;font-weight:700;">WARNING</span> Deduction Codes</div>
+            </div>
+
+            <!-- Key benefit -->
+            <div style="background:var(--pos-light);border:1px solid #b3dfc8;border-radius:var(--radius-md);padding:var(--sp-3);font-size:var(--text-sm);color:#1a5c38;line-height:1.6;">
+              <i class="fa-solid fa-bullseye" style="margin-right:4px;color:var(--pos);"></i>
+              <strong>Eliminates the blind calculate-fail-fix cycle</strong> &mdash; PA knows exactly what to fix BEFORE attempting mock payroll. Each failure includes specific remediation steps.
+            </div>
+          </div>
+
+          <!-- SUTA Pre-Approval side card -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--pos);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--pos);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-check-double"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">SUTA Pre-Approval</div>
+            </div>
+
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;margin-bottom:var(--sp-3);">
+              Removes the executive approval queue from the critical path for the majority of deals:
+            </div>
+
+            <!-- Approval tiers -->
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-2) var(--sp-3);border-radius:var(--radius-md);background:var(--pos-light);color:#1a5c38;border:1px solid #b3dfc8;font-size:var(--text-sm);font-weight:700;">
+                <i class="fa-solid fa-circle-check" style="font-size:var(--text-base);flex-shrink:0;"></i>
+                <div>
+                  <div style="font-weight:800;">Standard Rates</div>
+                  <div style="font-weight:500;font-size:var(--text-xs);">Auto-approved during sales for known states</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-2) var(--sp-3);border-radius:var(--radius-md);background:var(--amber-light);color:#5c3c00;border:1px solid #f0d9a8;font-size:var(--text-sm);font-weight:700;">
+                <i class="fa-solid fa-triangle-exclamation" style="font-size:var(--text-base);flex-shrink:0;"></i>
+                <div>
+                  <div style="font-weight:800;">Non-Standard Rates Only</div>
+                  <div style="font-weight:500;font-size:var(--text-xs);">Escalated to executive review</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Impact -->
+            <div style="background:var(--c2-light);border:1px solid #b8d9ef;border-radius:var(--radius-md);padding:var(--sp-3);font-size:var(--text-sm);color:#1a4f72;line-height:1.5;">
+              <i class="fa-solid fa-rocket" style="margin-right:4px;"></i>
+              <strong>Removes approval queue from critical path for ~80% of deals</strong> &mdash; only exception cases require executive sign-off.
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== TECHNICAL IMPLEMENTATION (2x2 grid) ========== -->
+        <div class="zone-label" style="margin-top:var(--sp-4);">Technical Implementation <span class="muted">&mdash; how the engine is built and why</span></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);">
+
+          <!-- Card 1: Integration Layer -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--c2);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--c2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-plug"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">Integration Layer</div>
+              <span style="font-size:var(--text-xs);font-weight:700;color:#1a4f72;background:var(--c2-light);padding:2px 8px;border-radius:var(--radius-pill);">PrismHR API + Informer</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2);font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;">
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <span style="font-weight:800;color:var(--c2);min-width:60px;">Primary</span>
+                <span>PrismHR REST API for real-time employee roster, WC codes, pay group config</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <span style="font-weight:800;color:var(--pos);min-width:60px;">Secondary</span>
+                <span>Informer reporting engine for SUTA rate tables, billing rule exports, deduction code maps</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <span style="font-weight:800;color:var(--red);min-width:60px;">Not RPA</span>
+                <span>API integration provides structured, reliable data with error handling &mdash; RPA is brittle against UI changes and lacks schema validation</span>
+              </div>
+              <div style="background:var(--fog);border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-2) var(--sp-3);font-size:var(--text-xs);color:var(--grey);margin-top:var(--sp-1);">
+                <i class="fa-solid fa-info-circle" style="margin-right:4px;color:var(--c2);"></i>
+                <strong>Fallback:</strong> CSV/Excel export from Informer for environments without API access
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Validation Rule Engine -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--pos);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--pos);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-gears"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">Validation Rule Engine</div>
+              <span style="font-size:var(--text-xs);font-weight:700;color:#1a5c38;background:var(--pos-light);padding:2px 8px;border-radius:var(--radius-pill);">Deterministic</span>
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;margin-bottom:var(--sp-2);">
+              Rule-based, deterministic &mdash; <strong>no AI/ML needed</strong>. 5 rules execute sequentially, each with clear pass/fail criteria:
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-1);font-size:var(--text-xs);color:var(--text-secondary);line-height:1.5;">
+              <div style="padding:var(--sp-1) var(--sp-2);border-radius:var(--radius-sm);background:var(--red-light);color:#8a000a;">
+                <strong>WC Code:</strong> JOIN employee roster WC codes against CSA Schedule 2 extracted codes &mdash; flag any employee whose code is not in the CSA set
+              </div>
+              <div style="padding:var(--sp-1) var(--sp-2);border-radius:var(--radius-sm);background:var(--amber-light);color:#5c3c00;">
+                <strong>SUTA:</strong> Cross-reference PrismHR SUTA rate table against distinct employee states &mdash; flag any state with active employees but no rate entry
+              </div>
+              <div style="padding:var(--sp-1) var(--sp-2);border-radius:var(--radius-sm);background:var(--c2-light);color:#1a4f72;">
+                <strong>Billing:</strong> Compare PrismHR admin fee / PEPM config against CSA extracted fee structure &mdash; flag amount mismatches
+              </div>
+              <div style="padding:var(--sp-1) var(--sp-2);border-radius:var(--radius-sm);background:var(--pos-light);color:#1a5c38;">
+                <strong>Pay Group:</strong> Verify pay group frequency matches CSA billing frequency (semi-monthly, bi-weekly, etc.)
+              </div>
+              <div style="padding:var(--sp-1) var(--sp-2);border-radius:var(--radius-sm);background:var(--amber-light);color:#5c3c00;">
+                <strong>Deductions:</strong> Validate each active deduction code references a configured GL account in PrismHR
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Pass/Fail Output & Remediation -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--navy);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-clipboard-list"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">Pass/Fail Output &amp; Remediation</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2);font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;">
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <i class="fa-solid fa-arrow-right" style="color:var(--navy);margin-top:3px;font-size:10px;flex-shrink:0;"></i>
+                <span><strong>Per-check:</strong> status (PASS/FAIL), severity (Critical/Warning/Info), affected count</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <i class="fa-solid fa-arrow-right" style="color:var(--red);margin-top:3px;font-size:10px;flex-shrink:0;"></i>
+                <span><strong>Critical failures:</strong> block mock payroll initialization until resolved</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <i class="fa-solid fa-arrow-right" style="color:var(--navy);margin-top:3px;font-size:10px;flex-shrink:0;"></i>
+                <span>Each failure includes: what&rsquo;s wrong, which employees/codes affected, exact fix steps</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <i class="fa-solid fa-arrow-right" style="color:var(--navy);margin-top:3px;font-size:10px;flex-shrink:0;"></i>
+                <span><strong>Report format:</strong> on-screen interactive + PDF export for audit trail</span>
+              </div>
+              <div style="background:var(--c2-light);border:1px solid #b8d9ef;border-radius:var(--radius-md);padding:var(--sp-2) var(--sp-3);font-size:var(--text-xs);color:#1a4f72;margin-top:var(--sp-1);">
+                <i class="fa-solid fa-pen-to-square" style="margin-right:4px;"></i>
+                PA fixes issues inline via dropdowns and inputs &mdash; <strong>all changes pushed to PrismHR in one batch API call</strong>. No context-switching required.
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: SUTA Executive Pre-Approval Logic -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--amber);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--amber);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-shield-check"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">SUTA Executive Pre-Approval Logic</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2);font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;">
+              <div style="display:flex;gap:var(--sp-2);margin-bottom:var(--sp-1);">
+                <div style="flex:1;padding:var(--sp-2) var(--sp-3);border-radius:var(--radius-md);background:var(--pos-light);color:#1a5c38;border:1px solid #b3dfc8;font-size:var(--text-xs);">
+                  <div style="font-weight:800;margin-bottom:2px;">Standard States</div>
+                  <div>TX, CA, FL, NY, IL, etc. &mdash; auto-approved at deal close with standard CR% rate</div>
+                </div>
+                <div style="flex:1;padding:var(--sp-2) var(--sp-3);border-radius:var(--radius-md);background:var(--amber-light);color:#5c3c00;border:1px solid #f0d9a8;font-size:var(--text-xs);">
+                  <div style="font-weight:800;margin-bottom:2px;">Non-Standard States</div>
+                  <div>Flagged for executive SUTA Bill Rate Review</div>
+                </div>
+              </div>
+              <div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:1.6;">
+                <strong>Integration:</strong> During CSA extraction, SUTA coverage type is identified (CR%, Standard, Full).
+                If CR% &rarr; requires client-specific rate entry &rarr; auto-escalate to executive queue with <strong>1-week SLA</strong>.
+                If Standard &rarr; pre-approved rate applied, no executive review needed.
+              </div>
+              <div style="background:var(--pos-light);border:1px solid #b3dfc8;border-radius:var(--radius-md);padding:var(--sp-2) var(--sp-3);font-size:var(--text-xs);color:#1a5c38;margin-top:var(--sp-1);">
+                <i class="fa-solid fa-rocket" style="margin-right:4px;"></i>
+                <strong>Removes the executive approval bottleneck from the critical path for ~80% of deals</strong> &mdash; only exception cases require executive sign-off
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <div class="s-foot"><span class="l">G&amp;A Partners &middot; Pre-Flight Validation Architecture</span><span class="r">Sources &rarr; Validate &rarr; Report &rarr; Pre-Approve</span></div>
+    </section>
+
+
+    <!-- ============ TAB 3: INLINE FIX & BATCH PUSH ============ -->
+    <section class="slide" id="slide3">
+      <div class="s-hdr">
+        <div>
+          <div class="eye">Implementation &middot; Key Differentiator</div>
+          <h1>Inline Remediation &amp; <span class="accent">Batch Sync</span></h1>
+        </div>
+        <div class="ga-logo"><span class="gw">G&amp;A <b>PARTNERS</b></span><span class="gs">Pre-Flight Validation</span></div>
+      </div>
+
+      <div class="s-body" style="gap:var(--sp-3);">
+
+        <!-- ========== ZONE 1: WHY INLINE FIX MATTERS ========== -->
+        <div class="zone-label">Why Inline Fix Matters <span class="muted">&mdash; the key differentiator</span></div>
+
+        <div class="metric-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:var(--sp-2);">
+          <div class="metric-tile" style="border-top-color:var(--pos);">
+            <div class="metric-val" style="color:var(--pos);">15-20 min</div>
+            <div class="metric-lbl">Resolve Time</div>
+            <div class="metric-sub">vs 3-5 hours in calculate-fail-fix cycle</div>
+          </div>
+          <div class="metric-tile" style="border-top-color:var(--c2);">
+            <div class="metric-val" style="color:var(--c2);">Single Surface</div>
+            <div class="metric-lbl">Fix Location</div>
+            <div class="metric-sub">No context-switching to PrismHR</div>
+          </div>
+          <div class="metric-tile" style="border-top-color:var(--navy);">
+            <div class="metric-val" style="color:var(--navy);">1 Click</div>
+            <div class="metric-lbl">Batch Push</div>
+            <div class="metric-sub">All fixes pushed to PrismHR in one API call</div>
+          </div>
+        </div>
+
+        <!-- ========== ZONE 2: BEFORE VS AFTER ========== -->
+        <div class="zone-label">Before vs After <span class="muted">&mdash; side-by-side comparison</span></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-2);">
+
+          <!-- LEFT: Current State -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--red);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-circle-xmark"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--red);">Current State</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2);font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;">
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <div style="width:20px;height:20px;border-radius:50%;background:var(--red-light);color:#8a000a;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+                <span>PA runs mock payroll in PrismHR</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <div style="width:20px;height:20px;border-radius:50%;background:var(--red-light);color:#8a000a;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+                <span>System calculation errors appear (WC codes, SUTA, billing)</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <div style="width:20px;height:20px;border-radius:50%;background:var(--red-light);color:#8a000a;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+                <span>PA navigates to Employee Management in PrismHR</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <div style="width:20px;height:20px;border-radius:50%;background:var(--red-light);color:#8a000a;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div>
+                <span>PA manually fixes each error one at a time</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <div style="width:20px;height:20px;border-radius:50%;background:var(--red-light);color:#8a000a;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">5</div>
+                <span>PA re-initializes payroll</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <div style="width:20px;height:20px;border-radius:50%;background:var(--red);color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fa-solid fa-rotate-left" style="font-size:8px;"></i></div>
+                <span><strong>REPEAT until clean</strong> (3-5 iterations average)</span>
+              </div>
+            </div>
+            <div style="background:var(--red-light);border:1px solid #f5c0c7;border-radius:var(--radius-md);padding:var(--sp-3);font-size:var(--text-sm);color:#8a000a;margin-top:var(--sp-3);text-align:center;font-weight:700;">
+              <i class="fa-solid fa-clock" style="margin-right:4px;"></i>
+              3-5 hours average, unpredictable duration
+            </div>
+          </div>
+
+          <!-- RIGHT: With Pre-Flight + Inline Fix -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--pos);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--pos);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-circle-check"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--pos);">With Pre-Flight + Inline Fix</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2);font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;">
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <div style="width:20px;height:20px;border-radius:50%;background:var(--pos-light);color:#1a5c38;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+                <span>Pre-flight validation runs 5 automated checks</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <div style="width:20px;height:20px;border-radius:50%;background:var(--pos-light);color:#1a5c38;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+                <span>PA sees all issues at once with source citations</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <div style="width:20px;height:20px;border-radius:50%;background:var(--pos-light);color:#1a5c38;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+                <span>PA fixes WC codes, SUTA rates, deductions inline via dropdowns</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <div style="width:20px;height:20px;border-radius:50%;background:var(--pos-light);color:#1a5c38;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div>
+                <span>PA clicks <strong>&ldquo;Push All Fixes to PrismHR&rdquo;</strong> &mdash; one batch API call</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <div style="width:20px;height:20px;border-radius:50%;background:var(--pos);color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fa-solid fa-check" style="font-size:8px;"></i></div>
+                <span><strong>Mock payroll runs clean on first attempt</strong></span>
+              </div>
+            </div>
+            <div style="background:var(--pos-light);border:1px solid #b3dfc8;border-radius:var(--radius-md);padding:var(--sp-3);font-size:var(--text-sm);color:#1a5c38;margin-top:var(--sp-3);text-align:center;font-weight:700;">
+              <i class="fa-solid fa-bolt" style="margin-right:4px;"></i>
+              15-20 minutes, predictable and auditable
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== ZONE 3: INLINE FIX CAPABILITIES ========== -->
+        <div class="zone-label">Inline Fix Capabilities <span class="muted">&mdash; 3 fix types built into the validation report</span></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-2);">
+
+          <!-- Card 1: WC Code Inline Fix -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--red);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-code"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">WC Code Inline Fix</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2);font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;">
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <i class="fa-solid fa-list-dropdown" style="color:var(--red);margin-top:3px;font-size:10px;flex-shrink:0;"></i>
+                <span>Dropdown selector per employee with CSA-valid WC codes</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <i class="fa-solid fa-columns" style="color:var(--red);margin-top:3px;font-size:10px;flex-shrink:0;"></i>
+                <span>Shows current vs expected side by side</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <i class="fa-solid fa-circle-check" style="color:var(--pos);margin-top:3px;font-size:10px;flex-shrink:0;"></i>
+                <span>Real-time check turns green as each employee is fixed</span>
+              </div>
+            </div>
+            <!-- Example UI mockup -->
+            <div style="background:var(--fog);border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-2) var(--sp-3);font-family:var(--font-mono);font-size:var(--text-xs);margin-top:var(--sp-3);line-height:1.8;">
+              <div style="color:#8a000a;"><i class="fa-solid fa-xmark" style="margin-right:3px;"></i> J. Martinez: 8810 <span style="color:var(--grey);">&rarr;</span> <span style="background:var(--pos-light);color:#1a5c38;padding:1px 6px;border-radius:2px;">5606 &#9660;</span></div>
+              <div style="color:#8a000a;"><i class="fa-solid fa-xmark" style="margin-right:3px;"></i> S. Chen: 8810 <span style="color:var(--grey);">&rarr;</span> <span style="background:var(--pos-light);color:#1a5c38;padding:1px 6px;border-radius:2px;">9012 &#9660;</span></div>
+              <div style="color:#1a5c38;"><i class="fa-solid fa-check" style="margin-right:3px;"></i> R. Patel: 9083 <span style="color:var(--grey);">&mdash; matches CSA</span></div>
+            </div>
+          </div>
+
+          <!-- Card 2: SUTA Rate Inline Fix -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--amber);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--amber);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-percent"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">SUTA Rate Inline Fix</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2);font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;">
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <i class="fa-solid fa-keyboard" style="color:var(--amber);margin-top:3px;font-size:10px;flex-shrink:0;"></i>
+                <span>Rate input + rate type radio (Client Rate / Standard Rate)</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <i class="fa-solid fa-circle-check" style="color:var(--pos);margin-top:3px;font-size:10px;flex-shrink:0;"></i>
+                <span><strong>Standard Rate</strong> &rarr; <span style="background:var(--pos-light);color:#1a5c38;padding:1px 6px;border-radius:2px;font-weight:700;font-size:var(--text-xs);">Pre-Approved at Sales</span> badge, bypasses executive review</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <i class="fa-solid fa-triangle-exclamation" style="color:var(--amber);margin-top:3px;font-size:10px;flex-shrink:0;"></i>
+                <span><strong>Client Rate</strong> &rarr; <span style="background:var(--amber-light);color:#5c3c00;padding:1px 6px;border-radius:2px;font-weight:700;font-size:var(--text-xs);">Escalates to Executive Review</span> (1 week SLA)</span>
+              </div>
+            </div>
+            <!-- Source reference -->
+            <div style="background:var(--fog);border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-2) var(--sp-3);font-size:var(--text-xs);margin-top:var(--sp-3);color:var(--grey);">
+              <i class="fa-solid fa-database" style="margin-right:4px;color:var(--amber);"></i>
+              <strong>Source:</strong> Informer SUTA Bill Rate Report used for rate validation and pre-approval logic
+            </div>
+          </div>
+
+          <!-- Card 3: Batch Push to PrismHR -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--navy);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">Batch Push to PrismHR</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2);font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;">
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <i class="fa-solid fa-list-check" style="color:var(--navy);margin-top:3px;font-size:10px;flex-shrink:0;"></i>
+                <span>Shows all pending fixes with labels before push</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <i class="fa-solid fa-spinner" style="color:var(--c2);margin-top:3px;font-size:10px;flex-shrink:0;"></i>
+                <span>Animated push sequence: Authenticating &rarr; Writing WC codes &rarr; Writing SUTA rates &rarr; Writing deduction codes &rarr; Verifying</span>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
+                <i class="fa-solid fa-rotate" style="color:var(--pos);margin-top:3px;font-size:10px;flex-shrink:0;"></i>
+                <span>After push: Re-run Validation button appears, all checks turn green</span>
+              </div>
+            </div>
+            <!-- Push sequence mockup -->
+            <div style="background:var(--fog);border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-2) var(--sp-3);font-family:var(--font-mono);font-size:var(--text-xs);margin-top:var(--sp-3);line-height:1.8;">
+              <div style="color:var(--pos);"><i class="fa-solid fa-check" style="margin-right:3px;"></i> Authenticating... done</div>
+              <div style="color:var(--pos);"><i class="fa-solid fa-check" style="margin-right:3px;"></i> Writing WC codes (3)... done</div>
+              <div style="color:var(--pos);"><i class="fa-solid fa-check" style="margin-right:3px;"></i> Writing SUTA rates (1)... done</div>
+              <div style="color:var(--pos);"><i class="fa-solid fa-check" style="margin-right:3px;"></i> Writing deduction codes (1)... done</div>
+              <div style="color:var(--pos);font-weight:800;"><i class="fa-solid fa-circle-check" style="margin-right:3px;"></i> All fixes pushed successfully</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== ZONE 4: REMEDIATION ACTION PLAN ========== -->
+        <div class="zone-label">Remediation Action Plan <span class="muted">&mdash; live checklist that tracks fix progress</span></div>
+
+        <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--navy);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-3);flex-wrap:wrap;gap:var(--sp-2);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-clipboard-check"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">Remediation Action Plan &mdash; Live Checklist</div>
+            </div>
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--pos);background:var(--pos-light);padding:var(--sp-1) var(--sp-3);border-radius:var(--radius-pill);border:1px solid #b3dfc8;">
+              <i class="fa-solid fa-check-double" style="margin-right:4px;"></i>
+              <span id="resolvedCounter">X</span>/3 resolved
+            </div>
+          </div>
+
+          <!-- Action Items -->
+          <div style="display:flex;flex-direction:column;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+
+            <!-- Item 1 -->
+            <div style="display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);border-radius:var(--radius-md);background:var(--fog);border:1px solid var(--rule);">
+              <div style="width:22px;height:22px;border-radius:var(--radius-sm);border:2px solid var(--pos);background:var(--pos);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fa-solid fa-check" style="color:#fff;font-size:10px;"></i>
+              </div>
+              <div style="flex:1;">
+                <div style="font-size:var(--text-sm);font-weight:700;color:var(--grey);text-decoration:line-through;">Fix WC codes for 3 employees</div>
+                <div style="font-size:var(--text-xs);color:var(--grey);">
+                  <span style="background:var(--red-light);color:#8a000a;padding:1px 6px;border-radius:2px;font-weight:700;">CRITICAL</span>
+                  &mdash; blocks payroll
+                </div>
+              </div>
+              <span style="font-size:var(--text-xs);font-weight:700;color:var(--pos);background:var(--pos-light);padding:2px 8px;border-radius:var(--radius-pill);">Fixed inline</span>
+            </div>
+
+            <!-- Item 2 -->
+            <div style="display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);border-radius:var(--radius-md);background:var(--fog);border:1px solid var(--rule);">
+              <div style="width:22px;height:22px;border-radius:var(--radius-sm);border:2px solid var(--pos);background:var(--pos);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fa-solid fa-check" style="color:#fff;font-size:10px;"></i>
+              </div>
+              <div style="flex:1;">
+                <div style="font-size:var(--text-sm);font-weight:700;color:var(--grey);text-decoration:line-through;">Enter SUTA rate for CT or escalate to executive review</div>
+                <div style="font-size:var(--text-xs);color:var(--grey);">
+                  <span style="background:var(--amber-light);color:#5c3c00;padding:1px 6px;border-radius:2px;font-weight:700;">WARNING</span>
+                  &mdash; 1 week SLA
+                </div>
+              </div>
+              <span style="font-size:var(--text-xs);font-weight:700;color:var(--pos);background:var(--pos-light);padding:2px 8px;border-radius:var(--radius-pill);">Fixed inline</span>
+            </div>
+
+            <!-- Item 3 -->
+            <div style="display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);border-radius:var(--radius-md);background:var(--fog);border:1px solid var(--rule);">
+              <div style="width:22px;height:22px;border-radius:var(--radius-sm);border:2px solid var(--pos);background:var(--pos);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fa-solid fa-check" style="color:#fff;font-size:10px;"></i>
+              </div>
+              <div style="flex:1;">
+                <div style="font-size:var(--text-sm);font-weight:700;color:var(--grey);text-decoration:line-through;">Configure 401(k) account for deduction code 401K-EE</div>
+                <div style="font-size:var(--text-xs);color:var(--grey);">
+                  <span style="background:var(--amber-light);color:#5c3c00;padding:1px 6px;border-radius:2px;font-weight:700;">WARNING</span>
+                </div>
+              </div>
+              <span style="font-size:var(--text-xs);font-weight:700;color:var(--pos);background:var(--pos-light);padding:2px 8px;border-radius:var(--radius-pill);">Fixed inline</span>
+            </div>
+          </div>
+
+          <!-- All resolved bar -->
+          <div style="background:var(--pos-light);border:1px solid #b3dfc8;border-radius:var(--radius-md);padding:var(--sp-3) var(--sp-4);text-align:center;">
+            <div style="font-size:var(--text-sm);font-weight:800;color:#1a5c38;">
+              <i class="fa-solid fa-circle-check" style="margin-right:6px;font-size:var(--text-base);"></i>
+              All issues resolved inline &mdash; push fixes to PrismHR and initialize mock payroll
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="s-foot"><span class="l">G&amp;A Partners &middot; Pre-Flight Validation Architecture &middot; Inline Fix &amp; Batch Push</span><span class="r">Fix Inline &rarr; Batch Push &rarr; Clean Payroll</span></div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+const slides = [...document.querySelectorAll('.slide')];
+const tabs = [...document.querySelectorAll('.slide-tab')];
+function goTab(n, btn) {
+  slides.forEach((s, i) => s.classList.toggle('active', i === n));
+  tabs.forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+document.addEventListener('keydown', e => {
+  const curr = slides.findIndex(s => s.classList.contains('active'));
+  if (e.key === 'ArrowRight') goTab(Math.min(curr + 1, slides.length - 1), tabs[Math.min(curr + 1, slides.length - 1)]);
+  else if (e.key === 'ArrowLeft') goTab(Math.max(curr - 1, 0), tabs[Math.max(curr - 1, 0)]);
+});
+goTab(0, tabs[0]);
+</script>
+</body>
+</html>

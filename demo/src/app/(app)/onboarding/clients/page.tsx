@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 /* ================================================================
@@ -83,6 +84,7 @@ function Badge({ label, fg, bg, style }: { label: string; fg: string; bg: string
    ================================================================ */
 
 export default function ClientsPage() {
+  const router = useRouter();
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [hoveredBtn, setHoveredBtn] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState<'all' | ClientStatus>('all');
@@ -300,9 +302,8 @@ export default function ClientsPage() {
 
                 {/* Action buttons */}
                 <div style={{ display: 'flex', gap: 8, borderTop: '1px solid var(--border-primary)', paddingTop: 12 }}>
-                  <Link
-                    href="/onboarding/extract"
-                    onClick={e => e.stopPropagation()}
+                  <button
+                    onClick={e => { e.preventDefault(); e.stopPropagation(); router.push('/onboarding/extract'); }}
                     onMouseEnter={() => setHoveredBtn(`upload-${client.id}`)}
                     onMouseLeave={() => setHoveredBtn(null)}
                     style={{
@@ -317,11 +318,10 @@ export default function ClientsPage() {
                   >
                     <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: 11 }} />
                     Upload CSA
-                  </Link>
+                  </button>
                   {client.csaId && (
-                    <Link
-                      href={`/onboarding?csa=${client.csaId}`}
-                      onClick={e => e.stopPropagation()}
+                    <button
+                      onClick={e => { e.preventDefault(); e.stopPropagation(); router.push(`/onboarding?csa=${client.csaId}`); }}
                       onMouseEnter={() => setHoveredBtn(`view-${client.id}`)}
                       onMouseLeave={() => setHoveredBtn(null)}
                       style={{
@@ -338,7 +338,7 @@ export default function ClientsPage() {
                     >
                       <i className="fa-solid fa-file-lines" style={{ fontSize: 11 }} />
                       View Extraction
-                    </Link>
+                    </button>
                   )}
                 </div>
               </div>

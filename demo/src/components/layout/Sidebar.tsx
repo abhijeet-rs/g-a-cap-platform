@@ -22,7 +22,7 @@ export default function Sidebar() {
 
   const isOnboarding = pathname.startsWith('/onboarding');
   const [expanded, setExpanded] = useState<Record<string, boolean>>({
-    cap: !isOnboarding, prospecting: false, proposal: false, csa: isOnboarding,
+    cap: !isOnboarding, prospecting: false, proposal: false, csa: isOnboarding, preflight: pathname.startsWith('/onboarding/preflight'),
   });
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
@@ -267,6 +267,24 @@ export default function Sidebar() {
               onMouseEnter={() => setHoveredLink('/onboarding/extract')} onMouseLeave={() => setHoveredLink(null)}>
               <span style={{ width: 5, height: 5, borderRadius: '50%', background: isActive('/onboarding/extract') ? 'var(--text-primary)' : 'var(--color-slate-300)', flexShrink: 0, transition: 'background 0.1s' }} />
               Upload & Extract
+            </Link>
+          </div>
+        )}
+
+        <button onClick={() => toggle('preflight')} style={sectionBtn(expanded.preflight, pathname.startsWith('/onboarding/preflight'))}>
+          <span style={iconCol}><i className="fa-solid fa-plane-departure" style={{ fontSize: 'var(--type-nav)', color: 'inherit' }}></i></span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Pre-Flight Validation</div>
+            <div style={{ fontSize: 'var(--type-nav-sub)', fontWeight: 400, color: 'var(--text-tertiary)', marginTop: 1 }}>Payroll config checks</div>
+          </div>
+          <span style={chevron(expanded.preflight)}>&#9654;</span>
+        </button>
+        {expanded.preflight && (
+          <div style={{ marginBottom: 4 }}>
+            <Link href="/onboarding/preflight" style={subLink('/onboarding/preflight')}
+              onMouseEnter={() => setHoveredLink('/onboarding/preflight')} onMouseLeave={() => setHoveredLink(null)}>
+              <span style={{ width: 5, height: 5, borderRadius: '50%', background: isActive('/onboarding/preflight') ? 'var(--text-primary)' : 'var(--color-slate-300)', flexShrink: 0, transition: 'background 0.1s' }} />
+              Run Validation
             </Link>
           </div>
         )}

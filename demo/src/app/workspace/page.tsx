@@ -72,7 +72,7 @@ const workspaces: Workspace[] = [
     apps: [
       { name: 'CSA Extraction', desc: 'AI-assisted CSA document extraction, cross-validation, and onboarding data preparation.', icon: 'fa-file-invoice', status: 'active', href: '/onboarding/clients' },
       { name: 'Onboarding Tracker', desc: 'Client onboarding pipeline, milestones, and team workload.', icon: 'fa-list-check', status: 'soon' },
-      { name: 'Pre-Flight Validator', desc: 'Mock payroll pre-flight checks for PrismHR configuration.', icon: 'fa-plane-departure', status: 'soon' },
+      { name: 'Pre-Flight Validator', desc: 'Mock payroll pre-flight checks for PrismHR configuration.', icon: 'fa-plane-departure', status: 'active', href: '/onboarding/preflight' },
     ],
   },
 ];
