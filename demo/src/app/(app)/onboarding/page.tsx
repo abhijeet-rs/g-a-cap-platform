@@ -294,6 +294,7 @@ function OnboardingDashboardContent() {
   const [globalNote, setGlobalNote] = useState('');
   const [showUnlockConfirm, setShowUnlockConfirm] = useState(false);
   const [showApproveModal, setShowApproveModal] = useState(false);
+  const [caseCreated, setCaseCreated] = useState(false);
 
   // Drawer animation ref
   const drawerAnimRef = useRef<number | null>(null);
@@ -884,15 +885,19 @@ function OnboardingDashboardContent() {
                       Save Draft
                     </button>
                     <button
+                      onClick={() => {
+                        setCaseCreated(true);
+                        setToastMessage('ClientSpace case created — assigned to Sales team');
+                      }}
                       style={{
                         padding: '7px 14px', borderRadius: 6,
-                        border: 'none', background: '#1A7A4A',
+                        border: 'none', background: caseCreated ? '#5B6770' : '#1A7A4A',
                         color: '#fff', fontSize: 'var(--type-body-sm)', fontWeight: 600,
-                        cursor: 'pointer', transition: 'all 0.1s ease',
-                        boxShadow: '0 2px 6px rgba(26,122,74,0.2)',
+                        cursor: caseCreated ? 'default' : 'pointer', transition: 'all 0.1s ease',
+                        boxShadow: caseCreated ? 'none' : '0 2px 6px rgba(26,122,74,0.2)',
                       }}>
-                      <i className="fa-solid fa-check" style={{ marginRight: 6, fontSize: 12 }} />
-                      Approve
+                      <i className={`fa-solid ${caseCreated ? 'fa-circle-check' : 'fa-check'}`} style={{ marginRight: 6, fontSize: 12 }} />
+                      {caseCreated ? 'Approved & Case Created' : 'Approve'}
                     </button>
                     <button style={{
                       padding: '7px 14px', borderRadius: 6,
@@ -912,6 +917,37 @@ function OnboardingDashboardContent() {
                       <i className="fa-solid fa-ban" style={{ marginRight: 6, fontSize: 12 }} />
                       Reject
                     </button>
+                  </div>
+                )}
+
+                {/* Case creation notification */}
+                {caseCreated && (
+                  <div style={{
+                    marginTop: 10, padding: '12px 16px', borderRadius: 10,
+                    background: '#E4F2EA', border: '1px solid #B7DECA',
+                    display: 'flex', alignItems: 'center', gap: 12,
+                  }}>
+                    <div style={{ width: 36, height: 36, borderRadius: 8, background: '#1A7A4A15', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <i className="fa-solid fa-briefcase" style={{ fontSize: 16, color: '#1A7A4A' }} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 'var(--type-body-sm)', fontWeight: 700, color: '#1A4A2E', marginBottom: 2 }}>
+                        ClientSpace Case Auto-Created
+                      </div>
+                      <div style={{ fontSize: 'var(--type-badge)', color: '#2D6B47', lineHeight: 1.5 }}>
+                        Case <span style={{ fontWeight: 700, fontFamily: 'var(--font-mono)' }}>CS-2026-{activeDoc?.id.split('-').pop()}</span> created and assigned to <strong>Sales Team</strong> — Dana Whitfield (PM), Sam Cho (PA). 22 fields synced, onboarding tasks generated.
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                      <span style={{ fontSize: 9, fontWeight: 700, color: '#1A7A4A', background: '#D1EAD8', padding: '2px 8px', borderRadius: 4 }}>
+                        <i className="fa-solid fa-check" style={{ marginRight: 3, fontSize: 8 }} />
+                        Synced
+                      </span>
+                      <span style={{ fontSize: 9, fontWeight: 700, color: '#0074B8', background: '#E7F1FA', padding: '2px 8px', borderRadius: 4 }}>
+                        <i className="fa-solid fa-user-plus" style={{ marginRight: 3, fontSize: 8 }} />
+                        Assigned
+                      </span>
+                    </div>
                   </div>
                 )}
 
@@ -1121,70 +1157,98 @@ function OnboardingDashboardContent() {
                                   </div>
                                 )}
 
-                                {/* Value + confidence + page — single row */}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                  <input
-                                    type="text"
-                                    value={fieldEdits[field.id] !== undefined ? fieldEdits[field.id] : field.value}
-                                    onChange={(e) => editField(field.id, e.target.value)}
-                                    onClick={(e) => e.stopPropagation()}
-                                    placeholder={field.value === 'Not available in document' ? 'Enter value manually…' : ''}
-                                    style={{
-                                      flex: 1, padding: '5px 8px', borderRadius: 5,
-                                      border: '1px solid var(--border-primary)',
-                                      fontSize: 'var(--type-body-sm)', fontWeight: 500,
-                                      color: field.value === 'Not available in document' ? '#98A1A8' : 'var(--text-primary)',
-                                      background: field.value === 'Not available in document' ? '#FAFBFC' : '#fff',
-                                      fontStyle: field.value === 'Not available in document' ? 'italic' : 'normal',
-                                      outline: 'none', minWidth: 0,
-                                    }}
-                                    onFocus={(e) => { e.target.style.borderColor = '#0074B8'; e.target.style.color = 'var(--text-primary)'; e.target.style.fontStyle = 'normal'; }}
-                                    onBlur={(e) => { e.target.style.borderColor = ''; }}
-                                  />
+                                {/* Value + confidence + page — list rendering for comma-separated fields */}
+                                {(() => {
+                                  const LIST_FIELDS = ['Services Included', 'Offer Benefits', 'WC Codes'];
+                                  const displayValue = fieldEdits[field.id] !== undefined ? fieldEdits[field.id] : field.value;
+                                  const isListField = LIST_FIELDS.includes(field.field);
+                                  const listItems = isListField && displayValue && displayValue !== 'Not available in document'
+                                    ? displayValue.split(',').map((s: string) => s.trim()).filter(Boolean)
+                                    : null;
 
-                                  {(() => {
-                                    const isNotAvailable = field.value === 'Not available in document';
-                                    return isNotAvailable ? (
-                                      /* Not extracted — show dash, no page pill */
-                                      <span style={{
-                                        fontSize: 9, fontWeight: 600, color: '#98A1A8',
-                                        background: '#F1F3F5', borderRadius: 4, padding: '2px 7px',
-                                        whiteSpace: 'nowrap',
-                                      }}>
-                                        Not extracted
-                                      </span>
-                                    ) : (
-                                      /* Normal field — confidence + page pill */
-                                      <>
-                                        <span style={{
-                                          fontSize: 10, fontWeight: 700, minWidth: 32, textAlign: 'right',
-                                          color: field.confidence >= 0.90 ? '#1A7A4A' : field.confidence >= 0.80 ? '#B0690A' : '#C60C30',
-                                        }}>
-                                          {(field.confidence * 100).toFixed(0)}%
-                                        </span>
-                                        <button
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            setSelectedFieldId(field.id);
-                                            setPdfPage(field.sourcePageNum);
-                                            setPdfSearchText(field.value || '');
-                                          }}
-                                          title={`Navigate to page ${field.sourcePageNum} — highlight source text`}
-                                          style={{
-                                            fontSize: 9, fontWeight: 700, color: '#5A45C7',
-                                            background: '#F8F6FE', border: '1px solid #E8E0FD',
-                                            borderRadius: 4, padding: '2px 6px',
-                                            cursor: 'pointer', whiteSpace: 'nowrap',
-                                            display: 'flex', alignItems: 'center', gap: 3,
-                                          }}
-                                        >
-                                          <i className="fa-solid fa-file-lines" style={{ fontSize: 8 }} />
-                                          Pg {field.sourcePageNum}
-                                        </button>
-                                      </>
+                                  if (listItems && listItems.length > 1) {
+                                    return (
+                                      <div>
+                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 6 }}>
+                                          {listItems.map((item: string, idx: number) => (
+                                            <span key={idx} style={{
+                                              fontSize: 'var(--type-badge)', fontWeight: 600,
+                                              color: '#1B2D3D', background: '#E7F1FA',
+                                              border: '1px solid #D0E3F1',
+                                              padding: '3px 10px', borderRadius: 6,
+                                              display: 'inline-flex', alignItems: 'center', gap: 4,
+                                            }}>
+                                              <i className="fa-solid fa-check" style={{ fontSize: 8, color: '#1A7A4A' }} />
+                                              {item}
+                                            </span>
+                                          ))}
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                          <span style={{
+                                            fontSize: 10, fontWeight: 700, minWidth: 32, textAlign: 'right',
+                                            color: field.confidence >= 0.90 ? '#1A7A4A' : field.confidence >= 0.80 ? '#B0690A' : '#C60C30',
+                                          }}>
+                                            {(field.confidence * 100).toFixed(0)}%
+                                          </span>
+                                          <button
+                                            onClick={(e) => { e.stopPropagation(); setSelectedFieldId(field.id); setPdfPage(field.sourcePageNum); setPdfSearchText(field.value || ''); }}
+                                            title={`Navigate to page ${field.sourcePageNum}`}
+                                            style={{ fontSize: 9, fontWeight: 700, color: '#5A45C7', background: '#F8F6FE', border: '1px solid #E8E0FD', borderRadius: 4, padding: '2px 6px', cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 3 }}
+                                          >
+                                            <i className="fa-solid fa-file-lines" style={{ fontSize: 8 }} />
+                                            Pg {field.sourcePageNum}
+                                          </button>
+                                        </div>
+                                      </div>
                                     );
-                                  })()}
-                                </div>
+                                  }
+
+                                  return (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                      <input
+                                        type="text"
+                                        value={displayValue}
+                                        onChange={(e) => editField(field.id, e.target.value)}
+                                        onClick={(e) => e.stopPropagation()}
+                                        placeholder={field.value === 'Not available in document' ? 'Enter value manually…' : ''}
+                                        style={{
+                                          flex: 1, padding: '5px 8px', borderRadius: 5,
+                                          border: '1px solid var(--border-primary)',
+                                          fontSize: 'var(--type-body-sm)', fontWeight: 500,
+                                          color: field.value === 'Not available in document' ? '#98A1A8' : 'var(--text-primary)',
+                                          background: field.value === 'Not available in document' ? '#FAFBFC' : '#fff',
+                                          fontStyle: field.value === 'Not available in document' ? 'italic' : 'normal',
+                                          outline: 'none', minWidth: 0,
+                                        }}
+                                        onFocus={(e) => { e.target.style.borderColor = '#0074B8'; e.target.style.color = 'var(--text-primary)'; e.target.style.fontStyle = 'normal'; }}
+                                        onBlur={(e) => { e.target.style.borderColor = ''; }}
+                                      />
+
+                                      {(() => {
+                                        const isNotAvailable = field.value === 'Not available in document';
+                                        return isNotAvailable ? (
+                                          <span style={{ fontSize: 9, fontWeight: 600, color: '#98A1A8', background: '#F1F3F5', borderRadius: 4, padding: '2px 7px', whiteSpace: 'nowrap' }}>
+                                            Not extracted
+                                          </span>
+                                        ) : (
+                                          <>
+                                            <span style={{ fontSize: 10, fontWeight: 700, minWidth: 32, textAlign: 'right', color: field.confidence >= 0.90 ? '#1A7A4A' : field.confidence >= 0.80 ? '#B0690A' : '#C60C30' }}>
+                                              {(field.confidence * 100).toFixed(0)}%
+                                            </span>
+                                            <button
+                                              onClick={(e) => { e.stopPropagation(); setSelectedFieldId(field.id); setPdfPage(field.sourcePageNum); setPdfSearchText(field.value || ''); }}
+                                              title={`Navigate to page ${field.sourcePageNum}`}
+                                              style={{ fontSize: 9, fontWeight: 700, color: '#5A45C7', background: '#F8F6FE', border: '1px solid #E8E0FD', borderRadius: 4, padding: '2px 6px', cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 3 }}
+                                            >
+                                              <i className="fa-solid fa-file-lines" style={{ fontSize: 8 }} />
+                                              Pg {field.sourcePageNum}
+                                            </button>
+                                          </>
+                                        );
+                                      })()}
+                                    </div>
+                                  );
+                                })()}
                               </div>
                             );
                           })}
@@ -1232,13 +1296,17 @@ function OnboardingDashboardContent() {
                     <PDFViewer
                       url={`http://localhost:8000/api/csa/${activeDoc?.id}/pdf`}
                       pageNumber={pdfPage}
-                      searchText={pdfSearchText || undefined}
+                      searchText={(() => {
+                        if (!selectedFieldId) return pdfSearchText || undefined;
+                        const sf = csaFields.find(fld => fld.id === selectedFieldId);
+                        if (sf?.boundingBox) return undefined;
+                        return pdfSearchText || undefined;
+                      })()}
                       highlight={(() => {
                         if (!selectedFieldId) return undefined;
                         const f = csaFields.find(fld => fld.id === selectedFieldId);
                         if (!f || f.sourcePageNum === 0) return undefined;
                         if (f.boundingBox) {
-                          // Bounding box is already in percentages from the backend
                           return {
                             page_number: f.sourcePageNum,
                             x: f.boundingBox.x,
@@ -1247,7 +1315,18 @@ function OnboardingDashboardContent() {
                             height: f.boundingBox.height,
                           };
                         }
-                        return undefined;
+                        // No bounding box from API — generate a highlight region
+                        // Use field index within same-page fields to stagger y-position
+                        const samePageFields = csaFields.filter(fld => fld.sourcePageNum === f.sourcePageNum);
+                        const idxOnPage = samePageFields.findIndex(fld => fld.id === f.id);
+                        const yOffset = 10 + (idxOnPage * 18) % 70;
+                        return {
+                          page_number: f.sourcePageNum,
+                          x: 8,
+                          y: yOffset,
+                          width: 80,
+                          height: 14,
+                        };
                       })()}
                       fieldLabel={selectedFieldId ? csaFields.find(f => f.id === selectedFieldId)?.field : undefined}
                       onPageChange={(pg) => setPdfPage(pg)}

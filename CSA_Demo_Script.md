@@ -1,7 +1,7 @@
 # CSA Extraction — Demo Recording Script
 
-**Duration:** ~3-4 minutes
-**Flow:** Slides → ClientSpace Clients → Upload CSA → Review Drawer → Approval → Lock/Unlock
+**Duration:** ~5-6 minutes
+**Flow:** Slides → ClientSpace Integration → Handoff Data → Upload with Schema Editor → Review Drawer (services as list, all PRD fields) → Approval → Case Creation → Lock/Unlock
 
 ---
 
@@ -21,101 +21,140 @@
 
 > "We're replacing this with a 4-step AI pipeline:"
 >
-> 1. **AI Extraction** — LlamaParse parses the PDF, Claude Haiku extracts structured fields following a defined schema — fee structure, included and optional services, SUTA state coverage, billing exceptions, IRS classification.
+> 1. **AI Extraction** — LlamaParse parses the PDF, AI Extraction Agent extracts structured fields following a configurable schema — fee structure, services, SUTA, WC codes, ownership, cyber policy.
 > 2. **Cross-Validation** — LLM-driven field-to-field discrepancy check against the ClientSpace handoff page data.
 > 3. **Human Review** — Extracted fields with clear linkage back to each section of the PDF. Approval gates, comments, mismatch flags.
-> 4. **Downstream Sync** — On approval, data flows directly to ClientSpace — client record, onboarding case, tasks, document collection triggers.
+> 4. **Downstream Sync** — On approval, auto-creates a ClientSpace case, assigns the Sales team, and syncs all extracted data.
 
 *(Pause 3 seconds on the diagram)*
 
 ---
 
-## STEP 1: ClientSpace Clients (20 sec)
+## SLIDE 3: ClientSpace Integration (15 sec)
 
-**[Switch to app → Workspace → Onboarding → CSA Extraction]**
+**[Click Tab 3: ClientSpace Integration]**
 
-> "We start with clients synced from ClientSpace. Each card shows the client name, ClientSpace ID, assigned PM and PA, onboarding stage, and employee count."
-
-**[Hover over Acme Corp card]**
-
-> "I'll click on Acme Corp — notice the PM is Dana Whitfield and the PA is Sam Cho. Each role sees only their relevant fields during review."
+> "This shows how handoff data flows from ClientSpace into our cross-validation. The handoff page is the source of truth — it contains what Sales committed to at deal close. We pull this data automatically and compare it field-by-field against what's in the signed CSA."
 
 ---
 
-## STEP 2: Upload CSA (15 sec)
+## SLIDE 4: Template Engine (15 sec)
+
+**[Click Tab 4: Template Engine]**
+
+> "The extraction schema is fully configurable. Here are the default fields — fee structure, services, SUTA, ownership, cyber policy — all the PRD-specified fields. And notice the '+' button: business users can add new fields at any time. Since extraction is LLM-driven, new fields just work — no code changes, no regex, zero configuration."
+
+---
+
+## SLIDE 5: Auto Case Creation (15 sec)
+
+**[Click Tab 5: Auto Case Creation]**
+
+> "When a reviewer approves, the system automatically creates a ClientSpace case, assigns PM and PA, generates mismatch resolution tasks, and sends notifications. The entire manual BA re-entry cycle is eliminated."
+
+---
+
+## SLIDE 6: End-to-End Flow (15 sec)
+
+**[Click Tab 6: End-to-End Flow]**
+
+> "This is the complete downstream picture. CSA Extraction pushes to ClientSpace — case creation, team assignment, tasks. Pre-Flight Validation pushes to PrismHR — WC codes, SUTA rates, deduction mappings. Two different downstream targets, connected by the CSA Schedule 2 data that flows from Initiative D into Initiative F as the source of truth."
+
+---
+
+## STEP 1: ClientSpace Clients + Handoff Data (30 sec)
+
+**[Switch to app → Workspace → Onboarding → CSA Extraction → Clients]**
+
+> "We start with clients synced from ClientSpace. Each card shows client name, ClientSpace ID, assigned PM and PA, and employee count."
+
+**[Click on Acme Corp]**
+
+> "Here's Acme Corp's detail view. Notice the tabs — PM Review, PA Review, All Fields, ClientSpace Validation, and Handoff Data."
+
+**[Click Handoff Data tab]**
+
+> "This is the source of truth screen — the data pulled directly from the ClientSpace handoff page. Every field shows its value, source attribution, and sync status. This makes crystal clear where cross-validation data comes from."
+
+---
+
+## STEP 2: Upload CSA with Schema Editor (20 sec)
 
 **[Click Upload & Extract from sidebar]**
 
-> "I drop the signed CSA PDF here. The system validates the file — checks PDF integrity, rejects corrupted or password-protected documents — then redirects me to the extractions dashboard."
+> "Before uploading, notice the 'Edit Schema' button — this opens our configurable template engine."
+
+**[Click Edit Schema button]**
+
+> "Here's the extraction schema. All PRD fields are here — fee structure, services, SUTA, ownership, cyber policy, tax rates. Each field can be toggled on or off. And at the bottom of any category, the '+' button lets you add a custom field."
+
+**[Click '+' in a category, type 'Indemnification Cap', press Enter]**
+
+> "I just added 'Indemnification Cap' as a custom field. Next upload will automatically extract this from the CSA — no code changes needed."
+
+**[Click Save Schema, then close modal]**
 
 **[Drop CSA PDF → watch redirect to dashboard]**
 
-> "The new entry appears immediately with a processing indicator showing the filename. LlamaParse is parsing the PDF page-by-page, then Claude Haiku extracts 35+ structured fields with confidence scores."
+> "Now I drop the CSA. The system validates the file, uploads it, and starts extraction."
 
 *(Wait for spinner → eye icon transition, ~10 sec)*
 
 ---
 
-## STEP 3: Review Drawer — Fields + PDF (60 sec)
+## STEP 3: Review Drawer — All PRD Fields + Services as List (60 sec)
 
 **[Click Eye icon on the completed row]**
 
-> "The extraction is complete. I click the eye icon to open the review drawer."
+> "The extraction is complete. Let me open the review drawer."
 
-### 3a. Extracted Fields (Left Panel)
+### 3a. PRD Fields Visible
 
 **[Show left panel — scroll through categories]**
 
-> "On the left — every extracted field is grouped by category: General Information, Contract Terms, Fee Structure, Services, Tax & Compliance, Benefits, Retirement."
->
-> "Each field shows its extracted value, a confidence score, and a page pointer — 'Pg 1', 'Pg 10' — that links directly back to the source location in the PDF."
+> "All PRD-specified fields are here and correctly extracted: fee structure with Admin Fee at $125 PEPM, services rendered as a formatted list — not a raw text string — contract term, SUTA coverage, ownership structure as LLC, and cyber insurance."
 
-### 3b. PDF Highlights (Right Panel)
+### 3b. Services as List
 
-**[Click 'Effective Date' field → watch PDF scroll to page 1 with yellow highlight]**
+**[Scroll to Services Included field]**
 
-> "When I click a field — or its page pointer — the PDF on the right scrolls to the exact page and highlights the source text in yellow, directly inside the document. This is the clear citation linkage."
+> "Notice Services Included is displayed as individual tags — Talent Acquisition, Payroll Administration, Benefits Administration, Employee Relations, Training & Development, Risk Management, Regulatory Compliance, Separation. Each service is clearly separated and readable."
 
-**[Click 'Admin Fee' field → watch PDF scroll to page 10]**
+### 3c. PDF Highlights with Correct Citations
 
-> "$125 per covered employee per month — highlighted right on the pricing sheet, page 10."
+**[Click 'Number of Employees' field → watch PDF highlight]**
 
-**[Click 'WC Codes' field]**
+> "When I click Number of Employees, the PDF highlights the exact text: 'Estimated Number of Covered Employees: 38' — pointing to the right location on page 1, not the company name."
 
-> "WC codes CT 5606, CT 9012, CT 9083 — pulled from the workers' compensation schedule."
+**[Click 'Admin Fee' → PDF scrolls to page 10]**
 
-### 3c. ClientSpace Mismatch Flags
+> "$125 per covered employee per month — highlighted on the pricing sheet."
+
+**[Click 'Cyber Insurance Fee' field]**
+
+> "Cyber insurance at $60 per client FEIN per month — extracted from the fee schedule."
+
+### 3d. ClientSpace Mismatch Flags
 
 **[Scroll to fields with red flags]**
 
-> "Notice the red flags — these are automatic ClientSpace mismatches. The admin fee in the CSA says $125 PEPM, but ClientSpace has $120. SUTA coverage says Client Rate CR%, but ClientSpace has Standard. Effective date says July 1st, ClientSpace says August 1st."
->
-> "These discrepancies are caught immediately on extraction — before onboarding begins — replacing the manual discovery that used to happen weeks later in meetings."
-
-### 3d. Review Notes
-
-**[Scroll to bottom — show Review Notes textarea]**
-
-> "One global review notes field for the entire extraction — the reviewer can add corrections, flag items for BA review, or note anything that needs discussion."
+> "Red flags show automatic mismatches: admin fee CSA says $125 but ClientSpace has $120. SUTA coverage says CR% vs Standard. These are caught immediately — not weeks later."
 
 ---
 
-## STEP 4: Approval & Downstream Sync (20 sec)
+## STEP 4: Approval & Auto Case Creation (30 sec)
 
 **[Point to action buttons in drawer header]**
 
-> "The reviewer has four actions: Save Draft to continue later, Approve to trigger downstream sync, Re-run Extraction if the results need improvement, or Reject for manual processing."
+> "The reviewer has four actions: Save Draft, Approve, Re-run Extraction, or Reject."
 
 **[Click Approve]**
 
-> "On approval, the system automatically:"
-> - Creates or updates the ClientSpace client record
-> - Opens an onboarding case with PM and PA assigned
-> - Creates mismatch resolution tasks for the BA
-> - Attaches the original CSA document and extraction summary
-> - Triggers automated data collection requests to the client contact
->
-> "This replaces the entire manual BA re-entry cycle. Extracted CSA data flows directly to ClientSpace with a full audit trail."
+> "Watch what happens — the button changes to 'Approved & Case Created', a toast notification confirms the case was created, and a green banner appears showing the details."
+
+**[Point to case creation banner]**
+
+> "Case CS-2026 auto-created in ClientSpace, assigned to Dana Whitfield as PM and Sam Cho as PA. 22 fields synced, onboarding tasks generated. This replaces the entire manual BA re-entry cycle — from upload to assigned case in minutes, not days."
 
 ---
 
@@ -123,15 +162,13 @@
 
 **[Navigate to an approved CSA → click Eye icon → show locked state]**
 
-> "Approved extractions are locked. The action buttons are replaced with an 'Approved & Synced to ClientSpace' indicator. Re-editing requires an explicit unlock with a warning — because changes will modify downstream ClientSpace entries including client records, cases, and task assignments."
+> "Approved extractions are locked. Re-editing requires an explicit unlock with a warning — because changes will modify downstream ClientSpace entries."
 
 ---
 
 ## CLOSE (10 sec)
 
-> "In summary — we upload a CSA, AI extracts 35+ fields with confidence scores, cross-validates every field against ClientSpace handoff data, flags mismatches with red indicators, highlights source text directly inside the PDF, and on approval syncs everything to ClientSpace."
->
-> "Four independent manual reviews reduced to one focused validation step."
+> "In summary: configurable extraction schema, handoff page as source of truth, services shown as clean lists, all PRD fields visible with correct PDF citations, and on approval — auto case creation with Sales assignment. Four independent manual reviews reduced to one AI-assisted validation step."
 
 ---
 
@@ -139,12 +176,14 @@
 
 | Topic | Detail |
 |-------|--------|
-| **Extraction engine** | LlamaParse (PDF→Markdown) + Claude Haiku (LLM schema extraction) |
-| **Fields extracted** | 35+ per CSA — fee structure, services, SUTA, WC codes, billing, IRS classification, dates, contacts |
+| **Extraction engine** | LlamaParse (PDF→Markdown) + AI Extraction Agent (LLM schema extraction) |
+| **Fields extracted** | 35+ per CSA — fee structure, services, SUTA, WC codes, billing, ownership, cyber policy, tax |
 | **Confidence scoring** | Per-field: >90% auto-populated, 80-90% flagged for review, <80% manual entry |
-| **Cross-validation** | LLM-driven field-to-field check: `csa.admin_fee ↔ cs.fee_structure`, `csa.suta_coverage ↔ cs.suta_type`, etc. |
-| **PDF highlights** | Tesseract OCR word-level bounding boxes → percentage-positioned yellow overlays with mixBlendMode: multiply |
-| **PM vs PA views** | PM sees scope, services, dates, contacts; PA sees fees, SUTA, WC, billing, tax classification |
-| **Masking** | Real customer names replaced with aliases in demo UI — only Organization Name is masked |
+| **Cross-validation** | LLM-driven field-to-field check against ClientSpace handoff page data |
+| **PDF highlights** | OCR bounding boxes → percentage-positioned yellow overlays with correct per-field citations |
+| **Services rendering** | Comma-separated services displayed as formatted tag list, not raw string |
+| **Template engine** | Configurable schema editor with + button for custom fields; LLM handles any new field automatically |
+| **Handoff data** | Dedicated tab showing ClientSpace handoff page as source of truth with sync status |
+| **Auto case creation** | On approval: case auto-created, PM+PA assigned, tasks generated, notifications sent |
 | **Downstream sync** | Client record, onboarding case, BA review tasks, document attachment, collection triggers |
-| **Audit trail** | Every extraction, edit, approval, and sync logged with actor + timestamp |
+| **Audit trail** | Every extraction, edit, approval, case creation, and sync logged with actor + timestamp |

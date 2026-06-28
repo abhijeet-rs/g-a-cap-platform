@@ -3,18 +3,13 @@
     "field_name": "Organization Name",
     "field_value": "Acme Corp",
     "confidence": 0.95,
-    "source_citation": "Tsiro Real Estate Management, LLC",
+    "source_citation": "Acme Corp (hereinafter, the 'Client')",
     "category": "General Information",
     "requires_review": false,
     "is_masked": true,
     "page_number": 1,
-    "source_text": "Tsiro Real Estate Management, LLC",
-    "bounding_box": {
-      "x": 20.6,
-      "y": 14.0,
-      "width": 48.9,
-      "height": 1.5
-    }
+    "source_text": "Acme Corp (hereinafter, the Client)",
+    "bounding_box": { "x": 55, "y": 12, "width": 40, "height": 10 }
   },
   {
     "field_name": "Contract Type",
@@ -26,29 +21,19 @@
     "is_masked": false,
     "page_number": 1,
     "source_text": "CUSTOMER SERVICE AGREEMENT",
-    "bounding_box": {
-      "x": 34.6,
-      "y": 7.2,
-      "width": 21.0,
-      "height": 0.8
-    }
+    "bounding_box": { "x": 20, "y": 6, "width": 55, "height": 3 }
   },
   {
     "field_name": "Number of Employees",
     "field_value": "38",
     "confidence": 0.92,
-    "source_citation": "Estimated Number of Covered Employees: 38",
+    "source_citation": "Per Covered Employee Per Month — 38 employees",
     "category": "General Information",
     "requires_review": false,
     "is_masked": false,
-    "page_number": 1,
-    "source_text": "Estimated Number of Covered Employees: 38",
-    "bounding_box": {
-      "x": 54.0,
-      "y": 14.6,
-      "width": 22.0,
-      "height": 1.2
-    }
+    "page_number": 10,
+    "source_text": "Per Covered Employee Per Month",
+    "bounding_box": { "x": 5, "y": 29, "width": 88, "height": 6 }
   },
   {
     "field_name": "Decision Maker",
@@ -59,13 +44,8 @@
     "requires_review": true,
     "is_masked": false,
     "page_number": 3,
-    "source_text": "Print Name: Elefterios Tsiropoulos; Title: Owner",
-    "bounding_box": {
-      "x": 9.3,
-      "y": 15.0,
-      "width": 43.5,
-      "height": 3.3
-    }
+    "source_text": "Print Name: Elefterios Tsiropoulos; Title: Owner; Date Signed: 6/12/26",
+    "bounding_box": { "x": 5, "y": 7, "width": 88, "height": 17 }
   },
   {
     "field_name": "Effective Date",
@@ -77,12 +57,7 @@
     "is_masked": false,
     "page_number": 1,
     "source_text": "Anticipated Effective Date: 07/01/2026",
-    "bounding_box": {
-      "x": 13.8,
-      "y": 24.3,
-      "width": 58.4,
-      "height": 1.4
-    }
+    "bounding_box": { "x": 10, "y": 23, "width": 70, "height": 3 }
   },
   {
     "field_name": "Contract Term",
@@ -94,12 +69,7 @@
     "is_masked": false,
     "page_number": 1,
     "source_text": "Initial Term: One (1) Year",
-    "bounding_box": {
-      "x": 13.8,
-      "y": 26.1,
-      "width": 29.8,
-      "height": 1.3
-    }
+    "bounding_box": { "x": 10, "y": 25, "width": 55, "height": 3 }
   },
   {
     "field_name": "Services Included",
@@ -110,13 +80,8 @@
     "requires_review": false,
     "is_masked": false,
     "page_number": 5,
-    "source_text": "Schedule 1.1 Included Services",
-    "bounding_box": {
-      "x": 34.0,
-      "y": 6.3,
-      "width": 22.4,
-      "height": 0.8
-    }
+    "source_text": "Talent Acquisition, Payroll Administration, Benefits Administration",
+    "bounding_box": { "x": 5, "y": 12, "width": 88, "height": 73 }
   },
   {
     "field_name": "SUTA Coverage",
@@ -128,12 +93,7 @@
     "is_masked": false,
     "page_number": 10,
     "source_text": "SUTA: CR%",
-    "bounding_box": {
-      "x": 8.5,
-      "y": 18.5,
-      "width": 15.0,
-      "height": 1.2
-    }
+    "bounding_box": { "x": 5, "y": 9, "width": 88, "height": 17 }
   },
   {
     "field_name": "WC Codes",
@@ -145,29 +105,19 @@
     "is_masked": false,
     "page_number": 10,
     "source_text": "STATE WC Code: CT 5606, CT 9012, CT 9083",
-    "bounding_box": {
-      "x": 5.0,
-      "y": 13.5,
-      "width": 20.0,
-      "height": 6.0
-    }
+    "bounding_box": { "x": 5, "y": 9, "width": 88, "height": 17 }
   },
   {
     "field_name": "Utilize TLM",
     "field_value": "Yes - Time/Labor Management System available",
     "confidence": 0.85,
-    "source_citation": "Access to time/labor management system",
+    "source_citation": "Access to time/labor management system (TLM)",
     "category": "Time & Labor",
     "requires_review": true,
     "is_masked": false,
     "page_number": 9,
-    "source_text": "Access to time/labor management system",
-    "bounding_box": {
-      "x": 8.6,
-      "y": 27.5,
-      "width": 73.5,
-      "height": 7.8
-    }
+    "source_text": "Access to a time/labor management system (TLM)",
+    "bounding_box": { "x": 8, "y": 28, "width": 82, "height": 5 }
   },
   {
     "field_name": "Time Tracking Method",
@@ -179,12 +129,7 @@
     "is_masked": false,
     "page_number": 9,
     "source_text": "time/labor management system",
-    "bounding_box": {
-      "x": 8.6,
-      "y": 27.5,
-      "width": 73.5,
-      "height": 7.8
-    }
+    "bounding_box": { "x": 8, "y": 28, "width": 82, "height": 5 }
   },
   {
     "field_name": "Track PTO",
@@ -195,13 +140,8 @@
     "requires_review": true,
     "is_masked": false,
     "page_number": 9,
-    "source_text": "PTO tracking available through TLM",
-    "bounding_box": {
-      "x": 15.0,
-      "y": 30.0,
-      "width": 50.0,
-      "height": 1.5
-    }
+    "source_text": "paid time off tracking tool",
+    "bounding_box": { "x": 8, "y": 28, "width": 82, "height": 5 }
   },
   {
     "field_name": "Offer Benefits",
@@ -213,12 +153,7 @@
     "is_masked": false,
     "page_number": 6,
     "source_text": "Group medical, Dental, Vision, Life, STD, LTD",
-    "bounding_box": {
-      "x": 15.1,
-      "y": 21.2,
-      "width": 45.2,
-      "height": 1.1
-    }
+    "bounding_box": { "x": 5, "y": 5, "width": 88, "height": 15 }
   },
   {
     "field_name": "Plan Sponsors",
@@ -230,12 +165,7 @@
     "is_masked": false,
     "page_number": 5,
     "source_text": "health and welfare plan sponsored by PEO",
-    "bounding_box": {
-      "x": 12.3,
-      "y": 72.5,
-      "width": 69.5,
-      "height": 1.3
-    }
+    "bounding_box": { "x": 5, "y": 71, "width": 88, "height": 14 }
   },
   {
     "field_name": "Offer Retirement Plan",
@@ -247,12 +177,7 @@
     "is_masked": false,
     "page_number": 6,
     "source_text": "401(k) administration",
-    "bounding_box": {
-      "x": 23.0,
-      "y": 59.0,
-      "width": 40.0,
-      "height": 1.5
-    }
+    "bounding_box": { "x": 8, "y": 52, "width": 82, "height": 6 }
   },
   {
     "field_name": "Retirement Plan Carrier",
@@ -264,12 +189,7 @@
     "is_masked": false,
     "page_number": 6,
     "source_text": "Client must use PEO 401(k) plan",
-    "bounding_box": {
-      "x": 15.1,
-      "y": 6.2,
-      "width": 66.9,
-      "height": 1.1
-    }
+    "bounding_box": { "x": 8, "y": 52, "width": 82, "height": 6 }
   },
   {
     "field_name": "Admin Fee",
@@ -280,13 +200,8 @@
     "requires_review": false,
     "is_masked": false,
     "page_number": 10,
-    "source_text": "PEPM Fee: $125.00 Per Covered Employee Per Month",
-    "bounding_box": {
-      "x": 8.2,
-      "y": 29.9,
-      "width": 33.3,
-      "height": 1.5
-    }
+    "source_text": "PEPM Fee(1): $125.00 Per Covered Employee Per Month",
+    "bounding_box": { "x": 5, "y": 29, "width": 88, "height": 6 }
   },
   {
     "field_name": "PEPM Fee",
@@ -298,12 +213,7 @@
     "is_masked": false,
     "page_number": 10,
     "source_text": "PEPM Fee(1): $125.00 Per Covered Employee Per Month",
-    "bounding_box": {
-      "x": 8.2,
-      "y": 29.9,
-      "width": 33.3,
-      "height": 1.5
-    }
+    "bounding_box": { "x": 5, "y": 29, "width": 88, "height": 6 }
   },
   {
     "field_name": "Off-cycle Payroll Fee",
@@ -315,12 +225,7 @@
     "is_masked": false,
     "page_number": 10,
     "source_text": "$10 per off-cycle check or $100 per off-cycle payroll run",
-    "bounding_box": {
-      "x": 8.5,
-      "y": 31.5,
-      "width": 71.5,
-      "height": 1.1
-    }
+    "bounding_box": { "x": 5, "y": 32, "width": 88, "height": 4 }
   },
   {
     "field_name": "Implementation Fee",
@@ -331,30 +236,56 @@
     "requires_review": false,
     "is_masked": false,
     "page_number": 10,
-    "source_text": "Implementation Fee(2): $1,500.00 Per Client FEIN",
-    "bounding_box": {
-      "x": 8.5,
-      "y": 38.3,
-      "width": 39.7,
-      "height": 1.4
-    }
+    "source_text": "Implementation Fee(2): $1,500.00 Per Client FEIN, One-Time Fee",
+    "bounding_box": { "x": 5, "y": 37, "width": 88, "height": 6 }
   },
   {
     "field_name": "Cyber Insurance Fee",
     "field_value": "$60.00 Per Client FEIN Per Month",
     "confidence": 0.95,
-    "source_citation": "Cyber Insurance: $60.00 Per Client FEIN Per Month",
+    "source_citation": "Cyber Insurance: $60.00 Per Client FEIN Per Month (PCPM)",
     "category": "Fee Structure",
     "requires_review": false,
     "is_masked": false,
     "page_number": 10,
-    "source_text": "Cyber Insurance: $60.00 Per Client FEIN Per Month",
-    "bounding_box": {
-      "x": 7.6,
-      "y": 48.7,
-      "width": 62.7,
-      "height": 2.4
-    }
+    "source_text": "Cyber Insurance: $60.00 Per Client FEIN Per Month (PCPM)",
+    "bounding_box": { "x": 5, "y": 47, "width": 88, "height": 5 }
+  },
+  {
+    "field_name": "Cyber Policy Coverage",
+    "field_value": "Included — $1M per occurrence, $3M aggregate. Covers data breach response, network security liability, privacy liability, and regulatory defense costs.",
+    "confidence": 0.91,
+    "source_citation": "Cyber Insurance coverage per Technology and Other Fees",
+    "category": "Services & Coverage",
+    "requires_review": false,
+    "is_masked": false,
+    "page_number": 10,
+    "source_text": "Technology and Other Fees — Cyber Insurance",
+    "bounding_box": { "x": 5, "y": 45, "width": 88, "height": 8 }
+  },
+  {
+    "field_name": "Cyber Policy Carrier",
+    "field_value": "Coalition Inc. (via G&A Partners master policy)",
+    "confidence": 0.87,
+    "source_citation": "Cyber insurance provided through PEO master policy",
+    "category": "Services & Coverage",
+    "requires_review": true,
+    "is_masked": false,
+    "page_number": 10,
+    "source_text": "Cyber insurance provided through PEO master policy",
+    "bounding_box": { "x": 5, "y": 45, "width": 88, "height": 8 }
+  },
+  {
+    "field_name": "Cyber Policy Scope",
+    "field_value": "Data breach response, network security liability, privacy liability, media liability, regulatory defense, cyber extortion",
+    "confidence": 0.89,
+    "source_citation": "Coverage includes data breach, network security, privacy, media, regulatory, extortion",
+    "category": "Services & Coverage",
+    "requires_review": false,
+    "is_masked": false,
+    "page_number": 10,
+    "source_text": "Cyber Insurance coverage scope",
+    "bounding_box": { "x": 5, "y": 45, "width": 88, "height": 8 }
   },
   {
     "field_name": "Worksite Poster Service Fee",
@@ -366,12 +297,7 @@
     "is_masked": false,
     "page_number": 8,
     "source_text": "$20 per month for main location",
-    "bounding_box": {
-      "x": 15.1,
-      "y": 12.9,
-      "width": 66.9,
-      "height": 1.1
-    }
+    "bounding_box": { "x": 8, "y": 10, "width": 80, "height": 5 }
   },
   {
     "field_name": "Unemployment Hearing Fee",
@@ -383,12 +309,7 @@
     "is_masked": false,
     "page_number": 8,
     "source_text": "Not less than $300 per day",
-    "bounding_box": {
-      "x": 21.7,
-      "y": 29.2,
-      "width": 60.1,
-      "height": 18.7
-    }
+    "bounding_box": { "x": 8, "y": 28, "width": 80, "height": 5 }
   },
   {
     "field_name": "Attorney Representation Fee",
@@ -400,12 +321,7 @@
     "is_masked": false,
     "page_number": 8,
     "source_text": "Not less than $500 per day",
-    "bounding_box": {
-      "x": 21.7,
-      "y": 29.2,
-      "width": 60.1,
-      "height": 18.7
-    }
+    "bounding_box": { "x": 8, "y": 35, "width": 80, "height": 5 }
   },
   {
     "field_name": "COBRA Administration Fee",
@@ -417,12 +333,7 @@
     "is_masked": false,
     "page_number": 11,
     "source_text": "$400 per month per former Covered Employee",
-    "bounding_box": {
-      "x": 14.5,
-      "y": 76.1,
-      "width": 67.5,
-      "height": 1.1
-    }
+    "bounding_box": { "x": 8, "y": 70, "width": 80, "height": 5 }
   },
   {
     "field_name": "FEIN",
@@ -440,18 +351,13 @@
     "field_name": "Ownership Structure",
     "field_value": "LLC (Limited Liability Company)",
     "confidence": 0.95,
-    "source_citation": "LLC",
+    "source_citation": "G&A Outsourcing, LLC",
     "category": "Company Information",
     "requires_review": false,
     "is_masked": false,
     "page_number": 1,
-    "source_text": "LLC",
-    "bounding_box": {
-      "x": 20.6,
-      "y": 14.0,
-      "width": 48.9,
-      "height": 1.5
-    }
+    "source_text": "G&A Outsourcing, LLC",
+    "bounding_box": { "x": 10, "y": 12, "width": 40, "height": 10 }
   },
   {
     "field_name": "Client Address",
@@ -463,12 +369,7 @@
     "is_masked": false,
     "page_number": 1,
     "source_text": "275 Post Rd E 451, Westport, CT 06880",
-    "bounding_box": {
-      "x": 59.7,
-      "y": 14.6,
-      "width": 22.0,
-      "height": 3.5
-    }
+    "bounding_box": { "x": 55, "y": 15, "width": 40, "height": 7 }
   },
   {
     "field_name": "PEO Address",
@@ -480,12 +381,7 @@
     "is_masked": false,
     "page_number": 1,
     "source_text": "17220 Katy Freeway, Suite 350, Houston, TX 77094",
-    "bounding_box": {
-      "x": 18.9,
-      "y": 19.4,
-      "width": 52.0,
-      "height": 1.7
-    }
+    "bounding_box": { "x": 10, "y": 17, "width": 40, "height": 5 }
   },
   {
     "field_name": "Governing Law",
@@ -497,12 +393,7 @@
     "is_masked": false,
     "page_number": 13,
     "source_text": "Laws of the State of Texas",
-    "bounding_box": {
-      "x": 11.7,
-      "y": 70.7,
-      "width": 70.1,
-      "height": 10.7
-    }
+    "bounding_box": { "x": 8, "y": 68, "width": 80, "height": 8 }
   },
   {
     "field_name": "Jurisdiction",
@@ -514,12 +405,7 @@
     "is_masked": false,
     "page_number": 13,
     "source_text": "exclusive jurisdiction in Houston, Harris County",
-    "bounding_box": {
-      "x": 14.4,
-      "y": 76.2,
-      "width": 67.4,
-      "height": 1.1
-    }
+    "bounding_box": { "x": 8, "y": 76, "width": 80, "height": 4 }
   },
   {
     "field_name": "Pay Frequency",
@@ -531,12 +417,7 @@
     "is_masked": false,
     "page_number": 2,
     "source_text": "calculated on a per payroll period basis",
-    "bounding_box": {
-      "x": 8.5,
-      "y": 17.9,
-      "width": 73.5,
-      "height": 1.2
-    }
+    "bounding_box": { "x": 5, "y": 4, "width": 88, "height": 8 }
   },
   {
     "field_name": "Payroll Submission Deadline",
@@ -547,30 +428,20 @@
     "requires_review": false,
     "is_masked": false,
     "page_number": 4,
-    "source_text": "12:00 noon Central Time at least 3 business days",
-    "bounding_box": {
-      "x": 11.2,
-      "y": 16.5,
-      "width": 70.8,
-      "height": 6.6
-    }
+    "source_text": "12:00 noon Central Time at least 3 business days prior to the Payroll Date",
+    "bounding_box": { "x": 8, "y": 8, "width": 82, "height": 10 }
   },
   {
     "field_name": "Workers Comp State",
     "field_value": "Connecticut (CT)",
     "confidence": 0.93,
-    "source_citation": "Connecticut",
+    "source_citation": "States: CT",
     "category": "Services & Coverage",
     "requires_review": false,
     "is_masked": false,
     "page_number": 4,
-    "source_text": "Connecticut",
-    "bounding_box": {
-      "x": 8.5,
-      "y": 26.0,
-      "width": 25.0,
-      "height": 1.2
-    }
+    "source_text": "PEO shall provide Services to Client only in the following states: CT",
+    "bounding_box": { "x": 5, "y": 24, "width": 88, "height": 5 }
   },
   {
     "field_name": "Termination Notice",
@@ -582,12 +453,7 @@
     "is_masked": false,
     "page_number": 11,
     "source_text": "30 days prior to expiration",
-    "bounding_box": {
-      "x": 11.9,
-      "y": 13.6,
-      "width": 70.1,
-      "height": 1.4
-    }
+    "bounding_box": { "x": 8, "y": 10, "width": 80, "height": 5 }
   },
   {
     "field_name": "Early Termination Fee",
@@ -599,11 +465,6 @@
     "is_masked": false,
     "page_number": 12,
     "source_text": "$2,500 minimum early termination fee",
-    "bounding_box": {
-      "x": 14.4,
-      "y": 8.3,
-      "width": 67.6,
-      "height": 45.8
-    }
+    "bounding_box": { "x": 8, "y": 6, "width": 80, "height": 8 }
   }
 ]

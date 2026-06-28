@@ -378,6 +378,8 @@ body {
       <button class="slide-tab active" onclick="goTab(0,this)"><i class="fa-solid fa-circle-exclamation" style="margin-right:4px;"></i> Current State</button>
       <button class="slide-tab" onclick="goTab(1,this)"><i class="fa-solid fa-layer-group" style="margin-right:4px;"></i> Solution Architecture</button>
       <button class="slide-tab" onclick="goTab(2,this)"><i class="fa-solid fa-wrench" style="margin-right:4px;"></i> Inline Fix &amp; Batch Push</button>
+      <button class="slide-tab" onclick="goTab(3,this)"><i class="fa-solid fa-plug" style="margin-right:4px;"></i> APIs &amp; Integration</button>
+      <button class="slide-tab" onclick="goTab(4,this)"><i class="fa-solid fa-diagram-project" style="margin-right:4px;"></i> End-to-End Flow</button>
     </div>
 
 
@@ -392,6 +394,42 @@ body {
       </div>
 
       <div class="s-body">
+
+        <!-- PRISMHR INTEGRATION CONTEXT -->
+        <div class="zone-label">PrismHR Integration Context <span class="muted">&mdash; what we're building and why</span></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-4);">
+          <!-- Card 1: What is PrismHR? -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--c2);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-2);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--c2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-server"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">What is PrismHR?</div>
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;">
+              G&amp;A's primary <strong>HRIS and payroll processing platform</strong>. PM creates the client shell (locations, positions, departments); PA configures billing rules, SUTA rates, deduction codes, pay groups, and runs mock and initial payrolls.
+            </div>
+          </div>
+          <!-- Card 2: What is Being Integrated? -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--pos);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-2);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--pos);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-plug"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">What is Being Integrated?</div>
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;">
+              Pre-flight validation engine <strong>reads PrismHR configuration data via REST API</strong>, validates against CSA Schedule 2 (source of truth), and <strong>writes fixes back via PrismHR PUT endpoints</strong> &mdash; eliminating manual navigation.
+            </div>
+          </div>
+          <!-- Card 3: Why Pre-Flight? -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--amber);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-2);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--amber);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-shield-halved"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">Why Pre-Flight?</div>
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;">
+              Today, configuration errors (WC codes, SUTA, billing) are only discovered when mock payroll fails. <strong>Pre-flight catches them before initialization</strong>, replacing the iterative calculate-fail-fix cycle.
+            </div>
+          </div>
+        </div>
 
         <!-- METRICS -->
         <div class="zone-label">Key Metrics <span class="muted">&mdash; the scale of the problem</span></div>
@@ -509,7 +547,7 @@ body {
         <!-- ========== SOURCE CONNECTORS (top bar) ========== -->
         <div class="zone-label">Source Connectors <span class="muted">&mdash; data inputs to the validation engine</span></div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-3);">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:var(--sp-3);">
           <!-- PrismHR -->
           <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--red);">
             <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-2);">
@@ -527,10 +565,15 @@ body {
           </div>
           <!-- CSA Schedule 2 -->
           <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--c2);">
-            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-2);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-2);flex-wrap:wrap;">
               <div style="width:28px;height:28px;border-radius:50%;background:var(--c2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-file-contract"></i></div>
               <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">CSA Schedule 2</div>
+              <span style="font-size:var(--text-xs);font-weight:800;color:#fff;background:var(--c2);padding:3px 10px;border-radius:var(--radius-pill);letter-spacing:0.5px;text-transform:uppercase;">Source of Truth</span>
               <span style="font-size:var(--text-xs);font-weight:700;color:#1a4f72;background:var(--c2-light);padding:2px 8px;border-radius:var(--radius-pill);">from CSA Extraction</span>
+            </div>
+            <div style="font-size:var(--text-xs);color:#1a4f72;line-height:1.5;margin-bottom:var(--sp-2);background:var(--c2-light);padding:var(--sp-1) var(--sp-2);border-radius:var(--radius-sm);border:1px solid #b8d9ef;">
+              <i class="fa-solid fa-star" style="margin-right:3px;color:var(--c2);"></i>
+              <strong>Definitive reference</strong> &mdash; all PrismHR configuration is validated against CSA Schedule 2
             </div>
             <div style="display:flex;flex-wrap:wrap;gap:4px;">
               <span class="chip blue">Expected WC Codes</span>
@@ -549,6 +592,17 @@ body {
               <span class="chip green">State Registrations</span>
               <span class="chip green">Employee Locations</span>
               <span class="chip green">Contract Terms</span>
+            </div>
+          </div>
+          <!-- Informer -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--amber);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-2);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--amber);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-chart-bar"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">Informer</div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;">
+              <span class="chip amber">SUTA State Rate Tables</span>
+              <span class="chip amber">Bill Rate History</span>
             </div>
           </div>
         </div>
@@ -668,23 +722,27 @@ body {
             </div>
 
             <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;margin-bottom:var(--sp-3);">
-              Removes the executive approval queue from the critical path for the majority of deals:
+              Pre-approval happens <strong>during the sales process</strong>. The PA selects rate type &mdash; not triggers approval. This removes the executive queue from the critical path for most deals:
             </div>
 
             <!-- Approval tiers -->
             <div style="display:flex;flex-direction:column;gap:var(--sp-2);margin-bottom:var(--sp-3);">
-              <div style="display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-2) var(--sp-3);border-radius:var(--radius-md);background:var(--pos-light);color:#1a5c38;border:1px solid #b3dfc8;font-size:var(--text-sm);font-weight:700;">
-                <i class="fa-solid fa-circle-check" style="font-size:var(--text-base);flex-shrink:0;"></i>
-                <div>
-                  <div style="font-weight:800;">Standard Rates</div>
-                  <div style="font-weight:500;font-size:var(--text-xs);">Auto-approved during sales for known states</div>
+              <div style="padding:var(--sp-2) var(--sp-3);border-radius:var(--radius-md);background:var(--pos-light);color:#1a5c38;border:1px solid #b3dfc8;font-size:var(--text-sm);font-weight:700;">
+                <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-1);">
+                  <i class="fa-solid fa-circle-check" style="font-size:var(--text-base);flex-shrink:0;"></i>
+                  <div style="font-weight:800;">Standard Rates &mdash; Pre-Approved at Deal Close</div>
+                </div>
+                <div style="font-weight:500;font-size:var(--text-xs);line-height:1.5;padding-left:26px;">
+                  Auto-approved during sales for common states: <strong>TX, CA, FL, NY, IL, PA, OH, GA</strong>. PA selects "Standard Rate" and it is already approved &mdash; no executive review needed.
                 </div>
               </div>
-              <div style="display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-2) var(--sp-3);border-radius:var(--radius-md);background:var(--amber-light);color:#5c3c00;border:1px solid #f0d9a8;font-size:var(--text-sm);font-weight:700;">
-                <i class="fa-solid fa-triangle-exclamation" style="font-size:var(--text-base);flex-shrink:0;"></i>
-                <div>
-                  <div style="font-weight:800;">Non-Standard Rates Only</div>
-                  <div style="font-weight:500;font-size:var(--text-xs);">Escalated to executive review</div>
+              <div style="padding:var(--sp-2) var(--sp-3);border-radius:var(--radius-md);background:var(--amber-light);color:#5c3c00;border:1px solid #f0d9a8;font-size:var(--text-sm);font-weight:700;">
+                <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-1);">
+                  <i class="fa-solid fa-triangle-exclamation" style="font-size:var(--text-base);flex-shrink:0;"></i>
+                  <div style="font-weight:800;">Non-Standard / Client Rate (CR%)</div>
+                </div>
+                <div style="font-weight:500;font-size:var(--text-xs);line-height:1.5;padding-left:26px;">
+                  For states like <strong>CT</strong> where the CSA specifies Client Rate, the PA enters the rate and it is escalated to executive review with <strong>1-week SLA</strong>.
                 </div>
               </div>
             </div>
@@ -711,20 +769,35 @@ body {
             </div>
             <div style="display:flex;flex-direction:column;gap:var(--sp-2);font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;">
               <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
-                <span style="font-weight:800;color:var(--c2);min-width:60px;">Primary</span>
-                <span>PrismHR REST API for real-time employee roster, WC codes, pay group config</span>
+                <span style="font-weight:800;color:var(--c2);min-width:72px;">Primary</span>
+                <div>
+                  <span>PrismHR REST API for real-time employee roster, WC codes, pay group config</span>
+                  <div style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--c2);margin-top:var(--sp-1);line-height:1.7;">
+                    <code style="background:var(--c2-light);padding:1px 6px;border-radius:2px;margin-right:4px;">EmployeeService.getEmployeeList</code>
+                    <code style="background:var(--c2-light);padding:1px 6px;border-radius:2px;margin-right:4px;">ClientMasterService.getSutaRates</code>
+                    <code style="background:var(--c2-light);padding:1px 6px;border-radius:2px;">ClientMasterService.getBundledBillingRule</code>
+                  </div>
+                </div>
               </div>
               <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
-                <span style="font-weight:800;color:var(--pos);min-width:60px;">Secondary</span>
-                <span>Informer reporting engine for SUTA rate tables, billing rule exports, deduction code maps</span>
+                <span style="font-weight:800;color:var(--pos);min-width:72px;">Secondary</span>
+                <div>
+                  <span>Informer reporting engine for SUTA rate tables, billing rule exports, deduction code maps</span>
+                  <div style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--pos);margin-top:var(--sp-1);">
+                    <code style="background:var(--pos-light);padding:1px 6px;border-radius:2px;">GET /api/informer/suta-bill-rates</code>
+                  </div>
+                </div>
               </div>
               <div style="display:flex;align-items:flex-start;gap:var(--sp-2);">
-                <span style="font-weight:800;color:var(--red);min-width:60px;">Not RPA</span>
-                <span>API integration provides structured, reliable data with error handling &mdash; RPA is brittle against UI changes and lacks schema validation</span>
-              </div>
-              <div style="background:var(--fog);border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-2) var(--sp-3);font-size:var(--text-xs);color:var(--grey);margin-top:var(--sp-1);">
-                <i class="fa-solid fa-info-circle" style="margin-right:4px;color:var(--c2);"></i>
-                <strong>Fallback:</strong> CSV/Excel export from Informer for environments without API access
+                <span style="font-weight:800;color:var(--navy);min-width:72px;">Write-Back</span>
+                <div>
+                  <span>PrismHR write operations to push validated corrections back into the system</span>
+                  <div style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--navy);margin-top:var(--sp-1);line-height:1.7;">
+                    <code style="background:var(--fog);padding:1px 6px;border-radius:2px;margin-right:4px;border:1px solid var(--rule);">EmployeeService.setWorkersCompCode</code>
+                    <code style="background:var(--fog);padding:1px 6px;border-radius:2px;margin-right:4px;border:1px solid var(--rule);">ClientMasterService.setSutaRates</code>
+                    <code style="background:var(--fog);padding:1px 6px;border-radius:2px;border:1px solid var(--rule);">ClientMasterService.setDeductionCode</code>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -795,20 +868,24 @@ body {
               <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">SUTA Executive Pre-Approval Logic</div>
             </div>
             <div style="display:flex;flex-direction:column;gap:var(--sp-2);font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;">
+              <div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:1.5;margin-bottom:var(--sp-1);background:var(--fog);padding:var(--sp-2) var(--sp-3);border-radius:var(--radius-sm);border:1px solid var(--rule);">
+                <i class="fa-solid fa-info-circle" style="margin-right:3px;color:var(--amber);"></i>
+                <strong>Pre-approval happens during the sales process.</strong> The PA does not trigger pre-approval &mdash; they select rate type. If Standard, it is already approved. If Client Rate, it gets escalated.
+              </div>
               <div style="display:flex;gap:var(--sp-2);margin-bottom:var(--sp-1);">
                 <div style="flex:1;padding:var(--sp-2) var(--sp-3);border-radius:var(--radius-md);background:var(--pos-light);color:#1a5c38;border:1px solid #b3dfc8;font-size:var(--text-xs);">
-                  <div style="font-weight:800;margin-bottom:2px;">Standard States</div>
-                  <div>TX, CA, FL, NY, IL, etc. &mdash; auto-approved at deal close with standard CR% rate</div>
+                  <div style="font-weight:800;margin-bottom:2px;"><i class="fa-solid fa-circle-check" style="margin-right:3px;"></i>Standard Rates (Pre-Approved)</div>
+                  <div><strong>TX, CA, FL, NY, IL, PA, OH, GA</strong> &mdash; common states where standard rates are auto-approved at deal close during sales. No executive review needed.</div>
                 </div>
                 <div style="flex:1;padding:var(--sp-2) var(--sp-3);border-radius:var(--radius-md);background:var(--amber-light);color:#5c3c00;border:1px solid #f0d9a8;font-size:var(--text-xs);">
-                  <div style="font-weight:800;margin-bottom:2px;">Non-Standard States</div>
-                  <div>Flagged for executive SUTA Bill Rate Review</div>
+                  <div style="font-weight:800;margin-bottom:2px;"><i class="fa-solid fa-triangle-exclamation" style="margin-right:3px;"></i>Non-Standard / Client Rate (CR%)</div>
+                  <div>For states like <strong>CT</strong> where CSA specifies Client Rate, PA enters the rate and it is escalated to executive review with <strong>1-week SLA</strong>.</div>
                 </div>
               </div>
               <div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:1.6;">
                 <strong>Integration:</strong> During CSA extraction, SUTA coverage type is identified (CR%, Standard, Full).
-                If CR% &rarr; requires client-specific rate entry &rarr; auto-escalate to executive queue with <strong>1-week SLA</strong>.
-                If Standard &rarr; pre-approved rate applied, no executive review needed.
+                If Standard &rarr; pre-approved rate applied, PA selects and proceeds.
+                If CR% &rarr; PA enters client-specific rate &rarr; auto-escalate to executive queue with <strong>1-week SLA</strong>.
               </div>
               <div style="background:var(--pos-light);border:1px solid #b3dfc8;border-radius:var(--radius-md);padding:var(--sp-2) var(--sp-3);font-size:var(--text-xs);color:#1a5c38;margin-top:var(--sp-1);">
                 <i class="fa-solid fa-rocket" style="margin-right:4px;"></i>
@@ -1015,13 +1092,27 @@ body {
                 <span>After push: Re-run Validation button appears, all checks turn green</span>
               </div>
             </div>
+            <!-- API Endpoints -->
+            <div style="background:var(--c2-light);border:1px solid #b8d9ef;border-radius:var(--radius-md);padding:var(--sp-2) var(--sp-3);font-size:var(--text-xs);margin-top:var(--sp-3);color:#1a4f72;line-height:1.8;">
+              <div style="font-weight:800;margin-bottom:var(--sp-1);display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap;"><i class="fa-solid fa-code" style="margin-right:4px;"></i>PrismHR API Operations Called During Push: <a href="https://api-docs.prismhr.com" target="_blank" style="font-size:9px;font-weight:700;color:#8aa0b2;background:var(--navy);padding:1px 6px;border-radius:var(--radius-pill);text-decoration:none;letter-spacing:0.5px;">api-docs.prismhr.com</a></div>
+              <div style="font-family:var(--font-mono);">
+                <div><code style="background:#fff;padding:1px 6px;border-radius:2px;border:1px solid #b8d9ef;">EmployeeService.setWorkersCompCode</code> <span style="font-family:var(--font-body);color:var(--grey);">&mdash; Write WC code correction</span></div>
+                <div><code style="background:#fff;padding:1px 6px;border-radius:2px;border:1px solid #b8d9ef;">ClientMasterService.setSutaRates</code> <span style="font-family:var(--font-body);color:var(--grey);">&mdash; Write SUTA rate entry</span></div>
+                <div><code style="background:#fff;padding:1px 6px;border-radius:2px;border:1px solid #b8d9ef;">ClientMasterService.setDeductionCode</code> <span style="font-family:var(--font-body);color:var(--grey);">&mdash; Write GL account mapping</span></div>
+              </div>
+            </div>
             <!-- Push sequence mockup -->
-            <div style="background:var(--fog);border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-2) var(--sp-3);font-family:var(--font-mono);font-size:var(--text-xs);margin-top:var(--sp-3);line-height:1.8;">
+            <div style="background:var(--fog);border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-2) var(--sp-3);font-family:var(--font-mono);font-size:var(--text-xs);margin-top:var(--sp-2);line-height:1.8;">
               <div style="color:var(--pos);"><i class="fa-solid fa-check" style="margin-right:3px;"></i> Authenticating... done</div>
               <div style="color:var(--pos);"><i class="fa-solid fa-check" style="margin-right:3px;"></i> Writing WC codes (3)... done</div>
               <div style="color:var(--pos);"><i class="fa-solid fa-check" style="margin-right:3px;"></i> Writing SUTA rates (1)... done</div>
               <div style="color:var(--pos);"><i class="fa-solid fa-check" style="margin-right:3px;"></i> Writing deduction codes (1)... done</div>
               <div style="color:var(--pos);font-weight:800;"><i class="fa-solid fa-circle-check" style="margin-right:3px;"></i> All fixes pushed successfully</div>
+            </div>
+            <!-- Eye icon note -->
+            <div style="font-size:var(--text-xs);color:var(--grey);margin-top:var(--sp-2);padding:var(--sp-1) var(--sp-2);line-height:1.5;">
+              <i class="fa-solid fa-eye" style="margin-right:4px;color:var(--c2);"></i>
+              Eye icon in the app reveals API endpoints at each step &mdash; clean UI for PAs, full integration detail for technical reviewers.
             </div>
           </div>
         </div>
@@ -1100,6 +1191,271 @@ body {
 
       </div>
       <div class="s-foot"><span class="l">G&amp;A Partners &middot; Pre-Flight Validation Architecture &middot; Inline Fix &amp; Batch Push</span><span class="r">Fix Inline &rarr; Batch Push &rarr; Clean Payroll</span></div>
+    </section>
+
+
+    <!-- ============ TAB 4: APIs & INTEGRATION APPROACH ============ -->
+    <section class="slide" id="slide4">
+      <div class="s-hdr">
+        <div>
+          <div class="eye">Integration &middot; APIs &amp; Data Sources</div>
+          <h1>API Integration Approach &amp; <span class="accent">Data Sources</span></h1>
+        </div>
+        <div class="ga-logo"><span class="gw">G&amp;A <b>PARTNERS</b></span><span class="gs">Pre-Flight</span></div>
+      </div>
+      <div class="s-body">
+        <div class="zone-label">PrismHR APIs <span class="muted">&mdash; Read configuration + Write-back fixes</span></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-4);">
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);border-top:4px solid var(--red);">
+            <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);margin-bottom:var(--sp-2);display:flex;align-items:center;gap:var(--sp-2);">
+              <i class="fa-solid fa-download" style="color:var(--pos);"></i> Read APIs (Validation Data)
+            </div>
+            <div style="margin-bottom:var(--sp-2);">
+              <a href="https://api-docs.prismhr.com" target="_blank" style="font-size:9px;font-weight:700;color:#8aa0b2;background:var(--navy);padding:2px 8px;border-radius:var(--radius-pill);text-decoration:none;letter-spacing:0.5px;"><i class="fa-solid fa-book" style="margin-right:3px;"></i>api-docs.prismhr.com</a>
+            </div>
+            <div style="font-family:var(--font-mono);font-size:var(--text-xs);line-height:2;color:var(--text-secondary);">
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> EmployeeService.getEmployeeList &mdash; Employee roster &amp; WC assignments</div>
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> EmployeeService.getEmployeeDetails &mdash; Per-employee WC code</div>
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> ClientMasterService.getSutaRates &mdash; SUTA rate table by state</div>
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> ClientMasterService.getSutaRates/{state} &mdash; Bill rate for state</div>
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> ClientMasterService.getBundledBillingRule &mdash; Billing rule configuration</div>
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> ClientMasterService.getPayGroupDetails &mdash; Pay group &amp; schedule alignment</div>
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> ClientMasterService.getDeductionCodes &mdash; Deduction code &rarr; GL mapping</div>
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> ClientMasterService.getClientList &mdash; State tax registrations</div>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);border-top:4px solid var(--amber);">
+            <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);margin-bottom:var(--sp-2);display:flex;align-items:center;gap:var(--sp-2);">
+              <i class="fa-solid fa-upload" style="color:var(--amber);"></i> Write APIs (Push Fixes to PrismHR)
+            </div>
+            <div style="margin-bottom:var(--sp-2);">
+              <a href="https://api-docs.prismhr.com" target="_blank" style="font-size:9px;font-weight:700;color:#8aa0b2;background:var(--navy);padding:2px 8px;border-radius:var(--radius-pill);text-decoration:none;letter-spacing:0.5px;"><i class="fa-solid fa-book" style="margin-right:3px;"></i>api-docs.prismhr.com</a>
+            </div>
+            <div style="font-family:var(--font-mono);font-size:var(--text-xs);line-height:2;color:var(--text-secondary);">
+              <div><span style="color:var(--amber);font-weight:700;">PUT</span> EmployeeService.setWorkersCompCode &mdash; Correct WC assignment</div>
+              <div><span style="color:var(--amber);font-weight:700;">PUT</span> ClientMasterService.setSutaRates &mdash; Set SUTA rate + type</div>
+              <div><span style="color:var(--amber);font-weight:700;">PUT</span> ClientMasterService.setDeductionCode &mdash; Link GL account</div>
+              <div><span style="color:var(--amber);font-weight:700;">PUT</span> ClientMasterService.setBundledBillingRule &mdash; Update billing config</div>
+              <div><span style="color:#7B4FD6;font-weight:700;">POST</span> PayrollService.calculateManualCheck &mdash; Trigger mock payroll</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="zone-label">ClientSpace &amp; Informer APIs <span class="muted">&mdash; Supplementary data sources</span></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-4);">
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);border-top:4px solid var(--pos);">
+            <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);margin-bottom:var(--sp-2);display:flex;align-items:center;gap:var(--sp-2);">
+              <i class="fa-solid fa-building" style="color:var(--pos);"></i> ClientSpace APIs
+            </div>
+            <div style="margin-bottom:var(--sp-2);">
+              <a href="https://extranet.clientspace.net/next/swagger/ui/index" target="_blank" style="font-size:9px;font-weight:700;color:#8aa0b2;background:var(--navy);padding:2px 8px;border-radius:var(--radius-pill);text-decoration:none;letter-spacing:0.5px;"><i class="fa-solid fa-book" style="margin-right:3px;"></i>extranet.clientspace.net/swagger</a>
+            </div>
+            <div style="font-family:var(--font-mono);font-size:var(--text-xs);line-height:2;color:var(--text-secondary);">
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> ClientSpace Dataform API &mdash; Client Record</div>
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> ClientSpace Dataform API &mdash; Onboarding Handoff</div>
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> ClientSpace Dataform API &mdash; State Registrations</div>
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> ClientSpace Dataform API &mdash; Employee Locations</div>
+              <div><span style="color:#7B4FD6;font-weight:700;">POST</span> ClientSpace Dataform API &mdash; Case Creation Pipeline</div>
+              <div><span style="color:#7B4FD6;font-weight:700;">POST</span> ClientSpace Dataform API &mdash; Remediation Task Pipeline</div>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);border-top:4px solid var(--amber);">
+            <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);margin-bottom:var(--sp-3);display:flex;align-items:center;gap:var(--sp-2);">
+              <i class="fa-solid fa-chart-bar" style="color:var(--amber);"></i> Informer APIs
+            </div>
+            <div style="font-family:var(--font-mono);font-size:var(--text-xs);line-height:2;color:var(--text-secondary);">
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> /api/informer/suta-bill-rates &mdash; State rate tables</div>
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> /api/informer/suta-bill-rates/{state} &mdash; Per-state rate</div>
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> /api/informer/bill-rate-history &mdash; Historical rates</div>
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> /api/informer/pre-approved-states &mdash; Pre-approved list</div>
+            </div>
+            <div style="margin-top:var(--sp-3);padding:var(--sp-2) var(--sp-3);background:var(--amber-light);border-radius:var(--radius-sm);font-size:var(--text-xs);color:#5c3c00;">
+              <strong>SUTA Bill Rate Review:</strong> Informer provides the rate data that feeds the executive approval queue. Pre-approved states bypass the 1-week SLA.
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+      <div class="s-foot"><span class="l">G&amp;A Partners &middot; Pre-Flight Validation &middot; API &amp; Integration</span><span class="r">REST API &rarr; Real-time &rarr; Bidirectional</span></div>
+    </section>
+
+
+    <!-- ============ TAB 5: END-TO-END FLOW ============ -->
+    <section class="slide" id="slide5">
+      <div class="s-hdr">
+        <div>
+          <div class="eye">Architecture &middot; End-to-End</div>
+          <h1>CSA to Clean Payroll &mdash; <span class="accent">Complete Data Flow</span></h1>
+        </div>
+        <div class="ga-logo"><span class="gw">G&amp;A <b>PARTNERS</b></span><span class="gs">Pre-Flight Validation</span></div>
+      </div>
+
+      <div class="s-body" style="gap:var(--sp-4);">
+
+        <!-- ========== HORIZONTAL FLOW DIAGRAM ========== -->
+        <div class="zone-label">End-to-End Pipeline <span class="muted">&mdash; from CSA PDF to clean mock payroll</span></div>
+
+        <div style="display:grid;grid-template-columns:1fr 20px 1fr 20px 1fr 20px 1fr 20px 1fr 20px 1fr;gap:0;align-items:stretch;">
+
+          <!-- Step 1: CSA Extraction -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-3) var(--sp-3);border-top:4px solid var(--c2);display:flex;flex-direction:column;align-items:center;text-align:center;">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--c2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-base);margin-bottom:var(--sp-2);flex-shrink:0;">
+              <i class="fa-solid fa-file-invoice"></i>
+            </div>
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);margin-bottom:var(--sp-1);">CSA Extraction</div>
+            <div style="font-size:var(--text-xs);color:var(--grey);line-height:1.4;">AI extracts fields from CSA PDF</div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="display:flex;align-items:center;justify-content:center;color:var(--grey);font-size:var(--text-lg);font-weight:800;">&rarr;</div>
+
+          <!-- Step 2: ClientSpace -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-3) var(--sp-3);border-top:4px solid var(--pos);display:flex;flex-direction:column;align-items:center;text-align:center;">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--pos);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-base);margin-bottom:var(--sp-2);flex-shrink:0;">
+              <i class="fa-solid fa-building"></i>
+            </div>
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);margin-bottom:var(--sp-1);">&rarr; ClientSpace</div>
+            <div style="font-size:var(--text-xs);color:var(--grey);line-height:1.4;">Case created, PM/PA assigned</div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="display:flex;align-items:center;justify-content:center;color:var(--grey);font-size:var(--text-lg);font-weight:800;">&rarr;</div>
+
+          <!-- Step 3: CSA Schedule 2 -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-3) var(--sp-3);border-top:4px solid var(--c2);display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;">
+            <div style="position:absolute;top:-1px;right:-1px;background:var(--c2);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:0 var(--radius-sm) 0 var(--radius-sm);letter-spacing:0.5px;text-transform:uppercase;line-height:1.4;">
+              <i class="fa-solid fa-star" style="margin-right:2px;font-size:8px;"></i>SOURCE OF TRUTH
+            </div>
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--c2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-base);margin-bottom:var(--sp-2);flex-shrink:0;">
+              <i class="fa-solid fa-file-contract"></i>
+            </div>
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);margin-bottom:var(--sp-1);">CSA Schedule 2</div>
+            <div style="font-size:var(--text-xs);color:var(--grey);line-height:1.4;">Source of truth for pre-flight</div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="display:flex;align-items:center;justify-content:center;color:var(--grey);font-size:var(--text-lg);font-weight:800;">&rarr;</div>
+
+          <!-- Step 4: Pre-Flight Validation -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-3) var(--sp-3);border-top:4px solid var(--red);display:flex;flex-direction:column;align-items:center;text-align:center;">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-base);margin-bottom:var(--sp-2);flex-shrink:0;">
+              <i class="fa-solid fa-plane-departure"></i>
+            </div>
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);margin-bottom:var(--sp-1);">Pre-Flight Validation</div>
+            <div style="font-size:var(--text-xs);color:var(--grey);line-height:1.4;">5 checks against PrismHR</div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="display:flex;align-items:center;justify-content:center;color:var(--grey);font-size:var(--text-lg);font-weight:800;">&rarr;</div>
+
+          <!-- Step 5: PrismHR -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-3) var(--sp-3);border-top:4px solid var(--red);display:flex;flex-direction:column;align-items:center;text-align:center;">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-base);margin-bottom:var(--sp-2);flex-shrink:0;">
+              <i class="fa-solid fa-server"></i>
+            </div>
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);margin-bottom:var(--sp-1);">&rarr; PrismHR</div>
+            <div style="font-size:var(--text-xs);color:var(--grey);line-height:1.4;">Fix WC, SUTA, deductions</div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="display:flex;align-items:center;justify-content:center;color:var(--grey);font-size:var(--text-lg);font-weight:800;">&rarr;</div>
+
+          <!-- Step 6: Clean Payroll -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-3) var(--sp-3);border-top:4px solid var(--pos);display:flex;flex-direction:column;align-items:center;text-align:center;">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--pos);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-base);margin-bottom:var(--sp-2);flex-shrink:0;">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);margin-bottom:var(--sp-1);">Clean Payroll</div>
+            <div style="font-size:var(--text-xs);color:var(--grey);line-height:1.4;">Mock payroll passes first time</div>
+          </div>
+
+        </div>
+
+        <!-- ========== WHAT GETS PUSHED WHERE ========== -->
+        <div class="zone-label">What Gets Pushed Where <span class="muted">&mdash; API write-back per system</span></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4);">
+
+          <!-- Left: PrismHR -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--red);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-2);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-server"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">PrismHR &mdash; What Pre-Flight Pushes</div>
+            </div>
+            <div style="margin-bottom:var(--sp-2);">
+              <a href="https://api-docs.prismhr.com" target="_blank" style="font-size:9px;font-weight:700;color:#8aa0b2;background:var(--navy);padding:2px 8px;border-radius:var(--radius-pill);text-decoration:none;letter-spacing:0.5px;"><i class="fa-solid fa-book" style="margin-right:3px;"></i>api-docs.prismhr.com</a>
+            </div>
+            <div style="font-family:var(--font-mono);font-size:var(--text-xs);line-height:2.1;color:var(--text-secondary);">
+              <div><span style="color:var(--amber);font-weight:700;">PUT</span> EmployeeService.setWorkersCompCode <span style="font-family:var(--font-body);color:var(--grey);">&mdash; Correct WC assignments</span></div>
+              <div><span style="color:var(--amber);font-weight:700;">PUT</span> ClientMasterService.setSutaRates <span style="font-family:var(--font-body);color:var(--grey);">&mdash; Set SUTA rate + type</span></div>
+              <div><span style="color:var(--amber);font-weight:700;">PUT</span> ClientMasterService.setDeductionCode <span style="font-family:var(--font-body);color:var(--grey);">&mdash; Link GL accounts</span></div>
+              <div><span style="color:var(--amber);font-weight:700;">PUT</span> ClientMasterService.setBundledBillingRule <span style="font-family:var(--font-body);color:var(--grey);">&mdash; Update billing config</span></div>
+              <div><span style="color:#7B4FD6;font-weight:700;">POST</span> PayrollService.calculateManualCheck <span style="font-family:var(--font-body);color:var(--grey);">&mdash; Trigger mock payroll</span></div>
+            </div>
+          </div>
+
+          <!-- Right: ClientSpace -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);border-top:4px solid var(--pos);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-2);">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--pos);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-building"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">ClientSpace &mdash; What CSA Extraction Pushes</div>
+            </div>
+            <div style="margin-bottom:var(--sp-2);">
+              <a href="https://extranet.clientspace.net/next/swagger/ui/index" target="_blank" style="font-size:9px;font-weight:700;color:#8aa0b2;background:var(--navy);padding:2px 8px;border-radius:var(--radius-pill);text-decoration:none;letter-spacing:0.5px;"><i class="fa-solid fa-book" style="margin-right:3px;"></i>extranet.clientspace.net/swagger</a>
+            </div>
+            <div style="font-family:var(--font-mono);font-size:var(--text-xs);line-height:2.1;color:var(--text-secondary);">
+              <div><span style="color:#7B4FD6;font-weight:700;">POST</span> ClientSpace Dataform API &mdash; Case Creation Pipeline <span style="font-family:var(--font-body);color:var(--grey);">&mdash; Auto-create onboarding case</span></div>
+              <div><span style="color:#7B4FD6;font-weight:700;">POST</span> ClientSpace Dataform API &mdash; Remediation Task Pipeline <span style="font-family:var(--font-body);color:var(--grey);">&mdash; Create remediation tasks</span></div>
+              <div><span style="color:#7B4FD6;font-weight:700;">POST</span> ClientSpace Dataform API &mdash; Document Attachment <span style="font-family:var(--font-body);color:var(--grey);">&mdash; Attach CSA PDF</span></div>
+              <div><span style="color:var(--amber);font-weight:700;">PUT</span> ClientSpace Dataform API &mdash; Client Record <span style="font-family:var(--font-body);color:var(--grey);">&mdash; Update client fields</span></div>
+              <div><span style="color:var(--amber);font-weight:700;">PUT</span> ClientSpace Dataform API &mdash; Case Status Pipeline <span style="font-family:var(--font-body);color:var(--grey);">&mdash; Update case status</span></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ========== CROSS-INITIATIVE SYNERGY ========== -->
+        <div style="background:var(--blue-soft);border:1px solid #b8d9ef;border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);">
+          <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-2);">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--c2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);"><i class="fa-solid fa-diagram-project"></i></div>
+            <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">Cross-Initiative Synergy</div>
+          </div>
+          <div style="font-size:var(--text-sm);color:#1a4f72;line-height:1.7;">
+            <strong>Initiative D (CSA Extraction)</strong> produces the Schedule 2 data &rarr; feeds directly into <strong>Initiative F (Pre-Flight Validation)</strong> as the source of truth. The extracted WC codes, SUTA coverage type, and fee structure become the expected values that PrismHR configuration is validated against.
+          </div>
+        </div>
+
+        <!-- ========== BOTTOM METRICS ROW ========== -->
+        <div class="metric-grid" style="grid-template-columns:repeat(4,1fr);">
+          <div class="metric-tile" style="border-top-color:var(--pos);">
+            <div class="metric-val" style="color:var(--pos);font-size:var(--text-xl);">Minutes</div>
+            <div class="metric-lbl">Upload &rarr; Case Created</div>
+            <div class="metric-sub">CSA extraction to ClientSpace case auto-created</div>
+          </div>
+          <div class="metric-tile" style="border-top-color:var(--c2);">
+            <div class="metric-val" style="color:var(--c2);font-size:var(--text-xl);">15-20 min</div>
+            <div class="metric-lbl">Pre-Flight &rarr; All Pass</div>
+            <div class="metric-sub">Inline fix &amp; batch push to PrismHR</div>
+          </div>
+          <div class="metric-tile" style="border-top-color:var(--pos);">
+            <div class="metric-val" style="color:var(--pos);font-size:var(--text-xl);">1st Attempt</div>
+            <div class="metric-lbl">Mock Payroll Clean</div>
+            <div class="metric-sub">Payroll passes without error on first run</div>
+          </div>
+          <div class="metric-tile" style="border-top-color:var(--red);">
+            <div class="metric-val" style="color:var(--red);font-size:var(--text-md);letter-spacing:-0.5px;">5-7 days &rarr; 1-2 days</div>
+            <div class="metric-lbl">Payroll Testing Phase</div>
+            <div class="metric-sub">Duration reduction in testing cycle</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="s-foot"><span class="l">G&amp;A Partners &middot; Pre-Flight &middot; End-to-End</span><span class="r">Extract &rarr; Validate &rarr; Fix &rarr; Clean Payroll</span></div>
     </section>
 
   </div>

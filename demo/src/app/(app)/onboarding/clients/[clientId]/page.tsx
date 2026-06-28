@@ -11,7 +11,7 @@ import Link from 'next/link';
 /* ── Types ── */
 
 type ClientStatus = 'Active' | 'Onboarding' | 'Pending Setup';
-type TabKey = 'pm' | 'pa' | 'all' | 'validation';
+type TabKey = 'pm' | 'pa' | 'all' | 'validation' | 'handoff';
 
 interface ClientDetail {
   id: string;
@@ -247,6 +247,7 @@ const TABS: { key: TabKey; label: string; icon: string }[] = [
   { key: 'pa', label: 'PA Review', icon: 'fa-calculator' },
   { key: 'all', label: 'All Fields', icon: 'fa-list' },
   { key: 'validation', label: 'ClientSpace Validation', icon: 'fa-code-compare' },
+  { key: 'handoff', label: 'Handoff Data', icon: 'fa-database' },
 ];
 
 /* ================================================================
@@ -456,6 +457,262 @@ function ValidationTable({ rows, hoveredRow, setHoveredRow }: { rows: Validation
               </div>
             );
           })}
+      </div>
+    </div>
+  );
+}
+
+/* ================================================================
+   Handoff Data Tab Component
+   ================================================================ */
+
+type SyncStatus = 'synced' | 'pending' | 'needs-update';
+
+const SYNC_STATUS_META: Record<SyncStatus, { label: string; fg: string; bg: string; icon: string }> = {
+  synced: { label: 'Synced', fg: '#1A7A4A', bg: '#E4F2EA', icon: 'fa-circle-check' },
+  pending: { label: 'Pending', fg: '#B0690A', bg: '#FBF0DD', icon: 'fa-clock' },
+  'needs-update': { label: 'Needs Update', fg: '#5B6770', bg: '#F1F3F5', icon: 'fa-circle-exclamation' },
+};
+
+/* Categories to show in the Handoff Data tab (subset — no Onboarding) */
+const HANDOFF_CATEGORIES = [
+  'General Information',
+  'Contract & Dates',
+  'Services',
+  'Fee Structure',
+  'Tax & Compliance',
+  'Payroll',
+  'Benefits',
+];
+
+function getSyncStatus(field: string, category: string): SyncStatus {
+  /* Mirror the mismatch / missing patterns visible in ACME_VALIDATION */
+  const needsUpdate = [
+    'Number of Employees', 'Effective Date', 'Admin Fee / PEPM Fee', 'Billing Frequency',
+  ];
+  const pending = ['SUTA Coverage'];
+  if (needsUpdate.includes(field)) return 'needs-update';
+  if (pending.includes(field)) return 'pending';
+  return 'synced';
+}
+
+function HandoffDataTab({ client, fields }: { client: ClientDetail; fields: FieldRow[] }) {
+  const handoffFields = fields.filter(f => HANDOFF_CATEGORIES.includes(f.category));
+  const categories = HANDOFF_CATEGORIES.filter(cat => handoffFields.some(f => f.category === cat));
+
+  const syncedCount = handoffFields.filter(f => getSyncStatus(f.field, f.category) === 'synced').length;
+  const pendingCount = handoffFields.filter(f => getSyncStatus(f.field, f.category) === 'pending').length;
+  const needsUpdateCount = handoffFields.filter(f => getSyncStatus(f.field, f.category) === 'needs-update').length;
+
+  const lastSynced = new Date(client.lastSynced);
+  const lastSyncedFormatted = lastSynced.toLocaleString('en-US', {
+    month: 'short', day: 'numeric', year: 'numeric',
+    hour: 'numeric', minute: '2-digit', hour12: true,
+  });
+
+  return (
+    <div>
+      {/* Header banner */}
+      <div style={{
+        display: 'flex', alignItems: 'flex-start', gap: 14,
+        padding: '16px 20px', marginBottom: 20,
+        background: 'linear-gradient(135deg, #E7F1FA 0%, #EAF5F0 100%)',
+        border: '1px solid #B8D8F0', borderRadius: 10,
+      }}>
+        <div style={{
+          width: 40, height: 40, borderRadius: 10, flexShrink: 0,
+          background: '#0074B8', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <i className="fa-solid fa-database" style={{ fontSize: 18, color: '#fff' }} />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            <span style={{ fontSize: 'var(--type-body)', fontWeight: 700, color: 'var(--text-primary)' }}>
+              ClientSpace Handoff Page &mdash; Source of Truth
+            </span>
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: 5,
+              fontSize: 'var(--type-badge)', fontWeight: 600,
+              color: '#0074B8', background: '#CCE5F6',
+              padding: '2px 9px', borderRadius: 20, height: 22, lineHeight: 1,
+            }}>
+              <i className="fa-solid fa-rotate" style={{ fontSize: 9 }} />
+              Last Synced: {lastSyncedFormatted}
+            </span>
+          </div>
+          <p style={{
+            margin: '4px 0 0', fontSize: 'var(--type-body-sm)', color: 'var(--text-secondary)', lineHeight: 1.5,
+          }}>
+            This data was pulled from the ClientSpace onboarding handoff page for{' '}
+            <strong style={{ color: 'var(--text-primary)' }}>{client.name}</strong>{' '}
+            and is used for cross-validation against the CSA.
+          </p>
+        </div>
+      </div>
+
+      {/* Sync summary bar */}
+      <div style={{
+        display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 20,
+        padding: '12px 16px',
+        background: '#fff', border: '1px solid var(--border-primary)', borderRadius: 10,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#1A7A4A', flexShrink: 0 }} />
+          <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            {syncedCount} Synced
+          </span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#B0690A', flexShrink: 0 }} />
+          <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            {pendingCount} Pending
+          </span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#5B6770', flexShrink: 0 }} />
+          <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+            {needsUpdateCount} Needs Update
+          </span>
+        </div>
+        <div style={{ marginLeft: 'auto', fontSize: 'var(--type-body-sm)', color: 'var(--text-tertiary)' }}>
+          {handoffFields.length} fields from ClientSpace handoff page
+        </div>
+      </div>
+
+      {/* Data cards by category */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        {categories.map(cat => {
+          const catFields = handoffFields.filter(f => f.category === cat);
+          const catIcon = CATEGORY_ICONS[cat] || 'fa-folder';
+          return (
+            <div key={cat}>
+              {/* Category header */}
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                padding: '8px 0', marginBottom: 10,
+                borderBottom: '1px solid var(--border-primary)',
+              }}>
+                <i className={`fa-solid ${catIcon}`} style={{ fontSize: 13, color: '#0074B8' }} />
+                <span style={{
+                  fontSize: 'var(--type-body-sm)', fontWeight: 700, color: 'var(--text-primary)',
+                  textTransform: 'uppercase', letterSpacing: '0.04em',
+                }}>
+                  {cat}
+                </span>
+                <span style={{ fontSize: 'var(--type-badge)', color: 'var(--text-tertiary)', fontWeight: 500 }}>
+                  {catFields.length} fields
+                </span>
+              </div>
+
+              {/* Cards grid */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+                gap: 10,
+              }}>
+                {catFields.map(field => {
+                  const syncSt = getSyncStatus(field.field, field.category);
+                  const syncMeta = SYNC_STATUS_META[syncSt];
+                  return (
+                    <div
+                      key={field.field}
+                      style={{
+                        background: '#fff',
+                        border: '1px solid var(--border-primary)',
+                        borderRadius: 8,
+                        padding: '12px 14px',
+                        display: 'flex', flexDirection: 'column', gap: 6,
+                      }}
+                    >
+                      {/* Field label */}
+                      <div style={{
+                        fontSize: 'var(--type-badge)', fontWeight: 600,
+                        color: 'var(--text-tertiary)', textTransform: 'uppercase',
+                        letterSpacing: '0.04em', lineHeight: 1.2,
+                      }}>
+                        {field.field}
+                      </div>
+
+                      {/* ClientSpace value */}
+                      <div style={{
+                        fontSize: 'var(--type-body)', fontWeight: 600,
+                        color: 'var(--text-primary)', lineHeight: 1.35,
+                        wordBreak: 'break-word',
+                      }}>
+                        {field.clientSpaceValue}
+                      </div>
+
+                      {/* Footer: source label + sync badge */}
+                      <div style={{
+                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                        marginTop: 2,
+                      }}>
+                        <span style={{
+                          fontSize: 10, color: '#0074B8', fontWeight: 500,
+                          display: 'flex', alignItems: 'center', gap: 4,
+                        }}>
+                          <i className="fa-solid fa-database" style={{ fontSize: 9 }} />
+                          ClientSpace
+                        </span>
+                        <span style={{
+                          display: 'inline-flex', alignItems: 'center', gap: 4,
+                          fontSize: 10, fontWeight: 600,
+                          color: syncMeta.fg, background: syncMeta.bg,
+                          padding: '1px 7px', borderRadius: 5, height: 20, lineHeight: 1,
+                        }}>
+                          <i className={`fa-solid ${syncMeta.icon}`} style={{ fontSize: 8 }} />
+                          {syncMeta.label}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Handoff Page Metadata section */}
+      <div style={{
+        marginTop: 28, padding: '16px 20px',
+        background: 'var(--bg-secondary)', border: '1px solid var(--border-primary)',
+        borderRadius: 10,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 14 }}>
+          <i className="fa-solid fa-circle-info" style={{ fontSize: 13, color: 'var(--text-tertiary)' }} />
+          <span style={{ fontSize: 'var(--type-body-sm)', fontWeight: 700, color: 'var(--text-primary)' }}>
+            Handoff Page Metadata
+          </span>
+        </div>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+          gap: '12px 24px',
+        }}>
+          {[
+            { label: 'Source System', value: 'ClientSpace', icon: 'fa-database' },
+            { label: 'Handoff Page ID', value: 'HP-2026-0847', icon: 'fa-fingerprint' },
+            { label: 'Synced By', value: 'System (Auto)', icon: 'fa-robot' },
+            { label: 'Sync Method', value: 'API Integration', icon: 'fa-plug' },
+          ].map(meta => (
+            <div key={meta.label}>
+              <div style={{
+                fontSize: 'var(--type-badge)', fontWeight: 600, color: 'var(--text-tertiary)',
+                textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 3,
+                display: 'flex', alignItems: 'center', gap: 5,
+              }}>
+                <i className={`fa-solid ${meta.icon}`} style={{ fontSize: 9 }} />
+                {meta.label}
+              </div>
+              <div style={{
+                fontSize: 'var(--type-body-sm)', fontWeight: 600, color: 'var(--text-primary)',
+              }}>
+                {meta.value}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -723,6 +980,21 @@ export default function ClientDetailPage({ params }: { params: Promise<{ clientI
             ) : (
               <ValidationTable rows={validationRows} hoveredRow={hoveredRow} setHoveredRow={setHoveredRow} />
             )}
+          </div>
+        )}
+
+        {activeTab === 'handoff' && (
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+              <i className="fa-solid fa-database" style={{ fontSize: 14, color: '#0074B8' }} />
+              <span style={{ fontSize: 'var(--type-body)', fontWeight: 700, color: 'var(--text-primary)' }}>
+                Handoff Data
+              </span>
+              <span style={{ fontSize: 'var(--type-body-sm)', color: 'var(--text-tertiary)' }}>
+                &mdash; ClientSpace handoff page values (source of truth)
+              </span>
+            </div>
+            <HandoffDataTab client={client} fields={fields} />
           </div>
         )}
       </div>

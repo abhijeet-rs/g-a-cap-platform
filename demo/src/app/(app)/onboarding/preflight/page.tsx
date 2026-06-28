@@ -60,23 +60,81 @@ const CONNECTORS = [
   {
     name: 'PrismHR',
     status: 'Connected',
-    desc: 'Employee roster, WC codes, SUTA rates, billing rules',
+    desc: 'Employee roster, WC codes, SUTA rates, billing rules, deduction codes, pay groups',
     color: '#C60C30',
     icon: 'fa-server',
+    apis: [
+      'GET /api/v1/employees — Employee roster & WC assignments',
+      'GET /api/v1/employees/{id}/work-comp — Per-employee WC code',
+      'GET /api/v1/suta-rates — SUTA rate table by state',
+      'GET /api/v1/suta-rates/{state}/bill-rate — Bill rate for state',
+      'GET /api/v1/billing-rules — Billing rule configuration',
+      'GET /api/v1/pay-groups — Pay group & schedule alignment',
+      'GET /api/v1/deduction-codes — Deduction code → GL mapping',
+      'GET /api/v1/tax-jurisdictions — State tax registrations',
+      'PUT /api/v1/employees/{id}/wc-code — Write-back WC code',
+      'PUT /api/v1/suta-rates/{state} — Write-back SUTA rate',
+      'PUT /api/v1/deduction-codes/{code} — Write-back GL mapping',
+      'POST /api/v1/payroll/mock-run — Trigger mock payroll run',
+    ],
+    pushApis: [
+      'PUT /api/v1/employees/{id}/wc-code — Correct WC assignment',
+      'PUT /api/v1/suta-rates/{state} — Set SUTA rate + type',
+      'PUT /api/v1/deduction-codes/{code}/gl-account — Link GL account',
+      'PUT /api/v1/billing-rules/{ruleId} — Update billing config',
+      'POST /api/v1/payroll/mock-run — Initialize mock payroll',
+    ],
   },
   {
-    name: 'CSA Extraction',
+    name: 'CSA Schedule 2',
     status: 'Connected',
-    desc: 'WC codes from Schedule 2, fee structure, SUTA coverage',
+    desc: 'Expected WC codes, fee structure, SUTA coverage type — contractual source of truth',
     color: '#0088CE',
     icon: 'fa-file-contract',
+    badge: 'Source of Truth',
+    apis: [
+      'Internal — CSA Extraction output (Initiative D)',
+      'Fields: wc_codes, admin_fee, suta_coverage_type',
+      'Fields: implementation_fee, cyber_insurance, services',
+      'Extracted via LlamaParse + AI Extraction Agent pipeline',
+      'Confidence scoring per field (>90% auto, 80-90% review)',
+    ],
   },
   {
     name: 'ClientSpace',
     status: 'Connected',
-    desc: 'State registrations, employee locations',
+    desc: 'Client records, handoff page, state registrations, onboarding cases, employee locations',
     color: '#2A8F60',
     icon: 'fa-building',
+    apis: [
+      'GET /api/v1/clients/{id} — Client record + metadata',
+      'GET /api/v1/clients/{id}/handoff — Onboarding handoff page',
+      'GET /api/v1/clients/{id}/registrations — State registrations',
+      'GET /api/v1/clients/{id}/employees — Employee location data',
+      'GET /api/v1/cases — Onboarding cases list',
+      'POST /api/v1/cases — Create onboarding case',
+      'PUT /api/v1/cases/{id}/status — Update case status',
+      'POST /api/v1/cases/{id}/tasks — Create remediation task',
+      'POST /api/v1/cases/{id}/documents — Attach document',
+    ],
+    pushApis: [
+      'POST /api/v1/cases — Auto-create onboarding case',
+      'POST /api/v1/cases/{id}/tasks — Create remediation tasks',
+      'PUT /api/v1/clients/{id}/fields — Update client fields',
+    ],
+  },
+  {
+    name: 'Informer',
+    status: 'Connected',
+    desc: 'SUTA state rate tables, bill rate history, pre-approval status',
+    color: '#FF9E1B',
+    icon: 'fa-chart-bar',
+    apis: [
+      'GET /api/informer/suta-bill-rates — State rate tables',
+      'GET /api/informer/suta-bill-rates/{state} — State-specific rate',
+      'GET /api/informer/bill-rate-history — Historical rates',
+      'GET /api/informer/pre-approved-states — Pre-approved SUTA list',
+    ],
   },
 ];
 
@@ -204,6 +262,7 @@ export default function PreFlightPage() {
   const [pushPhase, setPushPhase] = useState<PushPhase>('idle');
   const [pushStep, setPushStep] = useState(-1);
   const [allPassed, setAllPassed] = useState(false);
+  const [showApiFor, setShowApiFor] = useState<string | null>(null);
 
   const client = CLIENTS.find((c) => c.id === selectedClient);
 
@@ -280,9 +339,10 @@ export default function PreFlightPage() {
 
   const [fetchStep, setFetchStep] = useState(-1);
   const FETCH_SOURCES = [
-    { label: 'Connecting to PrismHR API...', detail: 'Employee roster, WC codes, SUTA rates, billing rules, pay groups', icon: 'fa-server', color: '#0074B8' },
-    { label: 'Loading CSA extraction data...', detail: 'WC codes from Schedule 2, fee structure, SUTA coverage type', icon: 'fa-file-invoice', color: '#2A8F60' },
-    { label: 'Syncing ClientSpace records...', detail: 'State registrations, employee locations, contract terms', icon: 'fa-building', color: '#5A45C7' },
+    { label: 'Connecting to PrismHR API...', detail: 'Employee roster, WC codes, SUTA rates, billing rules, pay groups', icon: 'fa-server', color: '#C60C30', api: 'GET /api/v1/employees, /api/v1/suta-rates, /api/v1/billing-rules' },
+    { label: 'Loading CSA Schedule 2 data...', detail: 'Source of truth — expected WC codes, fee structure, SUTA coverage type', icon: 'fa-file-contract', color: '#0088CE', api: 'CSA Extraction pipeline output (Initiative D)' },
+    { label: 'Syncing ClientSpace records...', detail: 'State registrations, employee locations, contract terms', icon: 'fa-building', color: '#2A8F60', api: 'GET /api/clientspace/registrations' },
+    { label: 'Pulling Informer SUTA data...', detail: 'State rate tables, SUTA bill rate history for executive review', icon: 'fa-chart-bar', color: '#FF9E1B', api: 'GET /api/informer/suta-bill-rates' },
   ];
 
   const runPreFlight = useCallback(() => {
@@ -370,11 +430,19 @@ export default function PreFlightPage() {
 
       {/* ==================== SOURCE CONNECTORS ==================== */}
       <div style={{ marginBottom: 20 }}>
-        <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '1.5px', textTransform: 'uppercase' as const, color: '#C60C30', marginBottom: 10 }}>
-          Source Connectors
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+          <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: '1.5px', textTransform: 'uppercase' as const, color: '#C60C30' }}>
+            Data Sources &amp; Integration
+          </span>
+          <span style={{ fontSize: 10, fontWeight: 700, color: '#6B6F70', background: '#F5F7F9', borderRadius: 9999, padding: '2px 8px', border: '1px solid #E2E8ED' }}>
+            <i className="fa-solid fa-eye" style={{ fontSize: 8, marginRight: 4 }} />
+            Click eye icon for API details
+          </span>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
-          {CONNECTORS.map((c) => (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 12 }}>
+          {CONNECTORS.map((c) => {
+            const isApiOpen = showApiFor === c.name;
+            return (
             <div key={c.name} style={{ ...cardBase, padding: '14px 16px', borderTop: `3px solid ${c.color}` }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -384,19 +452,78 @@ export default function PreFlightPage() {
                   }}>
                     <i className={`fa-solid ${c.icon}`} />
                   </div>
-                  <span style={{ fontSize: 14, fontWeight: 800, color: '#23394A' }}>{c.name}</span>
+                  <span style={{ fontSize: 13, fontWeight: 800, color: '#23394A' }}>{c.name}</span>
                 </div>
-                <span style={{
-                  fontSize: 11, fontWeight: 700, color: '#1a5c38', background: '#E9F5EF',
-                  borderRadius: 9999, padding: '2px 10px', display: 'inline-flex', alignItems: 'center', gap: 4,
-                }}>
-                  <i className="fa-solid fa-circle-check" style={{ fontSize: 9 }} />
-                  Connected
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <button
+                    onClick={() => setShowApiFor(isApiOpen ? null : c.name)}
+                    title="View API endpoints"
+                    style={{
+                      width: 22, height: 22, borderRadius: 6, border: `1px solid ${isApiOpen ? c.color : '#E2E8ED'}`,
+                      background: isApiOpen ? `${c.color}15` : 'transparent',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      cursor: 'pointer', transition: 'all 0.15s ease',
+                    }}
+                  >
+                    <i className={`fa-solid ${isApiOpen ? 'fa-eye' : 'fa-eye-slash'}`} style={{ fontSize: 9, color: isApiOpen ? c.color : '#98A1A8' }} />
+                  </button>
+                  <span style={{
+                    fontSize: 10, fontWeight: 700, color: '#1a5c38', background: '#E9F5EF',
+                    borderRadius: 9999, padding: '2px 8px', display: 'inline-flex', alignItems: 'center', gap: 3,
+                  }}>
+                    <i className="fa-solid fa-circle-check" style={{ fontSize: 7 }} />
+                  </span>
+                </div>
               </div>
-              <div style={{ fontSize: 12, color: '#6B6F70', lineHeight: 1.5 }}>{c.desc}</div>
+              {'badge' in c && c.badge && (
+                <div style={{
+                  fontSize: 10, fontWeight: 800, color: '#0088CE', background: '#EBF4FB',
+                  border: '1px solid #b8d9ef', borderRadius: 4, padding: '2px 8px',
+                  textTransform: 'uppercase' as const, letterSpacing: '0.5px',
+                  display: 'inline-block', marginBottom: 6,
+                }}>
+                  <i className="fa-solid fa-star" style={{ fontSize: 8, marginRight: 4 }} />
+                  {c.badge}
+                </div>
+              )}
+              <div style={{ fontSize: 11, color: '#6B6F70', lineHeight: 1.5 }}>{c.desc}</div>
+              {isApiOpen && (
+                <div style={{
+                  marginTop: 8, padding: '8px 10px', borderRadius: 6,
+                  background: '#1e293b', border: '1px solid #334155',
+                  fontFamily: 'ui-monospace, monospace', fontSize: 10,
+                  lineHeight: 1.8, color: '#94a3b8',
+                }}>
+                  <div style={{ fontSize: 8, fontWeight: 700, color: '#60a5fa', letterSpacing: '1px', textTransform: 'uppercase' as const, marginBottom: 2, fontFamily: 'inherit' }}>READ APIs</div>
+                  {c.apis.filter(a => a.startsWith('GET') || (!a.startsWith('PUT') && !a.startsWith('POST'))).map((api, i) => {
+                    const isGet = api.startsWith('GET');
+                    return (
+                      <div key={`r-${i}`} style={{ display: 'flex', alignItems: 'flex-start', gap: 4 }}>
+                        {isGet && <span style={{ color: '#4ade80', fontWeight: 700, minWidth: 32 }}>GET</span>}
+                        {!isGet && <span style={{ color: '#60a5fa', fontWeight: 700, minWidth: 32 }}>&bull;</span>}
+                        <span style={{ color: '#e2e8f0' }}>{api.replace(/^(GET|PUT|POST)\s+/, '')}</span>
+                      </div>
+                    );
+                  })}
+                  {c.apis.some(a => a.startsWith('PUT') || a.startsWith('POST')) && (
+                    <>
+                      <div style={{ fontSize: 8, fontWeight: 700, color: '#f59e0b', letterSpacing: '1px', textTransform: 'uppercase' as const, marginTop: 6, marginBottom: 2, fontFamily: 'inherit' }}>WRITE APIs (Push to {c.name})</div>
+                      {c.apis.filter(a => a.startsWith('PUT') || a.startsWith('POST')).map((api, i) => {
+                        const method = api.startsWith('PUT') ? 'PUT' : 'POST';
+                        return (
+                          <div key={`w-${i}`} style={{ display: 'flex', alignItems: 'flex-start', gap: 4 }}>
+                            <span style={{ color: method === 'PUT' ? '#f59e0b' : '#c084fc', fontWeight: 700, minWidth: 32 }}>{method}</span>
+                            <span style={{ color: '#e2e8f0' }}>{api.replace(/^(GET|PUT|POST)\s+/, '')}</span>
+                          </div>
+                        );
+                      })}
+                    </>
+                  )}
+                </div>
+              )}
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -509,6 +636,11 @@ export default function PreFlightPage() {
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 13, fontWeight: 600, color: isDone || isActive ? '#23394A' : '#98A1A8' }}>{src.label}</div>
                     <div style={{ fontSize: 10, color: isDone ? '#6B6F70' : '#C0C8D0', marginTop: 1 }}>{src.detail}</div>
+                    {(isDone || isActive) && (
+                      <div style={{ fontSize: 9, fontFamily: 'ui-monospace, monospace', color: '#98A1A8', marginTop: 2 }}>
+                        <i className="fa-solid fa-plug" style={{ fontSize: 7, marginRight: 3 }} />{src.api}
+                      </div>
+                    )}
                   </div>
                   {isDone && <span style={{ fontSize: 9, fontWeight: 700, color: '#2A8F60', background: '#E9F5EF', padding: '2px 8px', borderRadius: 4 }}>Loaded</span>}
                 </div>
@@ -627,6 +759,56 @@ export default function PreFlightPage() {
             }}>
               Overall: {allPassed ? 'PASS' : 'FAIL'}
             </span>
+          </div>
+
+          {/* Source of truth — explicit data provenance */}
+          <div style={{
+            marginBottom: 14, padding: '16px 20px', borderRadius: 10,
+            background: '#fff', border: '1px solid #E2E8ED',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+              <i className="fa-solid fa-shield-halved" style={{ fontSize: 14, color: '#0088CE' }} />
+              <span style={{ fontSize: 13, fontWeight: 800, color: '#23394A' }}>Data Provenance — Where Each Validation Source Comes From</span>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <div style={{ padding: '10px 12px', borderRadius: 8, background: '#EBF4FB', border: '1px solid #b8d9ef' }}>
+                <div style={{ fontSize: 10, fontWeight: 800, color: '#0088CE', letterSpacing: '0.5px', textTransform: 'uppercase' as const, marginBottom: 4 }}>
+                  <i className="fa-solid fa-star" style={{ fontSize: 8, marginRight: 4 }} />Source of Truth
+                </div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#1a4f72', marginBottom: 2 }}>CSA Schedule 2</div>
+                <div style={{ fontSize: 10, color: '#37526a', lineHeight: 1.5 }}>
+                  Expected WC codes, fee structure ($125 PEPM), SUTA coverage type (CR%), contract term, services. Extracted via LlamaParse + AI Extraction Agent.
+                </div>
+              </div>
+              <div style={{ padding: '10px 12px', borderRadius: 8, background: '#FDECEA', border: '1px solid #f5c0c7' }}>
+                <div style={{ fontSize: 10, fontWeight: 800, color: '#C60C30', letterSpacing: '0.5px', textTransform: 'uppercase' as const, marginBottom: 4 }}>
+                  <i className="fa-solid fa-server" style={{ fontSize: 8, marginRight: 4 }} />System Being Validated
+                </div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#8a000a', marginBottom: 2 }}>PrismHR</div>
+                <div style={{ fontSize: 10, color: '#6a0010', lineHeight: 1.5 }}>
+                  Employee WC assignments, SUTA rate table, billing rules, pay groups, deduction code → GL mappings. Reads via REST API, writes back fixes via PUT.
+                </div>
+              </div>
+              <div style={{ padding: '10px 12px', borderRadius: 8, background: '#E9F5EF', border: '1px solid #b3dfc8' }}>
+                <div style={{ fontSize: 10, fontWeight: 800, color: '#2A8F60', letterSpacing: '0.5px', textTransform: 'uppercase' as const, marginBottom: 4 }}>
+                  <i className="fa-solid fa-building" style={{ fontSize: 8, marginRight: 4 }} />Supplementary Source
+                </div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#1a5c38', marginBottom: 2 }}>ClientSpace</div>
+                <div style={{ fontSize: 10, color: '#1a4a2e', lineHeight: 1.5 }}>
+                  State registrations, employee locations, client record, onboarding handoff page data. Provides geographic context for SUTA validation.
+                </div>
+              </div>
+              <div style={{ padding: '10px 12px', borderRadius: 8, background: '#FEF9EE', border: '1px solid #f0d9a8' }}>
+                <div style={{ fontSize: 10, fontWeight: 800, color: '#7a4800', letterSpacing: '0.5px', textTransform: 'uppercase' as const, marginBottom: 4 }}>
+                  <i className="fa-solid fa-chart-bar" style={{ fontSize: 8, marginRight: 4 }} />Reference Data
+                </div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#5c3c00', marginBottom: 2 }}>Informer</div>
+                <div style={{ fontSize: 10, color: '#5c3c00', lineHeight: 1.5 }}>
+                  SUTA bill rate tables by state, historical rate data, pre-approved state list. Used for SUTA bill rate validation and executive review escalation.
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Resolve warning (only when NOT all-passed) */}
@@ -1041,7 +1223,7 @@ export default function PreFlightPage() {
                             </div>
 
                             {/* Rate type radio buttons */}
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginLeft: 2 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginLeft: 2, marginBottom: 12 }}>
                               <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: '#37526a', cursor: 'pointer' }}>
                                 <input
                                   type="radio"
@@ -1060,8 +1242,68 @@ export default function PreFlightPage() {
                                   onChange={() => setFix('suta_ct_type', 'standard')}
                                   style={{ accentColor: '#2A8F60', cursor: 'pointer' }}
                                 />
-                                Standard Rate
+                                Standard Rate (Pre-Approved)
                               </label>
+                            </div>
+
+                            {/* SUTA Pre-Approval Workflow — Detailed */}
+                            <div style={{
+                              padding: '14px 16px', borderRadius: 10,
+                              background: '#fff', border: '1px solid #E2E8ED',
+                              boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                            }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                                <i className="fa-solid fa-shield-halved" style={{ fontSize: 12, color: '#FF9E1B' }} />
+                                <span style={{ fontWeight: 800, fontSize: 12, color: '#23394A' }}>
+                                  SUTA Bill Rate Pre-Approval Workflow
+                                </span>
+                              </div>
+
+                              {/* Pre-approval decision tree */}
+                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 40px 1fr', gap: 0, marginBottom: 12, alignItems: 'stretch' }}>
+                                <div style={{ padding: '10px 12px', borderRadius: 8, background: '#E9F5EF', border: '1px solid #b3dfc8' }}>
+                                  <div style={{ fontSize: 10, fontWeight: 800, color: '#2A8F60', letterSpacing: '0.5px', textTransform: 'uppercase' as const, marginBottom: 4 }}>Standard Rate States</div>
+                                  <div style={{ fontSize: 10, color: '#1a5c38', lineHeight: 1.6, marginBottom: 6 }}>Pre-approved at deal close by Sales. No executive review needed.</div>
+                                  <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' as const }}>
+                                    {['TX', 'CA', 'FL', 'NY', 'IL', 'PA', 'OH', 'GA', 'NJ', 'VA'].map(s => (
+                                      <span key={s} style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 3, background: '#d4eddf', color: '#1a5c38' }}>
+                                        {s} <i className="fa-solid fa-check" style={{ fontSize: 6 }} />
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, color: '#98A1A8' }}>vs</div>
+                                <div style={{ padding: '10px 12px', borderRadius: 8, background: '#FEF9EE', border: '1px solid #f0d9a8' }}>
+                                  <div style={{ fontSize: 10, fontWeight: 800, color: '#7a4800', letterSpacing: '0.5px', textTransform: 'uppercase' as const, marginBottom: 4 }}>Client Rate (CR%) States</div>
+                                  <div style={{ fontSize: 10, color: '#5c3c00', lineHeight: 1.6, marginBottom: 6 }}>Requires executive SUTA Bill Rate Review. 1-week SLA before 1st payroll.</div>
+                                  <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' as const }}>
+                                    <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 3, background: '#fef0d5', color: '#7a4800', border: '1px solid #f0d9a8' }}>
+                                      CT <i className="fa-solid fa-clock" style={{ fontSize: 6 }} />
+                                    </span>
+                                    <span style={{ fontSize: 9, fontWeight: 600, padding: '1px 6px', borderRadius: 3, color: '#98A1A8', background: '#F5F7F9' }}>
+                                      + any non-standard rate
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Source attribution */}
+                              <div style={{
+                                padding: '8px 10px', borderRadius: 6,
+                                background: '#F5F7F9', border: '1px solid #E2E8ED',
+                                fontSize: 10, color: '#37526a', lineHeight: 1.7,
+                              }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                                  <i className="fa-solid fa-plug" style={{ fontSize: 8, color: '#FF9E1B' }} />
+                                  <span style={{ fontWeight: 700 }}>Data Sources for SUTA Validation:</span>
+                                </div>
+                                <div style={{ paddingLeft: 14 }}>
+                                  <div><span style={{ fontWeight: 700, color: '#C60C30' }}>PrismHR</span> &rarr; GET /api/v1/suta-rates &mdash; current rate table (what&apos;s configured)</div>
+                                  <div><span style={{ fontWeight: 700, color: '#0088CE' }}>CSA Schedule 2</span> &rarr; SUTA coverage type: CR% (Client Rate) &mdash; what&apos;s contractually agreed</div>
+                                  <div><span style={{ fontWeight: 700, color: '#FF9E1B' }}>Informer</span> &rarr; GET /api/informer/suta-bill-rates/CT &mdash; state rate table for executive review</div>
+                                  <div><span style={{ fontWeight: 700, color: '#2A8F60' }}>ClientSpace</span> &rarr; GET /api/v1/clients/{'{id}'}/registrations &mdash; confirms CT state registration exists</div>
+                                </div>
+                              </div>
                             </div>
                           </div>
 
@@ -1213,7 +1455,7 @@ export default function PreFlightPage() {
               </button>
 
               <div style={{ fontSize: 11, color: '#64748b', marginTop: 10, lineHeight: 1.5, textAlign: 'center' as const }}>
-                These changes will be applied via PrismHR API in a single batch.
+                Write-back via PrismHR REST API — PUT endpoints for WC codes, SUTA rates, and deduction mappings.
                 After pushing, re-run validation to verify all checks pass.
               </div>
             </div>
@@ -1252,6 +1494,13 @@ export default function PreFlightPage() {
                       suta_ct_rate: 'Entering SUTA rate for CT',
                       deduction_401k: 'Linking 401K-EE to GL account',
                     };
+                    const pushApis: Record<string, string> = {
+                      wc_martinez: 'PUT /api/v1/employees/martinez/wc-code',
+                      wc_chen: 'PUT /api/v1/employees/chen/wc-code',
+                      wc_patel: 'PUT /api/v1/employees/patel/wc-code',
+                      suta_ct_rate: 'PUT /api/v1/suta-rates/CT',
+                      deduction_401k: 'PUT /api/v1/deduction-codes/401K-EE',
+                    };
                     return (
                       <div key={i} style={{
                         display: 'flex', alignItems: 'center', gap: 10,
@@ -1270,13 +1519,20 @@ export default function PreFlightPage() {
                         ) : (
                           <div style={{ width: 14, height: 14, borderRadius: '50%', background: '#E2E8ED' }} />
                         )}
-                        <span style={{
-                          fontSize: 13, fontWeight: isDone || isCurrent ? 600 : 400,
-                          color: isDone ? '#1a5c38' : isCurrent ? '#0088CE' : '#6B6F70',
-                        }}>
-                          {pushLabels[entry.key] || entry.label}
-                          {isDone && ' ...done'}
-                        </span>
+                        <div>
+                          <span style={{
+                            fontSize: 13, fontWeight: isDone || isCurrent ? 600 : 400,
+                            color: isDone ? '#1a5c38' : isCurrent ? '#0088CE' : '#6B6F70',
+                          }}>
+                            {pushLabels[entry.key] || entry.label}
+                            {isDone && ' ...done'}
+                          </span>
+                          {(isDone || isCurrent) && pushApis[entry.key] && (
+                            <div style={{ fontSize: 9, fontFamily: 'ui-monospace, monospace', color: '#98A1A8', marginTop: 1 }}>
+                              <span style={{ color: '#f59e0b', fontWeight: 700 }}>PUT</span> {pushApis[entry.key].replace('PUT ', '')}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     );
                   })}

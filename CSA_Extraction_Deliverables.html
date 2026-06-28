@@ -165,6 +165,8 @@ body{font-family:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;color:var(-
   <button class="tab-btn" onclick="showTab('security')">04 - Guardrails & Security</button>
   <button class="tab-btn" onclick="showTab('clientspace')">05 - ClientSpace Integration</button>
   <button class="tab-btn" onclick="showTab('roadmap')">06 - Implementation Roadmap</button>
+  <button class="tab-btn" onclick="showTab('template')">07 - Template Engine</button>
+  <button class="tab-btn" onclick="showTab('casecreation')">08 - Auto Case Creation</button>
 </div>
 
 
@@ -328,7 +330,7 @@ body{font-family:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;color:var(-
   <span class="code-key">Layer 5</span>  <span class="code-str">ClientSpace Integration</span>     API adapter, DTO mapping, sync lifecycle, retry logic
   <span class="code-key">Layer 4</span>  <span class="code-str">Human Review & Approval</span>     Dashboard, side drawer, PDF viewer, lock/unlock, re-run
   <span class="code-key">Layer 3</span>  <span class="code-str">Cross-Validation Engine</span>     Multi-system comparison, mismatch detection, scoring
-  <span class="code-key">Layer 2</span>  <span class="code-str">AI Extraction Pipeline</span>      LlamaParse + Claude Haiku + Tesseract OCR, 3-tier bbox cascade, confidence
+  <span class="code-key">Layer 2</span>  <span class="code-str">AI Extraction Pipeline</span>      LlamaParse + AI Extraction Agent + Tesseract OCR, 3-tier bbox cascade, confidence
   <span class="code-key">Layer 1</span>  <span class="code-str">Ingestion Layer</span>             Upload, file validation, type detection, queuing</div>
 
   <div class="section-title">Layer Details</div>
@@ -350,11 +352,11 @@ body{font-family:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;color:var(-
       <strong>Purpose:</strong> Convert unstructured CSA PDF content into structured, typed fields with per-field confidence scores.<br><br>
       <strong>Pipeline Stages:</strong><br>
       1. <strong>PDF Parsing (LlamaParse):</strong> LlamaParse converts CSA PDFs into per-page structured Markdown with OCR items including bounding box coordinates. Handles native and scanned PDFs with high fidelity. API-key-based integration for fast setup.<br>
-      2. <strong>Intelligent Field Extraction (Claude Haiku):</strong> Claude Haiku via the Anthropic API performs LLM-based intelligent extraction of 42+ fields from the parsed Markdown. Each field is returned with its page number, source citation, and confidence score. Domain-specific extraction prompts tuned for PEO/HRO terminology.<br>
+      2. <strong>Intelligent Field Extraction (AI Extraction Agent):</strong> AI Extraction Agent via the Anthropic API performs LLM-based intelligent extraction of 42+ fields from the parsed Markdown. Each field is returned with its page number, source citation, and confidence score. Domain-specific extraction prompts tuned for PEO/HRO terminology.<br>
       3. <strong>Word-Level OCR (Tesseract):</strong> Tesseract OCR processes each PDF page to produce word-level bounding boxes (7000+ words per page), enabling precise in-document highlighting of extracted field locations.<br>
       4. <strong>3-Tier Bounding Box Cascade:</strong> A three-pass matching algorithm resolves extracted field text to precise document positions: LINE pass (exact line match from LlamaParse OCR items), WORD-run pass (consecutive word sequence matching from Tesseract output), and Loose-line pass (relaxed matching for partial or reformatted text).<br>
       5. <strong>Confidence Scoring:</strong> Each extracted field receives a confidence score (0.0-1.0) based on extraction clarity, format compliance, and cross-field consistency.<br><br>
-      <strong>Technology:</strong> Primary: LlamaParse (PDF &rarr; per-page Markdown with OCR items) + Claude Haiku via Anthropic API (intelligent field extraction) + Tesseract OCR (word-level bounding box resolution). Production: Azure AI Document Intelligence for OCR + Claude for semantic extraction.
+      <strong>Technology:</strong> Primary: LlamaParse (PDF &rarr; per-page Markdown with OCR items) + AI Extraction Agent via LLM API (intelligent field extraction) + Tesseract OCR (word-level bounding box resolution). Production: Azure AI Document Intelligence for OCR + LLM for semantic extraction.
     </div>
   </div>
 
@@ -420,7 +422,7 @@ body{font-family:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;color:var(-
   <table class="tbl">
     <thead><tr><th>Component</th><th>Demo/POC</th><th>Production</th><th>Justification</th></tr></thead>
     <tbody>
-      <tr><td><strong>Extraction Engine</strong></td><td>LlamaParse + Claude Haiku + Tesseract OCR + PDF.js</td><td>Azure DI + Claude (hybrid)</td><td>LlamaParse for PDF &rarr; per-page Markdown with OCR items, Claude Haiku for intelligent field extraction, Tesseract OCR for word-level bounding boxes, PDF.js for in-document rendering and highlights; Azure DI adds enterprise OCR in production</td></tr>
+      <tr><td><strong>Extraction Engine</strong></td><td>LlamaParse + AI Extraction Agent + Tesseract OCR + PDF.js</td><td>Azure DI + LLM (hybrid)</td><td>LlamaParse for PDF &rarr; per-page Markdown with OCR items, AI Extraction Agent for intelligent field extraction, Tesseract OCR for word-level bounding boxes, PDF.js for in-document rendering and highlights; Azure DI adds enterprise OCR in production</td></tr>
       <tr><td><strong>Backend Framework</strong></td><td>Python FastAPI</td><td>Python FastAPI</td><td>Async-native, OpenAPI auto-docs, excellent for ML pipeline integration</td></tr>
       <tr><td><strong>Task Queue</strong></td><td>In-process async</td><td>Celery + Redis</td><td>Production needs distributed processing, retry logic, dead letter queues</td></tr>
       <tr><td><strong>Database</strong></td><td>SQLite / PostgreSQL</td><td>PostgreSQL + TimescaleDB</td><td>Relational for structured data; TimescaleDB for time-series audit logs</td></tr>
@@ -963,6 +965,127 @@ body{font-family:'Inter','Helvetica Neue',Helvetica,Arial,sans-serif;color:var(-
 </div>
 </div>
 
+
+
+<!-- ================================================================== -->
+<!-- TAB 7: TEMPLATE ENGINE                                             -->
+<!-- ================================================================== -->
+<div id="tab-template" class="tab-panel">
+<div class="page">
+  <div class="pg-eye">Section P - Configurable Extraction</div>
+  <div class="pg-h1">Extraction Template Engine<br>Configurable, Extensible, Zero-Config Field Addition</div>
+  <div class="pg-sub">The extraction schema is template-driven, not hardcoded. Business users can add, remove, or toggle extraction fields through a visual schema editor. Since the engine is LLM-driven, new fields are handled automatically with no regex, rules, or code changes.</div>
+
+  <div class="section-title">Default Extraction Schema</div>
+
+  <table class="tbl">
+    <thead><tr><th>Category</th><th>Fields</th><th>Count</th></tr></thead>
+    <tbody>
+      <tr class="subhead"><td colspan="3">Core Business Fields</td></tr>
+      <tr><td><strong>General Information</strong></td><td>Organization Name, Contract Type, Number of Employees, Decision Maker</td><td>4</td></tr>
+      <tr><td><strong>Contract &amp; Dates</strong></td><td>Effective Date, Contract Term, Termination Notice, Early Termination Fee</td><td>4</td></tr>
+      <tr><td><strong>Fee Structure</strong></td><td>Admin Fee, PEPM Fee, Implementation Fee, Off-cycle Fee, Cyber Insurance Fee</td><td>5</td></tr>
+      <tr class="subhead"><td colspan="3">Coverage &amp; Compliance</td></tr>
+      <tr><td><strong>Services &amp; Coverage</strong></td><td>Services Included, SUTA Coverage, WC Codes, Workers Comp State</td><td>4</td></tr>
+      <tr><td><strong>Tax &amp; Compliance</strong></td><td>Pricing/Tax Rates, Governing Law, Ownership Structure</td><td>3</td></tr>
+      <tr><td><strong>Benefits</strong></td><td>Offer Benefits, Plan Sponsors, Offer Retirement Plan, Retirement Plan Carrier</td><td>4</td></tr>
+      <tr class="subhead"><td colspan="3">Operational</td></tr>
+      <tr><td><strong>Payroll</strong></td><td>Pay Frequency, Payroll Submission Deadline</td><td>2</td></tr>
+      <tr><td><strong>Company Information</strong></td><td>Client Address, PEO Address, Jurisdiction</td><td>3</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">Custom Field Extension</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px;">
+    <div class="card accent-green">
+      <div class="card-title"><i class="fa-solid fa-plus-circle" style="color:var(--pos);margin-right:6px;"></i>Adding a Custom Field</div>
+      <div class="card-sub">Users click the <strong>+</strong> button in the schema editor, type a field name (e.g. "Cyber Policy", "Indemnification Cap"), and save. The field immediately appears in the extraction schema. No deployment or code changes needed.</div>
+    </div>
+    <div class="card accent-blue">
+      <div class="card-title"><i class="fa-solid fa-robot" style="color:var(--c2);margin-right:6px;"></i>LLM-Driven Extraction</div>
+      <div class="card-sub">Because extraction uses an LLM, new fields are understood semantically. Adding "Cyber Policy" causes the LLM to search the CSA for cyber insurance terms, policy limits, and coverage details — no regex patterns or field-specific rules required.</div>
+    </div>
+    <div class="card accent-amber">
+      <div class="card-title"><i class="fa-solid fa-toggle-on" style="color:var(--amber);margin-right:6px;"></i>Field Toggle</div>
+      <div class="card-sub">Each field can be toggled on/off. Disabled fields are skipped during extraction but remain in the schema for future use. Useful for CSA types that don't have certain sections.</div>
+    </div>
+    <div class="card accent-navy">
+      <div class="card-title"><i class="fa-solid fa-layer-group" style="color:var(--navy);margin-right:6px;"></i>Template Variants</div>
+      <div class="card-sub">Different CSA types (PEO, ASO, HRO) can use different extraction templates. Template selection can be automatic based on document classification or manually chosen during upload.</div>
+    </div>
+  </div>
+
+  <div class="callout success">
+    <strong>Enterprise Value:</strong> The configurable template engine demonstrates that the extraction system is not a fixed-schema solution. As G&amp;A Partners' CSA formats evolve or new compliance fields are required, the schema adapts instantly through the UI — no engineering effort required.
+  </div>
+
+  <div class="foot">
+    <span>G&A Partners - CSA Extraction Deliverables - Confidential</span>
+    <span>June 2026 - R Systems</span>
+  </div>
+</div>
+</div>
+
+
+<!-- ================================================================== -->
+<!-- TAB 8: AUTO CASE CREATION                                          -->
+<!-- ================================================================== -->
+<div id="tab-casecreation" class="tab-panel">
+<div class="page">
+  <div class="pg-eye">Section Q - Downstream Automation</div>
+  <div class="pg-h1">Auto Case Creation &amp; Sales Assignment<br>From Approval to Onboarding in Minutes</div>
+  <div class="pg-sub">When a reviewer clicks "Approve" on a validated CSA extraction, the system automatically creates a ClientSpace onboarding case, assigns the Sales team (PM + PA), generates mismatch resolution tasks, attaches documents, and triggers notification workflows — replacing the entire manual BA re-entry cycle.</div>
+
+  <div class="section-title">Approval-to-Case Workflow</div>
+
+  <div class="lifecycle">
+    <div class="lifecycle-step active" style="background:#E6F4EC;"><div class="step-label">Step 1</div><div class="step-name">Approve</div></div>
+    <div class="lifecycle-step"><div class="step-label">Step 2</div><div class="step-name">Case Created</div></div>
+    <div class="lifecycle-step"><div class="step-label">Step 3</div><div class="step-name">Team Assigned</div></div>
+    <div class="lifecycle-step"><div class="step-label">Step 4</div><div class="step-name">Tasks Generated</div></div>
+    <div class="lifecycle-step"><div class="step-label">Step 5</div><div class="step-name">Notifications</div></div>
+  </div>
+
+  <div class="section-title">What Gets Created Automatically</div>
+
+  <table class="tbl">
+    <thead><tr><th>Action</th><th>Details</th><th>Source Data</th></tr></thead>
+    <tbody>
+      <tr><td><strong>ClientSpace Case Record</strong></td><td>Case ID auto-generated (CS-2026-XXXX), status set to "Onboarding", case type from CSA contract type</td><td>Extraction approval metadata</td></tr>
+      <tr><td><strong>Client Info Pre-populated</strong></td><td>22+ fields written from approved extraction — company info, fee structure, services, dates</td><td>Approved CSA extraction fields</td></tr>
+      <tr><td><strong>PM Assignment</strong></td><td>Project Manager auto-assigned from ClientSpace handoff page or regional assignment rules</td><td>Handoff page data</td></tr>
+      <tr><td><strong>PA Assignment</strong></td><td>Payroll Analyst auto-assigned based on region, workload, and specialization</td><td>Assignment rules engine</td></tr>
+      <tr><td><strong>Mismatch Resolution Tasks</strong></td><td>Individual tasks created for each unresolved mismatch, assigned to BA with CSA citation</td><td>Validation mismatch records</td></tr>
+      <tr><td><strong>Document Attachment</strong></td><td>Original CSA PDF + extraction summary report attached to case</td><td>Upload file + generated report</td></tr>
+      <tr><td><strong>Collection Triggers</strong></td><td>Automated data collection requests sent to client contact for missing information</td><td>Fields with status "Not available"</td></tr>
+      <tr><td><strong>In-App Notification</strong></td><td>Toast notification + case creation banner shown in UI with case ID and assigned team</td><td>Case creation response</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">UI Presentation</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px;">
+    <div class="card accent-green">
+      <div class="card-title"><i class="fa-solid fa-bell" style="color:var(--pos);margin-right:6px;"></i>Toast Notification</div>
+      <div class="card-sub">On approval, a toast notification appears: "ClientSpace case created — assigned to Sales team". Auto-dismisses after 2.5 seconds. Provides instant feedback that downstream actions have been triggered.</div>
+    </div>
+    <div class="card accent-blue">
+      <div class="card-title"><i class="fa-solid fa-briefcase" style="color:var(--c2);margin-right:6px;"></i>Case Creation Banner</div>
+      <div class="card-sub">A persistent green banner appears in the drawer header showing: Case ID, assigned PM + PA names, field count synced, and status badges ("Synced" + "Assigned"). Confirms the exact case record that was created.</div>
+    </div>
+  </div>
+
+  <div class="callout success">
+    <strong>Impact:</strong> The manual BA re-entry cycle — which previously took 1-2 business days and frequently introduced data errors — is completely eliminated. From CSA upload to assigned ClientSpace case with full team assignment happens in minutes, with a complete audit trail for compliance.
+  </div>
+
+  <div class="foot">
+    <span>G&A Partners - CSA Extraction Deliverables - Confidential</span>
+    <span>June 2026 - R Systems</span>
+  </div>
+</div>
+</div>
 
 
 <!-- ================================================================== -->
