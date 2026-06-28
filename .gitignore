@@ -6,3 +6,5 @@ node_modules/
 *.log
 .DS_Store
 qa-*.png
+.env
+backend/.env

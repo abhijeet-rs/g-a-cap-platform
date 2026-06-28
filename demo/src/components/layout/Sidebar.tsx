@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuthStore, useUserInfo } from '@/stores/authStore';
@@ -20,10 +20,19 @@ export default function Sidebar() {
   const docCount = 3;
   const approvedCount = caps.filter(c => c.status === 'approved').length;
 
+  const isOnboarding = pathname.startsWith('/onboarding');
   const [expanded, setExpanded] = useState<Record<string, boolean>>({
-    cap: true, prospecting: false, proposal: false,
+    cap: !isOnboarding, prospecting: false, proposal: false, csa: isOnboarding, preflight: pathname.startsWith('/onboarding/preflight'),
   });
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isOnboarding) {
+      setExpanded(p => ({ ...p, csa: true, cap: false }));
+    } else if (pathname.startsWith('/dashboard') || pathname.startsWith('/new-business') || pathname.startsWith('/renewal') || pathname.startsWith('/esign') || pathname.startsWith('/documents') || pathname.startsWith('/writeback')) {
+      setExpanded(p => ({ ...p, cap: true, csa: false }));
+    }
+  }, [pathname, isOnboarding]);
 
   const toggle = (key: string) => setExpanded(p => ({ ...p, [key]: !p[key] }));
 
@@ -58,11 +67,11 @@ export default function Sidebar() {
     transition: 'all 0.1s ease',
   });
 
-  const sectionBtn = (exp: boolean): React.CSSProperties => ({
+  const sectionBtn = (exp: boolean, active?: boolean): React.CSSProperties => ({
     display: 'flex', alignItems: 'center', gap: 10, width: '100%',
     padding: '8px 12px', borderRadius: 8, marginBottom: 1,
-    background: exp ? 'var(--bg-hover)' : 'transparent',
-    color: exp ? 'var(--text-primary)' : 'var(--text-secondary)',
+    background: (exp || active) ? 'var(--bg-hover)' : 'transparent',
+    color: (exp || active) ? 'var(--text-primary)' : 'var(--text-secondary)',
     fontSize: 'var(--type-nav)', fontWeight: 600, cursor: 'pointer',
     border: 'none', textAlign: 'left',
     transition: 'all 0.1s ease',
@@ -122,7 +131,7 @@ export default function Sidebar() {
         }}>G&A</div>
         <div style={{ minWidth: 0, flex: 1 }}>
           <div style={{ color: 'var(--text-primary)', fontSize: 'var(--type-nav)', fontWeight: 700, letterSpacing: -0.3, lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>G&A Compass</div>
-          <div style={{ color: 'var(--text-tertiary)', fontSize: 'var(--type-nav-section)', letterSpacing: 0.3, lineHeight: 1.2 }}>Benefits Operations</div>
+          <div style={{ color: 'var(--text-tertiary)', fontSize: 'var(--type-nav-section)', letterSpacing: 0.3, lineHeight: 1.2 }}>{pathname.startsWith('/onboarding') ? 'Onboarding Operations' : 'Benefits Operations'}</div>
         </div>
         <i className="fa-solid fa-grip" style={{ fontSize: 'var(--type-nav-section)', color: 'var(--text-tertiary)', opacity: hoveredLink === '__brand' ? 1 : 0.5, transition: 'opacity 0.1s ease' }} />
       </Link>
@@ -224,6 +233,59 @@ export default function Sidebar() {
                 {approvedCount > 0 && <span style={badgeStyle('#5A45C7', '#F8F6FE')}>{approvedCount}</span>}
               </Link>
             )}
+          </div>
+        )}
+
+        <div style={sectionHeader}>Onboarding Ops</div>
+
+        <button onClick={() => toggle('csa')} style={sectionBtn(expanded.csa, isOnboarding)}>
+          <span style={iconCol}><i className="fa-solid fa-file-invoice" style={{ fontSize: 'var(--type-nav)', color: 'inherit' }}></i></span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>CSA Extraction</div>
+            <div style={{ fontSize: 'var(--type-nav-sub)', fontWeight: 400, color: 'var(--text-tertiary)', marginTop: 1 }}>AI-assisted extraction</div>
+          </div>
+          <span style={chevron(expanded.csa)}>&#9654;</span>
+        </button>
+        {expanded.csa && (
+          <div style={{ marginBottom: 4 }}>
+            <Link href="/onboarding/clients" style={{
+              ...subLink('/onboarding/clients'),
+              background: isActive('/onboarding/clients') ? 'var(--bg-hover)' : (hoveredLink === '/onboarding/clients' ? 'var(--bg-secondary)' : 'transparent'),
+              color: isActive('/onboarding/clients') ? 'var(--text-primary)' : 'var(--text-secondary)',
+              fontWeight: isActive('/onboarding/clients') ? 600 : 400,
+            }}
+              onMouseEnter={() => setHoveredLink('/onboarding/clients')} onMouseLeave={() => setHoveredLink(null)}>
+              <span style={{ width: 5, height: 5, borderRadius: '50%', background: isActive('/onboarding/clients') ? 'var(--text-primary)' : 'var(--color-slate-300)', flexShrink: 0, transition: 'background 0.1s' }} />
+              Clients
+            </Link>
+            <Link href="/onboarding" style={subLink('/onboarding')}
+              onMouseEnter={() => setHoveredLink('/onboarding')} onMouseLeave={() => setHoveredLink(null)}>
+              <span style={{ width: 5, height: 5, borderRadius: '50%', background: pathname === '/onboarding' ? 'var(--text-primary)' : 'var(--color-slate-300)', flexShrink: 0, transition: 'background 0.1s' }} />
+              Extractions
+            </Link>
+            <Link href="/onboarding/extract" style={subLink('/onboarding/extract')}
+              onMouseEnter={() => setHoveredLink('/onboarding/extract')} onMouseLeave={() => setHoveredLink(null)}>
+              <span style={{ width: 5, height: 5, borderRadius: '50%', background: isActive('/onboarding/extract') ? 'var(--text-primary)' : 'var(--color-slate-300)', flexShrink: 0, transition: 'background 0.1s' }} />
+              Upload & Extract
+            </Link>
+          </div>
+        )}
+
+        <button onClick={() => toggle('preflight')} style={sectionBtn(expanded.preflight, pathname.startsWith('/onboarding/preflight'))}>
+          <span style={iconCol}><i className="fa-solid fa-plane-departure" style={{ fontSize: 'var(--type-nav)', color: 'inherit' }}></i></span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Pre-Flight Validation</div>
+            <div style={{ fontSize: 'var(--type-nav-sub)', fontWeight: 400, color: 'var(--text-tertiary)', marginTop: 1 }}>Payroll config checks</div>
+          </div>
+          <span style={chevron(expanded.preflight)}>&#9654;</span>
+        </button>
+        {expanded.preflight && (
+          <div style={{ marginBottom: 4 }}>
+            <Link href="/onboarding/preflight" style={subLink('/onboarding/preflight')}
+              onMouseEnter={() => setHoveredLink('/onboarding/preflight')} onMouseLeave={() => setHoveredLink(null)}>
+              <span style={{ width: 5, height: 5, borderRadius: '50%', background: isActive('/onboarding/preflight') ? 'var(--text-primary)' : 'var(--color-slate-300)', flexShrink: 0, transition: 'background 0.1s' }} />
+              Run Validation
+            </Link>
           </div>
         )}
 

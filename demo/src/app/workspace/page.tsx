@@ -38,6 +38,18 @@ interface FunctionArea {
   apps: WorkspaceApp[];
 }
 
+interface Workspace {
+  key: string;
+  name: string;
+  tagline: string;
+  summary: string;
+  icon: string;
+  accent: string;
+  accentBg: string;
+  apps: WorkspaceApp[];
+}
+
+
 interface Domain {
   key: 'sales' | 'operations';
   name: string;
@@ -132,6 +144,20 @@ const OPS_FUNCTIONS: FunctionArea[] = [
       { name: 'Shipping Case Builder', desc: 'Prism posting auto-creates ClientSpacePRO shipping cases with files attached and PSR fields filled.', painPoint: '8-step manual case creation runs 10–15 min, 18,000–30,000 times a year.', icon: 'fa-box-archive', status: 'soon' },
       { name: 'Label & Tracking Agent', desc: 'Auto-generates carrier labels, retrieves tracking numbers, and pushes delivery-delay alerts.', painPoint: 'Manual labels and next-morning status review consume 100% of Payroll Assistant capacity.', icon: 'fa-truck-fast', status: 'soon' },
       { name: 'CS Triage Assistant', desc: 'AI intake classifies inquiries, pre-pulls WorkSight & Prism data, and drafts routine responses.', painPoint: 'Every CS inquiry starts from a blank slate across siloed systems — 18% of specialist capacity.', icon: 'fa-headset', status: 'soon' },
+    ],
+  },
+  {
+    key: 'onboarding',
+    name: 'Onboarding',
+    tagline: 'Onboarding Operations',
+    description: 'Manage client onboarding end to end — CSA extraction, cross-validation, system configuration, and first payroll readiness.',
+    icon: 'fa-user-plus',
+    accent: '#2A8F60',
+    accentBg: '#E4F2EA',
+    apps: [
+      { name: 'CSA Extraction', desc: 'AI-assisted CSA document extraction, cross-validation, and onboarding data preparation.', icon: 'fa-file-invoice', status: 'active', href: '/onboarding/clients' },
+      { name: 'Onboarding Tracker', desc: 'Client onboarding pipeline, milestones, and team workload.', icon: 'fa-list-check', status: 'soon' },
+      { name: 'Pre-Flight Validator', desc: 'Mock payroll pre-flight checks for PrismHR configuration.', icon: 'fa-plane-departure', status: 'active', href: '/onboarding/preflight' },
     ],
   },
 ];

@@ -18,6 +18,8 @@ const pageTitles: Record<string, string> = {
   '/integrations': 'Integrations',
   '/architecture': 'Architecture',
   '/writeback': 'Ben Admin Console',
+  '/onboarding': 'CSA Extraction',
+  '/onboarding/extract': 'Upload CSA',
 };
 
 const crumbs: Record<string, string> = {
@@ -30,6 +32,8 @@ const crumbs: Record<string, string> = {
   '/integrations': 'Data & Foundation',
   '/architecture': 'Reference',
   '/writeback': 'Workspace',
+  '/onboarding': 'Onboarding Ops',
+  '/onboarding/extract': 'Onboarding Ops',
 };
 
 const allRoles: { key: Role; label: string }[] = [
@@ -136,8 +140,8 @@ export default function Topbar() {
         )}
       </div>
 
-      {/* RIGHT: actions */}
-      {can('create') && (
+      {/* RIGHT: actions — hide CAP buttons on onboarding routes */}
+      {!pathname.startsWith('/onboarding') && can('create') && (
         <Link href="/new-business" style={{
           height: 34, padding: '0 14px', border: 'none', borderRadius: 8,
           background: 'var(--text-primary)', color: '#fff',
@@ -151,17 +155,19 @@ export default function Topbar() {
         </Link>
       )}
 
-      <Link href="/renewal" style={{
-        height: 34, padding: '0 14px',
-        border: '1px solid var(--border-primary)', borderRadius: 8,
-        background: '#fff', color: 'var(--text-primary)',
-        fontSize: 'var(--type-body-sm)', fontWeight: 600,
-        cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5,
-        textDecoration: 'none', whiteSpace: 'nowrap',
-        transition: 'border-color 0.12s ease',
-      }}>
-        ↻ Renewal CAP
-      </Link>
+      {!pathname.startsWith('/onboarding') && (
+        <Link href="/renewal" style={{
+          height: 34, padding: '0 14px',
+          border: '1px solid var(--border-primary)', borderRadius: 8,
+          background: '#fff', color: 'var(--text-primary)',
+          fontSize: 'var(--type-body-sm)', fontWeight: 600,
+          cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5,
+          textDecoration: 'none', whiteSpace: 'nowrap',
+          transition: 'border-color 0.12s ease',
+        }}>
+          ↻ Renewal CAP
+        </Link>
+      )}
 
       <button onClick={toggle} style={{
         height: 34, padding: '0 12px',

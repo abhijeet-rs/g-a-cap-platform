@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G&A Partners — AI-Assisted CSA Extraction & Cross-Validation Architecture</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --red: #C60C30;
+  --red-light: #FDECEA;
+  --red-soft: #ff8095;
+  --navy: #23394A;
+  --navy2: #2c465c;
+  --grey: #6B6F70;
+  --fog: #F5F7F9;
+  --rule: #E2E8ED;
+  --white: #FFFFFF;
+  --pos: #2A8F60;
+  --pos-light: #E9F5EF;
+  --c2: #0088CE;
+  --c2-light: #EBF4FB;
+  --amber: #FF9E1B;
+  --amber-light: #FEF9EE;
+  --blue-soft: #EBF4FB;
+  --text-secondary: #37526a;
+
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.125rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2rem;
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 28px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 99px;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--font-body);
+  color: var(--navy);
+  background: var(--white);
+  overflow: auto;
+  font-size: var(--text-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   STAGE / SLIDE SHELL
+   ============================================================ */
+#app { padding: 0; }
+#stage { width: 100%; margin: 0 auto; position: relative; }
+.slide { background: var(--fog); overflow: visible; display: none; flex-direction: column; min-height: 100vh; }
+.slide.active { display: flex; }
+
+/* ============================================================
+   TAB BAR
+   ============================================================ */
+.tab-bar {
+  display: flex;
+  background: var(--navy);
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+.slide-tab {
+  padding: var(--sp-3) var(--sp-5);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: rgba(255,255,255,.4);
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+  transition: color .15s;
+}
+.slide-tab:hover { color: rgba(255,255,255,.7); }
+.slide-tab.active { color: #fff; border-bottom-color: var(--red); }
+
+/* ============================================================
+   SLIDE HEADER
+   ============================================================ */
+.s-hdr {
+  background: var(--navy);
+  padding: var(--sp-4) var(--sp-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  border-bottom: 4px solid var(--red);
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+.s-hdr .eye {
+  font-size: var(--text-sm);
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--red-soft);
+  font-weight: 800;
+  margin-bottom: var(--sp-1);
+}
+.s-hdr h1 {
+  font-size: clamp(var(--text-lg), 2.2vw, var(--text-2xl));
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.3px;
+  line-height: 1.25;
+}
+.s-hdr h1 .accent { color: var(--red-soft); }
+.ga-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.ga-logo .gw { font-size: var(--text-xl); font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+.ga-logo .gw b { color: var(--red-soft); font-weight: 800; }
+.ga-logo .gs {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #8aa0b2;
+  text-transform: uppercase;
+  margin-top: var(--sp-1);
+}
+
+/* ============================================================
+   SLIDE BODY
+   ============================================================ */
+.s-body {
+  flex: 1;
+  padding: var(--sp-4) var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: auto;
+  gap: var(--sp-4);
+}
+
+/* ============================================================
+   ZONE LABELS
+   ============================================================ */
+.zone-label {
+  font-size: var(--text-sm);
+  margin-top: var(--sp-3);
+  margin-bottom: var(--sp-3);
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.zone-label::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+.zone-label .muted { color: var(--grey); font-weight: 700; letter-spacing: 1px; font-size: var(--text-xs); }
+
+/* ============================================================
+   SLIDE FOOTER
+   ============================================================ */
+.s-foot {
+  padding: var(--sp-3) var(--sp-6);
+  flex-shrink: 0;
+  background: var(--navy);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.s-foot .l { font-size: var(--text-sm); color: #8aa0b2; letter-spacing: 0.5px; }
+.s-foot .r { font-size: var(--text-sm); color: var(--red-soft); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+
+/* ============================================================
+   CHIPS
+   ============================================================ */
+.chips { display: flex; flex-wrap: wrap; gap: var(--sp-1); }
+.chip {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  padding: 3px var(--sp-2);
+  border-radius: var(--radius-sm);
+  background: #EDF1F5;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.chip.hub { background: var(--navy); color: #fff; }
+.chip.key { background: var(--red-light); color: #8a000a; }
+.chip.blue { background: var(--c2-light); color: #1a4f72; }
+.chip.green { background: var(--pos-light); color: #1a5c38; }
+.chip.amber { background: var(--amber-light); color: #5c3c00; }
+
+/* ============================================================
+   METRIC TILES
+   ============================================================ */
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--sp-3);
+}
+.metric-tile {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: var(--sp-4);
+  text-align: center;
+  border-top: 4px solid var(--red);
+}
+.metric-tile .metric-val {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--red);
+  line-height: 1;
+  margin-bottom: var(--sp-1);
+}
+.metric-tile .metric-lbl {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.metric-tile .metric-sub {
+  font-size: var(--text-xs);
+  color: var(--grey);
+  margin-top: var(--sp-1);
+}
+
+/* ============================================================
+   REDUNDANT REVIEW FLOW
+   ============================================================ */
+.review-flow {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  overflow-x: auto;
+}
+.review-step {
+  flex: 1;
+  min-width: 160px;
+  display: flex;
+}
+.review-card {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: var(--sp-3) var(--sp-4);
+  flex: 1;
+  border-top: 4px solid var(--amber);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.review-card .r-icon {
+  font-size: var(--text-xl);
+  color: var(--amber);
+  margin-bottom: var(--sp-2);
+}
+.review-card .r-role {
+  font-size: var(--text-sm);
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: var(--sp-1);
+}
+.review-card .r-action {
+  font-size: var(--text-xs);
+  color: var(--grey);
+  line-height: 1.4;
+}
+.review-card .r-badge {
+  margin-top: var(--sp-2);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  background: var(--red-light);
+  color: #8a000a;
+  padding: 3px var(--sp-2);
+  border-radius: var(--radius-sm);
+}
+.flow-arrow {
+  flex: 0 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--grey);
+  font-size: var(--text-xl);
+  font-weight: 800;
+}
+.csa-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-2) var(--sp-4);
+}
+.csa-doc {
+  background: var(--navy);
+  color: #fff;
+  border-radius: var(--radius-md);
+  padding: var(--sp-3) var(--sp-4);
+  font-size: var(--text-sm);
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: var(--sp-2);
+}
+.csa-doc i { margin-right: var(--sp-1); color: var(--red-soft); }
+
+/* ============================================================
+   PAIN POINT CARDS
+   ============================================================ */
+.pain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--sp-3);
+}
+.pain-card {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--red);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: var(--sp-3) var(--sp-4);
+}
+.pain-card .pain-icon {
+  font-size: var(--text-base);
+  color: var(--red);
+  margin-bottom: var(--sp-1);
+}
+.pain-card .pain-title {
+  font-size: var(--text-sm);
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: var(--sp-1);
+}
+.pain-card .pain-desc {
+  font-size: var(--text-sm);
+  color: var(--grey);
+  line-height: 1.5;
+}
+
+/* ============================================================
+   ARCHITECTURE LAYER CARDS
+   ============================================================ */
+.arch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--sp-3);
+}
+.arch-layer {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-4) var(--sp-5);
+  display: flex;
+  flex-direction: column;
+}
+.arch-layer.l-navy { border-top: 4px solid var(--navy); }
+.arch-layer.l-red { border-top: 4px solid var(--red); }
+.arch-layer.l-c2 { border-top: 4px solid var(--c2); }
+.arch-layer.l-amber { border-top: 4px solid var(--amber); }
+.arch-layer.l-pos { border-top: 4px solid var(--pos); }
+.arch-layer.l-grey { border-top: 4px solid var(--grey); }
+
+.arch-layer-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-2);
+}
+.arch-layer-badge {
+  width: 32px; height: 32px; border-radius: 50%;
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  font-size: var(--text-xs); font-weight: 800; flex-shrink: 0;
+}
+.badge-navy { background: var(--navy); }
+.badge-red { background: var(--red); }
+.badge-c2 { background: var(--c2); }
+.badge-amber { background: var(--amber); }
+.badge-pos { background: var(--pos); }
+.badge-grey { background: var(--grey); }
+
+.arch-layer-title {
+  font-size: var(--text-md);
+  font-weight: 800;
+  color: var(--navy);
+}
+.arch-layer-tag {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  padding: 3px var(--sp-3);
+  border-radius: 10px;
+  display: inline-block;
+  width: fit-content;
+  margin-bottom: var(--sp-3);
+}
+.arch-layer-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  flex: 1;
+}
+.arch-item {
+  background: #FBFCFD;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: var(--sp-2) var(--sp-3);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.arch-item i { font-size: var(--text-sm); }
+.arch-item.navy i { color: var(--navy); }
+.arch-item.red i { color: var(--red); }
+.arch-item.c2 i { color: var(--c2); }
+.arch-item.amber i { color: var(--amber); }
+.arch-item.pos i { color: var(--pos); }
+.arch-item.grey i { color: var(--grey); }
+
+/* ============================================================
+   INTEGRATION HUB
+   ============================================================ */
+.int-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-4);
+}
+@media (min-width: 1024px) {
+  .int-layout { grid-template-columns: 1fr 1.2fr 1fr; }
+}
+.int-left, .int-right { display: flex; flex-direction: column; gap: var(--sp-3); }
+
+.hub-panel {
+  background: linear-gradient(180deg, var(--navy), var(--navy2));
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5) var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 22px rgba(35,57,74,.3);
+  min-height: 280px;
+}
+.hub-panel .hub-icon {
+  font-size: var(--text-3xl);
+  color: var(--red-soft);
+  margin-bottom: var(--sp-3);
+}
+.hub-panel .hub-title {
+  font-size: var(--text-lg);
+  font-weight: 800;
+  color: #fff;
+  text-align: center;
+  margin-bottom: var(--sp-1);
+}
+.hub-panel .hub-sub {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--red-soft);
+  text-align: center;
+  margin-bottom: var(--sp-4);
+}
+.hub-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  justify-content: center;
+}
+.hub-feat {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: #c4d2dd;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: var(--radius-sm);
+  padding: var(--sp-1) var(--sp-3);
+}
+
+.int-card {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: var(--sp-4);
+  flex: 1;
+}
+.int-card.sf { border-left: 4px solid var(--c2); }
+.int-card.cs { border-left: 4px solid var(--pos); }
+.int-card.prism { border-left: 4px solid var(--red); }
+.int-card.ws { border-left: 4px solid var(--amber); }
+.int-card .int-name {
+  font-size: var(--text-base);
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 2px;
+}
+.int-card .int-dir {
+  font-size: var(--text-xs);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px var(--sp-2);
+  border-radius: var(--radius-pill);
+  display: inline-block;
+  margin-bottom: var(--sp-2);
+}
+.int-dir.read { background: var(--c2-light); color: #1a4f72; }
+.int-dir.rw { background: var(--pos-light); color: #1a5c38; }
+.int-card .int-desc { font-size: var(--text-sm); color: var(--grey); line-height: 1.5; margin-bottom: var(--sp-2); }
+.int-card ul { list-style: none; display: flex; flex-direction: column; gap: var(--sp-1); }
+.int-card li {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  padding-left: var(--sp-4);
+  position: relative;
+  line-height: 1.4;
+}
+.int-card li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 7px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.int-card.sf li::before { background: var(--c2); }
+.int-card.cs li::before { background: var(--pos); }
+.int-card.prism li::before { background: var(--red); }
+.int-card.ws li::before { background: var(--amber); }
+
+.flow-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  padding: var(--sp-2) 0;
+}
+.flow-indicator .fi-arrow {
+  font-size: var(--text-lg);
+  font-weight: 800;
+}
+.flow-indicator.to-hub .fi-arrow { color: var(--c2); }
+.flow-indicator.from-hub .fi-arrow { color: var(--pos); }
+.flow-indicator .fi-label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--grey);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   DATA FLOW PIPELINE
+   ============================================================ */
+.pipeline {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  overflow-x: auto;
+  padding-bottom: var(--sp-2);
+}
+.pipe-step {
+  flex: 1;
+  min-width: 130px;
+  display: flex;
+}
+.pipe-card {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: var(--sp-3) var(--sp-4);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.pipe-card.navy { border-top: 4px solid var(--navy); }
+.pipe-card.red { border-top: 4px solid var(--red); }
+.pipe-card.c2 { border-top: 4px solid var(--c2); }
+.pipe-card.amber { border-top: 4px solid var(--amber); }
+.pipe-card.pos { border-top: 4px solid var(--pos); }
+.pipe-card.grey { border-top: 4px solid var(--grey); }
+
+.pipe-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  color: #fff; font-size: var(--text-xs); font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: var(--sp-2);
+}
+.pipe-card .pipe-title {
+  font-size: var(--text-sm);
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: var(--sp-1);
+}
+.pipe-card .pipe-desc {
+  font-size: var(--text-xs);
+  color: var(--grey);
+  line-height: 1.4;
+  flex: 1;
+}
+.pipe-card .pipe-time {
+  margin-top: var(--sp-2);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: #FBFCFD;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 2px var(--sp-2);
+  text-align: center;
+}
+.pipe-arrow {
+  flex: 0 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--grey);
+  font-size: var(--text-lg);
+  font-weight: 800;
+}
+
+/* Sample extraction JSON block */
+.extraction-sample {
+  background: #0f1922;
+  border-radius: var(--radius-md);
+  padding: var(--sp-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.65;
+  color: #cbd6df;
+}
+.extraction-sample .k { color: #7fb2cf; }
+.extraction-sample .v { color: #fff; }
+.extraction-sample .c { color: #5d7385; }
+.extraction-sample .conf-hi { color: #7be0a8; font-weight: 800; }
+.extraction-sample .conf-med { color: #FFD79A; font-weight: 800; }
+
+/* ============================================================
+   GUARDRAIL CARDS
+   ============================================================ */
+.guard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--sp-3);
+}
+.guard-card {
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-4) var(--sp-5);
+  display: flex;
+  flex-direction: column;
+}
+.guard-card .guard-icon {
+  font-size: var(--text-xl);
+  margin-bottom: var(--sp-2);
+}
+.guard-card .guard-title {
+  font-size: var(--text-md);
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: var(--sp-2);
+}
+.guard-card .guard-desc {
+  font-size: var(--text-sm);
+  color: var(--grey);
+  line-height: 1.5;
+  flex: 1;
+}
+.guard-card.navy { border-top: 4px solid var(--navy); }
+.guard-card.red { border-top: 4px solid var(--red); }
+.guard-card.c2 { border-top: 4px solid var(--c2); }
+.guard-card.amber { border-top: 4px solid var(--amber); }
+.guard-card.pos { border-top: 4px solid var(--pos); }
+.guard-card.grey { border-top: 4px solid var(--grey); }
+.guard-card.navy .guard-icon { color: var(--navy); }
+.guard-card.red .guard-icon { color: var(--red); }
+.guard-card.c2 .guard-icon { color: var(--c2); }
+.guard-card.amber .guard-icon { color: var(--amber); }
+.guard-card.pos .guard-icon { color: var(--pos); }
+.guard-card.grey .guard-icon { color: var(--grey); }
+
+/* Confidence tiers */
+.conf-tiers { display: flex; flex-direction: column; gap: var(--sp-2); margin-top: var(--sp-3); }
+.conf-tier {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+.conf-tier.auto {
+  background: var(--pos-light);
+  color: #1a5c38;
+  border: 1px solid #b3dfc8;
+}
+.conf-tier.review {
+  background: var(--amber-light);
+  color: #5c3c00;
+  border: 1px solid #f0d9a8;
+}
+.conf-tier.manual {
+  background: var(--red-light);
+  color: #8a000a;
+  border: 1px solid #f5c0c7;
+}
+.conf-tier .tier-range {
+  font-weight: 800;
+  min-width: 80px;
+}
+.conf-tier .tier-label {
+  flex: 1;
+}
+.conf-tier .tier-icon {
+  font-size: var(--text-base);
+}
+
+/* ============================================================
+   CALLOUT BAR (bottom stats)
+   ============================================================ */
+.callout-bar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-4);
+  background: var(--navy);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5) var(--sp-6);
+  flex-shrink: 0;
+}
+@media (min-width: 768px) { .callout-bar { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1024px) { .callout-bar { grid-template-columns: 1fr 1fr 1fr 1fr; } }
+.callout-item .co-h {
+  font-size: var(--text-base);
+  font-weight: 800;
+  color: var(--red-soft);
+  margin-bottom: var(--sp-1);
+}
+.callout-item .co-d {
+  font-size: var(--text-sm);
+  color: #c4d2dd;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 767px) {
+  .s-hdr { padding: var(--sp-3) var(--sp-4); }
+  .s-hdr h1 { font-size: var(--text-md); }
+  .s-body { padding: var(--sp-3) var(--sp-4); }
+  .s-foot { padding: var(--sp-2) var(--sp-4); }
+  .ga-logo { display: none; }
+  .review-flow { flex-direction: column; }
+  .flow-arrow { transform: rotate(90deg); flex: 0 0 24px; }
+  .pipeline { flex-direction: column; }
+  .pipe-arrow { transform: rotate(90deg); flex: 0 0 24px; }
+  .arch-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+
+<body>
+<div id="app">
+  <div id="stage">
+
+    <div class="tab-bar">
+      <button class="slide-tab active" onclick="goTab(0,this)"><i class="fa-solid fa-circle-exclamation" style="margin-right:4px;"></i> Current State</button>
+      <button class="slide-tab" onclick="goTab(1,this)"><i class="fa-solid fa-layer-group" style="margin-right:4px;"></i> Solution Architecture</button>
+      <button class="slide-tab" onclick="goTab(2,this)"><i class="fa-solid fa-plug" style="margin-right:4px;"></i> ClientSpace Integration</button>
+      <button class="slide-tab" onclick="goTab(3,this)"><i class="fa-solid fa-sliders" style="margin-right:4px;"></i> Template Engine</button>
+      <button class="slide-tab" onclick="goTab(4,this)"><i class="fa-solid fa-briefcase" style="margin-right:4px;"></i> Auto Case Creation</button>
+      <button class="slide-tab" onclick="goTab(5,this)"><i class="fa-solid fa-diagram-project" style="margin-right:4px;"></i> End-to-End Flow</button>
+      <button class="slide-tab" onclick="goTab(6,this)"><i class="fa-solid fa-building-columns" style="margin-right:4px;"></i> ClientSpace Deep Dive</button>
+    </div>
+
+
+    <!-- ============ TAB 1: CURRENT STATE ============ -->
+    <section class="slide active" id="slide1">
+      <div class="s-hdr">
+        <div>
+          <div class="eye">Current State &middot; The Problem</div>
+          <h1>CSA Review &amp; <span class="accent">Onboarding Data Entry</span> — Today</h1>
+        </div>
+        <div class="ga-logo"><span class="gw">G&amp;A <b>PARTNERS</b></span><span class="gs">CSA Extraction</span></div>
+      </div>
+
+      <div class="s-body">
+        <div class="zone-label">Key Metrics <span class="muted">&mdash; the scale of the problem</span></div>
+
+        <div class="metric-grid" style="margin-bottom:var(--sp-4);">
+          <div class="metric-tile" style="border-top-color:var(--red);"><div class="metric-val" style="color:var(--red);">4&times;</div><div class="metric-lbl">Redundant CSA Reviews</div></div>
+          <div class="metric-tile" style="border-top-color:var(--amber);"><div class="metric-val" style="color:var(--amber);">30-40 min</div><div class="metric-lbl">Per Review Per Deal</div></div>
+          <div class="metric-tile" style="border-top-color:var(--grey);"><div class="metric-val" style="color:var(--grey);">None</div><div class="metric-lbl">SF &rarr; CS Integration</div></div>
+          <div class="metric-tile" style="border-top-color:var(--red);"><div class="metric-val" style="color:var(--red);">~40%</div><div class="metric-lbl">Rework from Placeholder Data</div></div>
+        </div>
+
+        <div class="zone-label">Current Review Flow <span class="muted">&mdash; 4 people review the same CSA PDF independently</span></div>
+
+        <div class="review-flow">
+          <div class="review-step">
+            <div class="review-card">
+              <div class="r-icon" style="background:var(--red-light);color:var(--red);"><i class="fa-solid fa-user-tie"></i></div>
+              <div class="r-role">PM Manager</div>
+              <div class="r-action">CSA Review — scope, services, billing (30-40 min)</div>
+              <div class="r-badge" style="background:var(--red-light);color:var(--red);">Manual</div>
+            </div>
+          </div>
+          <div class="review-step">
+            <div class="review-card">
+              <div class="r-icon" style="background:var(--c2-light);color:var(--c2);"><i class="fa-solid fa-user"></i></div>
+              <div class="r-role">Project Manager</div>
+              <div class="r-action">Sales Handoff review — cross-validate against ClientSpace handoff page</div>
+              <div class="r-badge" style="background:var(--c2-light);color:#1a4f72;">Manual</div>
+            </div>
+          </div>
+          <div class="review-step">
+            <div class="review-card">
+              <div class="r-icon" style="background:var(--amber-light);color:#7a4800;"><i class="fa-solid fa-user-tie"></i></div>
+              <div class="r-role">PA Manager</div>
+              <div class="r-action">CSA Review — fee structure, SUTA rates, WC codes, tax classification</div>
+              <div class="r-badge" style="background:var(--amber-light);color:#7a4800;">Manual</div>
+            </div>
+          </div>
+          <div class="review-step">
+            <div class="review-card">
+              <div class="r-icon" style="background:var(--pos-light);color:var(--pos);"><i class="fa-solid fa-user"></i></div>
+              <div class="r-role">Payroll Analyst</div>
+              <div class="r-action">Final review, manual data entry into ClientSpace, billing config in PrismHR</div>
+              <div class="r-badge" style="background:var(--pos-light);color:var(--pos);">Manual</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="zone-label" style="margin-top:var(--sp-4);">Pain Points</div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:var(--sp-3);">
+          <div class="pain-card">
+            <div class="pain-icon"><i class="fa-solid fa-copy" style="color:var(--red);"></i></div>
+            <div class="pain-title">Redundant Reviews</div>
+            <div class="pain-desc">4 people independently sift through the same multi-page legal document, repeating the same comparison logic.</div>
+          </div>
+          <div class="pain-card">
+            <div class="pain-icon"><i class="fa-solid fa-link-slash" style="color:var(--amber);"></i></div>
+            <div class="pain-title">No Integration</div>
+            <div class="pain-desc">No Salesforce-to-ClientSpace sync. BAs manually re-enter deal data, creating error risk on every new client.</div>
+          </div>
+          <div class="pain-card">
+            <div class="pain-icon"><i class="fa-solid fa-ghost" style="color:var(--grey);"></i></div>
+            <div class="pain-title">Placeholder Data</div>
+            <div class="pain-desc">Required ClientSpace fields are filled with defaults that go unnoticed, surfacing as discrepancies during onboarding.</div>
+          </div>
+          <div class="pain-card">
+            <div class="pain-icon"><i class="fa-solid fa-clock-rotate-left" style="color:var(--c2);"></i></div>
+            <div class="pain-title">Delayed Discovery</div>
+            <div class="pain-desc">Mismatches between CSA and system data are discovered during meetings — not pre-empted at deal close.</div>
+          </div>
+        </div>
+      </div>
+      <div class="s-foot"><span class="l">G&amp;A Partners &middot; CSA Extraction Architecture &middot; Current State</span><span class="r">4 reviews &middot; ~2.5 hrs total &middot; ~40% rework</span></div>
+    </section>
+
+
+    <!-- ============ TAB 2: SOLUTION — 4 BLOCKS ============ -->
+    <section class="slide" id="slide2">
+      <div class="s-hdr">
+        <div>
+          <div class="eye">Solution Architecture &middot; End-to-End</div>
+          <h1>AI-Assisted CSA Extraction &amp; <span class="accent">Cross-Validation</span></h1>
+        </div>
+        <div class="ga-logo"><span class="gw">G&amp;A <b>PARTNERS</b></span><span class="gs">CSA Extraction</span></div>
+      </div>
+
+      <div class="s-body" style="gap:var(--sp-3);">
+
+        <!-- 4-BLOCK GRID -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);flex:1;">
+
+          <!-- BLOCK 1: AI EXTRACTION -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);border-top:4px solid var(--red);display:flex;flex-direction:column;">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:800;">1</div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">AI Extraction on CSA Upload</div>
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;margin-bottom:var(--sp-3);">
+              <strong style="color:var(--navy);">LlamaParse</strong> converts uploaded PDF to per-page markdown with OCR. <strong style="color:var(--navy);">AI Extraction Agent</strong> extracts structured fields following a defined schema:
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:var(--sp-3);">
+              <span class="chip key">Fee Structure</span>
+              <span class="chip key">Included / Optional Services</span>
+              <span class="chip key">SUTA State Coverage</span>
+              <span class="chip key">Billing Exceptions</span>
+              <span class="chip key">IRS Classification</span>
+              <span class="chip key">WC Codes</span>
+              <span class="chip key">Contract Term &amp; Dates</span>
+              <span class="chip key">Employee Count</span>
+              <span class="chip key">Benefits &amp; 401k</span>
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;">
+              <strong style="color:var(--navy);">Confidence scoring</strong> per field: <span style="color:var(--pos);font-weight:700;">&gt;90%</span> auto-populated &middot; <span style="color:#7a4800;font-weight:700;">80-90%</span> flagged for review &middot; <span style="color:var(--red);font-weight:700;">&lt;80%</span> manual entry required
+            </div>
+          </div>
+
+          <!-- BLOCK 2: CROSS-VALIDATION -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);border-top:4px solid var(--c2);display:flex;flex-direction:column;">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-2);">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--c2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:800;">2</div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">Cross-Validation vs ClientSpace</div>
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;margin-bottom:var(--sp-2);">
+              LLM-driven field-to-field discrepancy check against <strong style="color:var(--navy);">ClientSpace handoff page</strong> — the source of truth for what Sales committed at deal close.
+            </div>
+
+            <!-- Data source callout -->
+            <div style="display:flex;gap:var(--sp-2);margin-bottom:var(--sp-2);">
+              <div style="flex:1;padding:4px 8px;border-radius:var(--radius-sm);background:var(--c2-light);border:1px solid #b8d9ef;font-size:var(--text-xs);">
+                <div style="font-weight:800;color:var(--c2);font-size:9px;letter-spacing:0.5px;text-transform:uppercase;">ClientSpace PrismHR Integration API</div>
+                <div style="color:#1a4f72;font-family:var(--font-mono);font-size:10px;margin-top:2px;">ClientSpace Dataform API &mdash; Onboarding Handoff</div>
+              </div>
+              <div style="flex:1;padding:4px 8px;border-radius:var(--radius-sm);background:var(--pos-light);border:1px solid #b3dfc8;font-size:var(--text-xs);">
+                <div style="font-weight:800;color:var(--pos);font-size:9px;letter-spacing:0.5px;text-transform:uppercase;">Handoff Page Fields</div>
+                <div style="color:#1a4a2e;font-size:10px;margin-top:2px;">Fee, services, SUTA, EE count, dates, PM/PA</div>
+              </div>
+            </div>
+
+            <div style="font-size:var(--text-xs);font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--grey);margin-bottom:var(--sp-1);">Field Mapping &mdash; CSA vs Handoff Page</div>
+            <table style="width:100%;border-collapse:collapse;font-size:10px;">
+              <tr style="background:var(--navy);"><td style="padding:3px 6px;font-weight:700;color:rgba(255,255,255,.9);font-size:9px;">CSA Extracted</td><td style="padding:3px 2px;color:#8aa0b2;text-align:center;font-size:9px;"></td><td style="padding:3px 6px;font-weight:700;color:rgba(255,255,255,.9);font-size:9px;">ClientSpace Handoff</td><td style="padding:3px 6px;font-weight:700;color:rgba(255,255,255,.9);font-size:9px;">Delta</td></tr>
+              <tr style="border-bottom:1px solid var(--rule);background:var(--red-light);"><td style="padding:3px 6px;font-weight:700;">csa.admin_fee</td><td style="padding:3px;color:var(--red);text-align:center;">&ne;</td><td style="padding:3px 6px;font-weight:700;">cs.fee_structure</td><td style="padding:3px 6px;color:var(--red);font-weight:600;">$125 vs $120</td></tr>
+              <tr style="border-bottom:1px solid var(--rule);background:var(--red-light);"><td style="padding:3px 6px;font-weight:700;">csa.suta_coverage</td><td style="padding:3px;color:var(--red);text-align:center;">&ne;</td><td style="padding:3px 6px;font-weight:700;">cs.suta_type</td><td style="padding:3px 6px;color:var(--red);font-weight:600;">CR% vs Standard</td></tr>
+              <tr style="border-bottom:1px solid var(--rule);background:var(--red-light);"><td style="padding:3px 6px;font-weight:700;">csa.effective_date</td><td style="padding:3px;color:var(--red);text-align:center;">&ne;</td><td style="padding:3px 6px;font-weight:700;">cs.start_date</td><td style="padding:3px 6px;color:var(--red);font-weight:600;">07/01 vs 08/01</td></tr>
+              <tr style="border-bottom:1px solid var(--rule);background:var(--red-light);"><td style="padding:3px 6px;font-weight:700;">csa.employee_count</td><td style="padding:3px;color:var(--red);text-align:center;">&ne;</td><td style="padding:3px 6px;font-weight:700;">cs.ee_count</td><td style="padding:3px 6px;color:var(--red);font-weight:600;">38 vs 35</td></tr>
+              <tr style="border-bottom:1px solid var(--rule);background:var(--pos-light);"><td style="padding:3px 6px;font-weight:700;">csa.contract_term</td><td style="padding:3px;color:var(--pos);text-align:center;">=</td><td style="padding:3px 6px;font-weight:700;">cs.initial_term</td><td style="padding:3px 6px;color:var(--pos);font-weight:600;">1 Year = 1 Year</td></tr>
+              <tr style="background:var(--pos-light);"><td style="padding:3px 6px;font-weight:700;">csa.services</td><td style="padding:3px;color:var(--pos);text-align:center;">=</td><td style="padding:3px 6px;font-weight:700;">cs.services_included</td><td style="padding:3px 6px;color:var(--pos);font-weight:600;">Match</td></tr>
+            </table>
+            <div style="margin-top:var(--sp-2);font-size:10px;color:var(--text-secondary);line-height:1.5;padding:4px 8px;background:var(--fog);border-radius:var(--radius-sm);">
+              <i class="fa-solid fa-robot" style="color:var(--c2);margin-right:4px;font-size:9px;"></i>
+              <strong>Semantic matching</strong> &mdash; LLM understands &ldquo;Per Covered Employee Per Month&rdquo; = &ldquo;PEPM&rdquo;, handles format differences, currency normalization, and synonym resolution.
+            </div>
+          </div>
+
+          <!-- BLOCK 3: HUMAN REVIEW -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);border-top:4px solid var(--amber);display:flex;flex-direction:column;">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--amber);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:800;">3</div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">Human Review &amp; Approval</div>
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.6;">
+              <strong style="color:var(--navy);">Side drawer</strong> with two-panel split: editable extracted fields (45%) + PDF viewer with <strong style="color:#D4A017;">in-document yellow highlights</strong> (55%).<br><br>
+              <i class="fa-solid fa-file-lines" style="color:#5A45C7;margin-right:4px;"></i> <strong>Page pointer (Pg N)</strong> on each field &mdash; click to jump to source section in PDF<br>
+              <i class="fa-solid fa-flag" style="color:var(--red);margin-right:4px;"></i> <strong>Red flag</strong> on mismatched fields &mdash; shows ClientSpace value vs CSA value inline<br>
+              <i class="fa-solid fa-note-sticky" style="color:var(--amber);margin-right:4px;"></i> <strong>Global review notes</strong> &amp; approval gates (Save Draft / Approve / Re-run / Reject)<br>
+              <i class="fa-solid fa-lock" style="color:var(--navy);margin-right:4px;"></i> <strong>Lock/unlock</strong> for approved CSAs with downstream impact warning
+            </div>
+          </div>
+
+          <!-- BLOCK 4: DOWNSTREAM SYNC -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);border-top:4px solid var(--pos);display:flex;flex-direction:column;">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-2);">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--pos);color:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:800;">4</div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">Downstream ClientSpace Sync</div>
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.5;margin-bottom:var(--sp-2);">
+              On approval, automated actions replace manual BA re-entry &mdash; <strong style="color:var(--navy);">6 API calls</strong> create a fully configured onboarding case:
+            </div>
+
+            <!-- API-backed action list -->
+            <div style="margin-bottom:6px;">
+              <a href="https://extranet.clientspace.net/next/swagger/ui/index" target="_blank" style="font-size:9px;font-weight:700;color:#8aa0b2;background:var(--navy);padding:2px 8px;border-radius:var(--radius-pill);text-decoration:none;letter-spacing:0.5px;"><i class="fa-solid fa-book" style="margin-right:3px;"></i>extranet.clientspace.net/swagger</a>
+            </div>
+            <div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:1.5;">
+              <div style="display:flex;align-items:flex-start;gap:6px;padding:3px 0;border-bottom:1px solid var(--rule);">
+                <i class="fa-solid fa-building" style="color:var(--c2);margin-right:2px;margin-top:2px;font-size:10px;flex-shrink:0;"></i>
+                <div><strong style="color:var(--navy);">Create/update client record</strong> &mdash; FEIN, address, ownership, entity type<br>
+                <span style="font-family:var(--font-mono);font-size:9px;color:#7B4FD6;">ClientSpace Dataform API &mdash; Client Record</span> <span style="font-size:9px;color:var(--grey);">(via PrismHR Integration API)</span></div>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:6px;padding:3px 0;border-bottom:1px solid var(--rule);">
+                <i class="fa-solid fa-briefcase" style="color:var(--pos);margin-right:2px;margin-top:2px;font-size:10px;flex-shrink:0;"></i>
+                <div><strong style="color:var(--navy);">Auto-create onboarding case</strong> &mdash; case CS-2026-XXXX, auto-assign PM + PA from handoff<br>
+                <span style="font-family:var(--font-mono);font-size:9px;color:#7B4FD6;">ClientSpace Dataform API &mdash; Case Creation Pipeline</span> &mdash; <span style="font-size:9px;color:var(--grey);">22+ fields written, team assigned</span></div>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:6px;padding:3px 0;border-bottom:1px solid var(--rule);">
+                <i class="fa-solid fa-list-check" style="color:var(--amber);margin-right:2px;margin-top:2px;font-size:10px;flex-shrink:0;"></i>
+                <div><strong style="color:var(--navy);">Create mismatch resolution tasks</strong> &mdash; one task per unresolved discrepancy, assigned to BA<br>
+                <span style="font-family:var(--font-mono);font-size:9px;color:#7B4FD6;">ClientSpace Dataform API &mdash; Remediation Task Pipeline</span></div>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:6px;padding:3px 0;border-bottom:1px solid var(--rule);">
+                <i class="fa-solid fa-file-arrow-up" style="color:#5A45C7;margin-right:2px;margin-top:2px;font-size:10px;flex-shrink:0;"></i>
+                <div><strong style="color:var(--navy);">Attach CSA document</strong> + AI extraction summary report<br>
+                <span style="font-family:var(--font-mono);font-size:9px;color:#7B4FD6;">ClientSpace Dataform API &mdash; Document Attachment</span></div>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:6px;padding:3px 0;border-bottom:1px solid var(--rule);">
+                <i class="fa-solid fa-bell" style="color:var(--red);margin-right:2px;margin-top:2px;font-size:10px;flex-shrink:0;"></i>
+                <div><strong style="color:var(--navy);">In-app notification</strong> &mdash; toast + case creation banner with assigned team &amp; case ID</div>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:6px;padding:3px 0;">
+                <i class="fa-solid fa-shield-check" style="color:var(--pos);margin-right:2px;margin-top:2px;font-size:10px;flex-shrink:0;"></i>
+                <div><strong style="color:var(--navy);">Full audit trail</strong> &mdash; every extraction, edit, approval, and sync logged with actor + timestamp</div>
+              </div>
+            </div>
+
+          </div>
+
+        </div><!-- /4-block grid -->
+
+      </div>
+      <div class="s-foot"><span class="l">G&amp;A Partners &middot; CSA Extraction Architecture</span><span class="r">Extract &rarr; Validate &rarr; Review &rarr; Sync</span></div>
+    </section>
+
+    <!-- ============ TAB 3: CLIENTSPACE INTEGRATION ============ -->
+    <section class="slide" id="slide3">
+      <div class="s-hdr">
+        <div>
+          <div class="eye">Integration &middot; Source of Truth</div>
+          <h1>ClientSpace <span class="accent">Handoff Page</span> Integration</h1>
+        </div>
+        <div class="ga-logo"><span class="gw">G&amp;A <b>PARTNERS</b></span><span class="gs">CSA Extraction</span></div>
+      </div>
+      <div class="s-body">
+        <div class="zone-label">Integration Architecture <span class="muted">&mdash; how handoff data flows into cross-validation</span></div>
+
+        <div style="display:grid;grid-template-columns:1fr 60px 1fr 60px 1fr;gap:0;margin-bottom:var(--sp-4);align-items:stretch;">
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);border-top:4px solid var(--c2);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--c2);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;"><i class="fa-solid fa-database"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">ClientSpace</div>
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.7;">
+              <strong>Handoff Page Data</strong> contains all onboarding fields entered by the Sales team at deal close:<br><br>
+              <span class="chip key">Employee Count</span>
+              <span class="chip key">Effective Date</span>
+              <span class="chip key">Fee Structure</span>
+              <span class="chip key">Services</span>
+              <span class="chip key">SUTA</span>
+              <span class="chip key">WC Codes</span>
+              <span class="chip key">Billing</span>
+              <span class="chip key">PM/PA Assignment</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--c2);font-weight:800;">&rarr;</div>
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);border-top:4px solid var(--red);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;"><i class="fa-solid fa-code-compare"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">Cross-Validation</div>
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.7;">
+              CSA extracted fields are compared <strong>field-by-field</strong> against the ClientSpace handoff page. Each mismatch is flagged with the specific values from both sources.<br><br>
+              <strong>Handoff page = source of truth</strong> for what Sales committed to the client.
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--pos);font-weight:800;">&rarr;</div>
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);border-top:4px solid var(--pos);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3);">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--pos);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;"><i class="fa-solid fa-eye"></i></div>
+              <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">Handoff Data Screen</div>
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.7;">
+              Dedicated tab in the client detail view explicitly shows <strong>all handoff page data</strong> as the source of truth, with sync status indicators for each field.<br><br>
+              <i class="fa-solid fa-circle-check" style="color:var(--pos);margin-right:4px;"></i> Synced &middot;
+              <i class="fa-solid fa-clock" style="color:var(--amber);margin-right:4px;"></i> Pending &middot;
+              <i class="fa-solid fa-triangle-exclamation" style="color:var(--red);margin-right:4px;"></i> Needs Update
+            </div>
+          </div>
+        </div>
+
+        <div class="zone-label">ClientSpace API Endpoints <span class="muted">&mdash; concrete integration surface</span></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-4);">
+          <!-- Read APIs -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-4);border-top:3px solid var(--c2);">
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);margin-bottom:var(--sp-2);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+              <i class="fa-solid fa-download" style="color:var(--pos);font-size:12px;"></i> Read APIs &mdash; Fetch Handoff Data
+              <a href="https://extranet.clientspace.net/next/swagger/ui/index" target="_blank" style="font-size:9px;font-weight:700;color:#8aa0b2;background:var(--navy);padding:2px 8px;border-radius:var(--radius-pill);text-decoration:none;letter-spacing:0.5px;"><i class="fa-solid fa-book" style="margin-right:3px;"></i>extranet.clientspace.net/swagger</a>
+            </div>
+            <div style="font-family:var(--font-mono);font-size:11px;line-height:2;color:var(--text-secondary);">
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> ClientSpace Dataform API &mdash; Client Record</div>
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> ClientSpace Dataform API &mdash; <strong style="color:var(--navy);">Onboarding Handoff</strong></div>
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> ClientSpace Dataform API &mdash; State Registrations</div>
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> ClientSpace Dataform API &mdash; Employee Locations</div>
+              <div><span style="color:var(--pos);font-weight:700;">GET</span> ClientSpace REST API &mdash; Onboarding Cases List</div>
+            </div>
+          </div>
+
+          <!-- Write APIs -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-4);border-top:3px solid var(--amber);">
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);margin-bottom:var(--sp-2);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+              <i class="fa-solid fa-upload" style="color:var(--amber);font-size:12px;"></i> Write APIs &mdash; Push to ClientSpace
+              <a href="https://extranet.clientspace.net/next/swagger/ui/index" target="_blank" style="font-size:9px;font-weight:700;color:#8aa0b2;background:var(--navy);padding:2px 8px;border-radius:var(--radius-pill);text-decoration:none;letter-spacing:0.5px;"><i class="fa-solid fa-book" style="margin-right:3px;"></i>extranet.clientspace.net/swagger</a>
+            </div>
+            <div style="font-family:var(--font-mono);font-size:11px;line-height:2;color:var(--text-secondary);">
+              <div><span style="color:var(--amber);font-weight:700;">POST</span> ClientSpace Dataform API &mdash; <strong style="color:var(--navy);">Case Creation Pipeline</strong></div>
+              <div><span style="color:var(--amber);font-weight:700;">PUT</span>&nbsp; ClientSpace Dataform API &mdash; Case Status Pipeline</div>
+              <div><span style="color:var(--amber);font-weight:700;">POST</span> ClientSpace Dataform API &mdash; Remediation Task Pipeline</div>
+              <div><span style="color:var(--amber);font-weight:700;">POST</span> ClientSpace Dataform API &mdash; Document Attachment</div>
+              <div><span style="color:var(--amber);font-weight:700;">PUT</span>&nbsp; ClientSpace Dataform API &mdash; Client Record Update</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Handoff page field mapping -->
+        <div class="zone-label">Handoff Page Field Mapping <span class="muted">&mdash; what gets fetched and compared</span></div>
+
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2);margin-bottom:var(--sp-4);">
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-sm);padding:var(--sp-3);text-align:center;">
+            <div style="font-size:22px;font-weight:800;color:var(--red);line-height:1;margin-bottom:var(--sp-1);">22+</div>
+            <div style="font-size:var(--text-xs);font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px;">Fields Mapped</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-sm);padding:var(--sp-3);text-align:center;">
+            <div style="font-size:22px;font-weight:800;color:var(--c2);line-height:1;margin-bottom:var(--sp-1);">7</div>
+            <div style="font-size:var(--text-xs);font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px;">Categories</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-sm);padding:var(--sp-3);text-align:center;">
+            <div style="font-size:22px;font-weight:800;color:var(--pos);line-height:1;margin-bottom:var(--sp-1);">Auto</div>
+            <div style="font-size:var(--text-xs);font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px;">Sync Method</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-sm);padding:var(--sp-3);text-align:center;">
+            <div style="font-size:22px;font-weight:800;color:var(--amber);line-height:1;margin-bottom:var(--sp-1);">3</div>
+            <div style="font-size:var(--text-xs);font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px;">Sync Statuses</div>
+          </div>
+        </div>
+
+        <div class="zone-label">Key Value <span class="muted">&mdash; why this matters</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);">
+          <div style="background:var(--pos-light);border:1px solid #c0dfd0;border-radius:var(--radius-md);padding:var(--sp-3);">
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--pos);margin-bottom:var(--sp-1);"><i class="fa-solid fa-check-double" style="margin-right:4px;"></i>Transparent Origin</div>
+            <div style="font-size:var(--text-xs);color:#1a4a2e;line-height:1.6;">Reviewers see exactly where data comes from &mdash; no mystery about sources.</div>
+          </div>
+          <div style="background:var(--c2-light);border:1px solid #c0d8ed;border-radius:var(--radius-md);padding:var(--sp-3);">
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--c2);margin-bottom:var(--sp-1);"><i class="fa-solid fa-plug" style="margin-right:4px;"></i>REST API Integration</div>
+            <div style="font-size:var(--text-xs);color:#1a4f72;line-height:1.6;">Direct ClientSpace REST API integration &mdash; real-time, bidirectional, auditable.</div>
+          </div>
+        </div>
+      </div>
+      <div class="s-foot"><span class="l">G&amp;A Partners &middot; ClientSpace Integration</span><span class="r">REST API &rarr; Real-time &rarr; Auditable</span></div>
+    </section>
+
+
+    <!-- ============ TAB 4: TEMPLATE ENGINE ============ -->
+    <section class="slide" id="slide4">
+      <div class="s-hdr">
+        <div>
+          <div class="eye">Configurable &middot; Extensible</div>
+          <h1>Extraction <span class="accent">Template Engine</span></h1>
+        </div>
+        <div class="ga-logo"><span class="gw">G&amp;A <b>PARTNERS</b></span><span class="gs">CSA Extraction</span></div>
+      </div>
+      <div class="s-body">
+        <div class="zone-label">Schema Configuration <span class="muted">&mdash; what the AI extracts is fully customizable</span></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4);margin-bottom:var(--sp-4);">
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);">
+            <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);margin-bottom:var(--sp-3);display:flex;align-items:center;gap:var(--sp-2);">
+              <i class="fa-solid fa-sliders" style="color:var(--c2);"></i> Default Extraction Fields
+            </div>
+            <div style="font-size:var(--text-xs);font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:1px;margin-bottom:var(--sp-2);">General Information</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:var(--sp-3);">
+              <span class="chip green">Organization Name</span>
+              <span class="chip green">Contract Type</span>
+              <span class="chip green">Number of Employees</span>
+              <span class="chip green">Decision Maker</span>
+            </div>
+            <div style="font-size:var(--text-xs);font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:1px;margin-bottom:var(--sp-2);">Fee Structure</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:var(--sp-3);">
+              <span class="chip green">Admin Fee</span>
+              <span class="chip green">PEPM Fee</span>
+              <span class="chip green">Implementation Fee</span>
+              <span class="chip green">Off-cycle Fee</span>
+              <span class="chip green">Cyber Insurance</span>
+            </div>
+            <div style="font-size:var(--text-xs);font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:1px;margin-bottom:var(--sp-2);">Services &amp; Coverage</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:var(--sp-3);">
+              <span class="chip green">Services Included</span>
+              <span class="chip green">SUTA Coverage</span>
+              <span class="chip green">WC Codes</span>
+              <span class="chip green">Ownership</span>
+            </div>
+            <div style="font-size:var(--text-xs);font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:1px;margin-bottom:var(--sp-2);">Tax &amp; Compliance</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;">
+              <span class="chip green">Pricing / Tax Rates</span>
+              <span class="chip green">Governing Law</span>
+              <span class="chip green">Cyber Policy</span>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);">
+            <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);margin-bottom:var(--sp-3);display:flex;align-items:center;gap:var(--sp-2);">
+              <i class="fa-solid fa-plus-circle" style="color:var(--pos);"></i> Custom Field Extension
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.7;margin-bottom:var(--sp-4);">
+              Business users can add new extraction fields through a simple <strong style="color:var(--navy);">+</strong> button. Since the extraction engine is LLM-driven, new fields are automatically handled with <strong style="color:var(--navy);">zero configuration</strong>.
+            </div>
+            <div style="background:var(--fog);border:2px dashed var(--rule);border-radius:var(--radius-md);padding:var(--sp-4);text-align:center;margin-bottom:var(--sp-4);">
+              <div style="font-size:var(--text-lg);color:var(--pos);margin-bottom:var(--sp-2);"><i class="fa-solid fa-plus-circle"></i></div>
+              <div style="font-size:var(--text-sm);font-weight:600;color:var(--navy);">Add Custom Field</div>
+              <div style="font-size:var(--text-xs);color:var(--grey);margin-top:4px;">e.g. &ldquo;Cyber Policy&rdquo; &middot; &ldquo;Indemnification Cap&rdquo;</div>
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.7;">
+              <strong style="color:var(--navy);">How it works:</strong>
+            </div>
+            <div style="margin-top:var(--sp-2);font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;">
+              <i class="fa-solid fa-1" style="color:var(--c2);margin-right:6px;font-weight:800;"></i> User types field name in the <strong>+</strong> input<br>
+              <i class="fa-solid fa-2" style="color:var(--c2);margin-right:6px;font-weight:800;"></i> Field is added to the extraction schema<br>
+              <i class="fa-solid fa-3" style="color:var(--c2);margin-right:6px;font-weight:800;"></i> Next CSA upload automatically extracts the new field<br>
+              <i class="fa-solid fa-4" style="color:var(--c2);margin-right:6px;font-weight:800;"></i> LLM handles semantic understanding &mdash; no regex or rules needed
+            </div>
+          </div>
+        </div>
+
+        <div style="background:var(--c2-light);border:1px solid #c0d8ed;border-radius:var(--radius-md);padding:var(--sp-4);font-size:var(--text-sm);color:#1a4f72;line-height:1.6;">
+          <i class="fa-solid fa-lightbulb" style="color:var(--c2);margin-right:6px;"></i>
+          <strong>Enterprise Ready:</strong> The extraction schema is template-driven, not hardcoded. Different CSA types (PEO, ASO, HRO) can use different extraction templates. Schema changes propagate to all future uploads without any code deployment.
+        </div>
+      </div>
+      <div class="s-foot"><span class="l">G&amp;A Partners &middot; Template Engine</span><span class="r">Configurable &middot; Extensible &middot; Zero-Config</span></div>
+    </section>
+
+
+    <!-- ============ TAB 5: AUTO CASE CREATION ============ -->
+    <section class="slide" id="slide5">
+      <div class="s-hdr">
+        <div>
+          <div class="eye">Automation &middot; Downstream Sync</div>
+          <h1>Auto <span class="accent">Case Creation</span> &amp; Sales Assignment</h1>
+        </div>
+        <div class="ga-logo"><span class="gw">G&amp;A <b>PARTNERS</b></span><span class="gs">CSA Extraction</span></div>
+      </div>
+      <div class="s-body">
+        <div class="zone-label">Approval &rarr; Case Creation Flow <span class="muted">&mdash; what happens when a reviewer clicks "Approve"</span></div>
+
+        <div style="display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr 40px 1fr;gap:0;margin-bottom:var(--sp-4);align-items:stretch;">
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-4);border-top:4px solid var(--pos);text-align:center;">
+            <div style="font-size:24px;color:var(--pos);margin-bottom:var(--sp-2);"><i class="fa-solid fa-check-circle"></i></div>
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);">Reviewer Approves</div>
+            <div style="font-size:var(--text-xs);color:var(--grey);margin-top:4px;">All fields validated</div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--grey);">&rarr;</div>
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-4);border-top:4px solid var(--c2);text-align:center;">
+            <div style="font-size:24px;color:var(--c2);margin-bottom:var(--sp-2);"><i class="fa-solid fa-briefcase"></i></div>
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);">Case Auto-Created</div>
+            <div style="font-size:var(--text-xs);color:var(--grey);margin-top:4px;">ClientSpace case record</div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--grey);">&rarr;</div>
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-4);border-top:4px solid var(--amber);text-align:center;">
+            <div style="font-size:24px;color:var(--amber);margin-bottom:var(--sp-2);"><i class="fa-solid fa-user-plus"></i></div>
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);">Sales Team Assigned</div>
+            <div style="font-size:var(--text-xs);color:var(--grey);margin-top:4px;">PM + PA auto-assigned</div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--grey);">&rarr;</div>
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-4);border-top:4px solid var(--red);text-align:center;">
+            <div style="font-size:24px;color:var(--red);margin-bottom:var(--sp-2);"><i class="fa-solid fa-bell"></i></div>
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);">Notifications Sent</div>
+            <div style="font-size:var(--text-xs);color:var(--grey);margin-top:4px;">Team alerted in-app</div>
+          </div>
+        </div>
+
+        <div class="zone-label">What Gets Created <span class="muted">&mdash; automatically, on every approval</span></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-4);">
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);">
+            <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);margin-bottom:var(--sp-3);display:flex;align-items:center;gap:var(--sp-2);">
+              <i class="fa-solid fa-briefcase" style="color:var(--c2);"></i> ClientSpace Case Record
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;">
+              <i class="fa-solid fa-check" style="color:var(--pos);margin-right:6px;"></i> Case ID auto-generated (CS-2026-XXXX)<br>
+              <i class="fa-solid fa-check" style="color:var(--pos);margin-right:6px;"></i> Client info pre-populated from CSA extraction<br>
+              <i class="fa-solid fa-check" style="color:var(--pos);margin-right:6px;"></i> 22+ fields written from approved extraction<br>
+              <i class="fa-solid fa-check" style="color:var(--pos);margin-right:6px;"></i> Original CSA PDF attached<br>
+              <i class="fa-solid fa-check" style="color:var(--pos);margin-right:6px;"></i> Extraction summary &amp; audit trail linked
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);">
+            <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);margin-bottom:var(--sp-3);display:flex;align-items:center;gap:var(--sp-2);">
+              <i class="fa-solid fa-user-plus" style="color:var(--amber);"></i> Sales Team Assignment
+            </div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);line-height:1.8;">
+              <i class="fa-solid fa-check" style="color:var(--pos);margin-right:6px;"></i> Project Manager auto-assigned from handoff page<br>
+              <i class="fa-solid fa-check" style="color:var(--pos);margin-right:6px;"></i> Payroll Analyst auto-assigned based on region<br>
+              <i class="fa-solid fa-check" style="color:var(--pos);margin-right:6px;"></i> Mismatch resolution tasks created for BA<br>
+              <i class="fa-solid fa-check" style="color:var(--pos);margin-right:6px;"></i> Document collection requests triggered<br>
+              <i class="fa-solid fa-check" style="color:var(--pos);margin-right:6px;"></i> In-app notification to assigned team members
+            </div>
+          </div>
+        </div>
+
+        <div style="background:var(--pos-light);border:1px solid #c0dfd0;border-radius:var(--radius-md);padding:var(--sp-4);font-size:var(--text-sm);color:#1a4a2e;line-height:1.6;">
+          <i class="fa-solid fa-rocket" style="color:var(--pos);margin-right:6px;"></i>
+          <strong>Result:</strong> The entire manual BA re-entry cycle is eliminated. From CSA upload to ClientSpace case creation &mdash; with assigned Sales team, tasks, and document collection &mdash; happens in minutes instead of days. Full audit trail ensures compliance and traceability.
+        </div>
+      </div>
+      <div class="s-foot"><span class="l">G&amp;A Partners &middot; Auto Case Creation</span><span class="r">Approve &rarr; Case Created &rarr; Team Assigned &rarr; Onboarding Starts</span></div>
+    </section>
+
+
+
+    <!-- ============ TAB 6: END-TO-END FLOW ============ -->
+    <section class="slide" id="slide6">
+      <div class="s-hdr">
+        <div>
+          <div class="eye">Architecture &middot; End-to-End</div>
+          <h1>CSA to Payroll &mdash; <span class="accent">Complete Downstream Flow</span></h1>
+        </div>
+        <div class="ga-logo"><span class="gw">G&amp;A <b>PARTNERS</b></span><span class="gs">End-to-End Flow</span></div>
+      </div>
+
+      <div class="s-body" style="gap:var(--sp-4);">
+
+        <!-- HORIZONTAL FLOW DIAGRAM -->
+        <div class="zone-label">End-to-End Pipeline <span class="muted">&mdash; CSA extraction through payroll system correction</span></div>
+
+        <div style="display:grid;grid-template-columns:1fr 20px 1fr 20px 1fr 20px 1fr 20px 1fr 20px 1fr;gap:0;align-items:stretch;margin-bottom:var(--sp-2);">
+
+          <!-- Step 1 -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-3) var(--sp-3);border-top:4px solid var(--red);display:flex;flex-direction:column;align-items:center;text-align:center;">
+            <div style="font-size:var(--text-xl);color:var(--red);margin-bottom:var(--sp-2);"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+            <div style="font-size:var(--text-xs);font-weight:800;color:var(--navy);margin-bottom:var(--sp-1);text-transform:uppercase;letter-spacing:0.5px;">CSA Upload &amp; AI Extraction</div>
+            <div style="font-size:var(--text-xs);color:var(--grey);line-height:1.4;">LlamaParse + AI Extraction Agent extract 22+ structured fields with confidence scoring</div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="display:flex;align-items:center;justify-content:center;color:var(--grey);font-size:var(--text-lg);font-weight:800;">&rarr;</div>
+
+          <!-- Step 2 -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-3) var(--sp-3);border-top:4px solid var(--c2);display:flex;flex-direction:column;align-items:center;text-align:center;">
+            <div style="font-size:var(--text-xl);color:var(--c2);margin-bottom:var(--sp-2);"><i class="fa-solid fa-code-compare"></i></div>
+            <div style="font-size:var(--text-xs);font-weight:800;color:var(--navy);margin-bottom:var(--sp-1);text-transform:uppercase;letter-spacing:0.5px;">Cross-Validation vs ClientSpace</div>
+            <div style="font-size:var(--text-xs);color:var(--grey);line-height:1.4;">Field-by-field LLM comparison against CS handoff page &mdash; deltas flagged</div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="display:flex;align-items:center;justify-content:center;color:var(--grey);font-size:var(--text-lg);font-weight:800;">&rarr;</div>
+
+          <!-- Step 3 -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-3) var(--sp-3);border-top:4px solid var(--amber);display:flex;flex-direction:column;align-items:center;text-align:center;">
+            <div style="font-size:var(--text-xl);color:var(--amber);margin-bottom:var(--sp-2);"><i class="fa-solid fa-user-check"></i></div>
+            <div style="font-size:var(--text-xs);font-weight:800;color:var(--navy);margin-bottom:var(--sp-1);text-transform:uppercase;letter-spacing:0.5px;">Human Review &amp; Approval</div>
+            <div style="font-size:var(--text-xs);color:var(--grey);line-height:1.4;">Side-drawer review with PDF highlights, page pointers, and approval gates</div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="display:flex;align-items:center;justify-content:center;color:var(--grey);font-size:var(--text-lg);font-weight:800;">&rarr;</div>
+
+          <!-- Step 4 -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-3) var(--sp-3);border-top:4px solid var(--pos);display:flex;flex-direction:column;align-items:center;text-align:center;">
+            <div style="font-size:var(--text-xl);color:var(--pos);margin-bottom:var(--sp-2);"><i class="fa-solid fa-building"></i></div>
+            <div style="font-size:var(--text-xs);font-weight:800;color:var(--navy);margin-bottom:var(--sp-1);text-transform:uppercase;letter-spacing:0.5px;">&#x2192; Push to ClientSpace</div>
+            <div style="font-size:var(--text-xs);color:var(--grey);line-height:1.4;">Case created, PM+PA assigned, mismatch tasks generated, docs attached</div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="display:flex;align-items:center;justify-content:center;color:var(--grey);font-size:var(--text-lg);font-weight:800;">&rarr;</div>
+
+          <!-- Step 5 -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-3) var(--sp-3);border-top:4px solid var(--red);display:flex;flex-direction:column;align-items:center;text-align:center;">
+            <div style="font-size:var(--text-xl);color:var(--red);margin-bottom:var(--sp-2);"><i class="fa-solid fa-plane-departure"></i></div>
+            <div style="font-size:var(--text-xs);font-weight:800;color:var(--navy);margin-bottom:var(--sp-1);text-transform:uppercase;letter-spacing:0.5px;">Pre-Flight Validation</div>
+            <div style="font-size:var(--text-xs);color:var(--grey);line-height:1.4;">Reads PrismHR config, validates against CSA Schedule 2 as source of truth</div>
+          </div>
+
+          <!-- Arrow -->
+          <div style="display:flex;align-items:center;justify-content:center;color:var(--grey);font-size:var(--text-lg);font-weight:800;">&rarr;</div>
+
+          <!-- Step 6 -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-md);padding:var(--sp-3) var(--sp-3);border-top:4px solid var(--amber);display:flex;flex-direction:column;align-items:center;text-align:center;">
+            <div style="font-size:var(--text-xl);color:var(--amber);margin-bottom:var(--sp-2);"><i class="fa-solid fa-server"></i></div>
+            <div style="font-size:var(--text-xs);font-weight:800;color:var(--navy);margin-bottom:var(--sp-1);text-transform:uppercase;letter-spacing:0.5px;">&#x2192; Push to PrismHR</div>
+            <div style="font-size:var(--text-xs);color:var(--grey);line-height:1.4;">WC codes, SUTA rates, deduction code GL mappings corrected in payroll system</div>
+          </div>
+
+        </div><!-- /flow grid -->
+
+        <!-- DOWNSTREAM TARGETS -->
+        <div class="zone-label">Downstream Targets <span class="muted">&mdash; what each system receives and how</span></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-3);">
+
+          <!-- ClientSpace Column -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);border-top:4px solid var(--pos);display:flex;flex-direction:column;gap:var(--sp-3);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--pos);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fa-solid fa-building" style="font-size:var(--text-sm);"></i></div>
+              <div>
+                <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">ClientSpace</div>
+                <div style="font-size:var(--text-xs);font-weight:700;color:var(--pos);text-transform:uppercase;letter-spacing:0.5px;">Onboarding System of Record</div>
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size:var(--text-xs);font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--grey);margin-bottom:var(--sp-2);">What Gets Pushed</div>
+              <div style="display:flex;flex-wrap:wrap;gap:4px;">
+                <span class="chip green">Case Creation</span>
+                <span class="chip green">Client Record Update</span>
+                <span class="chip green">PM + PA Assignment</span>
+                <span class="chip green">Mismatch Resolution Tasks</span>
+                <span class="chip green">Document Attachment</span>
+                <span class="chip green">In-App Notifications</span>
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size:var(--text-xs);font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--grey);margin-bottom:var(--sp-1);display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap;">API Operations
+                <a href="https://extranet.clientspace.net/next/swagger/ui/index" target="_blank" style="font-size:9px;font-weight:700;color:#8aa0b2;background:var(--navy);padding:1px 6px;border-radius:var(--radius-pill);text-decoration:none;letter-spacing:0.5px;"><i class="fa-solid fa-book" style="margin-right:2px;"></i>extranet.clientspace.net/swagger</a>
+              </div>
+              <div style="font-family:var(--font-mono);font-size:10px;line-height:1.9;color:var(--text-secondary);">
+                <div><span style="color:var(--amber);font-weight:700;">POST</span> ClientSpace Dataform API &mdash; Case Creation Pipeline</div>
+                <div><span style="color:var(--amber);font-weight:700;">PUT</span>&nbsp; ClientSpace Dataform API &mdash; Client Record Update</div>
+                <div><span style="color:var(--amber);font-weight:700;">POST</span> ClientSpace Dataform API &mdash; Remediation Task Pipeline</div>
+                <div><span style="color:var(--amber);font-weight:700;">POST</span> ClientSpace Dataform API &mdash; Document Attachment</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- PrismHR Column -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-5);border-top:4px solid var(--red);display:flex;flex-direction:column;gap:var(--sp-3);">
+            <div style="display:flex;align-items:center;gap:var(--sp-2);">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fa-solid fa-server" style="font-size:var(--text-sm);"></i></div>
+              <div>
+                <div style="font-size:var(--text-md);font-weight:800;color:var(--navy);">PrismHR</div>
+                <div style="font-size:var(--text-xs);font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.5px;">Payroll System of Record</div>
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size:var(--text-xs);font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--grey);margin-bottom:var(--sp-2);">What Gets Pushed</div>
+              <div style="display:flex;flex-wrap:wrap;gap:4px;">
+                <span class="chip key">WC Code Corrections</span>
+                <span class="chip key">SUTA Rate Entries</span>
+                <span class="chip key">Deduction Code GL Mappings</span>
+                <span class="chip key">Billing Rule Updates</span>
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size:var(--text-xs);font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--grey);margin-bottom:var(--sp-1);display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap;">API Operations
+                <a href="https://api-docs.prismhr.com" target="_blank" style="font-size:9px;font-weight:700;color:#8aa0b2;background:var(--navy);padding:1px 6px;border-radius:var(--radius-pill);text-decoration:none;letter-spacing:0.5px;"><i class="fa-solid fa-book" style="margin-right:2px;"></i>api-docs.prismhr.com</a>
+              </div>
+              <div style="font-family:var(--font-mono);font-size:10px;line-height:1.9;color:var(--text-secondary);">
+                <div><span style="color:var(--amber);font-weight:700;">PUT</span>&nbsp; EmployeeService.setWorkersCompCode</div>
+                <div><span style="color:var(--amber);font-weight:700;">PUT</span>&nbsp; ClientMasterService.setSutaRates</div>
+                <div><span style="color:var(--amber);font-weight:700;">PUT</span>&nbsp; ClientMasterService.setDeductionCode</div>
+                <div><span style="color:var(--amber);font-weight:700;">POST</span> PayrollService.calculateManualCheck</div>
+              </div>
+            </div>
+
+          </div>
+
+        </div><!-- /downstream targets grid -->
+
+        <!-- SYNERGY CALLOUT -->
+        <div style="background:var(--blue-soft);border:1px solid #b8d9ef;border-radius:var(--radius-lg);padding:var(--sp-4) var(--sp-5);font-size:var(--text-sm);color:#1a4f72;line-height:1.65;">
+          <div style="display:flex;align-items:flex-start;gap:var(--sp-3);">
+            <i class="fa-solid fa-link" style="color:var(--c2);font-size:var(--text-base);margin-top:2px;flex-shrink:0;"></i>
+            <div>
+              <strong style="color:var(--navy);font-size:var(--text-sm);">Cross-Initiative Synergy:</strong>
+              CSA Extraction (Initiative D) produces the Schedule 2 data that becomes the source of truth for Pre-Flight Validation (Initiative F). Without extraction, the PA has no automated reference to validate PrismHR config against.
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /s-body -->
+      <div class="s-foot"><span class="l">G&amp;A Partners &middot; End-to-End Flow</span><span class="r">CSA &rarr; ClientSpace &middot; PrismHR &rarr; Clean Payroll</span></div>
+    </section>
+
+    <!-- ============ TAB 7: CLIENTSPACE DEEP DIVE ============ -->
+    <section class="slide" id="slide7">
+      <div class="s-hdr">
+        <div>
+          <div class="eye">Technical Deep Dive &middot; Verified Architecture</div>
+          <h1>ClientSpace <span class="accent">Platform Architecture</span> &amp; API Capabilities</h1>
+        </div>
+        <div class="ga-logo"><span class="gw">G&amp;A <b>PARTNERS</b></span><span class="gs">CSA Extraction</span></div>
+      </div>
+
+      <div class="s-body" style="gap:var(--sp-3);">
+
+        <!-- WHAT IS A DATAFORM -->
+        <div class="zone-label">Core Concept: Dataforms <span class="muted">&mdash; how ClientSpace stores all data</span></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-3);">
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4);border-top:4px solid var(--c2);">
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);margin-bottom:var(--sp-2);display:flex;align-items:center;gap:6px;">
+              <i class="fa-solid fa-table-cells" style="color:var(--c2);"></i> What is a Dataform?
+            </div>
+            <div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:1.7;">
+              A dynamic, configurable data collection page backed by a database table (prefixed <code style="background:#EDF1F5;padding:1px 4px;border-radius:3px;font-size:10px;">gen_</code>). Core entities &mdash; Organization, Contact, Client Master, Cases &mdash; are all Dataforms.
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4);border-top:4px solid var(--amber);">
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);margin-bottom:var(--sp-2);display:flex;align-items:center;gap:6px;">
+              <i class="fa-solid fa-pipe-section" style="color:var(--amber);"></i> What is a Pipeline?
+            </div>
+            <div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:1.7;">
+              Business rules that fire when a Dataform is saved. Pipelines execute validation, trigger email templates, and &mdash; critically &mdash; <strong>expose fields to the API</strong>. Only API-enabled fields with a Pipeline are accessible via REST.
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4);border-top:4px solid var(--pos);">
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);margin-bottom:var(--sp-2);display:flex;align-items:center;gap:6px;">
+              <i class="fa-solid fa-shield-halved" style="color:var(--pos);"></i> API Access Model
+            </div>
+            <div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:1.7;">
+              Dedicated API user accounts via <strong>System Admin &gt; Advanced &gt; API Users</strong>. Session-based auth (username/password) &mdash; <strong>not OAuth</strong>. Hierarchical security at Dataform and field level.
+            </div>
+          </div>
+        </div>
+
+        <!-- PrismHR ↔ ClientSpace Integration -->
+        <div class="zone-label">PrismHR &harr; ClientSpace Integration <span class="muted">&mdash; dedicated bidirectional module (verified)</span></div>
+
+        <div style="display:grid;grid-template-columns:1fr 60px 1fr;gap:0;margin-bottom:var(--sp-3);align-items:stretch;">
+          <!-- ClientSpace side -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4);border-top:4px solid var(--pos);">
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);margin-bottom:var(--sp-2);display:flex;align-items:center;gap:6px;">
+              <i class="fa-solid fa-building" style="color:var(--pos);"></i> ClientSpace
+            </div>
+            <div style="font-size:var(--text-xs);font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:var(--sp-1);">Import (PrismHR &rarr; ClientSpace)</div>
+            <div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:1.7;margin-bottom:var(--sp-2);">
+              <strong>Nightly scheduled imports</strong> via Import Queue. ClientSpace evaluates each file&rsquo;s PEOID against Secondary ID for workspace routing. Records marked as <code style="background:#EDF1F5;padding:1px 4px;border-radius:3px;font-size:10px;">Import</code>, <code style="background:#EDF1F5;padding:1px 4px;border-radius:3px;font-size:10px;">Update</code>, or <code style="background:#EDF1F5;padding:1px 4px;border-radius:3px;font-size:10px;">Error</code>.
+            </div>
+            <div style="font-size:var(--text-xs);font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:var(--sp-1);">Export (ClientSpace &rarr; PrismHR)</div>
+            <div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:1.7;">
+              <strong>On-demand exports</strong> &mdash; Client Master must export first to create a PrismHR container, then Employees export into it. Strict sequential ordering enforced.
+            </div>
+          </div>
+          <!-- Arrow -->
+          <div style="display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--c2);font-weight:800;">&harr;</div>
+          <!-- PrismHR side -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4);border-top:4px solid var(--red);">
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);margin-bottom:var(--sp-2);display:flex;align-items:center;gap:6px;">
+              <i class="fa-solid fa-server" style="color:var(--red);"></i> PrismHR
+            </div>
+            <div style="font-size:var(--text-xs);font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:var(--sp-1);">7 Entity Types Synced</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:var(--sp-2);">
+              <span class="chip key">Client Data</span>
+              <span class="chip key">Employee/Employment</span>
+              <span class="chip key">Location</span>
+              <span class="chip key">Contact</span>
+              <span class="chip key">Payroll Batch</span>
+              <span class="chip key">I-9 Data</span>
+              <span class="chip key">Identifying Info</span>
+            </div>
+            <div style="font-size:var(--text-xs);font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:var(--sp-1);">Connection</div>
+            <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-secondary);line-height:1.6;">
+              Endpoint: api.prismhr.com/api-1.22/services/<br>
+              Auth: LoginService.createPeoSession<br>
+              Credentials: PHR Username, Password, PEO ID<br>
+              Session: 30-min idle timeout
+            </div>
+          </div>
+        </div>
+
+        <!-- What we need for our integration -->
+        <div class="zone-label">Our Integration Requirements <span class="muted">&mdash; confirmed vs needs vendor consultation</span></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-3);">
+          <!-- CONFIRMED -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4);border-top:4px solid var(--pos);">
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--pos);margin-bottom:var(--sp-3);display:flex;align-items:center;gap:6px;">
+              <i class="fa-solid fa-circle-check"></i> Confirmed Capabilities
+            </div>
+            <div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:2;">
+              <div><i class="fa-solid fa-check" style="color:var(--pos);margin-right:6px;width:12px;"></i><strong>REST API exists</strong> &mdash; Swagger UI documented, session-based auth</div>
+              <div><i class="fa-solid fa-check" style="color:var(--pos);margin-right:6px;width:12px;"></i><strong>Dataform CRUD via API</strong> &mdash; fields exposed through Pipeline configuration</div>
+              <div><i class="fa-solid fa-check" style="color:var(--pos);margin-right:6px;width:12px;"></i><strong>Cases &amp; Tasks</strong> &mdash; core platform feature, parent-child relationships, reassignment</div>
+              <div><i class="fa-solid fa-check" style="color:var(--pos);margin-right:6px;width:12px;"></i><strong>PrismHR bidirectional sync</strong> &mdash; 7 entity types, nightly import + on-demand export</div>
+              <div><i class="fa-solid fa-check" style="color:var(--pos);margin-right:6px;width:12px;"></i><strong>Field-level security</strong> &mdash; API user accounts, hierarchical permissions</div>
+              <div><i class="fa-solid fa-check" style="color:var(--pos);margin-right:6px;width:12px;"></i><strong>Data mapping</strong> &mdash; field-level mapping spreadsheet (clientspaceapi_datamapping.xlsx)</div>
+              <div><i class="fa-solid fa-check" style="color:var(--pos);margin-right:6px;width:12px;"></i><strong>Business rules on save</strong> &mdash; Pipelines execute rules + email triggers on Dataform save</div>
+            </div>
+          </div>
+
+          <!-- NEEDS VENDOR CONSULTATION -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4);border-top:4px solid var(--amber);">
+            <div style="font-size:var(--text-sm);font-weight:800;color:#7a4800;margin-bottom:var(--sp-3);display:flex;align-items:center;gap:6px;">
+              <i class="fa-solid fa-triangle-exclamation"></i> Needs Vendor Consultation
+            </div>
+            <div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:2;">
+              <div><i class="fa-solid fa-question" style="color:var(--amber);margin-right:6px;width:12px;"></i><strong>Case creation via API</strong> &mdash; Cases exist as Dataforms but programmatic creation endpoint not publicly documented</div>
+              <div><i class="fa-solid fa-question" style="color:var(--amber);margin-right:6px;width:12px;"></i><strong>Document upload API</strong> &mdash; Attachment capabilities not publicly documented; needs verification</div>
+              <div><i class="fa-solid fa-question" style="color:var(--amber);margin-right:6px;width:12px;"></i><strong>Specific REST endpoint patterns</strong> &mdash; URL paths, HTTP methods behind authenticated Swagger; need API access to confirm</div>
+              <div><i class="fa-solid fa-question" style="color:var(--amber);margin-right:6px;width:12px;"></i><strong>Onboarding handoff page structure</strong> &mdash; Likely a custom Dataform; exact field schema needs G&amp;A-specific config review</div>
+              <div><i class="fa-solid fa-question" style="color:var(--amber);margin-right:6px;width:12px;"></i><strong>Webhook / event notifications</strong> &mdash; No evidence of webhook support; sync is pull-based</div>
+              <div><i class="fa-solid fa-question" style="color:var(--amber);margin-right:6px;width:12px;"></i><strong>Real-time vs batch</strong> &mdash; Current sync is nightly; real-time API calls need testing</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Our approach -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-3);">
+          <div style="background:var(--pos-light);border:1px solid #c0dfd0;border-radius:var(--radius-md);padding:var(--sp-3);">
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--pos);margin-bottom:var(--sp-1);"><i class="fa-solid fa-1" style="margin-right:4px;"></i> Implementation Phase 1</div>
+            <div style="font-size:var(--text-xs);color:#1a4a2e;line-height:1.6;">
+              Get API user credentials from G&amp;A. Access authenticated Swagger docs. Map exact endpoints for Dataform reads (handoff page, client record, state registrations).
+            </div>
+          </div>
+          <div style="background:var(--c2-light);border:1px solid #c0d8ed;border-radius:var(--radius-md);padding:var(--sp-3);">
+            <div style="font-size:var(--text-sm);font-weight:800;color:var(--c2);margin-bottom:var(--sp-1);"><i class="fa-solid fa-2" style="margin-right:4px;"></i> Implementation Phase 2</div>
+            <div style="font-size:var(--text-xs);color:#1a4f72;line-height:1.6;">
+              Configure Pipeline on onboarding Dataforms to expose fields via API. Test case creation via Dataform API. Validate document attachment capabilities.
+            </div>
+          </div>
+          <div style="background:var(--amber-light);border:1px solid #e8d5a8;border-radius:var(--radius-md);padding:var(--sp-3);">
+            <div style="font-size:var(--text-sm);font-weight:800;color:#7a4800;margin-bottom:var(--sp-1);"><i class="fa-solid fa-3" style="margin-right:4px;"></i> Implementation Phase 3</div>
+            <div style="font-size:var(--text-xs);color:#5c3c00;line-height:1.6;">
+              Build integration adapter. Wire up CSA extraction approval &rarr; ClientSpace case creation flow. Set up API user permissions and field-level security for production.
+            </div>
+          </div>
+        </div>
+
+        <!-- FALLBACK: If vendor consultation items come back as NO -->
+        <div class="zone-label" style="margin-top:var(--sp-4);">If APIs Are Unavailable &mdash; Fallback Approaches <span class="muted">&mdash; if consultation items are unanswered or &ldquo;no&rdquo;</span></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-3);">
+          <!-- PRIMARY FALLBACK -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4);border-top:4px solid var(--c2);">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:var(--sp-2);">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--c2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;">1</div>
+              <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);">Salesforce Bridge</div>
+              <span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--c2-light);color:var(--c2);border:1px solid #b8d9ef;">Preferred</span>
+            </div>
+            <div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:1.7;margin-bottom:var(--sp-2);">
+              ClientSpace already has a documented <strong>two-way Salesforce integration</strong>. Route our data through Salesforce as an intermediary &mdash; Salesforce &rarr; ClientSpace sync handles case creation, client records, and task management automatically.
+            </div>
+            <div style="display:flex;gap:4px;flex-wrap:wrap;">
+              <span class="chip blue">Salesforce REST API</span>
+              <span class="chip green">ClientSpace auto-sync</span>
+              <span class="chip">No direct CS API needed</span>
+            </div>
+          </div>
+
+          <!-- DATABASE FALLBACK -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4);border-top:4px solid var(--navy);">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:var(--sp-2);">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;">2</div>
+              <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);">Direct Database Integration</div>
+              <span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:99px;background:#EDF1F5;color:var(--navy);border:1px solid var(--rule);">Reliable</span>
+            </div>
+            <div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:1.7;margin-bottom:var(--sp-2);">
+              Every Dataform creates a <code style="background:#EDF1F5;padding:1px 4px;border-radius:3px;font-size:10px;">gen_</code> database table. With DB access, write directly to <code style="background:#EDF1F5;padding:1px 4px;border-radius:3px;font-size:10px;">gen_Cases</code>, <code style="background:#EDF1F5;padding:1px 4px;border-radius:3px;font-size:10px;">gen_ClientMaster</code>, etc. Pipelines fire on next UI access. Most reliable fallback &mdash; bypasses API entirely.
+            </div>
+            <div style="display:flex;gap:4px;flex-wrap:wrap;">
+              <span class="chip key">SQL write to gen_ tables</span>
+              <span class="chip">Pipeline rules still execute</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);">
+          <!-- POWER AUTOMATE -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4);border-top:4px solid var(--amber);">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:var(--sp-2);">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--amber);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;">3</div>
+              <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);">Power Automate / Zapier</div>
+            </div>
+            <div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:1.7;">
+              Enterprise platforms without public REST APIs often have Power Automate connectors. Trigger flows from our system via webhook &rarr; Power Automate handles ClientSpace operations. Low-code, maintainable, auditable.
+            </div>
+          </div>
+
+          <!-- HEADLESS BROWSER -->
+          <div style="background:#fff;border:1px solid var(--rule);border-radius:var(--radius-lg);padding:var(--sp-4);border-top:4px solid var(--grey);">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:var(--sp-2);">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--grey);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;">4</div>
+              <div style="font-size:var(--text-sm);font-weight:800;color:var(--navy);">Headless Browser Automation</div>
+              <span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:99px;background:#F1F3F5;color:var(--grey);border:1px solid var(--rule);">Last Resort</span>
+            </div>
+            <div style="font-size:var(--text-xs);color:var(--text-secondary);line-height:1.7;">
+              Playwright/Puppeteer automates the ClientSpace web UI &mdash; login, navigate to case form, fill fields, submit. Productionizable with error handling and retry logic. Works when no API, no DB access, and no connectors exist.
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:var(--sp-3);padding:var(--sp-3) var(--sp-4);border-radius:var(--radius-md);background:var(--c2-light);border:1px solid #b8d9ef;font-size:var(--text-xs);color:#1a4f72;line-height:1.6;">
+          <i class="fa-solid fa-shield-check" style="color:var(--c2);margin-right:6px;"></i>
+          <strong>Risk Mitigation:</strong> These 4 approaches are ordered by preference. At least one will work regardless of ClientSpace&rsquo;s API coverage &mdash; the Salesforce bridge and database integration are battle-tested patterns used across the PEO industry. No scenario leaves us without a viable integration path.
+        </div>
+
+      </div>
+      <div class="s-foot"><span class="l">G&amp;A Partners &middot; ClientSpace Deep Dive &middot; Sources: extranet.clientspace.net/helpdoc, api-docs.prismhr.com</span><span class="r">4 Fallback Approaches &middot; No Blank Spots</span></div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+const slides = [...document.querySelectorAll('.slide')];
+const tabs = [...document.querySelectorAll('.slide-tab')];
+function goTab(n, btn) {
+  slides.forEach((s, i) => s.classList.toggle('active', i === n));
+  tabs.forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+document.addEventListener('keydown', e => {
+  const curr = slides.findIndex(s => s.classList.contains('active'));
+  if (e.key === 'ArrowRight') goTab(Math.min(curr + 1, slides.length - 1), tabs[Math.min(curr + 1, slides.length - 1)]);
+  else if (e.key === 'ArrowLeft') goTab(Math.max(curr - 1, 0), tabs[Math.max(curr - 1, 0)]);
+});
+goTab(0, tabs[0]);
+</script>
+</body>
+</html>
